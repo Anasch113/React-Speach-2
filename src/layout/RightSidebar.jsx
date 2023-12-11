@@ -15,7 +15,7 @@ function RightSidebar() {
 
   return (
     <aside
-      className="w-1/5 gray-200  h-full overflow-x-hidden overflow-y-scroll"
+      className="w-1/5 gray-200  h-full overflow-x-hidden overflow-y-scroll hidden md:block lg:block xl:block 2xl:block"
       style={{
         scrollbarWidth: "thin",
         scrollbarColor: "transparent transparent",

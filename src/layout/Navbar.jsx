@@ -8,11 +8,13 @@ const Navbar = () => {
     <nav className="bg-white p-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
         {/* Brand/Logo */}
-        <div className="text-xl font-bold text-blue-500">Your Logo</div>
+        <div className="md:text-xl lg:text-xl xl:text-xl 2xl:text-xl font-bold text-blue-500">
+          LOGO
+        </div>
 
         {/* Search Input */}
         <div className="flex items-center space-x-4">
-          <div className="relative">
+          <div className="relative hidden md:block lg:block xl:block 2xl:block">
             <input
               type="text"
               placeholder="Search"
@@ -39,7 +41,7 @@ const Navbar = () => {
           <MeetingRecord />
 
           {/* Import Button */}
-          <button className="bg-white text-blue-500 border border-blue-500 px-4 py-2 rounded-md focus:outline-none hover:bg-blue-50">
+          <button className="bg-white text-blue-500 border border-blue-500 px-4 py-2 rounded-md focus:outline-none hover:bg-blue-50 hidden md:block lg:block xl:block 2xl:block">
             Import
           </button>
         </div>

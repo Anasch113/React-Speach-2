@@ -5,7 +5,10 @@ import { FaStop } from "react-icons/fa";
 import axios from "axios";
 import { FaUserCheck } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
-import { AddAudio } from "../GlobalState/features/audioSlice";
+import {
+  AddAudio,
+  AddtranscriptFile,
+} from "../GlobalState/features/audioSlice";
 
 const MeetingRecord = () => {
   const dispatch = useDispatch();
@@ -165,9 +168,10 @@ const MeetingRecord = () => {
                   body: data,
                 }
               );
-              const fileDate = await response.json();
-              setFileUrl(fileDate.secure_url);
-              console.log(fileDate.secure_url);
+              const fileData = await response.json();
+              setFileUrl(fileData.secure_url);
+              dispatch(AddtranscriptFile({ fileUrl: fileData.secure_url }));
+              console.log(fileData.secure_url);
             } catch (err) {
               console.log(err);
             }
@@ -215,7 +219,7 @@ const MeetingRecord = () => {
         onChange={(e) => setMeetingUrl(e.target.value)}
         type="text"
         placeholder="Enter Meeting URL"
-        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 w-[150px]"
       />
 
       {/* Record Button */}

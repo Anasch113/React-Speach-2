@@ -15,7 +15,7 @@ function Sidebar() {
 
   return (
     <aside
-      className="w-1/6 gray-200  h-full overflow-x-hidden overflow-y-scroll"
+      className="w-1/6 gray-200  h-full overflow-x-hidden overflow-y-scroll hidden md:hidden lg:block xl:block 2xl:block"
       style={{
         scrollbarWidth: "thin",
         scrollbarColor: "transparent transparent",
@@ -68,7 +68,7 @@ function Sidebar() {
 
       <div className="mx-2 p-4 flex bg-white border border-gray-300 rounded-md">
         <div className="mr-2 mt-1">
-<CgMoreVertical />
+          <CgMoreVertical />
         </div>
         <p className="">More</p>
       </div>

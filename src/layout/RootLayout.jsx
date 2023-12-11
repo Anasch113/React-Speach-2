@@ -10,7 +10,7 @@ function RootLayout() {
   return (
     <div>
       <Navbar />
-      <div className="flex flex-col lg:flex-row h-screen bg-gray-100">
+      <div className="flex lg:flex-row h-screen bg-gray-100">
         <Sidebar />
         <MainContent />
         <RightSidebar />
