@@ -12,8 +12,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route exact path="/" element={<RootLayout />} />
-        <Route exact path="transcription" element={<Dashboard />} />
-        <Route exact path="botapi" element={<BotApi />} />
+        <Route exact path="/transcription" element={<Dashboard />} />
+        <Route exact path="/botapi" element={<BotApi />} />
       </Routes>
     </BrowserRouter>
   );
