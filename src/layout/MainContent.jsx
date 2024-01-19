@@ -4,59 +4,10 @@ import React, { useEffect, useState } from "react";
 import ProgressBar from "../components/ProgressBar";
 import RecordingAudio from "../components/RecordingAudio";
 import { useSelector } from "react-redux";
+import LiveTranscription from "../components/LiveTranscription";
 
 function MainContent() {
-  const audioFiles = useSelector((state) => state.audio.audioFiles);
   const files = useSelector((state) => state.audio.transcriptFiles);
-  const [file, setFile] = useState();
-  // const [fileContent, setFileContent] = useState([]);
-  console.log(audioFiles);
-
-  let fileContent = [];
-  const UploadFile = async () => {
-    console.log(starteds);
-    for (let audio of audioFiles) {
-      const content = `${audio.speaker}: ${audio.text}`;
-      console.log(audio);
-      fileContent.push(content);
-    }
-
-    console.log(fileContent);
-    let file;
-    if (fileContent.length > 0)
-      file = new Blob([fileContent], { type: "text/plain" });
-    // const url = URL.createObjectURL(file);
-    // console.log(url);
-    console.log(starteds);
-    const data = new FormData();
-    data.append("file", file);
-    data.append("upload_preset", "xguxdutu");
-    data.append("cloud_name", "dgpwe8xy6");
-    data.append("folder", "Transcription");
-    data.append("quality", "auto:good"); // Set the desired quality level
-    console.log(starteds);
-    try {
-      console.log(uploading);
-      let response;
-      response = await fetch(
-        "https://api.cloudinary.com/v1_1/dgpwe8xy6/upload",
-        {
-          method: "post",
-          body: data,
-        }
-      );
-      const fileDate = await response.json();
-      setFile(fileDate.secure_url);
-      console.log(uploaded);
-    } catch (err) {
-      console.log(err);
-    }
-    console.log(file);
-  };
-
-  useEffect(() => {
-    fileContent.length > 0 && UploadFile();
-  }, []);
   return (
     <main className="flex-1 overflow-x-hidden overflow-y-scroll bg-gray-200 lg:w-3/6">
       <div className="mx-4 my-6 p-4 bg-white border border-gray-300 rounded-md">
@@ -86,14 +37,13 @@ function MainContent() {
       {/* live transcription */}
 
       <div className="mx-4">
-        <p className="text-xl font-bold">Live Transcription</p>
+        <p className="text-xl font-bold">Transcription Files</p>
       </div>
 
       <div className="mx-4 my-4 p-4 bg-white border border-gray-300 rounded-md">
         {/* list of audio files */}
         <div className="flex flex-col gap-2">
-          <h2>Transcription Files</h2>
-          {files &&
+          {files.length > 0 ? (
             files.map((file, i) => (
               <div className="flex items-center gap-2">
                 <span className="py-1 px-3 text-white bg-slate-400 rounded-md">
@@ -107,7 +57,10 @@ function MainContent() {
                   Click to download File
                 </a>
               </div>
-            ))}
+            ))
+          ) : (
+            <p>No Transcription Files Yet</p>
+          )}
         </div>
         {/* <div className="flex flex-col gap-2">
           {audioFiles &&
@@ -119,6 +72,7 @@ function MainContent() {
             ))}
         </div> */}
         {/* <RecordingAudio /> */}
+        <LiveTranscription />
       </div>
     </main>
   );
