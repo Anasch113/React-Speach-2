@@ -9,10 +9,14 @@ import { Link } from "react-router-dom";
 
 function MainContent() {
   const files = useSelector((state) => state.audio.transcriptFiles);
+  const speakerFiles = useSelector((state) => state.audio.speakerTranscriptFiles);
+  console.log("your speaker/microphone files:", speakerFiles)
+  
   const myAudioFiles = useSelector((state) => state.audio.audioFiles)
   console.log(files)
-  console.log(myAudioFiles)
-  console.log(myAudioFiles.text)
+  console.log(files.text)
+  console.log(files.speaker)
+  
 
   const downloadAudio = (audioUrl, filename) => {
     const link = document.createElement("a");
