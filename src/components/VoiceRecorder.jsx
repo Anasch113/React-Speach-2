@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaPlay, FaPause, FaStop, FaTrash, FaCheck } from "react-icons/fa";
 import { BsRecordCircle } from "react-icons/bs";
+
 import axios from "axios";
 
 const VoiceRecorder = (
@@ -21,9 +22,14 @@ const VoiceRecorder = (
     setTranscriptionResult,
     mediaRecorder,  
     audioRef,
-    submitAudio
+    submitAudio,
+    handleNavigate
   }
+
+
+
 ) => {
+ 
  
 
   return (
@@ -92,6 +98,8 @@ const VoiceRecorder = (
             </li>
           ))}
         </ul>
+        <button className="py-2 px-4 bg-blue-500 text-white rounded-full w-fit"
+                onClick={ handleNavigate} > Visit Recordings </button>
       </div>
     </div>
   );

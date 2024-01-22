@@ -1,18 +1,26 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { MdOutlineKeyboardVoice } from "react-icons/md";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FaStop } from "react-icons/fa";
 import axios from "axios";
 import { FaUserCheck } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   AddAudio,
   AddtranscriptFile,
+    // Import startRecording action
+    // Import stopRecording action
 } from "../GlobalState/features/audioSlice";
+import { startRecordingRed, stopRecordingRed } from "../GlobalState/features/audioSlice";
+
+
 
 const MeetingRecord = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const audioFiles = useSelector((state) => state.audio.audioFiles);
+  const isRecordings = useSelector((state)=> state.audio.isRecording);
   const [fileUrl, setFileUrl] = useState();
   const [meetingUrl, setMeetingUrl] = useState("");
   const [inMeeting, setInMeeting] = useState("");
@@ -33,8 +41,7 @@ const MeetingRecord = () => {
         "1af56edd7650b135862a411d2f05661f1e5bc979449dfead7a2bb4d7ec19dee08ab4d1a9272571d379705c6edd11013dc249fbe96cf2e8cfb9f2a2f5ae5ed818",
     };
 
-    axios
-      .get("https://api.transkriptor.com/7/Add-Bot-to-Meeting", {
+    axios.get("https://api.transkriptor.com/7/Add-Bot-to-Meeting", {
         params: parameters,
       })
       .then((response) => {
@@ -55,6 +62,10 @@ const MeetingRecord = () => {
   const headers = {
     authorization: "ce2c1d53c1af4f02a15b539ffd7bc68c",
   };
+
+
+
+  
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -70,6 +81,7 @@ const MeetingRecord = () => {
       mediaRecorder.current.onstop = async () => {
         const audioBlob = new Blob(chunks.current, { type: "audio/wav" });
         const audioUrl = URL.createObjectURL(audioBlob);
+        
         // dispatch(AddAudio({ url: audioUrl }));
         // setRecordedAudios((prevAudios) => [
         //   ...prevAudios,
@@ -114,6 +126,7 @@ const MeetingRecord = () => {
           const transcriptionResult = pollingResponse.data;
 
           if (transcriptionResult.status === "completed") {
+            
             const utterances = transcriptionResult.utterances;
             // Iterate through each utterance and print the speaker and the text they spoke
             for (const utterance of utterances) {
@@ -130,20 +143,26 @@ const MeetingRecord = () => {
             }
             console.log(transcriptionResult.text);
             setTranscriptionResult(transcriptionResult.text);
-            // dispatch(AddAudio({ text: transcriptionResult.text }));
-            // console.log(audioFiles);
-            // if (audioFiles.length > 0)
-            //   audioFiles.forEach((item) => {
-            //     // Add speaker and text with a new line
-            //     fileContent += `${item.speaker}: ${item.text}\n`;
-            //     console.log("working");
-            //   });
-            // if (audioFiles.length > 0)
-            //   for (let i = 0; i <= audioFiles.length; i++) {
-            //     const content = `${audioFiles[i].speaker}: ${audioFiles[i].text}`;
-            //     console.log(content);
-            //     fileContent.push(content);
-            //   }
+
+
+
+            dispatch(AddAudio({ text: transcriptionResult.text }));
+            console.log(audioFiles);
+            if (audioFiles.length > 0)
+              audioFiles.forEach((item) => {
+                // Add speaker and text with a new line
+                fileContent += `${item.speaker}: ${item.text}\n`;
+                console.log("working");
+              });
+            if (audioFiles.length > 0)
+              for (let i = 0; i <= audioFiles.length; i++) {
+                const content = `${audioFiles[i].speaker}: ${audioFiles[i].text}`;
+                console.log(content);
+                fileContent.push(content);
+              }
+
+
+
 
             console.log(fileContent);
             let file;
@@ -170,8 +189,9 @@ const MeetingRecord = () => {
               );
               const fileData = await response.json();
               setFileUrl(fileData.secure_url);
-              dispatch(AddtranscriptFile({ fileUrl: fileData.secure_url }));
-              console.log(fileData.secure_url);
+
+          const myFilesRed =  dispatch(AddtranscriptFile({ fileUrl: fileData.secure_url }));
+              console.log("files sending to reducers", myFilesRed);
             } catch (err) {
               console.log(err);
             }
@@ -181,7 +201,8 @@ const MeetingRecord = () => {
             throw new Error(
               `Transcription failed: ${transcriptionResult.error}`
             );
-          } else {
+          } 
+          else {
             await new Promise((resolve) => setTimeout(resolve, 3000));
           }
         }
@@ -189,28 +210,45 @@ const MeetingRecord = () => {
 
       mediaRecorder.current.start();
       setIsRecording(true);
+      dispatch(startRecordingRed());
 
       // Start recording timer
       timerRef.current = setInterval(() => {
         setRecordingTime((prevTime) => prevTime + 1);
       }, 1000);
+    
     } catch (error) {
       console.error("Error starting recording:", error);
     }
+  };
+
+  useEffect(()=>{
+
+
+    if(!isRecordings){
+      stopRecording();
+    }
+    else{
+      console.log("normal")
+    }
+   
+
+  }, [!isRecordings])
+
+  const UploadFile = async () => {
+    console.log("starteds");
   };
 
   const stopRecording = () => {
     if (mediaRecorder.current && mediaRecorder.current.state === "recording") {
       mediaRecorder.current.stop();
       setIsRecording(false);
+      dispatch(stopRecordingRed());  // Dispatch stopRecording action
       clearInterval(timerRef.current);
       setRecordingTime(0);
     }
   };
-
-  const UploadFile = async () => {
-    console.log("starteds");
-  };
+ 
 
   return (
     <div className="flex items-center gap-2">
@@ -247,6 +285,8 @@ const MeetingRecord = () => {
               handleAddBotClick();
               startRecording();
               UploadFile();
+              navigate("/transcription")
+              
             }}
             className="bg-blue-500 text-white px-4 py-2 flex rounded-md focus:outline-none hover:bg-blue-600"
           >

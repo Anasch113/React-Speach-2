@@ -5,9 +5,22 @@ import ProgressBar from "../components/ProgressBar";
 import RecordingAudio from "../components/RecordingAudio";
 import { useSelector } from "react-redux";
 import LiveTranscription from "../components/LiveTranscription";
+import { Link } from "react-router-dom";
 
 function MainContent() {
   const files = useSelector((state) => state.audio.transcriptFiles);
+  const myAudioFiles = useSelector((state) => state.audio.audioFiles)
+  console.log(files)
+  console.log(myAudioFiles)
+  console.log(myAudioFiles.text)
+
+  const downloadAudio = (audioUrl, filename) => {
+    const link = document.createElement("a");
+    link.href = audioUrl;
+    link.download = filename || "audio_file"; 
+    link.click();
+  };
+
   return (
     <main className="flex-1 overflow-x-hidden overflow-y-scroll bg-gray-200 lg:w-3/6">
       <div className="mx-4 my-6 p-4 bg-white border border-gray-300 rounded-md">
@@ -30,8 +43,19 @@ function MainContent() {
           <span className="text-xs">1:26 am 20 min Muhammad Nauman</span>
         </div>
 
-        <div>
-          <p>hello how are You? hello how are You?hello how are You? </p>
+        <div className="flex flex-col gap-2">
+
+          {myAudioFiles.length > 0 ? (
+            myAudioFiles.map((audio, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <p>{audio.text.transcriptText}</p>
+
+
+              </div>
+            ))
+          ) : (
+            <p>No Notes Yet</p>
+          )}
         </div>
       </div>
       {/* live transcription */}
@@ -62,17 +86,28 @@ function MainContent() {
             <p>No Transcription Files Yet</p>
           )}
         </div>
-        {/* <div className="flex flex-col gap-2">
-          {audioFiles &&
-            audioFiles.map((audio, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <p>Speaker {audio.speaker}: </p>
-                <p>{audio.text}</p>
-              </div>
-            ))}
-        </div> */}
+        {/* list of audio files */}
+        <div className="flex flex-col gap-2">
+  {myAudioFiles.length > 0 ? (
+    myAudioFiles.map((audio, i) => (
+      <div key={i} className="flex items-center gap-2">
+        <audio controls src={audio.text.cloudinaryFileUrl} download={`audio_${i}.wav`}>
+
+          Download
+        </audio>
+       
+      </div>
+    ))
+  ) : (
+    <p>No Audio Files Yet</p>
+  )}
+</div>
+
+        <Link to={"/transcription"}> <button className="py-2 px-4 bg-blue-500 text-white rounded-full w-fit"
+        > See Audios</button></Link>
         {/* <RecordingAudio /> */}
         <LiveTranscription />
+
       </div>
     </main>
   );
