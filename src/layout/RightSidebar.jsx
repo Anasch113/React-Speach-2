@@ -15,7 +15,7 @@ function RightSidebar() {
 
   return (
     <aside
-      className="w-1/5 gray-200  h-full overflow-x-hidden overflow-y-scroll hidden md:block lg:block xl:block 2xl:block"
+      className="w-96 px-2 bg-white h-full overflow-x-hidden overflow-y-scroll hidden md:block lg:block xl:block 2xl:block"
       style={{
         scrollbarWidth: "thin",
         scrollbarColor: "transparent transparent",
@@ -25,7 +25,7 @@ function RightSidebar() {
       <div className="m-2 pt-4 flex">
         <p className="text-xl font-semibold">Summary</p>
       </div>
-      <div className="m-2 p-4 flex bg-white  border border-gray-300 rounded-md">
+      <div className="m-2 p-4 flex bg-white  border border-border-dark-color rounded-md">
         <div>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -40,11 +40,11 @@ function RightSidebar() {
         </div>
       </div>
 
-      <div className="m-2 p-4 flex items-center justify-center bg-white border border-gray-300 rounded-md">
+      <div className="m-2 p-4 flex items-center justify-center bg-white border border-border-dark-color rounded-md">
         <p className="font-bold text-blue-500">Google calender</p>
       </div>
 
-      <div className="m-2 p-4 flex items-center justify-center bg-white border border-gray-300 rounded-md">
+      <div className="m-2 p-4 flex items-center justify-center bg-white border border-border-dark-color rounded-md">
         <p className="font-bold text-blue-500">Zoom Meeting</p>
       </div>
     </aside>

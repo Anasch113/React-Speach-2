@@ -8,14 +8,36 @@ import RightSidebar from "./RightSidebar";
 
 function RootLayout() {
   return (
-    <div>
-      <Navbar />
-      <div className="flex lg:flex-row h-screen bg-gray-100">
-        <Sidebar />
-        <MainContent />
-        <RightSidebar />
+
+
+    <div className="w-full flex lg:flex-row h-screen bg-gray-100">
+
+      <Sidebar />
+
+
+
+      <div className="flex flex-col  w-full">
+      
+
+
+          <Navbar />
+       
+
+        <div className="flex w-full">
+          
+
+          <MainContent />
+
+
+          <RightSidebar />
+
+
+        </div>
+
       </div>
+
     </div>
+
   );
 }
 

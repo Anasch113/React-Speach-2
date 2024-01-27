@@ -5,8 +5,8 @@ export const audioSlice = createSlice({
   initialState: {
     audioFiles: [],
     transcriptFiles: [],
-    speakerTranscriptFiles: [],
-    microphoneTranscriptFiles: [],
+    typesTranscriptionFiles: [],
+  
     isRecording: false,
   },
 
@@ -15,15 +15,10 @@ export const audioSlice = createSlice({
     AddAudio: (state, payload) => {
       state.audioFiles.push(payload.payload);
     },
-    AddtranscriptFile: (state, payload) => {
-      state.transcriptFiles.push(payload.payload);
+    addTypesTranscriptionsFiles: (state, payload) => {
+      state.typesTranscriptionFiles.push(payload.payload);
     },
-    addSpeakerTranscripts: (state, payload) => {
-      state.speakerTranscriptFiles.push(payload.payload);
-    },
-    addMicrophoneTranscripts: (state, payload) => {
-      state.microphoneTranscriptFiles.push(payload.payload);
-    },
+  
     startRecordingRed: (state, payload) => {
       state.isRecording = true;
     },
@@ -35,6 +30,6 @@ export const audioSlice = createSlice({
 });
 
 export const { AddAudio, AddtranscriptFile, startRecordingRed,
-  stopRecordingRed, addSpeakerTranscripts,  addMicrophoneTranscripts  } = audioSlice.actions;
+  stopRecordingRed, addTypesTranscriptionsFiles    } = audioSlice.actions;
 
 export default audioSlice.reducer;

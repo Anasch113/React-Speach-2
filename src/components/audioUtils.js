@@ -52,14 +52,25 @@ export const uploadAudioToCloudinary = async (audioBlob) => {
       const transcriptionResult = pollingResponse.data;
 
       if (transcriptionResult.status === "completed") {
+
+
+        const speakerTranscripts = {};
+        for (const utterance of transcriptionResult.utterances) {
+          const speaker = utterance.speaker;
+          const text = utterance.text;
+          if (!speakerTranscripts[speaker]) {
+            speakerTranscripts[speaker] = [];
+          }
+          speakerTranscripts[speaker].push(text);
+        }
         return {
-          transcriptText: transcriptionResult.text,
+          transcriptText: transcriptionResult,
           cloudinaryFileUrl,
         };
       } else if (transcriptionResult.status === "error") {
         throw new Error(`Transcription failed: ${transcriptionResult.error}`);
       } else {
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
   } catch (error) {

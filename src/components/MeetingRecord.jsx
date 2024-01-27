@@ -47,7 +47,7 @@ const MeetingRecord = () => {
       .then((response) => {
         console.log(response.data);
         // Handle success, e.g., show a success message to the user
-        setInMeeting("InMeeting");
+        setInMeeting("inmeeting");
       })
       .catch((error) => {
         console.log(error);
@@ -55,6 +55,15 @@ const MeetingRecord = () => {
         setInMeeting("Error");
       });
   };
+
+
+
+
+
+
+
+
+  
 
   // recording code
   const baseUrl = "https://api.assemblyai.com/v2";
@@ -220,6 +229,7 @@ const MeetingRecord = () => {
     } catch (error) {
       console.error("Error starting recording:", error);
     }
+    
   };
 
   useEffect(()=>{
@@ -278,7 +288,7 @@ const MeetingRecord = () => {
             onChange={(e) => setMeetingUrl(e.target.value)}
             type="text"
             placeholder="Enter Meeting URL"
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 w-[150px]"
+            className="px-3 py-2 border border-border-dark-color rounded-md focus:outline-none focus:border-blue-500 w-[150px]"
           />
           <button
             onClick={() => {
@@ -288,7 +298,7 @@ const MeetingRecord = () => {
               navigate("/transcription")
               
             }}
-            className="bg-blue-500 text-white px-4 py-2 flex rounded-md focus:outline-none hover:bg-blue-600"
+            className="bg-bg-blue text-white px-4 py-2 flex rounded-md focus:outline-none hover:bg-blue-400 "
           >
             {inMeeting === "started" ? (
               <div className="mr-1 mt-1 animate-spin">

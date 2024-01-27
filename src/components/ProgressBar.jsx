@@ -15,7 +15,7 @@ const ProgressBar = () => {
   return (
     <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
       <div
-        className="bg-blue-500 h-full"
+        className="bg-bg-blue h-full"
         style={{ width: `${progress}%` }}
       ></div>
     </div>

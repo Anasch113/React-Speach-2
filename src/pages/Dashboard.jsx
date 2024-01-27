@@ -4,11 +4,18 @@ import VoiceRecorder from "../components/VoiceRecorder";
 import axios from "axios";
 import LiveTranscription from "../components/LiveTranscription";
 import { useDispatch, useSelector } from "react-redux";
-import { AddAudio, AddtranscriptFile, addMicrophoneTranscripts, addSpeakerTranscripts, stopRecordingRed } from "../GlobalState/features/audioSlice";
+import { AddAudio, addTypesTranscriptionsFiles, stopRecordingRed } from "../GlobalState/features/audioSlice";
 import { useNavigate } from "react-router-dom";
 import { uploadAudioToCloudinary } from "../components/audioUtils";
+import Sidebar from "../layout/Sidebar";
+import { AiOutlineHome } from "react-icons/ai";
+import { BiConversation } from "react-icons/bi";
+import { SiTheconversation } from "react-icons/si";
+import { CgMoreVertical } from "react-icons/cg";
+import NavbarOther from "../components/NavbarOther";
 
 const Dashboard = () => {
+ 
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,11 +26,15 @@ const Dashboard = () => {
   const [recordingTime, setRecordingTime] = useState(0);
   const [recordedAudios, setRecordedAudios] = useState([]);
   const [transcription, setTranscriptionResult] = useState("");
- 
+  const [showProcessingText, setShowProcessingText] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+
+
   const mediaRecorder = useRef(null);
   const audioRef = useRef(new Audio());
   const chunks = useRef([]);
   const timerRef = useRef(null);
+  const videoRef = useRef(null);
 
   const baseUrl = "https://api.assemblyai.com/v2";
 
@@ -38,93 +49,77 @@ const Dashboard = () => {
 
 
   const startRecording = async () => {
+
     try {
-      const microphoneStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const microphoneRecorder = new MediaRecorder(microphoneStream);
 
-    // Record speaker audio
-    const speakerStream = await navigator.mediaDevices.getDisplayMedia({ audio: true });
-    const speakerRecorder = new MediaRecorder(speakerStream);
+      setShowProcessingText(true);
+      const microphoneStream = await navigator.mediaDevices.getUserMedia({  audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        sampleRate: 44100,
 
-    // Combine microphone and speaker streams
-    const combinedStream = new MediaStream();
-    combinedStream.addTrack(microphoneStream.getAudioTracks()[0]);
-    combinedStream.addTrack(speakerStream.getAudioTracks()[0]);
+      }, });
+      
+       
+      // Get camera video stream (including audio)
+      const cameraStream = await navigator.mediaDevices.getDisplayMedia({
 
-    // Create MediaRecorder with the combined stream
-    mediaRecorder.current = new MediaRecorder(combinedStream);
+        video: {
+          mediaSource: "screen",
+          cursor: "always",
+        },
+
+        audio: {
+
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: 44100,
+
+        },
+
+      });
 
 
-    mediaRecorder.current.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        chunks.current.push(event.data);
-      }
-    };
+      // Combine microphone and speaker streams
+      const combinedStream = new MediaStream();
 
-    mediaRecorder.current.onstop = async () => {
-      const audioBlob = new Blob(chunks.current, { type: "audio/wav" });
+      combinedStream.addTrack(microphoneStream.getAudioTracks()[0]);
+      combinedStream.addTrack(cameraStream.getVideoTracks()[0]);
+      // Create MediaRecorder with the combined stream
+
+      mediaRecorder.current = new MediaRecorder(combinedStream);
+      // Previous part
+
+      mediaRecorder.current.ondataavailable = (event) => {
+
+        if (event.data.size > 0) {
+          chunks.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.current.onstop = async () => {
+
+        const audioBlob = new Blob(chunks.current, { type: "video/webm" });
         try {
 
           const myAudios = await uploadAudioToCloudinary(audioBlob);
-          console.log("Your Audios cloudinary url", myAudios);
-          setTranscriptionResult(myAudios.transcriptText)
-          console.log("Transcriptions", myAudios.transcriptText)
-
-          console.log("Transcriptions: ", transcription)
+          console.log("myAudios:", myAudios);
+          console.log("uterances", myAudios.transcriptText.utterances);
+          console.log("Your Audios cloudinary url", myAudios.cloudinaryFileUrl);
+          setTranscriptionResult(myAudios.transcriptText.text);
+          console.log("Transcriptions", myAudios.transcriptText.text);
           const claudiourl = dispatch(AddAudio({ text: myAudios }));
-          console.log("url sending to redux", claudiourl);
-         
+          console.log("data sending to redux", claudiourl);
+          const utterances = myAudios.transcriptText.utterances;
+
+
+          const speakerAUtterances = utterances.filter((utterance) => utterance.speaker === 'A');
+          const speakerBUtterances = utterances.filter((utterance) => utterance.speaker === 'B');
           
 
-           // Separate the transcription text into utterances
-        const utterances = myAudios.transcriptText.split('\n').map((line) => {
-          const [speaker, text] = line.split(': ');
-          return { speaker, text };
-        });
-
-          // Iterate through each utterance and categorize based on speaker
-          for (const utterance of utterances) {
-            const { speaker, text } = utterance;
-            console.log(`${speaker}: ${text}`);
-
-            // Dispatch actions to store speaker and microphone transcriptions separately
-            if (speaker === "speaker") {
-              // Dispatch action for speaker transcription
-              const speakerTrans = dispatch(
-                addSpeakerTranscripts({
-                  speaker: speaker,
-                  text: text,
-                })
-              );
-
-              console.log("Speaker Transcription", speakerTrans)
-
-              // Add to speakerTranscription array if needed
-              speakerTranscription.push({ speaker, text });
-            } else {
-              // Dispatch action for microphone transcription
-              const microphoneTrans = dispatch(
-                // Assuming that the action for microphone transcription is different or similar to AddAudio
-                addMicrophoneTranscripts({
-                  speaker: speaker,
-                  text: text,
-                })
-              );
-              console.log("Microphone Transcription:", microphoneTrans)
-              // Add to microphoneTranscription array if needed
-              microphoneTranscription.push({ speaker, text });
-            }
-
-            fileContent += `${utterance.speaker}: ${utterance.text}\n`;
-            console.log("working");
-          }
-
-
-
-
-
-
-
+          console.log('Speaker A Utterances:', speakerAUtterances.text);
+          console.log('Speaker B Utterances:', speakerBUtterances.text);
+          dispatch(addTypesTranscriptionsFiles({ speakerAUtterances, speakerBUtterances }));
           // ... other dispatch or state updates ...
         } catch (error) {
           console.error("Error handling transcript text from cloudinary:", error);
@@ -134,21 +129,26 @@ const Dashboard = () => {
         setRecordedAudios((prevAudios) => [
           ...prevAudios,
           { url: audioUrl, isSubmitted: false },
+
         ]);
 
 
         audioRef.current.src = audioUrl;
 
-       
+
       };
 
       mediaRecorder.current.start();
       setIsRecording(true);
-
+      videoRef.current.srcObject = cameraStream;
+    
+    
       // Start recording timer
       timerRef.current = setInterval(() => {
         setRecordingTime((prevTime) => prevTime + 1);
       }, 1000);
+      
+      
     } catch (error) {
       console.error("Error starting recording:", error);
     }
@@ -173,13 +173,15 @@ const Dashboard = () => {
   }, [isRecordings])
 
   const stopRecording = () => {
+
+
     if (mediaRecorder.current && mediaRecorder.current.state === "recording") {
+
+
       mediaRecorder.current.stop();
       setIsRecording(false);
       clearInterval(timerRef.current);
       dispatch(stopRecordingRed());
-
-
       setRecordingTime(0);
 
     }
@@ -197,14 +199,33 @@ const Dashboard = () => {
 
 
 
-  const togglePlayback = () => {
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
+
+  const pauseRecording = () => {
+    if (mediaRecorder.current && mediaRecorder.current.state === "recording") {
+      mediaRecorder.current.pause();
+      setIsPaused(true);
+      clearInterval(timerRef.current); // Stop the recording timer
     }
-    setIsPlaying(!isPlaying);
   };
+
+  const resumeRecording = () => {
+    if (mediaRecorder.current && mediaRecorder.current.state === "paused") {
+      mediaRecorder.current.resume();
+      setIsPaused(false);
+      // Continue the recording timer
+      timerRef.current = setInterval(() => {
+        setRecordingTime((prevTime) => prevTime + 1);
+      }, 1000);
+    }
+  };
+
+  const requestData = () => {
+    if (mediaRecorder.current && mediaRecorder.current.state === "recording") {
+      mediaRecorder.current.requestData();
+      setIsPaused(false); // Resume after requesting data to continue recording
+    }
+  };
+
 
   const deleteAudio = (index) => {
     setRecordedAudios((prevAudios) => {
@@ -218,47 +239,73 @@ const Dashboard = () => {
     setRecordedAudios((prevAudios) => {
       const updatedAudios = [...prevAudios];
       updatedAudios[index].isSubmitted = true;
+
       return updatedAudios;
     });
   };
 
   useEffect(() => {
+
     audioRef.current.addEventListener("ended", () => {
       setIsPlaying(false);
     });
 
     return () => {
+
       audioRef.current.removeEventListener("ended", () => {
         setIsPlaying(false);
+
+
       });
     };
+
   }, []);
 
   return (
-    <div className="flex flex-col space-y-10 bg-white shadow-lg h-screen">
-      <div>
-        <h1 className="text-4xl">Speech Recognition</h1>
-      </div>
-      <div className="flex bg-white justify-center">
-        <div className="flex-1">
-          <VoiceRecorder
+    <div className="w-full flex  bg-white  h-screen">
 
-            startRecording={startRecording}
-            stopRecording={stopRecording}
-            togglePlayback={togglePlayback}
-            isRecording={isRecording}
-            isPlaying={isPlaying}
-            recordingTime={recordingTime}
-            recordedAudios={recordedAudios}
-            deleteAudio={deleteAudio}
-            submitAudio={submitAudio}
-            handleNavigate={handleNavigate}
-          />
+      <div className="flex bg-white w-full">
 
-        </div>
+        <Sidebar />
 
-        <div className="flex-1">
-          <TranslatedText transcription={transcription} />
+
+
+        <div className="w-full flex flex-col  ">
+
+          <NavbarOther />
+
+          <div className="w-full" >
+            <div className="w-full" >
+            <div className="w-2/6">
+  <video ref={videoRef} autoPlay muted className="w-full h-auto" />
+</div>
+            </div>
+            <VoiceRecorder
+
+              startRecording={startRecording}
+              stopRecording={stopRecording}
+
+              isRecording={isRecording}
+              isPlaying={isPlaying}
+              recordingTime={recordingTime}
+              recordedAudios={recordedAudios}
+              deleteAudio={deleteAudio}
+              submitAudio={submitAudio}
+              handleNavigate={handleNavigate}
+              showProcessingText={showProcessingText}
+              isPaused={isPaused}
+              pauseRecording={pauseRecording}
+              resumeRecording={resumeRecording}
+              requestData={requestData}
+            />
+            <TranslatedText
+              transcription={transcription}
+
+
+
+            />
+          </div>
+
         </div>
       </div>
     </div>
