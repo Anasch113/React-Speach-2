@@ -61,7 +61,7 @@ const LiveTranscription = () => {
         onClick={handleStopRecording}
         disabled={!isRecording}
       >
-        Stop Recording 
+        Stop Recording
       </button>
       <p>{transcript}</p>
     </div>

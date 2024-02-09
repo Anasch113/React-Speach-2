@@ -37,6 +37,9 @@ export const uploadAudioToCloudinary = async (audioBlob) => {
       {
         audio_url: cloudinaryFileUrl,
         speaker_labels: true,
+        summarization: true,
+        summary_model: "informative",
+        summary_type: "bullets"
       },
       { headers: assemblyAiHeaders }
     );
@@ -48,6 +51,7 @@ export const uploadAudioToCloudinary = async (audioBlob) => {
     while (true) {
       const pollingResponse = await axios.get(pollingEndpoint, {
         headers: assemblyAiHeaders,
+        
       });
       const transcriptionResult = pollingResponse.data;
 
@@ -62,10 +66,12 @@ export const uploadAudioToCloudinary = async (audioBlob) => {
             speakerTranscripts[speaker] = [];
           }
           speakerTranscripts[speaker].push(text);
+          
         }
         return {
           transcriptText: transcriptionResult,
           cloudinaryFileUrl,
+          summary: transcriptionResult.summary
         };
       } else if (transcriptionResult.status === "error") {
         throw new Error(`Transcription failed: ${transcriptionResult.error}`);

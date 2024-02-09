@@ -16,15 +16,17 @@ function RootLayout() {
 
 
 
+
+
       <div className="flex flex-col  w-full">
-      
 
 
-          <Navbar />
-       
+
+        <Navbar />
+
 
         <div className="flex w-full">
-          
+
 
           <MainContent />
 

@@ -5,7 +5,7 @@ import MeetingRecord from "../components/MeetingRecord";
 
 const Navbar = () => {
   return (
-    <nav className="bg-white border border-border-dark-color p-4 shadow-md">
+    <nav className="bg-white border border-border-dark-color p-4 ">
       <div className="container mx-auto flex justify-between items-center">
         {/* Brand/Logo */}
         <div className="md:text-xl lg:text-xl xl:text-xl 2xl:text-xl font-semibold ">
