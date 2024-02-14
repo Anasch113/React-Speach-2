@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import TranslatedText from "../components/TranslatedText";
 import VoiceRecorder from "../components/VoiceRecorder";
 import axios from "axios";
-import LiveTranscription from "../components/LiveTranscription";
+// import LiveTranscription from "../components/LiveTranscription";
 import { useDispatch, useSelector } from "react-redux";
 import { AddAudio, addTypesTranscriptionsFiles, stopRecordingRed } from "../GlobalState/features/audioSlice";
 import { useNavigate } from "react-router-dom";

@@ -1,6 +1,18 @@
 import React from 'react'
+import { useUserAuth } from '../../context/UserAuthContext'
+import { useNavigate } from 'react-router-dom'
 
 const Headers = () => {
+
+    const navigate = useNavigate();
+    const { user, logOut } = useUserAuth();
+
+
+    const handleLogout = async () => {
+        await logOut()
+        navigate('/')
+    }
+
     return (
         <header className="bg-white fixed top-0 left-0 right-0 w-full shadow-sm z-50">
             <div className="max-w-screen-2xl mx-auto px-4 py-6 flex items-center justify-between"><a href="/"
@@ -205,18 +217,41 @@ const Headers = () => {
                         <li className="relative group px-6 py-2"><a
                             className="hover:text-[#0f83d1] py-1 hover:border-b-4 border-solid border-[#0f83d1] cursor-pointer"
                             href="/pricing">Pricing</a></li>
-                        <li className="relative group px-1 py-2"><a
-                            className="py-4 px-6 rounded text-white bg-[#0f83d1] cursor-pointer" href="/login">Login</a>
-                        </li>
-                        <li className="relative group px-1 py-2"><a
-                            className="py-4 px-6 rounded text-white bg-[#0f83d1] cursor-pointer" href="/signup">Sign up</a>
-                        </li>
+
+
+                        {
+                            !user ? (
+                                <li className="relative group px-1 py-2">
+                                    <a
+                                        className="py-4 px-6 rounded text-white bg-[#0f83d1] cursor-pointer" href="/signup">Sign up</a>
+                                </li>
+                            ) : (
+                                <li className="relative group px-6 py-2"><a
+                                    className="hover:text-[#0f83d1] py-1 hover:border-b-4 border-solid border-[#0f83d1] cursor-pointer"
+                                    href="/home">Dashboard</a></li>
+                            )
+                        }
+
+
+                        {
+                            user ? (
+                                <li className="relative group px-1 ">
+                                    <a onClick={handleLogout} className="py-4 px-6 rounded text-white bg-[#0f83d1] cursor-pointer" >Logout</a>
+                                </li>
+
+                            ) : (
+                                <li className="relative group px-1 py-2">
+                                    <a
+                                        className="py-4 px-6 rounded text-white bg-[#0f83d1] cursor-pointer" href="/login">Login</a>
+                                </li>
+                            )
+                        }
                     </ul>
                 </nav>
             </div>
             <div className="progressMainWrapper">
-        <div className="progressMainStyle" style={{width: "0%"}}></div>
-    </div>
+                <div className="progressMainStyle" style={{ width: "0%" }}></div>
+            </div>
         </header>
     )
 }

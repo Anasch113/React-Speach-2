@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import ProgressBar from "../components/ProgressBar";
 
 import { useSelector } from "react-redux";
-import LiveTranscription from "../components/LiveTranscription";
+// import LiveTranscription from "../components/LiveTranscription";
 import { Link } from "react-router-dom";
 import html2pdf from "html2pdf.js";
 import { CiCalendar } from "react-icons/ci";

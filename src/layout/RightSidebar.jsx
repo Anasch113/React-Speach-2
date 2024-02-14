@@ -37,7 +37,7 @@ function RightSidebar() {
         </div>
       ))
     ) : (
-      <p>There is no summary.</p>
+      <p>There is no summary</p>
     )
   }
 </div>

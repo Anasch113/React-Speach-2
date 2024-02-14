@@ -3,12 +3,16 @@
 import React from "react";
 import { AiOutlineHome } from "react-icons/ai";
 import { BiConversation } from "react-icons/bi";
-import { SiTheconversation } from "react-icons/si";
+import { SiTheconversation } from "react-icons/si"
 import { CgMoreVertical } from "react-icons/cg";
+import { CiLogout } from "react-icons/ci";
+import { useUserAuth } from "../context/UserAuthContext";
+import { useNavigate } from "react-router-dom";
+import { IoPricetagsOutline } from "react-icons/io5";
 
 import { Link, useLocation } from "react-router-dom";
 function Sidebar() {
-  const user = {
+  const user1 = {
     username: "John Doe",
     email: "john@example.com",
     profilePicture: "https://placekitten.com/200/200", // replace with your image source
@@ -18,6 +22,16 @@ function Sidebar() {
 
   // Function to check if the given path matches the current path
   const isActive = (path) => location.pathname === path;
+
+
+  const navigate = useNavigate();
+  const { user, logOut } = useUserAuth();
+
+  const handleLogout = async () => {
+      await logOut()
+      navigate('/')
+  }
+
 
   return (
     <aside
@@ -74,13 +88,13 @@ function Sidebar() {
       </div>
       </Link>
 
-      <Link to={"/allconversations"}>
+      <Link to={"/pricing"}>
       <div className={`mx-2 p-4 flex rounded-md ${isActive("/allconversation") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
         <div className="mr-2 mt-1">
-          <BiConversation />
+          <IoPricetagsOutline />
         </div>
        
-          <button>All Conversation</button>
+          <button>Pricing</button>
 
       </div>
       </Link>
@@ -95,6 +109,19 @@ function Sidebar() {
 
       </div>
       </Link>
+
+      
+      <button onClick={handleLogout}>
+      <div className={`mx-2 p-4 flex rounded-md ${isActive("/more") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
+        <div className="mr-2 mt-1">
+          <CiLogout />
+        </div>
+       
+          <button>Logout</button>
+
+      </div>
+      </button>
+      
       </div>
     </aside>
   );

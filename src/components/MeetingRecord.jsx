@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import axios from "axios";
-import LiveTranscription from "../components/LiveTranscription";
+// import LiveTranscription from "../components/LiveTranscription";
 import { useDispatch, useSelector } from "react-redux";
 import {  addTypesTranscriptionsFiles, AddAudio, setVideoStream, addSummary  } from "../GlobalState/features/audioSlice";
 import { useNavigate } from "react-router-dom";

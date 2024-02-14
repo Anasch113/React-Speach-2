@@ -1,9 +1,8 @@
 import React from 'react'
-import applelogo from "/assets/icons/icon-app-apple.webp"
-import '../../css/4df78f2cd73d6b26.css'
-import '../../css/9de8ffd37fa1f51c.css'
-import '../../css/ae0f6b176f8a446a.css'
-import '../../css/e8cbe8880d17257b.css'
+import apple from "../../../public/assets/icons/icon-app-apple.webp?url"
+
+
+
 
 const Footer = () => {
   return (
@@ -15,20 +14,20 @@ const Footer = () => {
                     </a>
                     <ul>
                         <li className="flex items-center gap-2 mb-4">
-                            <picture><img src={applelogo} alt=""
+                            <picture><img src="/assets/icons/icon-app-apple.webp?url" alt=""
                                     className="w-4 h-4 object-contain" /></picture><a
                                 className="text-xs font-normal text-gray-600 transition-all ease-linear duration-200 hover:text-[#0f83d1]"
                                 href="/">Download from the App Store</a>
                         </li>
                         <li className="flex items-center gap-2 mb-4">
                         
-                            <picture><img src="/assets/icons/icon-app-android.webp" alt="img"
+                            <picture><img src="/assets/icons/icon-app-android.webp?url" alt="img"
                                     className="w-4 h-4 object-contain" /></picture><a
                                 className="text-xs font-normal text-gray-600 transition-all ease-linear duration-200 hover:text-[#0f83d1]"
                                 href="/">Download from Google Play</a>
                         </li>
                         <li className="flex items-center gap-2 mb-4">
-                            <picture><img src="/assets/icons/app-logo.webp" alt="" className="w-4 h-4 object-contain" />
+                            <picture><img src="/assets/icons/app-logo.webp?url" alt="" className="w-4 h-4 object-contain" />
                             </picture><a
                                 className="text-xs font-normal text-gray-600 transition-all ease-linear duration-200 hover:text-[#0f83d1]"
                                 href="/">More download links</a>
@@ -36,13 +35,13 @@ const Footer = () => {
                     </ul>
                     <div className="flex items-center gap-x-3 mt-6"><button
                             className="w-8 h-8 rounded-full flex justify-center items-center bg-[#0e76a8]">
-                            <picture><img src="/assets/icons/linkedin.webp" alt="" className="w-4 h-4" /></picture>
+                            <picture><img src="/assets/icons/linkedin.webp?url" alt="" className="w-4 h-4" /></picture>
                         </button><button className="w-8 h-8 rounded-full flex justify-center items-center bg-[#4468B1]">
-                            <picture><img src="/assets/icons/facebook.webp" alt="" className="w-4 h-4" /></picture>
+                            <picture><img src="/assets/icons/facebook.webp?url" alt="" className="w-4 h-4" /></picture>
                         </button><button className="w-8 h-8 rounded-full flex justify-center items-center bg-[#429BD6]">
-                            <picture><img src="/assets/icons/twitter.webp" alt="" className="w-4 h-4" /></picture>
+                            <picture><img src="/assets/icons/twitter.webp?url" alt="" className="w-4 h-4" /></picture>
                         </button><button className="w-8 h-8 rounded-full flex justify-center items-center bg-[#429BD6]">
-                            <picture><img src="/assets/icons/instagram.webp" alt="" className="w-4 h-4" /></picture>
+                            <picture><img src="/assets/icons/instagram.webp?url" alt="" className="w-4 h-4" /></picture>
                         </button></div>
                 </div>
                 <div className="grid grid-cols-1 gap-8 sm:gap-6 sm:grid-cols-4">
@@ -125,8 +124,8 @@ const Footer = () => {
                 </div>
             </div>
             <div className="flex items-center ga-10 mt-10 justify-center">
-                <picture><img src="/assets/icons/unnamed.webp" className="w-20" alt="" /></picture>
-                <picture><img src="/assets/icons/eta23_winner_badge.webp" className="w-40" alt="" /></picture>
+                <picture><img src="/assets/icons/unnamed.webp?url" className="w-20" alt="" /></picture>
+                <picture><img src="/assets/icons/eta23_winner_badge.webp?url" className="w-40" alt="" /></picture>
             </div>
             <div className="sm:flex sm:items-center sm:justify-between mt-20"><span
                     className="text-xs text-gray-500 sm:text-center">@2023 Interprefy. This site is protected by reCAPTCHA

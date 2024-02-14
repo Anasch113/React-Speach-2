@@ -4,5 +4,6 @@ import audioReducer from "./features/audioSlice";
 export const store = configureStore({
   reducer: {
     audio: audioReducer,
+   
   },
 });
