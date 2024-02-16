@@ -16,6 +16,8 @@ import ForgetPassword from "./SmallComponents/ForgetPassword";
 import { EmailAuthCredential } from "firebase/auth";
 import EmailVerification from "./SmallComponents/EmailVerification";
 import Pricing from "./pages/Other/Pricing";
+import Success from "../src/SmallComponents/Success"
+import Cancel from "../src/SmallComponents/Cancel"
 
 
 function App() {
@@ -69,6 +71,8 @@ function App() {
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/forgetPassword" element={<ForgetPassword />} />
             <Route exact path="/emailverification" element={<EmailVerification />} />
+            <Route exact path="/success" element={<Success />} />
+            <Route exact path="/cancel" element={<Cancel />} />
           </Routes>
         </BrowserRouter>
         <div> <Toaster /></div>

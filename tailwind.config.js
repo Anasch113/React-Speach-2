@@ -45,15 +45,16 @@ export default {
 
       fontFamily: {
         'poppins': ['Poppins', 'sans-serif'],
+        'roboto': ['Roboto', 'sans-serif'],
         'caromant': ['Cormorant Garamond', 'sans-serif'],
         'heebo': ['Heebo', 'sans-serif'],
       
         'lulo': ['lulo'],
         'proxima': ['proxima'],
       },
-      // backgroundImage:{
-      //   'hero-pattern': "url('../assets/cars-bg.svg')",
-      // }
+      backgroundImage:{
+        'card-bg-image': "url('/assets/bg-pricing.svg')",
+      }
     },
   },
   plugins: [],
