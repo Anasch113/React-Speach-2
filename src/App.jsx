@@ -3,7 +3,7 @@ import "./App.css";
 import Dashboard from "./pages/Dashboard";
 import RootLayout from "./layout/RootLayout";
 import BotApi from "./pages/Bot";
-// import RealTimeTranscriptions from "./components/RealTimeTranscriptions";
+import RealTimeTranscriptions from "./components/RealTimeTranscriptions";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Footer from "./components/DesignLayouts/Footer";
@@ -51,13 +51,13 @@ function App() {
               </ProtectedRoute>
 
             } />
-            {/* <Route exact path="/realtimetranscriptions" element={ 
+            <Route exact path="/realtimetranscriptions" element={ 
 
         <ProtectedRoute>
         <RealTimeTranscriptions />
         </ProtectedRoute>} 
 
-        /> */}
+        />
 
             <Route exact path="/pricing" element={
 

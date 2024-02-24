@@ -9,7 +9,7 @@ const Pricing = () => {
 
     const checkout = async (plan) => {
         console.log("your plan ", plan)
-        await fetch("http://localhost:8000/subscriptions", {
+        await fetch(`${import.meta.env.VITE_HOST_URL}/subscriptions`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -37,7 +37,7 @@ const Pricing = () => {
     return (
         <>
             <Headers />
-            <div className="pt-40">
+            <div className="pt-40 overflow-x-hidden">
                 <section className="w-full min-h-[50vh] bg-[#0f83d1] 2xl:hero-wapper">
                     <div className="container mx-auto">
                         <div className="flex 2xl:flex-row xl:flex-row flex-col justify-between items-center">
@@ -93,18 +93,24 @@ const Pricing = () => {
                     </div>
                 </section>
 
-                <section className='min-h-screen flex flex-col items-center justify-center w-full bg-[#F2F2F3]'>
+                <section className='min-h-screen flex flex-col  items-center justify-center w-full bg-[#F2F2F3] max-[650px]:pt-10 '>
 
-                    <div className='flex flex-col items-center justify-center w-full gap-8'>
+                    <div className='flex flex-row items-center justify-center   w-full gap-8 flex-wrap'>
 
+                               {/* First Package */}
 
+                        <div className="flex flex-col px-10   justify-center bg-white w-96 min-h-400  rounded-lg gap-10  py-10 max-[500px]:w-80">
+                            <div className='font-poppins flex flex-col gap-4 '>
+                                <p className='text-[#009996] font-medium  font-roboto  text-xl'>Basic</p>
+                                <p className='text-3xl font-medium'>$10 per month </p>
+                                <p className='bg-[#e1f7f7] p-1 w-2/4 text-center rounded-2xl text-[#009996] text-sm px-2'>Billed annually</p>
 
-                        <div className="flex flex-col items-center justify-center bg-white w-2/6 min-h-400 p-5 rounded-md gap-10 bg-[url('/bg-pricing.svg')] bg-cover bg-center py-10">
-                            <div className='font-poppins flex flex-col gap-4 items-center'>
-                                <p className='text-text-blue font-semibold text-xl'>Captify Premium Pass</p>
-                                <p className='text-4xl'>$9.99 / month </p>
-                                <p className='bg-[#e6f1fe] p-1 rounded-2xl text-text-blue text-sm px-2'>Billed annually</p>
+                            </div>
 
+                            <div className=''>
+                                <button onClick={() => checkout("10")} className='font-poppins bg-[#009996]  py-3 px-3 rounded-md w-44 text-white hover:bg-[#55c6c5]'>
+                                    Get Now
+                                </button>
                             </div>
 
                             <div className='flex flex-col p-2 gap-4  pt-5 '>
@@ -117,15 +123,67 @@ const Pricing = () => {
                                     <p>&#10003; Transcription</p>
                                 </div>
                             </div>
+                        </div>
+
+
+
+     {/* Second Package */}
+
+     <div className="flex flex-col px-10   justify-center bg-white w-96 min-h-400  rounded-lg gap-10  py-10 max-[500px]:w-80">
+                            <div className='font-poppins flex flex-col gap-4 '>
+                                <p className='text-[#4D5EC3] font-roboto font-medium text-xl'>Professional</p>
+                                <p className='text-3xl font-medium'>$20 per month </p>
+                                <p className='bg-[#d8ddf9] p-1 w-2/4 text-center rounded-2xl text-[#4D5EC3] text-sm px-2'>Billed annually</p>
+
+                            </div>
 
                             <div className=''>
-                                <button onClick={() => checkout("29")} className='font-poppins bg-[#edf4fd]  py-3 px-3 rounded-md w-44 text-text-blue hover:bg-[#e1eeff]'>
+                                <button onClick={() => checkout("20")} className='font-poppins bg-[#4D5EC3]  py-3 px-3 rounded-md w-44 text-white hover:bg-[#6378ed]'>
                                     Get Now
                                 </button>
                             </div>
 
+                            <div className='flex flex-col p-2 gap-4  pt-5 '>
+                                <p className='font-poppins -ml-2 text-lg'>What you get:</p>
+
+                                <div className='flex flex-col gap-2 text-text-color-blue font-roboto '>
+                                    <p> &#10003; Unlimited Download</p>
+                                    <p>&#10003; PDF Format</p>
+                                    <p>&#10003; Video Download</p>
+                                    <p>&#10003; Transcription</p>
+                                </div>
+                            </div>
+                        </div>
 
 
+
+
+     {/* Third Package */}
+
+     <div className="flex flex-col px-10   justify-center bg-white w-96 min-h-400  rounded-lg gap-10  py-10 max-[500px]:w-80">
+                            <div className='font-poppins flex flex-col gap-4 '>
+                                <p className='text-[#B443B0] font-medium font-roboto  text-xl'>Business</p>
+                                <p className='text-3xl font-medium'>$30 per month </p>
+                                <p className='bg-[#f9e4f8] p-1 w-2/4 text-center rounded-2xl text-[#B443B0] text-sm px-2'>Billed annually</p>
+
+                            </div>
+
+                            <div className=''>
+                                <button onClick={() => checkout("30")} className='font-poppins bg-[#B443B0]  py-3 px-3 rounded-md w-44 text-white hover:bg-[#ed63e9]'>
+                                    Get Now
+                                </button>
+                            </div>
+
+                            <div className='flex flex-col p-2 gap-4  pt-5 '>
+                                <p className='font-poppins -ml-2 text-lg'>What you get:</p>
+
+                                <div className='flex flex-col gap-2 text-text-color-blue font-roboto '>
+                                    <p> &#10003; Unlimited Download</p>
+                                    <p>&#10003; PDF Format</p>
+                                    <p>&#10003; Video Download</p>
+                                    <p>&#10003; Transcription</p>
+                                </div>
+                            </div>
                         </div>
 
                     </div>

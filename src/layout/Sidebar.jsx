@@ -9,7 +9,7 @@ import { CiLogout } from "react-icons/ci";
 import { useUserAuth } from "../context/UserAuthContext";
 import { useNavigate } from "react-router-dom";
 import { IoPricetagsOutline } from "react-icons/io5";
-
+import { AiOutlineAudio } from "react-icons/ai";
 import { Link, useLocation } from "react-router-dom";
 function Sidebar() {
   const user1 = {
@@ -77,6 +77,20 @@ function Sidebar() {
         </div>
       </Link>
 
+
+
+
+      <Link to={"/realtimetranscriptions"}>
+      <div className={`mx-2 p-4 flex rounded-md ${isActive("/more") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
+        <div className="mr-2 mt-1">
+          <AiOutlineAudio />
+        </div>
+       
+          <button>Real Time Transcriptions</button>
+
+      </div>
+      </Link>
+
       <Link to={"/transcription"}>
       <div className={`mx-2 p-4 flex rounded-md ${isActive("/transcription") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
         <div className="mr-2 mt-1">
@@ -87,6 +101,9 @@ function Sidebar() {
 
       </div>
       </Link>
+
+
+
 
       <Link to={"/pricing"}>
       <div className={`mx-2 p-4 flex rounded-md ${isActive("/allconversation") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
@@ -99,16 +116,7 @@ function Sidebar() {
       </div>
       </Link>
 
-      <Link to={"/myconversations"}>
-      <div className={`mx-2 p-4 flex rounded-md ${isActive("/more") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
-        <div className="mr-2 mt-1">
-          <CgMoreVertical />
-        </div>
-       
-          <button>More</button>
-
-      </div>
-      </Link>
+     
 
       
       <button onClick={handleLogout}>

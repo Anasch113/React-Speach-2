@@ -17,6 +17,7 @@ export default {
         "gray-dark": "#5F5F5F",
         "bg-left-bar": "#F6F8FD",
         "bg-blue": "#126fd6",
+        "bg-dark-blue" : "#05294B"
        
 
         

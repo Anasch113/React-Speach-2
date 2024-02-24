@@ -1,105 +1,288 @@
-import React, { useState, useRef, useEffect } from "react";
+import '../css/realtimetranscriptions.css';
+import { useRef, useState } from 'react';
+import * as RecordRTC from 'recordrtc';
+import { BsBoxArrowInDownLeft } from "react-icons/bs";;
+import { IoIosSettings } from "react-icons/io";
+import { IoIosHome } from "react-icons/io";
+import { BiSolidWidget } from "react-icons/bi";
+import { MdCloseFullscreen } from "react-icons/md";
+import { FaPencilAlt } from "react-icons/fa";
+import { RxLetterCaseUppercase } from "react-icons/rx";
+import { RxLetterCaseLowercase } from "react-icons/rx";
+import { Link } from "react-router-dom"
+
+function RealTimeTranscriptions() {
+  const socket = useRef(null)
+  const recorder = useRef(null)
+  const [isRecording, setIsRecording] = useState(false)
+  const [transcript, setTranscript] = useState('')
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
+  const handleSettingsClick = () => {
+    setIsSettingsModalOpen(!isSettingsModalOpen);
+  };
 
 
-const RealTimeTranscriptions = () => {
-  const [isRecording, setIsRecording] = useState(false);
-  const [transcription, setTranscription] = useState("");
-  const assemblyaiRef = useRef(null);
-  const recorderRef = useRef(null);
+  const generateTranscript = async () => {
+    const response = await fetch(`${import.meta.env.VITE_HOST_URL}/token`);
+    const data = await response.json();
 
-  const toggleRecording = async () => {
-    
+    if (data.error) {
+      alert(data.error)
+    }
 
-    if (isRecording) {
-      if (assemblyaiRef.current) {
-        await assemblyaiRef.current.close(false);
-      }
+    const { token } = data;
 
-      if (recorderRef.current) {
-        recorderRef.current.pauseRecording();
-      }
-    } else {
-      try {
-        const response = await fetch("/token");
-        const data = await response.json();
-        console.log("data", data)
+    socket.current = await new WebSocket(`wss://api.assemblyai.com/v2/realtime/ws?sample_rate=16000&token=${token}`);
 
-        if (data.error) {
-          alert(data.error);
-          return;
+    const texts = {};
+    socket.current.onmessage = (voicePrompt) => {
+      let msg = '';
+      const res = JSON.parse(voicePrompt.data);
+      texts[res.audio_start] = res.text;
+      const keys = Object.keys(texts);
+      keys.sort((a, b) => a - b);
+      for (const key of keys) {
+        if (texts[key]) {
+          msg += ` ${texts[key]}`
+          console.log(msg)
         }
+      }
+      setTranscript(msg)
+    };
 
-        assemblyaiRef.current = new AssemblyAI.RealtimeService({ token: data.token });
+    socket.current.onerror = (event) => {
+      console.error(event);
+      socket.current.close();
+    }
 
-        assemblyaiRef.current.on("transcript", (message) => {
-          setTranscription((prevTranscription) => prevTranscription + message.text);
-        });
+    socket.current.onclose = event => {
+      console.log(event);
+      socket.current = null;
+    }
 
-        assemblyaiRef.current.on("error", async (error) => {
-          console.error(error);
-          await assemblyaiRef.current.close();
-        });
-
-        assemblyaiRef.current.on("close", () => {
-          assemblyaiRef.current = null;
-        });
-
-        await assemblyaiRef.current.connect();
-
-        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-          recorderRef.current = new RecordRTC(stream, {
-            type: "audio",
-            mimeType: "audio/webm;codecs=pcm",
+    socket.current.onopen = () => {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then((stream) => {
+          recorder.current = new RecordRTC(stream, {
+            type: 'audio',
+            mimeType: 'audio/webm;codecs=pcm',
             recorderType: RecordRTC.StereoAudioRecorder,
             timeSlice: 250,
             desiredSampRate: 16000,
             numberOfAudioChannels: 1,
-            bufferSize: 16384,
+            bufferSize: 4096,
             audioBitsPerSecond: 128000,
-            ondataavailable: async (blob) => {
-              if (assemblyaiRef.current) {
-                assemblyaiRef.current.sendAudio(await blob.arrayBuffer());
-              }
+            ondataavailable: (blob) => {
+              const reader = new FileReader();
+              reader.onload = () => {
+                const base64data = reader.result;
+                if (socket.current) {
+                  socket.current.send(JSON.stringify({ audio_data: base64data.split('base64,')[1] }));
+                }
+              };
+              reader.readAsDataURL(blob);
             },
           });
+          recorder.current.startRecording();
+        })
+        .catch((err) => console.error(err));
+    };
 
-          recorderRef.current.startRecording();
-         
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    }
+    setIsRecording(true)
+  }
 
-    setIsRecording((prevIsRecording) => !prevIsRecording);
+  const endTranscription = async (event) => {
+    event.preventDefault();
+    setIsRecording(false)
+
+    socket.current.send(JSON.stringify({ terminate_session: true }));
+    socket.current.close();
+    console.log(prompt)
+    socket.current = null;
+
+    recorder.current.pauseRecording();
+    recorder.current = null;
+  }
+
+
+  const handleOpenInNewWindow = () => {
+    // Specify the width and height for the new window
+    const newWindowWidth = 600;
+    const newWindowHeight = 400;
+
+    // Calculate the position to center the new window
+    const left = (window.innerWidth - newWindowWidth) / 2;
+    const top = (window.innerHeight - newWindowHeight) / 2;
+
+    // Open the current page in a new window with specified options
+    window.open(window.location.href, '_blank', `width=${newWindowWidth}, height=${newWindowHeight}, top=${top}, left=${left}`);
   };
 
-  useEffect(() => {
-    document.getElementById("real-time-title").innerText = isRecording
-      ? "Click stop to end recording!"
-      : "Click start to begin recording!";
-  }, [isRecording]);
-
   return (
-    <div className="App">
-      <header>
-        <h1 className="header__title">Real-Time Transcription</h1>
-        <p className="header__sub-title">Try AssemblyAI's new real-time transcription endpoint!</p>
-      </header>
-      <div className="real-time-interface">
-        <p id="real-time-title" className="real-time-interface__title">
-          Click start to begin recording!
+    <div className="w-full flex flex-col items-center gap-3  min-h-screen ">
+
+      <div className='flex flex-row justify-between p-4 text-white bg-[#333333] w-full '>
+
+        <p className='text-text-blue'>
+          Captify
         </p>
-        <button onClick={toggleRecording} className="real-time-interface__button">
-          {isRecording ? "Stop" : "Start"}
-        </button>
-        <p id="message" className="real-time-interface__message">
-          {transcription}
-          text
-        </p>
+
+        <div className='flex flex-row gap-6 items-center justify-center text-gray-500 list-none text-3xl '>
+          <button className='cursor-pointer hover:text-white' title='settings' onClick={handleSettingsClick}><IoIosSettings /></button>
+          <Link to={"/home"}>
+            <button className='cursor-pointer hover:text-white' title='Home'><IoIosHome /></button>
+          </Link>
+          <button className='cursor-pointer hover:text-white' title='widgets'><BiSolidWidget /></button>
+        </div>
+
+      </div>
+
+
+
+
+
+      <div className='w-full px-5  '>
+        {/* Modal for settings */}
+        {isSettingsModalOpen && (
+          <div className="fixed px-14  -top-20 left-0 w-full h-full  z-20 flex justify-center items-center">
+            {/* Add your settings content here */}
+            <div className="bg-white w-full h-2/3 p-4 items-center rounded-md shadow-md ">
+
+              <div>
+                <p>Main Settings</p>
+              </div>
+              {/* main div */}
+              <div className='flex  justify-between w-full flex-row p-5'>
+                {/* 1st div */}
+                <div className='flex  flex-col gap-3 w-2/5'>
+
+                  <h1 className='text-xl font-medium font-sans'>StreamBox Settings</h1>
+
+                  <span className='  w-full'>
+                    <span className='flex justify-between w-2/3'>
+                      <p className='text-sm font-sans'>Show Time</p>
+                      <input type="checkbox" />
+                    </span>
+
+                  </span>
+
+
+
+                  <span className='flex justify-between  w-2/3'>
+                    <p className='text-sm font-sans'>Line Numbers</p>
+                    <input type="checkbox" />
+                  </span>
+
+
+                </div>
+                {/* 2nd div */}
+                <div className='flex   flex-col gap-3 w-2/5 '>
+
+                  <h1 className='text-xl font-sans font-medium'>Appearence </h1>
+
+                  <span className='flex items-center justify-between w-2/3'>
+
+                    <p className='text-sm font-sans'>Font</p>
+                    <select className='py-3 w-2/3 px-7 rounded-sm border border-gray-400' name="font" id="font">
+                      <option value="open-sans">Open Sans</option>
+                      <option value="poppins">Poppins</option>
+                      <option value="roboto">Roboto</option>
+                    </select>
+
+                  </span>
+
+                  <span className='flex items-center justify-between w-2/3'>
+
+                    <p className='text-sm font-sans'>Font Size</p>
+                    <select className='py-3 w-2/3 rounded-sm px-7 border border-gray-400' name="font-size" id="font-size">
+                      <option value="12px">12px</option>
+                      <option value="14px">14px</option>
+                      <option value="16px">16px</option>
+                    </select>
+
+                  </span>
+
+                </div>
+                {/* 3rd div */}
+                <div className='flex  flex-col gap-3 w-2/5  '>
+
+                  <h1 className='font-medium text-xl font-sans '>Interface Settings</h1>
+
+                  <span className='flex justify-between w-2/3'>
+                    <p className='text-sm font-sans'>Hide Header</p>
+                    <input type="checkbox" />
+                  </span>
+                  <h1 className='font-medium text-xl font-sans '>Haptic Settings</h1>
+
+
+                  <span className='flex  justify-between w-full'>
+                    <p className='text-sm font-sans'>Pattern(s) Search</p>
+                    <input className='w-2/4 text-end p-1 border border-gray-300 shadow-sm rounded-sm' type="search" />
+                  </span>
+
+                  <span className='flex justify-between w-2/3'>
+                    <p className='text-sm font-sans'>Enbale Pushes</p>
+                    <input type="checkbox" />
+                  </span>
+
+                </div>
+
+              </div>
+              <span className='flex items-end  w-full justify-center'>
+                <button className="text-white px-4 py-1 rounded-md w-56 bg-red-600" onClick={handleSettingsClick}>
+                  Close
+                </button>
+              </span>
+
+
+            </div>
+          </div>
+        )}
+
+
+
+
+        {/* next section */}
+        <div className='w-full flex   flex-col  '>
+
+          <div className='p-2 flex items-center justify-between border text-sm font-bold font-roboto'>
+            <p>StreamBox</p>
+
+            <div className='flex gap-3 text-lg '>
+              <BsBoxArrowInDownLeft className='hover:text-gray-400 w-full    hover:rounded-md  cursor-pointer' title='Open in new window' onClick={handleOpenInNewWindow} />
+              <MdCloseFullscreen className='hover:text-gray-400 w-full    hover:rounded-md  cursor-pointer' title='fullscreen' />
+            </div>
+          </div>
+
+          <div className=" border shadow-sm min-h-500  w-full text-black flex font-sans   p-3    ">
+            <p className='space-x-2'> &gt;&gt; </p> {transcript}
+
+          </div>
+          <div className='p-2 flex   border text-sm font-bold font-roboto'>
+
+            <div className='flex items-end text-end gap-3 text-xl '>
+
+              <button title='lowercase' className=''><RxLetterCaseLowercase /></button>
+              <button title='uppercase' className=''><RxLetterCaseUppercase /></button>
+              <button title='colors'><FaPencilAlt className='' /></button>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div className="flex items-center w-full flex-col p-5">
+
+        {isRecording ? (
+          <button className="p-4 bg-red-600 w-2/6 text-white rounded-md" onClick={endTranscription}>Stop recording</button>
+        ) : (
+          <button className="p-4 bg-bg-blue w-2/6 text-white rounded-md" onClick={generateTranscript}>Record</button>
+        )}
       </div>
     </div>
   );
-};
+}
 
 export default RealTimeTranscriptions;
