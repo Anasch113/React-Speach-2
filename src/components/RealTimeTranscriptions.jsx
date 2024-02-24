@@ -1,6 +1,6 @@
 import '../css/realtimetranscriptions.css';
 import { useRef, useState } from 'react';
-import * as RecordRTC from 'recordrtc';
+import  RecordRTC from 'recordrtc';
 import { BsBoxArrowInDownLeft } from "react-icons/bs";;
 import { IoIosSettings } from "react-icons/io";
 import { IoIosHome } from "react-icons/io";
