@@ -20,11 +20,17 @@ function RealTimeTranscriptions() {
   const [isRecordingAuto, setIsRecordingAuto] = useState(false)
   const [transcript, setTranscript] = useState('')
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [fontSize, setFontSize] = useState('16px');
+  const [fontFamily, setFontFamily] = useState('Open Sans');
+  const [textColor, setTextColor] = useState('#000000');
+  const [bgColor, setBgColor] = useState('#ffffff');
+  const [headerVanish, setHeaderVanish] = useState(false);
+  const [lineSpacing, setLineSpacing] = useState('normal');
 
 
 
 
-  const recordingStatus = useSelector((state)=> state.audio.isRecording);
+  const recordingStatus = useSelector((state) => state.audio.isRecording);
   console.log("recording status in RTT", recordingStatus)
 
   const handleSettingsClick = () => {
@@ -117,7 +123,7 @@ function RealTimeTranscriptions() {
   const handleOpenInNewTab = (e) => {
     // Specify the width and height for the new window
     const newWindow = window.open("/realtimetranscriptions", '_blank', 'width=600,height=400');
-  
+
     // Optionally, you can focus on the new window
     if (newWindow) {
       newWindow.focus();
@@ -125,60 +131,98 @@ function RealTimeTranscriptions() {
   };
 
 
-  useEffect(()=>{
-    
-setIsRecordingAuto(true)
-  }, []);
+    useEffect(()=>{
+
+  setIsRecordingAuto(true)
+    }, []);
 
 
   useEffect(() => {
 
-   
+
 
     if (isRecordingAuto) {
       // If recordingStatus becomes true, start recording
       generateTranscript();
-     
+
     } else {
       // If recordingStatus becomes false, end transcription
-      endTranscription({ preventDefault: () => {} });
+      endTranscription({ preventDefault: () => { } });
     }
   }, [isRecordingAuto]);
 
 
+
+  const startSize = 12;
+  const endSize = 88;
+  const gap = 2;
+  const fontSizes = [];
+
+  for (let i = startSize; i <= endSize; i += gap) {
+    fontSizes.push(`${i}px`);
+  }
+
+  const fontFamilies = [" Open Sans ", "Open Dyslexic", "Arial", "Arial Black", "Calibri", "Courier New"]
+
+
+  // Handler functions to update settings
+  const handleFontSizeChange = (e) => {
+    setFontSize(e.target.value);
+  };
+
+  const handleFontFamilyChange = (e) => {
+    setFontFamily(e.target.value);
+  };
+
+  const handleTextColorChange = (e) => {
+    setTextColor(e.target.value);
+  };
+
+  const handleBgColorChange = (e) => {
+    setBgColor(e.target.value);
+  };
+
+  const handleCheckboxChange = (event) => {
+    setHeaderVanish(event.target.checked);
+  };
+  const handleLineSpacingChange = (event) => {
+    setLineSpacing(event.target.value);
   
-  
+  };
 
-
-
+ 
+ 
 
   return (
     <div className="w-full flex flex-col items-center gap-3  min-h-screen ">
 
-      <div className='flex flex-row justify-between p-4 text-white bg-[#333333] w-full '>
+      {headerVanish ? null : (
+        <div style={{}} className='flex flex-row justify-between p-4 text-white bg-[#333333] w-full '>
+          <p className='text-text-blue'>
+            Captify
+          </p>
 
-        <p className='text-text-blue'>
-          Captify
-        </p>
-
-        <div className='flex flex-row gap-6 items-center justify-center text-gray-500 list-none text-3xl '>
-          <button className='cursor-pointer hover:text-white' title='settings' onClick={handleSettingsClick}><IoIosSettings /></button>
-          <Link to={"/home"}>
-            <button className='cursor-pointer hover:text-white' title='Home'><IoIosHome /></button>
-          </Link>
-          <button className='cursor-pointer hover:text-white' title='widgets'><BiSolidWidget /></button>
+          <div className='flex flex-row gap-6 items-center justify-center text-gray-500 list-none text-3xl '>
+            <button className='cursor-pointer hover:text-white' title='settings' onClick={handleSettingsClick}><IoIosSettings /></button>
+            <Link to={"/home"}>
+              <button className='cursor-pointer hover:text-white' title='Home'><IoIosHome /></button>
+            </Link>
+            <button className='cursor-pointer hover:text-white' title='widgets'><BiSolidWidget /></button>
+          </div>
         </div>
-
-      </div>
+      )}
 
 
 
 
 
       <div className='w-full px-5  '>
+
+
+
         {/* Modal for settings */}
         {isSettingsModalOpen && (
-          <div className="fixed px-14  -top-20 left-0 w-full h-full  z-20 flex justify-center items-center">
+          <div className="fixed px-14 -top-20 left-0 w-full overflow-y-scroll   z-20 flex justify-center items-center min-h-400 max-[800px]:px-5 max-[500px]:top-0">
             {/* Add your settings content here */}
             <div className="bg-white w-full h-2/3 p-4 items-center rounded-md shadow-md ">
 
@@ -186,9 +230,10 @@ setIsRecordingAuto(true)
                 <p>Main Settings</p>
               </div>
               {/* main div */}
-              <div className='flex  justify-between w-full flex-row p-5'>
+
+              <div className='flex  justify-between w-full  p-5 max-[800px]:flex-wrap max-[500px]:flex-col max-[500px]:flex-nowrap'>
                 {/* 1st div */}
-                <div className='flex  flex-col gap-3 w-2/5'>
+                <div className='flex  flex-col gap-3 w-2/5 max-[500px]:w-full'>
 
                   <h1 className='text-xl font-medium font-sans'>StreamBox Settings</h1>
 
@@ -208,19 +253,23 @@ setIsRecordingAuto(true)
                   </span>
 
 
+
                 </div>
                 {/* 2nd div */}
-                <div className='flex   flex-col gap-3 w-2/5 '>
+                <div className='flex   flex-col gap-3 w-2/5 max-[800px]:w-2/4  max-[500px]:w-full '>
 
                   <h1 className='text-xl font-sans font-medium'>Appearence </h1>
 
                   <span className='flex items-center justify-between w-2/3'>
 
                     <p className='text-sm font-sans'>Font</p>
-                    <select className='py-3 w-2/3 px-7 rounded-sm border border-gray-400' name="font" id="font">
-                      <option value="open-sans">Open Sans</option>
-                      <option value="poppins">Poppins</option>
-                      <option value="roboto">Roboto</option>
+                    <select className='py-3 w-2/3 px-3  max-[1000px]:px-2 rounded-sm border border-gray-400' value={fontFamily}
+                      onChange={handleFontFamilyChange}>
+                      {
+                        fontFamilies.map((fonts, i) => (
+                          <option key={i} value={fonts}>{fonts}</option>
+                        ))
+                      }
                     </select>
 
                   </span>
@@ -228,23 +277,61 @@ setIsRecordingAuto(true)
                   <span className='flex items-center justify-between w-2/3'>
 
                     <p className='text-sm font-sans'>Font Size</p>
-                    <select className='py-3 w-2/3 rounded-sm px-7 border border-gray-400' name="font-size" id="font-size">
-                      <option value="12px">12px</option>
-                      <option value="14px">14px</option>
-                      <option value="16px">16px</option>
+                    <select className='py-3 w-2/3 rounded-sm px-3  border border-gray-400' value={fontSize}
+                      onChange={handleFontSizeChange}>
+
+                      {
+                        fontSizes.map((fonts, i) => (
+                          <option key={i} value={fonts}>{fonts}</option>
+                        ))
+                      }
+
+
                     </select>
 
                   </span>
 
+                  <span className='flex items-center justify-between w-2/3'>
+
+                    <p className='text-sm font-sans'>Line Spacing</p>
+                    <select value={lineSpacing} onChange={handleLineSpacingChange} className='py-3 w-2/3 px-3  max-[1000px]:px-2 rounded-sm border border-gray-400'
+                    >
+                      <option value="single">Single</option>
+                      <option value="20px">1.5</option>
+                      <option value="30px">Double</option>
+                    </select>
+
+                  </span>
+
+
+
+                  <div className="flex items-center justify-between w-2/3">
+                    <p className="text-sm font-sans">Text Color</p>
+                    <input
+                      type="color"
+                      value={textColor}
+                      onChange={handleTextColorChange}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between w-2/3">
+                    <p className="text-sm font-sans">Background Color</p>
+                    <input
+                      type="color"
+                      value={bgColor}
+                      onChange={handleBgColorChange}
+                    />
+                  </div>
+
                 </div>
                 {/* 3rd div */}
-                <div className='flex  flex-col gap-3 w-2/5  '>
+                <div className='flex  flex-col gap-3 w-2/5  max-[800px]:w-2/4  max-[500px]:w-full'>
 
                   <h1 className='font-medium text-xl font-sans '>Interface Settings</h1>
 
                   <span className='flex justify-between w-2/3'>
                     <p className='text-sm font-sans'>Hide Header</p>
-                    <input type="checkbox" />
+                    <input onChange={handleCheckboxChange} type="checkbox" />
                   </span>
                   <h1 className='font-medium text-xl font-sans '>Haptic Settings</h1>
 
@@ -288,8 +375,18 @@ setIsRecordingAuto(true)
             </div>
           </div>
 
-          <div className=" border shadow-sm min-h-500  w-full text-black flex font-sans   p-3    ">
-            <p className='space-x-2'> &gt;&gt; </p> {transcript}
+          <div className=" border shadow-sm min-h-500  w-full text-black flex font-sans   p-3  "
+            style={{
+              fontSize,
+              fontFamily,
+              color: textColor,
+              backgroundColor: bgColor,
+              lineHeight: lineSpacing,
+             
+            }}
+          >
+            {transcript}
+
 
           </div>
           <div className='p-2 flex   border text-sm font-bold font-roboto'>
@@ -306,7 +403,15 @@ setIsRecordingAuto(true)
         </div>
       </div>
 
-      {/* <div className="flex items-center w-full flex-col p-5">
+
+    </div>
+  );
+}
+
+export default RealTimeTranscriptions;
+
+
+{/* <div className="flex items-center w-full flex-col p-5">
 
         {isRecording ? (
           <button className="p-4 bg-red-600 w-2/6 text-white rounded-md" onClick={endTranscription}>Stop recording</button>
@@ -314,8 +419,3 @@ setIsRecordingAuto(true)
           <button className="p-4 bg-bg-blue w-2/6 text-white rounded-md" onClick={generateTranscript}>Record</button>
         )}
       </div> */}
-    </div>
-  );
-}
-
-export default RealTimeTranscriptions;

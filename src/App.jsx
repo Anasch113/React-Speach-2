@@ -4,9 +4,10 @@ import Dashboard from "./pages/Dashboard";
 import RootLayout from "./layout/RootLayout";
 import BotApi from "./pages/Bot";
 import RealTimeTranscriptions from "./components/RealTimeTranscriptions";
+
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
-import Footer from "./components/DesignLayouts/Footer";
+
 import Home from "./pages/Home";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
