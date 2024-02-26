@@ -3,17 +3,13 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 // import LiveTranscription from "../components/LiveTranscription";
 import { useDispatch, useSelector } from "react-redux";
-import {  addTypesTranscriptionsFiles, AddAudio, setVideoStream, addSummary  } from "../GlobalState/features/audioSlice";
+import {  addTypesTranscriptionsFiles, AddAudio, setVideoStream, addSummary, startRecordingRed, stopRecordingRed  } from "../GlobalState/features/audioSlice";
 import { useNavigate } from "react-router-dom";
 import { uploadAudioToCloudinary } from "../components/audioUtils";
 import { MdOutlineKeyboardVoice } from "react-icons/md";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FaStop } from "react-icons/fa";
 import MainContent from "../layout/MainContent";
-
-
-
-
 
 
 const MeetingRecord = () => {
@@ -165,7 +161,8 @@ const MeetingRecord = () => {
 
       mediaRecorder.current.start();
       setIsRecording(true);
-     
+    const isRecordingRedux =   dispatch(startRecordingRed())
+     console.log("redux recording status", isRecordingRedux);
     videoRef.current.srcObject = cameraStream;
     
     
@@ -196,6 +193,7 @@ const MeetingRecord = () => {
       mediaRecorder.current.stream.getTracks().forEach(track => track.stop());
       mediaRecorder.current.stop();
       setIsRecording(false);
+        dispatch(stopRecordingRed())
       clearInterval(timerRef.current);
     
       setRecordingTime(0);
@@ -206,6 +204,7 @@ const MeetingRecord = () => {
 
 
   return (
+    <>
     <div className="flex items-center gap-2">
     
       {/* Record Button */}
@@ -257,6 +256,7 @@ const MeetingRecord = () => {
         </>
       )}
     </div>
+    </>
   );
 };
 

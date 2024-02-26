@@ -36,7 +36,7 @@ const Success = () => {
 
 
   const handlePaymentSuccess = async () => {
-    await fetch("http://localhost:8000/payment-success", {
+    await fetch(`${import.meta.env.VITE_HOST_URL}/payment-success`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -56,6 +56,7 @@ const Success = () => {
       .catch(e => {
         console.log(e.error);
       });
+      navigate("/pricing")
   }
 
 

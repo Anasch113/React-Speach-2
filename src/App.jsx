@@ -3,7 +3,7 @@ import "./App.css";
 import Dashboard from "./pages/Dashboard";
 import RootLayout from "./layout/RootLayout";
 import BotApi from "./pages/Bot";
-// import RealTimeTranscriptions from "./components/RealTimeTranscriptions";
+import RealTimeTranscriptions from "./components/RealTimeTranscriptions";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Footer from "./components/DesignLayouts/Footer";
@@ -25,11 +25,12 @@ function App() {
 
   return (
     <>
+    
       <UserAuthContextProvider>
         <BrowserRouter>
           <Routes>
             <Route exact path="/" element={<Home />} />
-            <Route exact  path="/home" element={
+            <Route exact path="/home" element={
 
               <ProtectedRoute>
                 <RootLayout />
@@ -44,6 +45,14 @@ function App() {
             }
 
             />
+            <Route exact path="/realtimetranscriptions" element={
+
+              <ProtectedRoute>
+                <RealTimeTranscriptions />
+              </ProtectedRoute>
+            }
+
+            />
             <Route exact path="/botapi" element={
 
               <ProtectedRoute>
@@ -51,13 +60,7 @@ function App() {
               </ProtectedRoute>
 
             } />
-            {/* <Route exact path="/realtimetranscriptions" element={ 
-
-        <ProtectedRoute>
-        <RealTimeTranscriptions />
-        </ProtectedRoute>} 
-
-        /> */}
+           
 
             <Route exact path="/pricing" element={
 
@@ -76,6 +79,9 @@ function App() {
           </Routes>
         </BrowserRouter>
         <div> <Toaster /></div>
+        
+
+
       </UserAuthContextProvider>
     </>
   );
