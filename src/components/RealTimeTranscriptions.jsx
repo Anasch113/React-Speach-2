@@ -9,7 +9,10 @@ import { MdCloseFullscreen } from "react-icons/md";
 import { FaPencilAlt } from "react-icons/fa";
 import { RxLetterCaseUppercase } from "react-icons/rx";
 import { RxLetterCaseLowercase } from "react-icons/rx";
+import { IoDocumentOutline } from "react-icons/io5";
 import { Link } from "react-router-dom"
+import Modal from 'react-modal';
+
 
 import { useSelector } from 'react-redux';
 
@@ -20,13 +23,18 @@ function RealTimeTranscriptions() {
   const [isRecordingAuto, setIsRecordingAuto] = useState(false)
   const [transcript, setTranscript] = useState('')
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [fontSize, setFontSize] = useState('16px');
+  const [fontSize, setFontSize] = useState(16);
+
   const [fontFamily, setFontFamily] = useState('Open Sans');
   const [textColor, setTextColor] = useState('#000000');
   const [bgColor, setBgColor] = useState('#ffffff');
   const [headerVanish, setHeaderVanish] = useState(false);
   const [lineSpacing, setLineSpacing] = useState('normal');
-
+  const [showLineNumbers, setShowLineNumbers] = useState(false);
+  const colorPickerRef = useRef(null);
+  const bgColorPicker = useRef(null);
+  const settingsRef = useRef(null);
+  const containerRef = useRef(null);
 
 
 
@@ -36,6 +44,11 @@ function RealTimeTranscriptions() {
   const handleSettingsClick = () => {
     setIsSettingsModalOpen(!isSettingsModalOpen);
   };
+
+  
+  
+
+  
 
 
   const generateTranscript = async () => {
@@ -159,7 +172,7 @@ function RealTimeTranscriptions() {
   const fontSizes = [];
 
   for (let i = startSize; i <= endSize; i += gap) {
-    fontSizes.push(`${i}px`);
+    fontSizes.push(`${i}`);
   }
 
   const fontFamilies = [" Open Sans ", "Open Dyslexic", "Arial", "Arial Black", "Calibri", "Courier New"]
@@ -187,11 +200,29 @@ function RealTimeTranscriptions() {
   };
   const handleLineSpacingChange = (event) => {
     setLineSpacing(event.target.value);
-  
+
+  };
+  const handleDecreaseFontSize = () => {
+    setFontSize((prevFontSize) => prevFontSize - 2);
   };
 
- 
- 
+  const handleIncreaseFontSize = () => {
+    setFontSize((prevFontSize) => prevFontSize + 2);
+  };
+
+  const handleColorPickerButtonClick = (e) => {
+    colorPickerRef.current.click();
+    setTextColor(e.target.value)
+  };
+  const handleBgColorPickerButtonClick = (e) => {
+    bgColorPicker.current.click();
+    setBgColor(e.target.value)
+  };
+
+
+
+
+
 
   return (
     <div className="w-full flex flex-col items-center gap-3  min-h-screen ">
@@ -219,10 +250,10 @@ function RealTimeTranscriptions() {
       <div className='w-full px-5  '>
 
 
-
+        {/* //////////////////////////////////////////////////////////////////////////////// */}
         {/* Modal for settings */}
         {isSettingsModalOpen && (
-          <div className="fixed px-14 -top-20 left-0 w-full overflow-y-scroll   z-20 flex justify-center items-center min-h-400 max-[800px]:px-5 max-[500px]:top-0">
+          <div   ref={settingsRef} className="fixed px-14 -top-20 left-0 w-full overflow-y-scroll   z-20 flex justify-center items-center min-h-400 max-[800px]:px-5 max-[500px]:top-0">
             {/* Add your settings content here */}
             <div className="bg-white w-full h-2/3 p-4 items-center rounded-md shadow-md ">
 
@@ -247,9 +278,13 @@ function RealTimeTranscriptions() {
 
 
 
-                  <span className='flex justify-between  w-2/3'>
+                  <span className='flex justify-between w-2/3'>
                     <p className='text-sm font-sans'>Line Numbers</p>
-                    <input type="checkbox" />
+                    <input
+                      type="checkbox"
+                    checked = {showLineNumbers}
+                      onChange={() => setShowLineNumbers(!showLineNumbers)}
+                    />
                   </span>
 
 
@@ -267,7 +302,7 @@ function RealTimeTranscriptions() {
                       onChange={handleFontFamilyChange}>
                       {
                         fontFamilies.map((fonts, i) => (
-                          <option key={i} value={fonts}>{fonts}</option>
+                          <option style={{ fontFamily: `${fonts}` }} key={i} value={fonts}>{fonts}</option>
                         ))
                       }
                     </select>
@@ -282,7 +317,7 @@ function RealTimeTranscriptions() {
 
                       {
                         fontSizes.map((fonts, i) => (
-                          <option key={i} value={fonts}>{fonts}</option>
+                          <option key={i} value={fonts}>{`${fonts}px`}</option>
                         ))
                       }
 
@@ -308,6 +343,7 @@ function RealTimeTranscriptions() {
                   <div className="flex items-center justify-between w-2/3">
                     <p className="text-sm font-sans">Text Color</p>
                     <input
+                      className='w-6'
                       type="color"
                       value={textColor}
                       onChange={handleTextColorChange}
@@ -317,6 +353,7 @@ function RealTimeTranscriptions() {
                   <div className="flex items-center justify-between w-2/3">
                     <p className="text-sm font-sans">Background Color</p>
                     <input
+                      className='w-6 '
                       type="color"
                       value={bgColor}
                       onChange={handleBgColorChange}
@@ -346,11 +383,16 @@ function RealTimeTranscriptions() {
                     <input type="checkbox" />
                   </span>
 
+                  <span className='flex justify-between w-2/3'>
+                    <p className='text-sm font-sans'>Case Sensitive</p>
+                    <input type="checkbox" />
+                  </span>
+
                 </div>
 
               </div>
-              <span className='flex items-end  w-full justify-center'>
-                <button className="text-white px-4 py-1 rounded-md w-56 bg-red-600" onClick={handleSettingsClick}>
+              <span className='flex items-end   w-full justify-center'>
+                <button className="text-white px-4 py-1 rounded-md w-56 bg-red-700" onClick={handleSettingsClick}>
                   Close
                 </button>
               </span>
@@ -360,6 +402,7 @@ function RealTimeTranscriptions() {
           </div>
         )}
 
+        {/* //////////////////////////////////////////////////////////////////////////////// */}
 
 
 
@@ -375,43 +418,79 @@ function RealTimeTranscriptions() {
             </div>
           </div>
 
-          <div className=" border shadow-sm min-h-500  w-full text-black flex font-sans   p-3  "
+          <div id='container-id' className=" border shadow-sm min-h-500  w-full text-black flex font-sans p-3 relative"
             style={{
-              fontSize,
+              fontSize: `${fontSize}px`,
               fontFamily,
               color: textColor,
               backgroundColor: bgColor,
               lineHeight: lineSpacing,
-             
+
+
             }}
           >
-            {transcript}
-
-
+            <p>
+          {showLineNumbers &&
+            transcript.split('\n').map((line, index) => (
+              <span key={index}>
+                {index + 1}. {line}
+               
+              </span>
+            ))}
+          {!showLineNumbers && transcript}
+        </p>
           </div>
           <div className='p-2 flex   border text-sm font-bold font-roboto'>
 
             <div className='flex items-end text-end gap-3 text-xl '>
 
-              <button title='lowercase' className=''><RxLetterCaseLowercase /></button>
-              <button title='uppercase' className=''><RxLetterCaseUppercase /></button>
-              <button title='colors'><FaPencilAlt className='' /></button>
+              <button title='lowercase' onClick={handleDecreaseFontSize} className=''><RxLetterCaseLowercase /></button>
+              <button title='uppercase' onClick={handleIncreaseFontSize} className=''><RxLetterCaseUppercase /></button>
+
+
+              <span className='flex flex-col-reverse'>
+
+                <button title='colors' id="colorPickerButton" onClick={handleColorPickerButtonClick}>
+                  <FaPencilAlt className='' />
+                </button>
+
+                <input
+                  ref={colorPickerRef}
+                  className='outline-none  w-3 h-4  rounded'
+                  type="color"
+                  value={textColor}
+                  onChange={handleColorPickerButtonClick}
+                  id="colorPickerInput"
+                  name="colorPickerInput"
+                />
+              </span>
+
+              <span className='flex flex-col-reverse'>
+
+                <button title='Bgcolors' id="BgcolorPickerButton" onClick={handleBgColorPickerButtonClick}>
+                  <IoDocumentOutline />
+                </button>
+
+                <input
+                  ref={bgColorPicker}
+                  className='outline-none  w-3 h-4  rounded-md'
+                  type="color"
+                  value={bgColor}
+                  onChange={handleBgColorPickerButtonClick}
+                  id="BgcolorPickerInput"
+                  name="BgcolorPickerInput"
+                />
+              </span>
+
 
             </div>
+
           </div>
 
         </div>
       </div>
 
-
-    </div>
-  );
-}
-
-export default RealTimeTranscriptions;
-
-
-{/* <div className="flex items-center w-full flex-col p-5">
+      {/* <div className="flex items-center w-full flex-col p-5">
 
         {isRecording ? (
           <button className="p-4 bg-red-600 w-2/6 text-white rounded-md" onClick={endTranscription}>Stop recording</button>
@@ -419,3 +498,10 @@ export default RealTimeTranscriptions;
           <button className="p-4 bg-bg-blue w-2/6 text-white rounded-md" onClick={generateTranscript}>Record</button>
         )}
       </div> */}
+    </div>
+  );
+}
+
+export default RealTimeTranscriptions;
+
+
