@@ -7,4 +7,11 @@ https://www.sembly.ai/pricing/?hsa_acc=4188702770&hsa_cam=15106251293&hsa_grp=13
 https://demo.1capapp.com/demo
 
 
+text-[#4D5EC3]
+bg-[#4D5EC3]
+bg-[#d8ddf9]
 
+
+text-[#B443B0]
+bg-[#B443B0]
+bg-[#f9e4f8]

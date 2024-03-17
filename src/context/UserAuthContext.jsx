@@ -10,7 +10,7 @@ import {
 
 } from "firebase/auth";
 import { auth } from "../firebase";
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, get, set } from "firebase/database";
 import { database } from "../firebase";
 
 
@@ -18,6 +18,7 @@ const userAuthContext = createContext();
 
 export function UserAuthContextProvider({ children }) {
   const [user, setUser] = useState({});
+  const [paymentInfo, setPaymentInfo] = useState([]);
 
 
   async function logIn(email, password) {
@@ -32,7 +33,7 @@ export function UserAuthContextProvider({ children }) {
       return null;
 
     }
-    
+
     console.log("userCredentials in context", userCredential)
     return userCredential;
   }
@@ -55,7 +56,7 @@ export function UserAuthContextProvider({ children }) {
       setUser(null);
     }
     await createUserInDatabase(userData.uid, { email: userData.email });
-    
+
 
     return userCredential;
 
@@ -64,7 +65,7 @@ export function UserAuthContextProvider({ children }) {
 
   const createUserInDatabase = async (userId, userData) => {
     try {
-     
+
       const userRef = ref(database, `users/${userId}`);
       await set(userRef, userData);
       console.log("User data created in the Realtime Database");
@@ -77,6 +78,38 @@ export function UserAuthContextProvider({ children }) {
   function logOut() {
     return signOut(auth)
   }
+
+  useEffect(() => {
+    if (user) {
+
+      const fetchPaymentDetails = async () => {
+
+
+        try {
+          const paymentRef = ref(database, `users/${user.uid}/subscription`);
+          const paymentSnapshot = await get(paymentRef);
+
+          if (paymentSnapshot.exists()) {
+            const paymentData = paymentSnapshot.val();
+
+           
+            setPaymentInfo(paymentData)
+
+
+          }
+        } catch (error) {
+          console.log("error while fetching payment details", error)
+        }
+      }
+
+      fetchPaymentDetails();
+
+    }
+  }, [user])
+
+
+
+
 
 
   useEffect(() => {
@@ -103,7 +136,7 @@ export function UserAuthContextProvider({ children }) {
 
   return (
     <userAuthContext.Provider
-      value={{ user, signUp, logIn, logOut, }}
+      value={{ user, signUp, logIn, logOut, paymentInfo }}
 
     >
       {children}
