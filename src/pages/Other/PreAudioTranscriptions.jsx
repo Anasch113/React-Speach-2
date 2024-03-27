@@ -188,7 +188,7 @@ rounded-3xl bg-bg-blue text-white text-lg font-roboto'>Transcribe</button>
             {showModal && (
                 <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50">
                     <div className="bg-white p-5 rounded-lg">
-                        <p className="text-lg font-semibold text-center">Transcribing...</p>
+                        <p className="text-lg font-semibold text-gray-500 text-center font-poppins">Transcribing...</p>
                         <div className="mt-3 flex justify-center">
                             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
                         </div>
