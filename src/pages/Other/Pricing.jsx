@@ -98,7 +98,7 @@ const Pricing = () => {
 
                 <section className='min-h-screen flex flex-col  items-center justify-center w-full bg-[#F2F2F3] py-5 max-[650px]:pt-10 '>
 
-                    <div className='flex flex-row items-start justify-center w-full gap-8 flex-wrap'>
+                    <div className='flex flex-row items-start justify-center w-full gap-16 flex-wrap'>
 
                         <BasicPlan checkout={checkout} />
                         <ProPlan checkout={checkout}/>

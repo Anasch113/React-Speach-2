@@ -1,15 +1,28 @@
 .small-window-container {
-    position: fixed;
-    top: 50px; /* Adjust the top position as needed */
-    left: 50px; /* Adjust the left position as needed */
-    width: 300px; /* Adjust the width as needed */
-    height: 400px; /* Adjust the height as needed */
-    background-color: white;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    overflow: hidden;
-    transition: all 0.3s ease-in-out;
+  position: fixed;
+  top: 50px;
+  /* Adjust the top position as needed */
+  left: 50px;
+  /* Adjust the left position as needed */
+  width: 300px;
+  /* Adjust the width as needed */
+  height: 400px;
+  /* Adjust the height as needed */
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+
+}
+
+.card {
+
+  border: 1px solid transparent;
+
+
+  box-shadow: 1px 1px 10px #126fd6,
+    1px 1px 40px #126fd6;
   
-  }
-  
+}

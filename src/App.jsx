@@ -19,6 +19,8 @@ import EmailVerification from "./SmallComponents/EmailVerification";
 import Pricing from "./pages/Other/Pricing";
 import Success from "../src/SmallComponents/Success"
 import Cancel from "../src/SmallComponents/Cancel"
+import PlanDetails from "./components/pricing/PlanDetails";
+import PreAudioTranscriptions from "./pages/Other/PreAudioTranscriptions";
 
 
 function App() {
@@ -67,6 +69,21 @@ function App() {
 
               <ProtectedRoute>
                 <Pricing />
+              </ProtectedRoute>}
+
+            />
+
+            <Route exact path="/plandetails" element={
+
+              <ProtectedRoute>
+                <PlanDetails />
+              </ProtectedRoute>}
+
+            />
+            <Route exact path="/pre-audio-transcriptions" element={
+
+              <ProtectedRoute>
+                <PreAudioTranscriptions />
               </ProtectedRoute>}
 
             />

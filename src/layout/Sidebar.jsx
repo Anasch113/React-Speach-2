@@ -16,6 +16,7 @@ import { LuLayoutDashboard } from "react-icons/lu";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2"
+import { MdOutlineTranscribe } from "react-icons/md";
 
 function Sidebar() {
   const user1 = {
@@ -185,6 +186,16 @@ function Sidebar() {
           )
         }
 
+<Link to={"/pre-audio-transcriptions"}>
+          <div className={`mx-2 p-4 flex rounded-md ${isActive("/pre-audio-transcriptions") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
+            <div className="mr-2 mt-1">
+              <MdOutlineTranscribe />
+            </div>
+
+            <button>Audio Transcription</button>
+
+          </div>
+        </Link>
 
 
         <Link to={"/transcription"}>
@@ -201,7 +212,7 @@ function Sidebar() {
 
 
 
-        <Link to={"/pricing"}>
+        {/* <Link to={"/pricing"}>
           <div className={`mx-2 p-4 flex rounded-md ${isActive("/allconversation") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
             <div className="mr-2 mt-1">
               <IoPricetagsOutline />
@@ -210,7 +221,12 @@ function Sidebar() {
             <button>Pricing</button>
 
           </div>
-        </Link>
+        </Link> */}
+
+       
+
+
+       
 
 
 

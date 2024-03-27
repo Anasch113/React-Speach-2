@@ -1,8 +1,10 @@
 import React from 'react'
-
+import { useUserAuth } from '../../context/UserAuthContext'
+import { Link } from 'react-router-dom';
 const BusinessPlan = ({ checkout }) => {
+    const { paymentInfo } = useUserAuth();
     return (
-        <div className="flex flex-col px-10   justify-center bg-white w-96 min-h-400  rounded-3xl gap-10  py-10 max-[500px]:w-80">
+        <div className={` ${paymentInfo.planType === "business" ? "card" : "null"} flex flex-col px-10 justify-center bg-white w-96 min-h-400  rounded-3xl gap-10  py-10 max-[500px]:w-80`}>
             <div className='font-poppins flex flex-col gap-4 '>
                 <span className='flex flex-row items-center gap-3' >
 
@@ -29,9 +31,23 @@ const BusinessPlan = ({ checkout }) => {
             </div>
 
             <div className=''>
-                <button onClick={() => checkout("business")} className='font-poppins bg-[#B443B0]  py-3 px-3 rounded-3xl w-44 text-white hover:bg-[#5b70e7]'>
-                    Get Now
-                </button>
+                {
+                    paymentInfo.planType === "business" ?
+
+                        (
+                            <div className='flex flex-col gap-2'>
+                                <p className='text-text-color-blue text-lg py-2'>&#10003; You have subscribed this plan</p>
+                      <Link to={"/plandetails"}>  <button  className='bg-gray-500 hover:bg-gray-400 py-3 text-lg px-2 rounded-md w-48 text-white text-center'>See Plan Details</button>
+                      </Link>
+                        </div>
+                        
+                        ) :
+
+                        ( <button onClick={() => checkout("business")} className='font-poppins bg-[#B443B0]  py-3 px-3 rounded-3xl w-44 text-white hover:bg-[#dd54d9]'>
+                        Get Now
+                    </button>)
+                }
+
             </div>
 
             <div className='flex flex-col p-2 gap-4  pt-5 '>
