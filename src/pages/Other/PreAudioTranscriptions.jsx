@@ -241,7 +241,7 @@ const PreAudioTranscriptions = () => {
                                         </audio>
 
                                         <button onClick={handleTranscriptions} className=' px-5 py-3 w-48
-rounded-3xl bg-bg-blue text-white text-lg font-roboto'>Transcribe</button>
+rounded-3xl bg-bg-blue text-white text-lg font-roboto hover:bg-blue-500'>Transcribe</button>
                                         {/* <p className='text-xl text-gray-500 font-poppins'>Your Audio</p> */}
                                     </div>
                                 )
@@ -321,7 +321,8 @@ rounded-3xl bg-bg-blue text-white text-lg font-roboto'>Transcribe</button>
 
                         <div ref={contentRef} className='w-full p-5 min-h-[450px] mt-5'>
                             {
-                                transcribeText && selectedFormat2 === "standard" ? (transcribeText) : (subtitle.split('\n').map((subtitle, index)=>(
+                                transcribeText && selectedFormat2 === "standard" ? (transcribeText) :
+                                transcribeText && (subtitle.split('\n').map((subtitle, index)=>(
                                     <p className='py-2' key={index}>{subtitle}</p>
                                 )))
                                    
