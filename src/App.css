@@ -26,3 +26,17 @@
     1px 1px 40px #126fd6;
   
 }
+
+.spinner {
+  border: 3px solid white;
+  border-radius: 50%;
+  border-top: 3px solid #126fd6; /* You can adjust the color */
+  width: 20px; /* Adjust the size as needed */
+  height: 20px; /* Adjust the size as needed */
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+ 0% {transform: rotate(0deg);}
+ 100% {transform: rotate(360deg);}
+}

@@ -67,32 +67,32 @@ function Sidebar() {
   const startLiveTranscript = () => {
     Swal.fire({
       title: "You want Live Transcript for",
-     
+
       showCancelButton: true,
-      showConfirmButton:  true,
+      showConfirmButton: true,
       showDenyButton: true,
       confirmButtonText: "Online Meeting",
       denyButtonText: "Physical Meeting"
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-       
-        
+
+
         // Start transcript when the user chooses "Online Meeting"
         setIsLiveTranscript(true);
-        
+
         newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
         if (newWindowRef.current) {
           newWindowRef.current.focus();
         }
-  
+
       } else if (result.isDenied) {
         setIsLiveTranscript(true);
         newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
         if (newWindowRef.current) {
           newWindowRef.current.focus();
         }
-  
+
       }
     });
   };
@@ -174,7 +174,7 @@ function Sidebar() {
               </div>
             </Link>) : (
             <Link onClick={stopLiveTranscript}>
-              <div className={`mx-2 p-4 flex text-white bg-red-500 rounded-md ${isActive("/notdefined") ? "bg-red-500 " :  "hover:bg-red-600 " }`}>
+              <div className={`mx-2 p-4 flex text-white bg-red-500 rounded-md ${isActive("/notdefined") ? "bg-red-500 " : "hover:bg-red-600 "}`}>
                 <div className="mr-2 mt-1">
                   <AiOutlineAudioMuted />
                 </div>
@@ -186,7 +186,7 @@ function Sidebar() {
           )
         }
 
-<Link to={"/pre-audio-transcriptions"}>
+        <Link to={"/pre-audio-transcriptions"}>
           <div className={`mx-2 p-4 flex rounded-md ${isActive("/pre-audio-transcriptions") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
             <div className="mr-2 mt-1">
               <MdOutlineTranscribe />
@@ -223,10 +223,10 @@ function Sidebar() {
           </div>
         </Link> */}
 
-       
 
 
-       
+
+
 
 
 
