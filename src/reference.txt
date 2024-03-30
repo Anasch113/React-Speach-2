@@ -20,3 +20,6 @@ bg-[#f9e4f8]
 <button onClick={() => checkout("business")} className='font-poppins bg-[#B443B0]  py-3 px-3 rounded-3xl w-44 text-white hover:bg-[#5b70e7]'>
                     Get Now
                 </button>
+
+
+                https://docs.google.com/spreadsheets/d/1eF7MQAuIac2mMs-jbWL1iOnYAFO_o8pS/edit?usp=sharing&ouid=103869236222874156758&rtpof=true&sd=true

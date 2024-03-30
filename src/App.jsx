@@ -21,6 +21,7 @@ import Success from "../src/SmallComponents/Success"
 import Cancel from "../src/SmallComponents/Cancel"
 import PlanDetails from "./components/pricing/PlanDetails";
 import PreAudioTranscriptions from "./pages/Other/PreAudioTranscriptions";
+import UserProfilePage from "./pages/Other/UserProfilePage";
 
 
 function App() {
@@ -84,6 +85,13 @@ function App() {
 
               <ProtectedRoute>
                 <PreAudioTranscriptions />
+              </ProtectedRoute>}
+
+            />
+            <Route exact path="/user-profile" element={
+
+              <ProtectedRoute>
+                <UserProfilePage />
               </ProtectedRoute>}
 
             />

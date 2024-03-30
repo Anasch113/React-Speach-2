@@ -16,6 +16,7 @@ import { LuLayoutDashboard } from "react-icons/lu";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2"
+import { FaCaretDown } from "react-icons/fa";
 import { MdOutlineTranscribe } from "react-icons/md";
 
 function Sidebar() {
@@ -25,6 +26,7 @@ function Sidebar() {
     profilePicture: "https://placekitten.com/200/200", // replace with your image source
   };
   const [isLiveTranscript, setIsLiveTranscript] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const newWindowRef = useRef(null)
   const recordingStatus = useSelector((state) => state.audio.isRecording);
@@ -44,23 +46,11 @@ function Sidebar() {
 
 
 
-  // useEffect(() => {
-  //   if (recordingStatus) {
-  //     // Open a new tab with the content
-  //     newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
 
-  //     // Optionally, focus on the new window
-  //     if (newWindowRef.current) {
-  //       newWindowRef.current.focus();
-  //     }
-  //   } else {
-  //     // Close the window when recordingStatus becomes false
-  //     if (newWindowRef.current) {
-  //       newWindowRef.current.close();
-  //       newWindowRef.current = null;
-  //     }
-  //   }
-  // }, [recordingStatus]);
+
+
+
+
 
 
 
@@ -105,6 +95,16 @@ function Sidebar() {
       newWindowRef.current = null;
     }
   }
+
+
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const closeDropdown = () => {
+    setIsOpen(false);
+  };
   return (
     <aside
       className="w-96 px-3   max-[700px]:hidden  gray-200 bg-bg-left-bar h-full overflow-x-hidden   md:hidden lg:block xl:block 2xl:block"
@@ -116,29 +116,41 @@ function Sidebar() {
 
 
       {/* Add your sidebar content here */}
-      <div className="mx-2 p-4 flex bg-white  border border-border-dark-color rounded-md">
-
-        <div className="w-10 h-10  mr-4  rounded-full overflow-hidden">
-          {/* You can use an <img> tag with the user's profile picture as the source */}
+      <div onClick={toggleDropdown} className="flex flex-row  justify-between mx-2 p-4 cursor-pointer  bg-white  border border-border-dark-color rounded-md">
+      {/* You can use an <img> tag with the user's profile picture as the source */}
+        {/* <div className="w-10 h-10  mr-4  rounded-full overflow-hidden">
+    
           <img
             src="https://placekitten.com/200/200" // replace with your image source
             alt="Profile"
             className="w-full h-full object-cover"
           />
+        </div> */}
+
+        <div  className="flex  flex-col  cursor-pointer font-poppins ">
+          <span className="text-lg text-gray-700 font-bold">{user.displayName} Anas</span>
+          <span className="text-sm  text-gray-600 font-semibold">example@gmail.come</span>
+        </div>
+        <div className="flex items-center">
+          <FaCaretDown />
         </div>
 
-        <div className="flex flex-col text-text-color-blue ">
-          <span className="text-sm font-bold">Nauman</span>
-          <span className="text-xs font-bold">example@gmail.come</span>
-        </div>
+        {isOpen && (
+          <div className="absolute mt-16  w-48 h-48  bg-white border border-gray-200 shadow-md rounded-lg z-10">
+            <a className="block px-4 py-3 text-sm border-b text-gray-600 hover:bg-gray-100" href="user-profile">Profile</a>
+            <a className="block px-4 py-3 text-sm border-b text-gray-600 hover:bg-gray-100" href="#">Payment Info</a>
+          
+           
+            {/* Add more options here */}
+          </div>
+        )}
+        {/* Close dropdown when clicking outside */}
+        {isOpen && <div className="fixed inset-0 z-0" onClick={closeDropdown}></div>}
+
       </div>
 
-      {/* Add your sidebar content here */}
-      <div className="mx-2 mb-5 p-4 flex bg-white items-center justify-center border border-border-dark-color rounded-md">
-        <p className="font-bold  text-text-blue">Create WorkSpace</p>
-      </div>
 
-      <div className="flex gap-4 flex-col text-text-color-blue">
+      <div className="flex gap-4 flex-col text-text-color-blue mt-10">
 
 
 
