@@ -18,6 +18,9 @@ import { useSelector } from "react-redux";
 import Swal from "sweetalert2"
 import { FaCaretDown } from "react-icons/fa";
 import { MdOutlineTranscribe } from "react-icons/md";
+import { MdAlternateEmail } from "react-icons/md";
+import { FaRegUser } from "react-icons/fa6";
+import { BiNavigation } from "react-icons/bi";
 
 function Sidebar() {
   const user1 = {
@@ -111,12 +114,12 @@ function Sidebar() {
 
     >
       <div className=" p-4 py-10 text-text-blue    md:text-xl lg:text-xl xl:text-xl 2xl:text-xl font-semibold ">
-        <p>Logo</p>
+        <p>Captify</p>
       </div>
 
 
       {/* Add your sidebar content here */}
-      <div onClick={toggleDropdown} className="flex flex-row  justify-between mx-2 p-4 cursor-pointer  bg-white  border border-border-dark-color rounded-md">
+      <div  className="flex flex-col  justify-between mx-2 p-4  bg-white  border border-border-dark-color rounded-md">
       {/* You can use an <img> tag with the user's profile picture as the source */}
         {/* <div className="w-10 h-10  mr-4  rounded-full overflow-hidden">
     
@@ -127,25 +130,17 @@ function Sidebar() {
           />
         </div> */}
 
-        <div  className="flex  flex-col  cursor-pointer font-poppins ">
-          <span className="text-lg text-gray-700 font-bold">{user.displayName} Anas</span>
-          <span className="text-sm  text-gray-600 font-semibold">example@gmail.come</span>
+        <div  className="flex  flex-col   font-poppins ">
+          <span className="text-sm text-gray-700 font-bold flex items-center px-2 gap-1"><FaRegUser size={15}/>  {user.displayName} </span>
+          <span className="text-xs flex items-center p-2 gap-1  text-gray-600 font-semibold"> <MdAlternateEmail size={15}/> {user.email}</span>
         </div>
-        <div className="flex items-center">
-          <FaCaretDown />
-        </div>
+        <div className="flex items-center cursor-pointer">
+         <Link className="flex items-center gap-2 hover:text-gray-600" to={"/user-profile"}> <BiNavigation className="hover:text-gray-600" size={18}  /><p className="">Visit</p> </Link>
 
-        {isOpen && (
-          <div className="absolute mt-16  w-48 h-48  bg-white border border-gray-200 shadow-md rounded-lg z-10">
-            <a className="block px-4 py-3 text-sm border-b text-gray-600 hover:bg-gray-100" href="user-profile">Profile</a>
-            <a className="block px-4 py-3 text-sm border-b text-gray-600 hover:bg-gray-100" href="#">Payment Info</a>
-          
-           
-            {/* Add more options here */}
-          </div>
-        )}
-        {/* Close dropdown when clicking outside */}
-        {isOpen && <div className="fixed inset-0 z-0" onClick={closeDropdown}></div>}
+        </div>
+      
+
+       
 
       </div>
 

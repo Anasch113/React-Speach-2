@@ -39,7 +39,7 @@ export function UserAuthContextProvider({ children }) {
   }
 
 
-  const signUp = async (email, password) => {
+  const signUp = async (email, password, name) => {
 
 
     // Create the user without signing in
@@ -55,7 +55,7 @@ export function UserAuthContextProvider({ children }) {
       console.log("Verify your email in order to signup")
       setUser(null);
     }
-    await createUserInDatabase(userData.uid, { email: userData.email });
+    await createUserInDatabase(userData.uid, { email: userData.email, name:name });
 
 
     return userCredential;

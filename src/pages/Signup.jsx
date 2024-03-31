@@ -3,10 +3,11 @@ import Headers from '../components/DesignLayouts/Headers'
 import Footer from '../components/DesignLayouts/Footer'
 import { useUserAuth } from '../context/UserAuthContext'
 import { useDispatch } from "react-redux"
-import auth from "../firebase"
+import {auth} from "../firebase"
 import toast from "react-hot-toast"
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2';
+import { updateProfile } from 'firebase/auth'
 
 
 const Signup = () => {
@@ -14,6 +15,7 @@ const Signup = () => {
 
 
 
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -33,12 +35,12 @@ const Signup = () => {
 
         try {
 
-          await signUp(email, password);
+            await signUp(email, password, name);
+            updateProfile(auth.currentUser, { displayName: name })
 
-        
             Swal.fire("Verification Email Sent", "Check your Inbox", "success")
             navigate("/emailverification")
-            
+
 
 
         } catch (err) {
@@ -76,6 +78,18 @@ const Signup = () => {
                                     account</h1>
                                 <form className="space-y-4 md:space-y-6" onSubmit={handleSignup}>
 
+                                    <div>
+                                        <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Your Name</label>
+
+                                        <input value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                            type="text"
+                                            id="name"
+                                            className="outline-none border border-gray-300 text-gray-900 sm:text-sm rounded w-full p-2.5"
+                                            placeholder="Name"
+                                            name="name"
+                                            required />
+                                    </div>
                                     <div>
                                         <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Your email
                                             address</label>

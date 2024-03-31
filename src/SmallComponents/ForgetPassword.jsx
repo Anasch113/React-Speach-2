@@ -4,8 +4,11 @@ import Footer from '../components/DesignLayouts/Footer'
 import toast from 'react-hot-toast'
 import { auth } from '../firebase'
 import { sendPasswordResetEmail } from "firebase/auth"
+import Swal from 'sweetalert2';
+import { useUserAuth } from '../context/UserAuthContext'
 const ForgetPassword = () => {
     const [email, setEmail] = useState("");
+    const { logOut} = useUserAuth();
 
 
     const handleResetPassword =  async(e) => {
@@ -13,7 +16,10 @@ const ForgetPassword = () => {
 
         try {
             await sendPasswordResetEmail(auth, email);
-            toast.success("Reset email sent")
+            
+            Swal.fire("Email Sent for Reset Password", "Check your Inbox", "success")
+            await logOut();
+           
         } catch (error) {
             toast.error("Error sending while reset email")
             console.log("Error occurred ", error)

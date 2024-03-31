@@ -2,29 +2,32 @@ import React from 'react'
 import { useUserAuth } from '../../context/UserAuthContext'
 import Sidebar from '../../layout/Sidebar';
 import { Link } from 'react-router-dom';
+import { CiCalendarDate } from "react-icons/ci";
+
+import { CiTimer } from "react-icons/ci";
 const PlanDetails = () => {
     const { paymentInfo } = useUserAuth();
     return (
-        <div className='flex'>
+        <div className='flex w-full'>
 
-            <Sidebar />
-            <div className='bg-[#F2F2F3] w-full min-h-screen p-5 '>
+           
+         
 
-                <div className='bg-white w-2/4 p-5 rounded-lg'>
-                    <p className='text-3xl py-2'>Plan Type: {paymentInfo.planType}</p>
+                <div className='bg-white md:w-2/4 p-5 rounded-lg border'>
+                    <p className='text-2xl py-2'>Plan Type: {paymentInfo.planType}</p>
 
-                    <div className='px-2 py-5'>
-                        <span className='flex gap-3 py-1'> <p className='font-medium text-xl'>Start Date: </p><p className=''> {paymentInfo.planStartDate} </p></span>
-                        <span className='flex gap-3 py-1'>  <p className='font-medium text-xl'>End Date: </p> <p>{paymentInfo.planEndDate}</p> </span>
-                        <span className='flex gap-3 py-1'> <p className='font-medium text-xl'>Plan Duration: </p> <p>{paymentInfo.planDuration} days</p>  </span>
+                    <div className='flex flex-col gap-3 px-2 py-5'>
+                        <span className='flex  items-center gap-3 py-1'> <CiCalendarDate size={30}/> <p className='font-medium text-lg'>Start Date: </p><p className='text-lg'> {paymentInfo.planStartDate} </p></span>
+                        <span className='flex gap-3 py-1 items-center'> <CiCalendarDate size={30}/> <p className='font-medium text-lg'>End Date: </p> <p className='text-lg'>{paymentInfo.planEndDate}</p> </span>
+                        <span className='flex gap-3 py-1 items-center'> <CiTimer size={30}/> <p className='font-medium text-lg'>Plan Duration: </p> <p  className='text-lg'>{paymentInfo.planDuration} days</p>  </span>
 
                     </div>
 
-                  <Link to={"/pricing"}><button className='px-5 py-3 bg-bg-blue text-white rounded-3xl'>Back to pricing</button></Link>  
+                  <Link to={"/pricing"}><button className='px-5 py-3 bg-bg-blue text-white rounded-3xl'>Change Plan</button></Link>  
 
                 </div>
 
-            </div>
+           
         </div>
     )
 }

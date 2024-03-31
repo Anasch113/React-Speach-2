@@ -22,6 +22,8 @@ import Cancel from "../src/SmallComponents/Cancel"
 import PlanDetails from "./components/pricing/PlanDetails";
 import PreAudioTranscriptions from "./pages/Other/PreAudioTranscriptions";
 import UserProfilePage from "./pages/Other/UserProfilePage";
+import UserSecurity from "./components/SideComponents/UserSecurity";
+import UserPaymentInfo from "./components/SideComponents/UserPaymentInfo"
 
 
 function App() {
@@ -92,6 +94,20 @@ function App() {
 
               <ProtectedRoute>
                 <UserProfilePage />
+              </ProtectedRoute>}
+
+            />
+            <Route exact path="/user-security-setting" element={
+
+              <ProtectedRoute>
+                <UserSecurity />
+              </ProtectedRoute>}
+
+            />
+            <Route exact path="/user-payment-info" element={
+
+              <ProtectedRoute>
+                <UserPaymentInfo />
               </ProtectedRoute>}
 
             />

@@ -43,13 +43,6 @@ function RightSidebar() {
 </div>
       </div>
 
-      <div className="m-2 p-4 flex items-center justify-center bg-white border border-border-dark-color rounded-md">
-        <p className="font-bold text-blue-500">Google calender</p>
-      </div>
-
-      <div className="m-2 p-4 flex items-center justify-center bg-white border border-border-dark-color rounded-md">
-        <p className="font-bold text-blue-500">Zoom Meeting</p>
-      </div>
     </aside>
   );
 }

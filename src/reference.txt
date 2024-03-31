@@ -23,3 +23,18 @@ bg-[#f9e4f8]
 
 
                 https://docs.google.com/spreadsheets/d/1eF7MQAuIac2mMs-jbWL1iOnYAFO_o8pS/edit?usp=sharing&ouid=103869236222874156758&rtpof=true&sd=true
+
+
+
+
+                  {isOpen && (
+          <div className="absolute mt-16  w-48 h-48  bg-white border border-gray-200 shadow-md rounded-lg z-10">
+            <a className="block px-4 py-3 text-sm border-b text-gray-600 hover:bg-gray-100" href="user-profile">Profile</a>
+            <a className="block px-4 py-3 text-sm border-b text-gray-600 hover:bg-gray-100" href="#">Payment Info</a>
+          
+           
+            {/* Add more options here */}
+          </div>
+        )}
+        {/* Close dropdown when clicking outside */}
+        {isOpen && <div className="fixed inset-0 z-0" onClick={closeDropdown}></div>}
