@@ -7,10 +7,15 @@ import { set } from 'firebase/database'
 import { AssemblyAI } from 'assemblyai'
 import axios from 'axios'
 import { FaRegFilePdf } from "react-icons/fa6";
-import html2pdf from "html2pdf.js";
+
 import { FaExchangeAlt } from "react-icons/fa";
-import FormatModal from '../../SmallComponents/FormatModal'
+import FormatModal from '../../components/PreAudio/FormatModal'
 import { IoCloudDownloadSharp } from "react-icons/io5";
+import { FaCloudUploadAlt } from "react-icons/fa";
+import { RxDashboard } from "react-icons/rx";
+import { MdOutlineCloudUpload } from "react-icons/md";
+import { MdClose } from "react-icons/md";
+import Transcripted from '../../components/PreAudio/Transcripted'
 const PreAudioTranscriptions = () => {
 
     const [file, setFile] = useState(null)
@@ -18,17 +23,20 @@ const PreAudioTranscriptions = () => {
     const [fileUrl, setFileUrl] = useState("")
     const [processing, setProcessing] = useState(false);
     const [transcribeText, setTranscribeText] = useState("");
+    const [transcriptions, setTranscriptions] = useState("");
     const [utterances, setUtterances] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [isDownloadingtr, setIsDownloadingtr] = useState(false); // New state variable
+    const [showFormModal, setShowFormModal] = useState(false);
+    const [isTranscriptions, setIsTranscriptions] = useState(false);
+
     const [subtitle, setSubtitle] = useState([]); // New state variable
 
     const [showFormatModal, setShowFormatModal] = useState(false);
-    const [selectedFormat, setSelectedFormat] = useState('standard');
+  
     const [selectedFormat2, setSelectedFormat2] = useState('standard');
     const [isDefault, setIsDefault] = useState(false);
 
-    const contentRef = useRef(null)
+
     const client = new AssemblyAI({
         apiKey: import.meta.env.VITE_ASSEMBLYAI_KEY
     })
@@ -57,8 +65,12 @@ const PreAudioTranscriptions = () => {
         event.preventDefault();
         setProcessing(true)
         setShowModal(true);
+        setIsTranscriptions(true)
+
+        setShowFormModal(false)
 
         try {
+
             const formData = new FormData();
             formData.append("file", file);
             formData.append("upload_preset", "xguxdutu");
@@ -91,6 +103,7 @@ const PreAudioTranscriptions = () => {
             setSubtitle(subtitle)
             console.log("subtitles:", subtitle)
             setTranscribeText(transcribe.text)
+            setTranscriptions(transcribe)
             console.log("Transcript text", transcribe)
 
             for (let utterance of transcribe.utterances) {
@@ -107,27 +120,26 @@ const PreAudioTranscriptions = () => {
         setShowModal(false);
     }
 
-    const downloadPdf = async () => {
-        setIsDownloadingtr(true);
 
-        const pdfOptions = {
-            margin: 10,
 
-            filename: "transcriptions.pdf",
-            image: { type: "jpeg", quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
 
-        };
-        try {
-            await html2pdf(contentRef.current, pdfOptions);
-        } catch (error) {
-            console.log(error)
-        }
 
-        setIsDownloadingtr(false);
+
+    const toggleModal = () => {
+        setShowFormatModal(!showFormatModal);
+    };
+
+   
+    const handleSetDefaultChange = () => {
+        setIsDefault(!isDefault)
 
     };
+    const handleContinue = () => {
+        setSelectedFormat2(selectedFormat);
+        setShowFormatModal(!showFormatModal)
+    }
+
+
 
     const getSubtitleFile = async (transcriptId, format) => {
         console.log(transcriptId, format)
@@ -148,58 +160,6 @@ const PreAudioTranscriptions = () => {
 
     }
 
-
-    const toggleModal = () => {
-        setShowFormatModal(!showFormatModal);
-    };
-
-    const handleFormatChange = (format) => {
-
-        setSelectedFormat(format);
-        console.log("format:", format)
-
-
-
-    };
-    const handleSetDefaultChange = () => {
-        setIsDefault(!isDefault)
-
-    };
-    const handleContinue = () => {
-        setSelectedFormat2(selectedFormat);
-        setShowFormatModal(!showFormatModal)
-    }
-
-
-
-    const downloadSrtFile = () => {
-        // Check if subtitles are available
-        if (!subtitle) {
-            console.error("No subtitles available to download.");
-            return;
-        }
-        setIsDownloadingtr(true);
-        // Create a Blob object containing the subtitles
-        const srtBlob = new Blob([subtitle], { type: "text/plain" });
-    
-        // Create a temporary URL for the Blob
-        const srtUrl = URL.createObjectURL(srtBlob);
-    
-        // Create a link element
-        const link = document.createElement("a");
-        link.href = srtUrl;
-        link.download = "subtitles.srt"; // Set the filename for the download
-    
-        // Append the link to the document body and trigger the download
-        document.body.appendChild(link);
-        link.click();
-    
-        // Clean up: Remove the link and revoke the URL
-        document.body.removeChild(link);
-        URL.revokeObjectURL(srtUrl);
-        setIsDownloadingtr(false);
-    };
-
     return (
         <div className='w-full min-h-screen'>
 
@@ -207,137 +167,118 @@ const PreAudioTranscriptions = () => {
 
                 <Sidebar />
 
-                <div className='flex flex-col w-full py-5 px-5 bg-bg-color-light min-h-screen overflow-x-hidden '>
+                <div className='flex flex-col w-full py-5 px-10 bg-bg-color-light min-h-screen overflow-x-hidden '>
                     {
-                        !transcribeText &&
-                        <div className='border mt-5 bg-white rounded-md flex items-center flex-col  min-h-[600px] py-5 gap-5 justify-center'>
-
-                            {
-                                !file ? (
-
-                                    <form onClick={handleFormClick} className='flex flex-col items-center justify-center border-2 border-dashed border-blue-500 h-80  cursor-pointer rounded-md md:w-[500px] w-72'>
-                                        <h1 className='text-3xl py-2 text-text-color-blue font-medium font-roboto'>Upload Audio File</h1>
-
-                                        <div className='py-2'>
-                                            <input
-                                                accept='.m4a, .mp3'
-                                                onChange={handleFileChange}
-                                                className='input-field'
-                                                type="file"
-                                                hidden
-                                            />
-                                            {file ? <p></p> : <MdCloudUpload color='#1475cf' size={70} />}
-                                        </div>
-
-                                    </form>
-                                ) : (
-
-                                    <div className='border min-h-80 md:w-[500px] shadow-md p-5 flex flex-col items-center gap-8'>
-                                        <img className='w-16 h-16' src="/checked.png" alt="img" />
-                                        <h1 className='text-2xl text-center font-poppins text-gray-500'>Your Audio Files are ready for Transcriptions</h1>
-                                        <audio controls >
-                                            <source src={fileUrl} type={file.type} />
-                                            Your browser does not support the audio
-                                        </audio>
-
-                                        <button onClick={handleTranscriptions} className=' px-5 py-3 w-48
-rounded-3xl bg-bg-blue text-white text-lg font-roboto hover:bg-blue-500'>Transcribe</button>
-                                        {/* <p className='text-xl text-gray-500 font-poppins'>Your Audio</p> */}
-                                    </div>
-                                )
-                            }
+                        !isTranscriptions &&
+                        <div className='   rounded-md flex items-center flex-col  min-h-screen py-5 gap-5'>
 
 
 
 
 
-
-                            <section className='mx-2 md:w-[500px] w-72 flex justify-between items-center px-4 py-5 rounded-md bg-[#e9f0ff]'>
-                                <AiFillFileImage color='#1475cf' />
-                                <span className='flex items-center'>
-                                    {filename}
-                                    <MdDelete cursor="pointer"
-                                        onClick={() => {
-                                            setFileName("No Selected Files")
-                                            setFile(null)
-                                        }}
-                                    />
+                            <div className='border min-h-80 md:w-full shadow-md p-5 flex flex-col  gap-8 h-[300px] '>
+                                <span className='flex flex-row items-center gap-2 py-5'>
+                                    <RxDashboard className='text-3xl' />
+                                    <h1 className='text-3xl font-bold font-poppins text-text-black'> Recent Files</h1>
                                 </span>
 
+                                <h1 className='text-2xl text-center font-roboto text-text-gray-other'>Welcome to Captify!</h1>
 
-                            </section>
+                                <div className='flex items-center justify-center'>
+
+                                    <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 w-2/5 h-20
+rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
+                                            <FaCloudUploadAlt size={25} /> <p>Transcribe Your File</p>
+                                        </span></button>
+                                </div>
+
+                            </div>
 
                         </div>
                     }
 
+                    {
+                        isTranscriptions && <Transcripted transcribeText={transcribeText} subtitle={subtitle} transcriptions={transcriptions} filename={filename} processing={processing} />
+                    }
 
-
-
-
-
-                    <div className="  w-full  p-5 mt-5">
-
-                        <h1 className='text-3xl font-semibold font-roboto text-text-color-blue '>Transcription Text</h1>
-
-                        <div className='w-full my-5  border '></div>
-
-                        <div className='flex justify-end gap-7'>
-                            {
-                                transcribeText && <button disabled={isDownloadingtr} className=" hover:bg-blue-500 text-white bg-bg-blue py-4 px-5 rounded-full w-fit" onClick={() => {
-                                    if (selectedFormat === "SRT") {
-                                        downloadSrtFile();
-                                    } else {
-                                        downloadPdf();
-                                    }
-                                }}>
-
-                                    <span className="flex items-center gap-1 font-poppins">
-                                        {
-                                            !isDownloadingtr ? (<IoCloudDownloadSharp size={25} />) : (<div className='spinner'></div>)
-                                        }
-                                    </span>
-                                </button>
-                            }
-                            {
-                                transcribeText && <button className=" hover:bg-blue-500 text-white bg-bg-blue py-4 px-5 rounded-full w-fit" onClick={toggleModal}>
-
-                                    <span className="flex items-center gap-1 font-poppins "> <FaExchangeAlt size={25} />  </span>
-                                </button>
-                            }
-                        </div>
-
-                        {
-                            showFormatModal && <FormatModal
-
-                                showFormatModal={showFormatModal}
-                                selectedFormat={selectedFormat}
-                                isDefault={isDefault}
-                                toggleModal={toggleModal}
-                                handleFormatChange={handleFormatChange}
-                                handleSetDefaultChange={handleSetDefaultChange}
-                                handleContinue={handleContinue}
-                            />
-                        }
-
-                        <div ref={contentRef} className='w-full p-5 min-h-[450px] mt-5'>
-                            {
-                                transcribeText && selectedFormat2 === "standard" ? (transcribeText) :
-                                transcribeText && (subtitle.split('\n').map((subtitle, index)=>(
-                                    <p className='py-2' key={index}>{subtitle}</p>
-                                )))
-                                   
-                            }
-                            
-                        </div>
-
-                    </div>
 
                 </div>
 
 
 
             </div>
-            {showModal && (
+
+            {showFormModal && (
+                <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 ">
+                    <div className="bg-white h-[550px] p-5 rounded-lg overflow-y-scroll">
+
+                        <div className='w-full border flex flex-row items-center justify-end  gap-10 px-5 py-5'>
+
+                            <span className='flex  flex-row items-center gap-2'>
+                                <MdOutlineCloudUpload className='text-2xl' />
+                                <h1 className='text-2xl font-bold font-poppins text-text-black'> Transcribe Files</h1>
+                            </span>
+
+                            <MdClose onClick={() => setShowFormModal(!showFormModal)} className='text-end w-10 h-10 cursor-pointer hover:bg-gray-300 p-2 rounded-full ' size={25} />
+
+                        </div>
+
+
+
+                        <form onClick={handleFormClick} className='flex flex-col items-center justify-center border-2  border-blue-500 h-64 bg-[#DBDBDB]  cursor-pointer rounded-md md:w-[400px] w-72'>
+                            {
+                                !file && <h1 className='text-3xl py-2 text-text-color-blue font-medium font-roboto'>Upload Audio File</h1>
+                            }
+
+                            {
+                                file && <section className='mx-2  flex flex-col justify-between items-center px-4 py-5 rounded-md gap-2'>
+
+                                    <span className='flex items-center gap-2'>
+                                        <AiFillFileImage color='#1475cf' />
+                                        {filename}
+                                        <MdDelete className='hover:z-50' cursor="pointer"
+                                            onClick={() => {
+                                                setFileName("No Selected Files")
+                                                setFile(null)
+                                            }}
+                                        />
+                                    </span>
+                                    <img className='w-6 h-6 my-3' src="/checked.png" alt="img" />
+                                </section>
+                            }
+
+                            <div className='py-2'>
+                                <input
+                                    accept='.m4a, .mp3'
+                                    onChange={handleFileChange}
+                                    className='input-field'
+                                    type="file"
+                                    hidden
+                                />
+                                {file ? <p></p> : <MdCloudUpload color='#1475cf' size={70} />}
+                            </div>
+
+                        </form>
+                        <span className="flex flex-col gap-2 p-3 my-2">
+                            <label className="text-sm text-text-black"> Audio Language</label>
+                            <select className="border border-gray-300 py-3 px-4 text-sm rounded-md outline-none" name="language" id="language">
+                                <option disabled>Select Language</option>
+                                <option value="english">English</option>
+                                <option value="spanish">Spanish</option>
+                                <option value="arabic">Arabic</option>
+                            </select>
+
+                        </span>
+                        <button onClick={handleTranscriptions} className='text-center px-5 py-4 w-full h-16
+rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
+                                <FaCloudUploadAlt size={25} /> <p>Transcribe </p>
+                            </span></button>
+                    </div>
+                </div>
+            )}
+
+
+            {/* {showModal && (
                 <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50">
                     <div className="bg-white p-5 rounded-lg">
                         <p className="text-lg font-semibold text-gray-500 text-center font-poppins">Transcribing...</p>
@@ -346,7 +287,7 @@ rounded-3xl bg-bg-blue text-white text-lg font-roboto hover:bg-blue-500'>Transcr
                         </div>
                     </div>
                 </div>
-            )}
+            )} */}
 
 
         </div>

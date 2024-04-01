@@ -33,7 +33,10 @@ export default {
         "text-blue": "#126fd6",
         'text-white': "#ffffff",
         'text-gray-other': "#292929",
-        "text-gray-official" : "#5D7284"
+        "text-gray-official" : "#5D7284",
+        "text-black": "#303030",
+        "text-brown-new": "#838383"
+
 
         
         

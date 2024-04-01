@@ -24,6 +24,7 @@ import PreAudioTranscriptions from "./pages/Other/PreAudioTranscriptions";
 import UserProfilePage from "./pages/Other/UserProfilePage";
 import UserSecurity from "./components/SideComponents/UserSecurity";
 import UserPaymentInfo from "./components/SideComponents/UserPaymentInfo"
+import ViewTranscriptions from "./components/PreAudio/ViewTranscriptions";
 
 
 function App() {
@@ -108,6 +109,13 @@ function App() {
 
               <ProtectedRoute>
                 <UserPaymentInfo />
+              </ProtectedRoute>}
+
+            />
+            <Route exact path="/pre-audio-transcriptions/view" element={
+
+              <ProtectedRoute>
+                <ViewTranscriptions />
               </ProtectedRoute>}
 
             />
