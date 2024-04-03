@@ -27,14 +27,17 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
   const [isEdit, setIsEdit] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isUpdated, setIsUpdated] = useState(false);
+  const [isAudioDownloading, setIsAudioDownloading] = useState(false);
   const [selectedText, setSelectedText] = useState("");
   const [updatedText, setUpdatedText] = useState("");
+
+  console.log(transcriptions.audio_url)
 
   const downloadPdf = async () => {
     setIsDownloadingtr(true);
 
     const pdfOptions = {
-      margin: 10,
+      margin: 5,
 
       filename: "transcriptions.pdf",
       image: { type: "jpeg", quality: 0.98 },
@@ -104,7 +107,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
   const handleUpdateText = (updatedText) => {
     console.log(updatedText)
     setShowModal(false);
-    
+
     contentRef.current.textContent = updatedText;
     setUpdatedText(updatedText)
     // Update the content in the ref
@@ -115,35 +118,60 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
 
   const downloadTxt = () => {
     const element = document.createElement("a");
-if(updatedText){
-  const file = new Blob([updatedText], {type: "text/plain"});
-  element.href = URL.createObjectURL(file);
-  element.download = "transcriptions.txt";
-  document.body.appendChild(element); // Required for Firefox
-  element.click();
-}
-else{
-  const file = new Blob([transcriptions.text], {type: "text/plain"});
-  element.href = URL.createObjectURL(file);
-  element.download = "transcriptions.txt";
-  document.body.appendChild(element); // Required for Firefox
-  element.click();
-}
+    if (updatedText) {
+      const file = new Blob([updatedText], { type: "text/plain" });
+      element.href = URL.createObjectURL(file);
+      element.download = "transcriptions.txt";
+      document.body.appendChild(element); // Required for Firefox
+      element.click();
+    }
+    else {
+      const file = new Blob([transcriptions.text], { type: "text/plain" });
+      element.href = URL.createObjectURL(file);
+      element.download = "transcriptions.txt";
+      document.body.appendChild(element); // Required for Firefox
+      element.click();
+    }
 
-    
 
-   
-};
 
-const downloadDocx = async () => {
-    const doc = new Document();
-    doc.addSection({
-        children: [new Paragraph(transcriptions.text)]
-    });
-    const buffer = await Packer.toBuffer(doc);
-    const docxBlob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
-    FileSaver.saveAs(docxBlob, "transcription.docx");
-};
+
+  };
+
+
+
+
+
+
+  const downloadAudio = async () => {
+
+
+    try {
+      setIsAudioDownloading(true)
+      const response = await fetch(transcriptions.audio_url)
+      const blob = await response.blob();
+      const link = document.createElement('a');
+
+      link.href = window.URL.createObjectURL(blob)
+      link.download = filename
+      link.target = ("_blank")
+
+      document.body.appendChild(link)
+      link.click()
+
+      document.body.removeChild(link);
+      setIsAudioDownloading(false)
+
+
+
+    } catch (error) {
+      console.log("Erro while downloading the audio", error)
+    }
+
+
+  }
+
+
   return (
 
 
@@ -156,25 +184,26 @@ const downloadDocx = async () => {
 
         <span className='flex flex-row  gap-2'>
 
-          <h1 className='text-3xl flex gap-3 font-bold font-poppins text-text-black'> {isEdit && <p>Edit</p> } {filename && filename}</h1>
+          <h1 className='text-3xl flex gap-3 font-bold font-poppins text-text-black'> {isEdit && <p>Edit</p>} {filename && filename}</h1>
         </span>
-        {isEdit && <p className='text-sm flex items-center gap-1 text-gray-500'><TiPencil/> Double tap on text to edit</p>}
+        {isEdit && <p className='text-sm flex items-center gap-1 text-gray-500'><TiPencil /> Double tap on text to edit</p>}
         <div className='text-gray-600 font-roboto'>
 
           {
 
             showSRT ? (subtitle.split('\n').map((subtitle, index) => (
-              <p ref={contentRef}  onClick={() => isEdit && handleTextClick(subtitle)} className='py-2' key={index}>{subtitle }</p>
+              <p ref={contentRef} onClick={() => isEdit && handleTextClick(subtitle)} className='py-2' key={index}>{subtitle}</p>
             ))) :
-              <p ref={contentRef}  onClick={() => isEdit && handleTextClick(transcriptions.text)}> 
-              { !updatedText ? <p>{transcriptions.text}</p> : <p>{updatedText}</p>  }
+              <p className='w-full py-3' ref={contentRef} onClick={() => isEdit && handleTextClick(() => !updatedText ? transcriptions.text : updatedText)}>
+                {!updatedText ? <p>{transcriptions.text}</p> : <p>{updatedText}</p>}
               </p>
 
           }
 
 
-        </div>
 
+
+        </div>
 
 
         {showModal && (
@@ -241,8 +270,8 @@ const downloadDocx = async () => {
               <MdOutlineModeEditOutline size={25} /> {isEdit ? <p>Done Editing</p> : <p>Edit Transcript</p>}
             </span>
 
-            <span className='my-2 flex items-center gap-2 cursor-pointer'>
-              <MdOutlineCloudUpload size={25} /> Download Audio
+            <span onClick={downloadAudio} className='my-2 flex items-center gap-2 cursor-pointer'>
+              <MdOutlineCloudUpload size={25} />  {!isAudioDownloading ? <p>Download Audio</p> : <p>Downloading...</p>}
             </span>
 
 

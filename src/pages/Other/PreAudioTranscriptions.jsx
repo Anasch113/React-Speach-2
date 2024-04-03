@@ -125,20 +125,7 @@ const PreAudioTranscriptions = () => {
 
 
 
-    const toggleModal = () => {
-        setShowFormatModal(!showFormatModal);
-    };
-
-   
-    const handleSetDefaultChange = () => {
-        setIsDefault(!isDefault)
-
-    };
-    const handleContinue = () => {
-        setSelectedFormat2(selectedFormat);
-        setShowFormatModal(!showFormatModal)
-    }
-
+    
 
 
     const getSubtitleFile = async (transcriptId, format) => {
