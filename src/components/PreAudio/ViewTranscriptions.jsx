@@ -39,7 +39,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
     const pdfOptions = {
       margin: 5,
 
-      filename: "transcriptions.pdf",
+      filename: `${filename}.pdf`,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
@@ -75,7 +75,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
     // Create a link element
     const link = document.createElement("a");
     link.href = srtUrl;
-    link.download = "subtitles.srt"; // Set the filename for the download
+    link.download = `${filename}.srt`; // Set the filename for the download
 
     // Append the link to the document body and trigger the download
     document.body.appendChild(link);
@@ -121,14 +121,14 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
     if (updatedText) {
       const file = new Blob([updatedText], { type: "text/plain" });
       element.href = URL.createObjectURL(file);
-      element.download = "transcriptions.txt";
+      element.download = `${filename}.txt`;
       document.body.appendChild(element); // Required for Firefox
       element.click();
     }
     else {
       const file = new Blob([transcriptions.text], { type: "text/plain" });
       element.href = URL.createObjectURL(file);
-      element.download = "transcriptions.txt";
+     element.download = `${filename}.txt`;
       document.body.appendChild(element); // Required for Firefox
       element.click();
     }
@@ -177,10 +177,10 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
 
 
 
-    <div className=' md:w-full p-5 flex flex-row  gap-8  '>
+    <div className=' md:w-full p-5 flex flex-row   gap-8  '>
 
 
-      <span className='flex border p-4 w-2/3 shadow-md flex-col h-[250px] overflow-y-scroll  gap-5 py-5 rounded-md'>
+      <span className='flex border p-4 w-2/3  shadow-md flex-col h-[250px] overflow-y-scroll  gap-5 py-5 rounded-md bg-white'>
 
         <span className='flex flex-row  gap-2'>
 
@@ -217,7 +217,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
       </span>
 
 
-      <div className='w-60 h-[430px] py-5 flex items-center justify-center shadow-md  border overflow-y-scroll '>
+      <div className='w-60 bg-white h-[430px] py-5 flex items-center justify-center shadow-md  border overflow-y-scroll rounded-md '>
 
         <div className='flex px-3  items-start h-full  w-full flex-col '>
           <h2 className='text-lg font-semibold text-text-black my-4 mt-5'>Export</h2>

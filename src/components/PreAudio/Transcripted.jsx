@@ -9,7 +9,8 @@ const Transcripted = ({
     transcriptions,
     filename,
     processing,
-    subtitle
+    subtitle,
+    handleTranscriptions
 
 }) => {
     console.log(transcriptions)
@@ -26,7 +27,7 @@ const Transcripted = ({
         <>
 
             {
-                !isView ? (<div className='border md:w-full shadow-md p-5 flex flex-col  gap-8 h-[300px] '>
+                !isView ? (<div className='border md:w-full shadow-md p-5 flex flex-col  gap-8 min-h-[300px] '>
 
                     <span className='flex flex-row justify-between items-center gap-2 py-5'>
 
@@ -35,7 +36,7 @@ const Transcripted = ({
                             <h1 className='text-3xl font-bold font-poppins text-text-black'> Recent Files</h1>
                         </span>
                         <div>
-                            <button className='text-center px-5 py-3 w-full h-16
+                            <button onClick={handleTranscriptions} className='text-center px-5 py-3 w-full h-16
 rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
                                     <FaCloudUploadAlt size={25} /> <p>Transcribe Files </p>
                                 </span></button>
@@ -65,9 +66,9 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
                             </thead>
                             <div className=' my-5  border '></div>
-                            <tbody onClick={handleNavigate} className=''>
+                            <tbody onClick={handleNavigate} className='hover:bg-[#EDEDED] hover:rounded-3xl py-4'>
 
-                                <tr className="font-poppins text-sm hover:bg-gray-300 rounded-md cursor-pointer">
+                                <tr className="font-poppins text-sm  cursor-pointer">
                                     <td className=" text-text-black font-medium text-lg px-20 py-2">{filename}</td>
                                     <td className=" text-text-black font-medium text-lg px-20 py-2">April 1, 2024</td>
                                     <td className=" text-text-black font-medium text-lg px-20 py-2">{`${transcriptions.audio_duration}s`}</td>
