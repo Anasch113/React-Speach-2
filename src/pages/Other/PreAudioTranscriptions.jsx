@@ -281,7 +281,7 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                             </select>
 
                         </span>
-                        <button onClick={handleTranscriptions} className='text-center px-5 py-4 w-full h-16
+                        <button disabled={isUpload} onClick={handleTranscriptions} className='text-center px-5 py-4 w-full h-16
 rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
                                 <FaCloudUploadAlt size={25} /> <p>Transcribe </p>
                             </span></button>
