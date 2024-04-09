@@ -108,3 +108,94 @@ https://turboscribe.ai/?ref=bng-2023-11-29&msclkid=23f82b822b04129e93874d8417961
                         </div>
 
                     </div>
+
+
+
+
+
+
+
+
+
+
+                    
+  const calculateHighlightedIndex = (currentTime) => {
+    console.log(currentTime)
+    // Get the transcript text from the transcriptions state
+    const transcriptText = transcriptions.text;
+
+    // Split the transcript text into individual sentences or segments
+    const segments = transcriptText.split('. ');
+
+    // Initialize variables to keep track of the current position in the audio and the index of the matched segment
+    let currentPosition = 0;
+    let matchedIndex = null;
+
+    // Iterate through each segment to find the one that matches the current time
+    for (let i = 0; i < segments.length; i++) {
+      // Calculate the duration of the current segment based on the number of characters
+      const segmentDuration = segments[i].length;
+
+      // Check if the current time falls within the duration of this segment
+      if (currentTime >= currentPosition && currentTime < currentPosition + segmentDuration) {
+        // If matched, set the matchedIndex and break the loop
+        matchedIndex = i;
+        break;
+      }
+
+      // Move the currentPosition to the end of the current segment
+      currentPosition += segmentDuration + 2; // Add 2 to account for the period and space after each segment
+    }
+
+    // Return the index of the matched segment
+    return matchedIndex;
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   const calculateHighlightedIndex = (currentTime) => {
+    // Get the transcript text from the transcriptions state
+    const transcriptText = transcriptions.text;
+  
+    // Split the transcript text into individual words
+    const words = transcriptText.split(' ');
+  
+    // Initialize matchedIndex to null
+    let matchedIndex = null;
+  
+    // Initialize currentPosition to keep track of the current position in the audio
+    let currentPosition = 0;
+  
+    // Iterate through each word to find the one that matches the current time
+    for (let i = 0; i < words.length; i++) {
+      // Calculate the duration of the current word based on an average word length (you may need to adjust this based on your actual data)
+      const wordDuration = 0.5; // Assuming an average word length of 0.5 seconds
+  
+      // Check if the current time falls within the duration of this word
+      if (currentTime >= currentPosition && currentTime < currentPosition + wordDuration) {
+        // If matched, set the matchedIndex and break the loop
+        matchedIndex = i;
+        break;
+      }
+  
+      // Move the currentPosition to the end of the current word
+      currentPosition += wordDuration;
+    }
+  
+    // Return the index of the matched word
+    console.log("match index", matchedIndex)
+    setWordsIndex(matchedIndex)
+    return matchedIndex;
+  };

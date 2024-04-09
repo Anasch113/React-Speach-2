@@ -12,7 +12,8 @@ import { MdOutlineCloudUpload } from "react-icons/md";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { TiPencil } from "react-icons/ti";
 import EditModal from './EditModal';
-
+import { CiShare2 } from "react-icons/ci";
+import ShareModal from './ShareModal';
 
 import { Packer, Document, Paragraph } from "docx";
 import CustomAudioPlayer from './CustomAudioPlayer';
@@ -27,12 +28,14 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
   const [showSRT, setShowSRT] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [isUpdated, setIsUpdated] = useState(false);
+  const [isOpenEditModal, setIsOpenEditModal] = useState(false);
   const [isAudioDownloading, setIsAudioDownloading] = useState(false);
   const [selectedText, setSelectedText] = useState("");
   const [updatedText, setUpdatedText] = useState("");
+  const [wordsIndex, setWordsIndex] = useState("");
 
-  console.log(transcriptions.audio_url)
+  const [shareLink, setShareLink] = useState('');
+
 
   const downloadPdf = async () => {
     setIsDownloadingtr(true);
@@ -173,6 +176,47 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
   }
 
 
+  const calculateHighlightedIndex = (currentTime) => {
+    // Get the transcript text from the transcriptions state
+    const transcriptText = transcriptions.text;
+  
+    // Split the transcript text into individual sentences or lines
+    const sentences = transcriptText.split('. '); // Assuming sentences are separated by periods
+  
+    // Initialize currentPosition to keep track of the current position in the audio
+    let currentPosition = 0;
+  
+    // Iterate through each sentence or line to find the one that matches the current time
+    for (let i = 0; i < sentences.length; i++) {
+      // Calculate the duration of the current sentence or line based on the number of characters
+      const sentenceDuration = sentences[i].length * 0.05; // Adjust multiplier as needed based on your audio
+  
+      // Check if the current time falls within the duration of this sentence or line
+      if (currentTime >= currentPosition && currentTime < currentPosition + sentenceDuration) {
+        // If matched, return the index
+        console.log(i)
+        setWordsIndex(i)
+        return i;
+      }
+  
+      // Move the currentPosition to the end of the current sentence or line
+      currentPosition += sentenceDuration;
+    }
+  
+    // If no match found, return -1
+    return -1;
+  };
+  console.log("transcriptions.words:", transcriptions.words)
+
+  const shareBaseUrl = 'https://captifylive.online/share/transcript?text='; // Replace with your actual share link base URL
+
+  const generateShareLink = () => {
+    setIsOpenEditModal(true)
+    const transcriptText = encodeURIComponent(transcriptions.text);
+    const link = `${shareBaseUrl}${transcriptText}`;
+    setShareLink(link);
+  };
+  console.log(shareLink)
   return (
 
 
@@ -200,12 +244,18 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
               showSRT ? (subtitle.split('\n').map((subtitle, index) => (
                 <p ref={contentRef} onClick={() => isEdit && handleTextClick(subtitle)} className='py-2' key={index}>{subtitle}</p>
               ))) :
-                <p className='w-full py-3' ref={contentRef} onClick={() => isEdit && handleTextClick(() => !updatedText ? transcriptions.text : updatedText)}>
-                  {!updatedText ? <p>{transcriptions.text}</p> : <p>{updatedText}</p>}
+                <p className={`w-full  py-3  ${isEdit ? "hover:text-gray-400 hover:cursor-pointer" : ""}`} ref={contentRef} onClick={() => isEdit && handleTextClick(() => !updatedText ? transcriptions.text : updatedText)}>
+                  {!updatedText ? <p className={`  ${isEdit ? "hover:cursor-pointer" : ""}`}>{transcriptions.text}</p> : <p >{updatedText}</p>}
                 </p>
 
             }
-
+ <div>
+  {transcriptions.text.split('. ').map((sentence, index) => (
+    <span key={index} style={{ fontWeight: index === wordsIndex ? 'bold' : 'normal' }}>
+      {sentence}{index !== wordsIndex && '.'}{' '}
+    </span>
+  ))}
+</div>
 
 
 
@@ -280,6 +330,14 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
                 <MdOutlineCloudUpload size={25} />  {!isAudioDownloading ? <p>Download Audio</p> : <p>Downloading...</p>}
               </span>
 
+              <span onClick={generateShareLink} className='my-2 flex items-center gap-3 cursor-pointer'>
+                <CiShare2 size={25} /> Share Transcript
+              </span>
+
+              {
+                isOpenEditModal && <ShareModal shareLink={shareLink} />
+              }
+
 
 
 
@@ -290,11 +348,11 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
       </div>
 
 
-      <div className='w-full bg-white p-5 items-center mt-16 flex flex-col  gap-2'>
+      <div className='w-full bg-white p-5 items-center mt-16 flex flex-col  gap-2 rounded-md'>
         <p className='text-center font-semibold text-text-black font-poppins'>{filename}</p>
 
         <div className='w-full flex items-center justify-center self-end'>
-         <CustomAudioPlayer audioUrl={transcriptions.audio_url}/>
+          <CustomAudioPlayer calculateHighlightedIndex={calculateHighlightedIndex} audioUrl={transcriptions.audio_url} />
         </div>
 
 

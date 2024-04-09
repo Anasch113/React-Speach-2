@@ -3,12 +3,38 @@ import { FaPause } from "react-icons/fa6";
 import { FaPlay } from "react-icons/fa6";
 import { FaVolumeUp } from "react-icons/fa";
 import { FaVolumeMute } from "react-icons/fa";
-function CustomAudioPlayer({ audioUrl }) {
+function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
   const audioRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
+
+   // Update progress and duration
+   useEffect(() => {
+   
+    const updateTime = () => {
+      setCurrentTime(audioRef.current.currentTime);
+      setDuration(audioRef.current.duration);
+    };
+
+    const updateProgress = () => {
+      const progress = (audioRef.current.currentTime / audioRef.current.duration) * 100;
+      setCurrentTime(audioRef.current.currentTime);
+      setDuration(audioRef.current.duration);
+      const newIndex = calculateHighlightedIndex(audioRef.current.currentTime);
+     
+    };
+
+    audioRef.current.addEventListener('timeupdate', updateProgress);
+    audioRef.current.addEventListener('loadedmetadata', updateTime);
+
+    return () => {
+      audioRef.current.removeEventListener('timeupdate', updateProgress);
+      audioRef.current.removeEventListener('loadedmetadata', updateTime);
+    };
+  }, []);
 
   // Function to toggle play/pause
   const togglePlayPause = () => {
@@ -33,36 +59,17 @@ function CustomAudioPlayer({ audioUrl }) {
     const value = parseFloat(event.target.value);
     setCurrentTime(value);
     audioRef.current.currentTime = value;
+    
   };
 
-  // Update progress and duration
-  useEffect(() => {
-    const updateTime = () => {
-      setCurrentTime(audioRef.current.currentTime);
-      setDuration(audioRef.current.duration);
-    };
+ 
 
-    const updateProgress = () => {
-      const progress = (audioRef.current.currentTime / audioRef.current.duration) * 100;
-      setCurrentTime(audioRef.current.currentTime);
-      setDuration(audioRef.current.duration);
-    };
-
-    audioRef.current.addEventListener('timeupdate', updateProgress);
-    audioRef.current.addEventListener('loadedmetadata', updateTime);
-
-    return () => {
-      audioRef.current.removeEventListener('timeupdate', updateProgress);
-      audioRef.current.removeEventListener('loadedmetadata', updateTime);
-    };
-  }, []);
-
-  console.log(volume)
+  
   return (
     <div>
       <audio ref={audioRef} src={audioUrl}></audio>
       <div className='flex gap-1'>
-        <button onClick={togglePlayPause}>{isPlaying ? <FaPause className='hover:bg-bg-blue  hover:text-white w-7 h-7 hover:p-1 hover:rounded-md '   size={25}/> : <FaPlay className='hover:bg-bg-blue  hover:text-white w-7 h-7 hover:p-1 hover:rounded-md ' />}</button>
+        <button onClick={togglePlayPause}>{isPlaying ? <FaPause className='hover:bg-bg-blue  hover:text-white w-7 h-7 hover:p-1 hover:rounded-md transition-colors duration-300'   size={25}/> : <FaPlay className='hover:bg-bg-blue  hover:text-white w-7 h-7 hover:p-1 hover:rounded-md transition-colors duration-300' />}</button>
        
          <input
           type="range"
