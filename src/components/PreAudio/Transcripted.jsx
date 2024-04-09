@@ -4,6 +4,7 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../layout/Sidebar';
 import { useState } from 'react';
+import toast from "react-hot-toast"
 import ViewTranscriptions from './ViewTranscriptions';
 const Transcripted = ({
     transcriptions,
@@ -18,7 +19,14 @@ const Transcripted = ({
     const [isView, setIsView] = useState(false);
 
     const handleNavigate = () => {
+        if (transcriptions.length === 0) {
+
+
+            return null
+        }
+
         // navigate("/pre-audio-transcriptions/view", {
+      
         setIsView(true)
         //     state: { transcriptions: transcriptions, filename:filename }
         // });
@@ -66,7 +74,8 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
                             </thead>
                             <div className=' my-5  border '></div>
-                            <tbody onClick={handleNavigate} className='hover:bg-[#EDEDED] hover:rounded-3xl py-4'>
+                            <tbody onClick={
+                                handleNavigate} className='hover:bg-[#EDEDED] hover:rounded-3xl py-4'>
 
                                 <tr className="font-poppins text-sm  cursor-pointer">
                                     <td className=" text-text-black font-medium text-lg px-20 py-2">{filename}</td>

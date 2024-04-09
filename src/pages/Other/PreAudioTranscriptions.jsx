@@ -106,7 +106,8 @@ const PreAudioTranscriptions = () => {
 
             const params = {
                 audio: cloudUrl,
-                speaker_labels: true
+                speaker_labels: true,
+                sentiment_analysis: true
             }
 
 

@@ -11,9 +11,9 @@ function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
   const [duration, setDuration] = useState(0);
 
 
-   // Update progress and duration
-   useEffect(() => {
-   
+  // Update progress and duration
+  useEffect(() => {
+
     const updateTime = () => {
       setCurrentTime(audioRef.current.currentTime);
       setDuration(audioRef.current.duration);
@@ -24,7 +24,9 @@ function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
       setCurrentTime(audioRef.current.currentTime);
       setDuration(audioRef.current.duration);
       const newIndex = calculateHighlightedIndex(audioRef.current.currentTime);
-     
+
+
+
     };
 
     audioRef.current.addEventListener('timeupdate', updateProgress);
@@ -54,24 +56,25 @@ function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
   };
 
 
-   // Function to handle seeking
-   const handleSeek = (event) => {
+  // Function to handle seeking
+  const handleSeek = (event) => {
     const value = parseFloat(event.target.value);
     setCurrentTime(value);
     audioRef.current.currentTime = value;
-    
+    const newIndex = calculateHighlightedIndex(currentTime);
+
   };
 
- 
 
-  
+
+
   return (
     <div>
       <audio ref={audioRef} src={audioUrl}></audio>
       <div className='flex gap-1'>
-        <button onClick={togglePlayPause}>{isPlaying ? <FaPause className='hover:bg-bg-blue  hover:text-white w-7 h-7 hover:p-1 hover:rounded-md transition-colors duration-300'   size={25}/> : <FaPlay className='hover:bg-bg-blue  hover:text-white w-7 h-7 hover:p-1 hover:rounded-md transition-colors duration-300' />}</button>
-       
-         <input
+        <button onClick={togglePlayPause}>{isPlaying ? <FaPause className='hover:bg-bg-blue  hover:text-white w-7 h-7 hover:p-1 hover:rounded-md transition-colors duration-300' size={25} /> : <FaPlay className='hover:bg-bg-blue  hover:text-white w-7 h-7 hover:p-1 hover:rounded-md transition-colors duration-300' />}</button>
+
+        <input
           type="range"
           min="0"
           max={duration}
@@ -79,26 +82,26 @@ function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
           value={currentTime}
           onChange={handleSeek}
           className='w-[500px] bg-gray-500 border-none mx-5'
-          
+
         />
         {currentTime && `${Math.floor(currentTime)}s`}
         <div className='flex items-center gap-1 mx-4'>
 
 
-{
-    volume === "0" ? (<FaVolumeMute size={22}/>) : (<FaVolumeUp size={22}/>)
-}
-       
-         <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          value={volume}
-          onChange={handleVolumeChange}
-          className='mx-2 w-28'
-        />
-         </div>
+          {
+            volume === "0" ? (<FaVolumeMute size={22} />) : (<FaVolumeUp size={22} />)
+          }
+
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            onChange={handleVolumeChange}
+            className='mx-2 w-28'
+          />
+        </div>
       </div>
     </div>
   );

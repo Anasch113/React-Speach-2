@@ -14,6 +14,9 @@ import { TiPencil } from "react-icons/ti";
 import EditModal from './EditModal';
 import { CiShare2 } from "react-icons/ci";
 import ShareModal from './ShareModal';
+import { RiShareForwardLine } from "react-icons/ri";
+import axios from "axios"
+
 
 import { Packer, Document, Paragraph } from "docx";
 import CustomAudioPlayer from './CustomAudioPlayer';
@@ -21,7 +24,8 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
   // const location = useLocation();
   // const transcriptionsState = location.state?.transcriptions;
   // const filename = location.state?.filename;
-  console.log(transcriptions)
+  console.log(transcriptions.sentiment_analysis_results
+  )
   const contentRef = useRef(null)
   const updatedContentRef = useRef(null)
   const [isDownloadingtr, setIsDownloadingtr] = useState(false); // New state variable
@@ -177,44 +181,46 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
 
 
   const calculateHighlightedIndex = (currentTime) => {
-    // Get the transcript text from the transcriptions state
-    const transcriptText = transcriptions.text;
-  
-    // Split the transcript text into individual sentences or lines
-    const sentences = transcriptText.split('. '); // Assuming sentences are separated by periods
-  
-    // Initialize currentPosition to keep track of the current position in the audio
-    let currentPosition = 0;
-  
-    // Iterate through each sentence or line to find the one that matches the current time
-    for (let i = 0; i < sentences.length; i++) {
-      // Calculate the duration of the current sentence or line based on the number of characters
-      const sentenceDuration = sentences[i].length * 0.05; // Adjust multiplier as needed based on your audio
-  
-      // Check if the current time falls within the duration of this sentence or line
-      if (currentTime >= currentPosition && currentTime < currentPosition + sentenceDuration) {
-        // If matched, return the index
-        console.log(i)
+    currentTime *= 1000;
+    console.log("currentTime", currentTime)
+    // Get the segment analysis results from the transcriptions state
+    const segments = transcriptions.sentiment_analysis_results;
+    console.log(segments)
+    // Iterate through each segment to find the one that matches the current time
+    for (let i = 0; i < segments.length; i++) {
+      // Extract start and end times of the current segment
+      const { start, end } = segments[i];
+      // console.log("start", start)
+      // console.log("end", end)
+      // Check if the current time falls within the duration of this segment
+      if (currentTime >= start && currentTime <= end) {
         setWordsIndex(i)
+        // If matched, return the index
         return i;
       }
-  
-      // Move the currentPosition to the end of the current sentence or line
-      currentPosition += sentenceDuration;
     }
-  
+
     // If no match found, return -1
     return -1;
   };
   console.log("transcriptions.words:", transcriptions.words)
 
-  const shareBaseUrl = 'https://captifylive.online/share/transcript?text='; // Replace with your actual share link base URL
+  
 
   const generateShareLink = () => {
     setIsOpenEditModal(true)
     const transcriptText = encodeURIComponent(transcriptions.text);
-    const link = `${shareBaseUrl}${transcriptText}`;
-    setShareLink(link);
+    const baseUrl = `${import.meta.env.VITE_HOST_URL}`; // Replace with your server base URL
+    const shareEndpoint = '/share/transcript';
+  
+    axios.get(`${baseUrl}${shareEndpoint}?text=${transcriptText}`)
+    .then(response => {
+      const link = response.data; // Assuming your server sends back the generated link directly
+      setShareLink(link);
+    })
+    .catch(error => {
+      console.error('Error generating share link:', error);
+    });
   };
   console.log(shareLink)
   return (
@@ -244,18 +250,24 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
               showSRT ? (subtitle.split('\n').map((subtitle, index) => (
                 <p ref={contentRef} onClick={() => isEdit && handleTextClick(subtitle)} className='py-2' key={index}>{subtitle}</p>
               ))) :
-                <p className={`w-full  py-3  ${isEdit ? "hover:text-gray-400 hover:cursor-pointer" : ""}`} ref={contentRef} onClick={() => isEdit && handleTextClick(() => !updatedText ? transcriptions.text : updatedText)}>
-                  {!updatedText ? <p className={`  ${isEdit ? "hover:cursor-pointer" : ""}`}>{transcriptions.text}</p> : <p >{updatedText}</p>}
+                <p className={`w-full  py-3  ${isEdit ? "hover:text-text-gray-official  hover:cursor-pointer" : ""}`} ref={contentRef} onClick={() => isEdit && handleTextClick(() => !updatedText ? transcriptions.text : updatedText)}>
+                  {!updatedText ? <p className={`  ${isEdit ? "hover:cursor-pointer" : ""}`}> <div>
+                    {transcriptions.text.split('. ').map((sentence, index) => (
+                      <span key={index} style={{ fontWeight: index === wordsIndex ? 'bolder' : 'normal' }}>
+                        {sentence}{index !== wordsIndex && '.'}{' '}
+                      </span>
+                    ))}
+                  </div></p> : <p >{updatedText}</p>}
                 </p>
 
             }
- <div>
-  {transcriptions.text.split('. ').map((sentence, index) => (
-    <span key={index} style={{ fontWeight: index === wordsIndex ? 'bold' : 'normal' }}>
-      {sentence}{index !== wordsIndex && '.'}{' '}
-    </span>
-  ))}
-</div>
+            {/* <div>
+              {transcriptions.text.split('. ').map((sentence, index) => (
+                <span key={index} style={{ fontWeight: index === wordsIndex ? 'bold' : 'normal' }}>
+                  {sentence}{index !== wordsIndex && '.'}{' '}
+                </span>
+              ))}
+            </div> */}
 
 
 
@@ -280,29 +292,29 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
 
             <div className='flex flex-col items-center justify-center gap-2'>
 
-              <button onClick={downloadPdf} className='my-4 '>
-                <span className='flex items-center text-text-black hover:text-text-brown-new  gap-2'>
+              <button onClick={downloadPdf} className=' hover:bg-bg-hover-color rounded-md p-4'>
+                <span className='flex items-center text-text-black    gap-2'>
                   <FaRegFilePdf size={25} />
                   Download PDF
                 </span>
 
               </button>
-              <button onClick={downloadTxt} className='my-4'>
-                <span className='flex items-center text-text-black  gap-2 hover:text-text-brown-new'>
+              <button onClick={downloadTxt} className=' hover:bg-bg-hover-color rounded-md p-4'>
+                <span className='flex items-center text-text-black  gap-2 '>
                   <BsFiletypeTxt size={25} />
                   Download TXT
                 </span>
 
               </button>
-              <button className='my-4'>
-                <span className='flex items-center text-text-black  gap-2 hover:text-text-brown-new'>
+              <button className=' hover:bg-bg-hover-color rounded-md p-4'>
+                <span className='flex items-center text-text-black  gap-2 '>
                   <BsFiletypeDocx size={25} />
                   Download DOCX
                 </span>
 
               </button>
-              <button onClick={downloadSrtFile} className='my-4'>
-                <span className='flex items-center text-text-black  gap-2 hover:text-text-brown-new'>
+              <button onClick={downloadSrtFile} className=' hover:bg-bg-hover-color rounded-md p-4'>
+                <span className='flex items-center text-text-black  gap-2 '>
                   <LuSubtitles size={25} />
                   Download SRT
                 </span>
@@ -322,20 +334,20 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
                 <span className="ml-2 font-medium">Show TimeStamps</span>
               </label>
 
-              <span onClick={() => setIsEdit(!isEdit)} className='my-2 flex items-center gap-2 cursor-pointer'>
+              <span onClick={() => setIsEdit(!isEdit)} className=' flex items-center gap-2 cursor-pointer hover:bg-bg-hover-color rounded-md p-4'>
                 <MdOutlineModeEditOutline size={25} /> {isEdit ? <p>Done Editing</p> : <p>Edit Transcript</p>}
               </span>
 
-              <span onClick={downloadAudio} className='my-2 flex items-center gap-2 cursor-pointer'>
+              <span onClick={downloadAudio} className='hover:bg-bg-hover-color rounded-md p-4 flex items-center gap-2 cursor-pointer'>
                 <MdOutlineCloudUpload size={25} />  {!isAudioDownloading ? <p>Download Audio</p> : <p>Downloading...</p>}
               </span>
 
-              <span onClick={generateShareLink} className='my-2 flex items-center gap-3 cursor-pointer'>
-                <CiShare2 size={25} /> Share Transcript
+              <span onClick={generateShareLink} className='hover:bg-bg-hover-color rounded-md p-4 flex items-center gap-3 cursor-pointer mb-2'>
+                <RiShareForwardLine size={25} /> Share Transcript
               </span>
 
               {
-                isOpenEditModal && <ShareModal shareLink={shareLink} />
+                isOpenEditModal && <ShareModal generateShareLink={generateShareLink}  isOpenEditModal = {isOpenEditModal}shareLink={shareLink} setIsOpenEditModal={setIsOpenEditModal} />
               }
 
 

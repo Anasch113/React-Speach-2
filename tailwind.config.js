@@ -17,7 +17,8 @@ export default {
         "gray-dark": "#5F5F5F",
         "bg-left-bar": "#F6F8FD",
         "bg-blue": "#126fd6",
-        "bg-dark-blue" : "#05294B"
+        "bg-dark-blue" : "#05294B",
+        "bg-hover-color": "#EAEAEA"
        
 
         
@@ -35,7 +36,8 @@ export default {
         'text-gray-other': "#292929",
         "text-gray-official" : "#5D7284",
         "text-black": "#303030",
-        "text-brown-new": "#838383"
+        "text-brown-new": "#838383",
+        "text-hover-color": "#EAEAEA"
 
 
         
