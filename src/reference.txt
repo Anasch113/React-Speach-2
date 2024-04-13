@@ -28,6 +28,14 @@ bg-[#f9e4f8]
 https://turboscribe.ai/?ref=bng-2023-11-29&msclkid=23f82b822b04129e93874d8417961a86
 
 
+Pre-Transcript File Idea :-
+
+
+I mean the functionality for a user to upload a checked transcript for editing and output to srt file. So they can download raw text, edit it themselves outside the platform if they want to using their own transcription playback software they might have already.  And then go back to the job and replace the raw text with their edited text. And then have captify retime the file and then allow them to download an srt file. This is the key part of the gate.
+
+
+
+
 
                   {isOpen && (
           <div className="absolute mt-16  w-48 h-48  bg-white border border-gray-200 shadow-md rounded-lg z-10">

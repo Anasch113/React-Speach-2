@@ -27,12 +27,13 @@ import UserPaymentInfo from "./components/SideComponents/UserPaymentInfo"
 import ViewTranscriptions from "./components/PreAudio/ViewTranscriptions";
 
 
+
 function App() {
 
 
   return (
     <>
-    
+
       <UserAuthContextProvider>
         <BrowserRouter>
           <Routes>
@@ -67,7 +68,7 @@ function App() {
               </ProtectedRoute>
 
             } />
-           
+
 
             <Route exact path="/pricing" element={
 
@@ -120,6 +121,9 @@ function App() {
 
             />
 
+            
+           
+
             <Route exact path="/signup" element={<Signup />} />
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/forgetPassword" element={<ForgetPassword />} />
@@ -129,7 +133,7 @@ function App() {
           </Routes>
         </BrowserRouter>
         <div> <Toaster /></div>
-        
+
 
 
       </UserAuthContextProvider>

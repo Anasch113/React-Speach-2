@@ -21,6 +21,7 @@ import { MdOutlineTranscribe } from "react-icons/md";
 import { MdAlternateEmail } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa6";
 import { BiNavigation } from "react-icons/bi";
+import { CgTranscript } from "react-icons/cg";
 
 function Sidebar() {
   const user1 = {
@@ -208,10 +209,10 @@ function Sidebar() {
         <Link to={"/transcription"}>
           <div className={`mx-2 p-4 flex rounded-md ${isActive("/transcription") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
             <div className="mr-2 mt-1">
-              <SiTheconversation />
+              <BiConversation />
             </div>
 
-            <button>My Conversation</button>
+            <button>My Conversations</button>
 
           </div>
         </Link>

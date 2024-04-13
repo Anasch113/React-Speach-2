@@ -72,7 +72,7 @@ function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
     <div>
       <audio ref={audioRef} src={audioUrl}></audio>
       <div className='flex gap-1'>
-        <button onClick={togglePlayPause}>{isPlaying ? <FaPause className='hover:bg-bg-blue  hover:text-white w-7 h-7 hover:p-1 hover:rounded-md transition-colors duration-300' size={25} /> : <FaPlay className='hover:bg-bg-blue  hover:text-white w-7 h-7 hover:p-1 hover:rounded-md transition-colors duration-300' />}</button>
+        <button onClick={togglePlayPause}>{isPlaying ? <FaPause className='hover:bg-bg-blue  hover:text-white w-7 h-7 p-1 text-3xl  rounded-md transition-colors duration-300'  /> : <FaPlay className='hover:bg-bg-blue  hover:text-white w-7 h-7 p-1 text-3xl  rounded-md transition-colors duration-300' />}</button>
 
         <input
           type="range"
