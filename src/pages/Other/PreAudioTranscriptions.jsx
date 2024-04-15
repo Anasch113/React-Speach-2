@@ -203,7 +203,7 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                     }
 
                     {
-                        isTranscriptions && <Transcripted transcribeText={transcribeText} subtitle={subtitle} transcriptions={transcriptions} filename={filename} processing={processing} handleTranscriptions={handleTranscriptions} />
+                        isTranscriptions && <Transcripted transcribeText={transcribeText} subtitle={subtitle} transcriptions={transcriptions} filename={filename} processing={processing} handleTranscriptions={handleTranscriptions} setTranscriptions = {setTranscriptions} />
                     }
 
 

@@ -3,11 +3,12 @@ import { FaPause } from "react-icons/fa6";
 import { FaPlay } from "react-icons/fa6";
 import { FaVolumeUp } from "react-icons/fa";
 import { FaVolumeMute } from "react-icons/fa";
-function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
+function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex, transcriptions }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
   const audioRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
+  const [currentTimeMS, setCurrentTimeMS] = useState(0);
   const [duration, setDuration] = useState(0);
 
 
@@ -24,7 +25,6 @@ function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
       setCurrentTime(audioRef.current.currentTime);
       setDuration(audioRef.current.duration);
       const newIndex = calculateHighlightedIndex(audioRef.current.currentTime);
-
 
 
     };
@@ -66,13 +66,11 @@ function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
   };
 
 
-
-
   return (
     <div>
       <audio ref={audioRef} src={audioUrl}></audio>
       <div className='flex gap-1'>
-        <button onClick={togglePlayPause}>{isPlaying ? <FaPause className='hover:bg-bg-blue  hover:text-white w-7 h-7 p-1 text-3xl  rounded-md transition-colors duration-300'  /> : <FaPlay className='hover:bg-bg-blue  hover:text-white w-7 h-7 p-1 text-3xl  rounded-md transition-colors duration-300' />}</button>
+        <button onClick={togglePlayPause}>{isPlaying ? <FaPause className='hover:bg-bg-blue  hover:text-white w-7 h-7 p-1 text-3xl  rounded-md transition-colors duration-300' /> : <FaPlay className='hover:bg-bg-blue  hover:text-white w-7 h-7 p-1 text-3xl  rounded-md transition-colors duration-300' />}</button>
 
         <input
           type="range"

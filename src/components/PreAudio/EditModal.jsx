@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { BsChatLeftText } from "react-icons/bs";
 const EditModal = ({ selectedText, onClose, onUpdateText }) => {
-    const [editedText, setEditedText] = useState(selectedText);
+
+    const [editedText, setEditedText] = useState(selectedText.text);
 
     const handleInputChange = (event) => {
         setEditedText(event.target.value);
     };
 
     const handleUpdate = () => {
-        onUpdateText(editedText);
+        onUpdateText(editedText, selectedText.index);
     };
 
     return (

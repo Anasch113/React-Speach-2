@@ -20,18 +20,20 @@ import axios from "axios"
 
 import { Packer, Document, Paragraph } from "docx";
 import CustomAudioPlayer from './CustomAudioPlayer';
-const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
+const ViewTranscriptions = ({ transcriptions, filename, subtitle, setTranscriptions }) => {
   // const location = useLocation();
   // const transcriptionsState = location.state?.transcriptions;
   // const filename = location.state?.filename;
-  console.log(transcriptions.sentiment_analysis_results)
   console.log(transcriptions.utterances)
+  console.log(transcriptions)
+
 
 
   const contentRef = useRef(null)
   const updatedContentRef = useRef(null)
   const [isDownloadingtr, setIsDownloadingtr] = useState(false); // New state variable
   const [showSRT, setShowSRT] = useState(false);
+  const [showSpeakerLables, setShowSpeakerLabels] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
@@ -103,49 +105,29 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
     console.log("After toggle:", showSRT); // Log current state after toggle
   };
 
-
-
-  const handleTextClick = (text) => {
-    setSelectedText(text);
-    setShowModal(true);
+  const handleToggleSpeakerLabels = () => {
+    console.log("Before toggle:", showSpeakerLables); // Log current state before toggle
+    setShowSpeakerLabels(!showSpeakerLables); // Toggle the value of showSRT
+    console.log("After toggle:", showSpeakerLables); // Log current state after toggle
   };
+
+
+
+
 
   const handleModalClose = () => {
     setShowModal(false);
   };
 
-  const handleUpdateText = (updatedText) => {
-    console.log(updatedText)
-    setShowModal(false);
-
-    contentRef.current.textContent = updatedText;
-    setUpdatedText(updatedText)
-    // Update the content in the ref
-
-
-  };
-
-
   const downloadTxt = () => {
     const element = document.createElement("a");
-    if (updatedText) {
-      const file = new Blob([updatedText], { type: "text/plain" });
-      element.href = URL.createObjectURL(file);
-      element.download = `${filename}.txt`;
-      document.body.appendChild(element); // Required for Firefox
-      element.click();
-    }
-    else {
-      const file = new Blob([transcriptions.text], { type: "text/plain" });
-      element.href = URL.createObjectURL(file);
-      element.download = `${filename}.txt`;
-      document.body.appendChild(element); // Required for Firefox
-      element.click();
-    }
+    const content = contentRef.current.innerText; // Get text content of the div
 
-
-
-
+    const file = new Blob([content], { type: "text/plain" }); // Create blob with text content
+    element.href = URL.createObjectURL(file);
+    element.download = `${filename}.txt`;
+    document.body.appendChild(element); // Required for Firefox
+    element.click();
   };
 
 
@@ -186,25 +168,54 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
     currentTime *= 1000;
     console.log("currentTime", currentTime)
     // Get the segment analysis results from the transcriptions state
-    const segments = transcriptions.sentiment_analysis_results;
-    console.log(segments)
-    // Iterate through each segment to find the one that matches the current time
-    for (let i = 0; i < segments.length; i++) {
-      // Extract start and end times of the current segment
-      const { start, end } = segments[i];
-      // console.log("start", start)
-      // console.log("end", end)
-      // Check if the current time falls within the duration of this segment
-      if (currentTime >= start && currentTime <= end) {
-        setWordsIndex(i)
-        // If matched, return the index
-        return i;
+    // const segments = transcriptions.sentiment_analysis_results;
+
+    if (transcriptions.utterances.length === 1) {
+      const segments = transcriptions.sentiment_analysis_results;
+
+      console.log(segments)
+      // Iterate through each segment to find the one that matches the current time
+      for (let i = 0; i < segments.length; i++) {
+        // Extract start and end times of the current segment
+        const { start, end } = segments[i];
+        console.log("start", start)
+        console.log("end", end)
+        // Check if the current time falls within the duration of this segment
+        if (currentTime >= start && currentTime <= end) {
+          setWordsIndex(i)
+          // If matched, return the index
+          return i;
+        }
       }
+
+      // If no match found, return -1
+      return -1;
+    }
+    else {
+      const segments = transcriptions.utterances;
+      console.log(segments)
+      // Iterate through each segment to find the one that matches the current time
+      for (let i = 0; i < segments.length; i++) {
+        // Extract start and end times of the current segment
+        const { start, end } = segments[i];
+        console.log("start", start)
+        console.log("end", end)
+        // Check if the current time falls within the duration of this segment
+        if (currentTime >= start && currentTime <= end) {
+          setWordsIndex(i)
+          // If matched, return the index
+          return i;
+        }
+      }
+
+      // If no match found, return -1
+      return -1;
     }
 
-    // If no match found, return -1
-    return -1;
+
+
   };
+  console.log("wordsIndex", wordsIndex)
 
 
 
@@ -221,10 +232,47 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
         setShareLink(link);
       })
       .catch(error => {
-        console.error('Error generating share link:', error);
+
       });
   };
-  console.log(shareLink)
+
+
+  const handleTextClick = (text, index) => {
+
+    setSelectedText({ text, index });
+    setShowModal(true);
+  };
+
+  const handleUpdateText = (updatedText, index) => {
+
+    const updatedUtterances = [...transcriptions.utterances]; // Copy the utterances array
+
+    if (transcriptions.utterances.length === 1) {
+      const sentences = updatedUtterances[0].text.split('.');
+
+      sentences[index] = updatedText;
+      updatedUtterances[0].text = sentences.join('.');
+      setTranscriptions({ ...transcriptions, utterances: updatedUtterances });
+
+
+    }
+    else {
+      updatedUtterances[index].text = updatedText;
+      setTranscriptions({ ...transcriptions, utterances: updatedUtterances });
+    }
+
+    // Update the text of the specific utterance
+
+
+
+    // Update the state with the new utterances array
+    setShowModal(false); // Close the modal
+
+    console.log("updated utterances", updatedUtterances)
+    setUpdatedText(updatedText); // Set the updated text
+  };
+
+
   return (
 
 
@@ -249,26 +297,65 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
 
             {
 
+
+
               showSRT ? (subtitle.split('\n').map((subtitle, index) => (
                 <p ref={contentRef} onClick={() => isEdit && handleTextClick(subtitle)} className='py-2' key={index}>{subtitle}</p>
               ))) :
-                <p className={`w-full  py-3  ${isEdit ? "hover:text-text-gray-official  hover:cursor-pointer" : ""}`} ref={contentRef} onClick={() => isEdit && handleTextClick(() => !updatedText ? transcriptions.text : updatedText)}>
-                  {!updatedText ? <p className={`  ${isEdit ? "hover:cursor-pointer" : ""}`}> <div>
-                    {transcriptions.text.split('. ').map((sentence, index) => (
-                      <span key={index} style={{ color: index === wordsIndex ? '#f1b900' : 'black' }}>
-                        {sentence}{index !== wordsIndex && '.'}{' '}
-                      </span>
-                    ))}
-                  </div></p> : <p >{updatedText}</p>}
-                </p>
+
+                <div ref={contentRef}>
+                  {
+                    transcriptions.utterances.map((files, i) => (
+
+                      <div className={`w-full  py-3  `} key={i}>
+
+
+                        <span className='flex gap-2 flex-wrap'>
+                          <span className='flex gap-1 text-gray-500 font-medium'>  <p >Speaker</p>  <p >{files.speaker}: </p> </span>
+
+                          {transcriptions.utterances.length === 1 && i === 0 ? (
+                            // If there is only one index, split the text into sentences
+                            files.text.split('.').map((sentence, index) => (
+                              <span className='flex flex-col'>
+                                <p
+                                  style={{ color: index === wordsIndex ? '#f1b900' : 'black' }}
+                                  key={index}
+                                  className={` ${isEdit ? " hover:cursor-pointer hover:text-blue-500" : ""}`}
+                                  onClick={() => isEdit && handleTextClick(sentence.trim(), index)}
+                                >
+                                  {sentence.trim()}
+                                </p>
+                              </span>
+                            ))
+                          ) : (
+                            // If there are more than one index, display the text as is
+                            <p
+                            style={{ color: i === wordsIndex ? '#f1b900' : 'black' }}
+                              className={` ${isEdit ? "hover:text-blue-500  hover:cursor-pointer" : ""}`}
+                              onClick={() => isEdit && handleTextClick(files.text, i)}
+                            >
+                              {files.text}
+                            </p>
+                          )}
+
+                        </span>
+                      </div>
+                    ))
+                  }
+                </div>
 
             }
             {/* <div>
-              {transcriptions.text.split('. ').map((sentence, index) => (
-                <span key={index} style={{ fontWeight: index === wordsIndex ? 'bold' : 'normal' }}>
-                  {sentence}{index !== wordsIndex && '.'}{' '}
-                </span>
-              ))}
+              {
+                transcriptions.utterances.map((files, i) => (
+                  <div className='p-2' key={i}>
+                    <span className='flex gap-2'>
+                      <span className='flex gap-1 text-gray-500 font-medium'> <p >Speaker</p>  <p >{files.speaker}: </p> </span>
+                      <p>{files.text}</p>
+                    </span>
+                  </div>
+                ))
+              }
             </div> */}
 
 
@@ -336,6 +423,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
                 <span className="ml-2 font-medium">Show TimeStamps</span>
               </label>
 
+
               <span onClick={() => setIsEdit(!isEdit)} className=' flex items-center gap-2 cursor-pointer hover:bg-bg-hover-color rounded-md p-4'>
                 <MdOutlineModeEditOutline size={25} /> {isEdit ? <p>Done Editing</p> : <p>Edit Transcript</p>}
               </span>
@@ -366,7 +454,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
         <p className='text-center font-semibold text-text-black font-poppins'>{filename}</p>
 
         <div className='w-full flex items-center justify-center self-end'>
-          <CustomAudioPlayer calculateHighlightedIndex={calculateHighlightedIndex} audioUrl={transcriptions.audio_url} />
+          <CustomAudioPlayer calculateHighlightedIndex={calculateHighlightedIndex} audioUrl={transcriptions.audio_url} transcriptions={transcriptions} />
         </div>
 
 
