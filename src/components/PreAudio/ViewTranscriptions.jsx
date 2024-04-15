@@ -24,8 +24,10 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
   // const location = useLocation();
   // const transcriptionsState = location.state?.transcriptions;
   // const filename = location.state?.filename;
-  console.log(transcriptions.sentiment_analysis_results
-  )
+  console.log(transcriptions.sentiment_analysis_results)
+  console.log(transcriptions.utterances)
+
+
   const contentRef = useRef(null)
   const updatedContentRef = useRef(null)
   const [isDownloadingtr, setIsDownloadingtr] = useState(false); // New state variable
@@ -203,24 +205,24 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
     // If no match found, return -1
     return -1;
   };
-  console.log("transcriptions.words:", transcriptions.words)
 
-  
+
+
 
   const generateShareLink = () => {
     setIsOpenEditModal(true)
     const transcriptText = encodeURIComponent(transcriptions.text);
     const baseUrl = `${import.meta.env.VITE_HOST_URL}`; // Replace with your server base URL
     const shareEndpoint = '/share/transcript';
-  
+
     axios.get(`${baseUrl}${shareEndpoint}?text=${transcriptText}`)
-    .then(response => {
-      const link = response.data; // Assuming your server sends back the generated link directly
-      setShareLink(link);
-    })
-    .catch(error => {
-      console.error('Error generating share link:', error);
-    });
+      .then(response => {
+        const link = response.data; // Assuming your server sends back the generated link directly
+        setShareLink(link);
+      })
+      .catch(error => {
+        console.error('Error generating share link:', error);
+      });
   };
   console.log(shareLink)
   return (
@@ -228,7 +230,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
 
 
 
-    <div className=' md:w-full px-5 flex flex-col   gap-8  '>
+    <div className=' md:w-full px-5 flex flex-col   gap-5  '>
 
 
       <div className='w-full flex p-5  gap-8'>
@@ -236,7 +238,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
 
 
 
-        <span className='flex border p-5 w-2/3  shadow-md flex-col h-[250px] overflow-y-scroll  gap-5 py-5 rounded-md bg-white '>
+        <span className='flex border p-5 w-2/3  shadow-md flex-col h-[430px] overflow-y-scroll  gap-5 py-5 rounded-md bg-white '>
 
           <span className='flex flex-row  gap-2'>
 
@@ -253,7 +255,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
                 <p className={`w-full  py-3  ${isEdit ? "hover:text-text-gray-official  hover:cursor-pointer" : ""}`} ref={contentRef} onClick={() => isEdit && handleTextClick(() => !updatedText ? transcriptions.text : updatedText)}>
                   {!updatedText ? <p className={`  ${isEdit ? "hover:cursor-pointer" : ""}`}> <div>
                     {transcriptions.text.split('. ').map((sentence, index) => (
-                      <span key={index} style={{ fontWeight: index === wordsIndex ? 'bolder' : 'normal' }}>
+                      <span key={index} style={{ color: index === wordsIndex ? '#f1b900' : 'black' }}>
                         {sentence}{index !== wordsIndex && '.'}{' '}
                       </span>
                     ))}
@@ -285,7 +287,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
         </span>
 
 
-        <div className='w-60 bg-white h-[430px] py-5 flex items-center justify-center shadow-md  border overflow-y-scroll rounded-md '>
+        <div className='w-60 bg-white h-[430px] py-5  flex items-center justify-center shadow-md  border overflow-y-scroll rounded-md '>
 
           <div className='flex px-3  items-start h-full  w-full flex-col '>
             <h2 className='text-lg font-semibold text-text-black my-4 mt-5'>Export</h2>
@@ -347,7 +349,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
               </span>
 
               {
-                isOpenEditModal && <ShareModal generateShareLink={generateShareLink}  isOpenEditModal = {isOpenEditModal}shareLink={shareLink} setIsOpenEditModal={setIsOpenEditModal} />
+                isOpenEditModal && <ShareModal generateShareLink={generateShareLink} isOpenEditModal={isOpenEditModal} shareLink={shareLink} setIsOpenEditModal={setIsOpenEditModal} />
               }
 
 
@@ -360,7 +362,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle }) => {
       </div>
 
 
-      <div className='w-full bg-white p-5 items-center mt-16 flex flex-col  gap-2 rounded-md'>
+      <div className='w-full bg-white p-5 items-center  mt-20 flex flex-col  gap-2 rounded-md'>
         <p className='text-center font-semibold text-text-black font-poppins'>{filename}</p>
 
         <div className='w-full flex items-center justify-center self-end'>

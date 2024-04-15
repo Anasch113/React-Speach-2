@@ -88,9 +88,14 @@ const PreAudioTranscriptions = () => {
         }
         setIsUpload(false)
     };
+
+    
     const handleFormClick = () => {
         document.querySelector(".input-field").click();
     };
+
+
+
 
     const handleTranscriptions = async (event) => {
         event.preventDefault();
