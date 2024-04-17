@@ -31,6 +31,7 @@ const PreAudioTranscriptions = () => {
     const [utterances, setUtterances] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [showFormModal, setShowFormModal] = useState(false);
+    const [isTextFiles, setIsTextFiles] = useState(false);
     const [isTranscriptions, setIsTranscriptions] = useState(false);
 
     const [subtitle, setSubtitle] = useState([]); // New state variable
@@ -51,13 +52,28 @@ const PreAudioTranscriptions = () => {
 
     const handleFileChange = async (event) => {
         setIsUpload(true)
+
+
         const selectedFile = event.target.files[0];
         const fileURL = URL.createObjectURL(selectedFile);
         console.log(fileURL)
         setFile(selectedFile)
         setFileName(selectedFile.name)
-
         console.log('Selected Insurance Card File:', selectedFile);
+        if (
+            selectedFile.type === "text/plain" || // for plain text files
+            selectedFile.type === "application/pdf" // for PDF files
+        ) {
+            setIsTextFiles(true)
+            alert("You are going to transcribe text files");
+            // Here you can handle the text file further, for example, you can extract text from it
+            // You can use different libraries or APIs to extract text from PDFs or plain text files
+            // After extracting the text, you can perform operations on it
+            setIsUpload(false);
+         
+        }
+
+        
 
 
         try {
@@ -89,7 +105,7 @@ const PreAudioTranscriptions = () => {
         setIsUpload(false)
     };
 
-    
+
     const handleFormClick = () => {
         document.querySelector(".input-field").click();
     };
@@ -104,17 +120,12 @@ const PreAudioTranscriptions = () => {
         setIsTranscriptions(true)
 
         setShowFormModal(false)
-
         try {
-
-
-
             const params = {
                 audio: cloudUrl,
                 speaker_labels: true,
                 sentiment_analysis: true
             }
-
 
             const transcribe = await client.transcripts.transcribe(params);
             const subtitle = await getSubtitleFile(transcribe.id, 'srt')
@@ -140,12 +151,6 @@ const PreAudioTranscriptions = () => {
 
 
 
-
-
-
-
-
-
     const getSubtitleFile = async (transcriptId, format) => {
         console.log(transcriptId, format)
         const url = `https://api.assemblyai.com/v2/transcript/${transcriptId}/${format}`
@@ -163,6 +168,31 @@ const PreAudioTranscriptions = () => {
             console.log("Error in the SRT Response", error);
         }
 
+    }
+
+
+    const hanldePreTranscribed = async () => {
+
+        const formData = new FormData();
+        formData.append('file', file)
+     
+        
+        console.log(file)
+        try {
+            const serverURL = import.meta.env.VITE_HOST_URL
+
+            const response = await axios.post(`${serverURL}/upload`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+            )
+            console.log(response.data)
+
+
+        } catch (error) {
+            console.log("Error in pre transcribed function", error)
+        }
     }
 
     return (
@@ -203,7 +233,7 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                     }
 
                     {
-                        isTranscriptions && <Transcripted transcribeText={transcribeText} subtitle={subtitle} transcriptions={transcriptions} filename={filename} processing={processing} handleTranscriptions={handleTranscriptions} setTranscriptions = {setTranscriptions} />
+                        isTranscriptions && <Transcripted transcribeText={transcribeText} subtitle={subtitle} transcriptions={transcriptions} filename={filename} processing={processing} handleTranscriptions={handleTranscriptions} setTranscriptions={setTranscriptions} />
                     }
 
 
@@ -267,7 +297,7 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
                             <div className='py-2'>
                                 <input
-                                    accept='.m4a, .mp3 , .mp4, .mov, .wav, .ogg, .wmv, .mpeg, .wma'
+                                    accept='.m4a, .mp3 , .mp4, .mov, .wav, .ogg, .wmv, .mpeg, .wma, .pdf ,.txt, .srt'
                                     onChange={handleFileChange}
                                     className='input-field'
                                     type="file"
@@ -287,7 +317,7 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                             </select>
 
                         </span>
-                        <button disabled={isUpload} onClick={handleTranscriptions} className='text-center px-5 py-4 w-full h-16
+                        <button disabled={isUpload} onClick={ handleTranscriptions} className='text-center px-5 py-4 w-full h-16
 rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
                                 <FaCloudUploadAlt size={25} /> <p>Transcribe </p>
                             </span></button>
