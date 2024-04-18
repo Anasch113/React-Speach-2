@@ -25,9 +25,9 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle, setTranscripti
   // const transcriptionsState = location.state?.transcriptions;
   // const filename = location.state?.filename;
   console.log(transcriptions.utterances)
-  console.log("transcriptions.sentiment_analysis_results", transcriptions.sentiment_analysis_results)
+  console.log(transcriptions.sentiment_analysis_results)
 
-  console.log(subtitle)
+
 
 
 
@@ -77,7 +77,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle, setTranscripti
 
 
   const downloadSrtFile = () => {
-    
+
     const element = document.createElement("a");
     const content = generateSrtContent(); // Get text content of the div
 
@@ -86,7 +86,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle, setTranscripti
     element.download = `${filename}.srt`;
     document.body.appendChild(element); // Required for Firefox
     element.click();
-    
+
   };
 
   const handleToggleSRT = () => {
@@ -155,27 +155,27 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle, setTranscripti
     // Get the segment analysis results from the transcriptions state
     // const segments = transcriptions.sentiment_analysis_results;
 
-    
-    
-      const segments = transcriptions.sentiment_analysis_results;
-      console.log(segments)
-      // Iterate through each segment to find the one that matches the current time
-      for (let i = 0; i < segments.length; i++) {
-        // Extract start and end times of the current segment
-        const { start, end } = segments[i];
-        console.log("start", start)
-        console.log("end", end)
-        // Check if the current time falls within the duration of this segment
-        if (currentTime >= start && currentTime <= end) {
-          setWordsIndex(i)
-          // If matched, return the index
-          return i;
-        }
-      }
 
-      // If no match found, return -1
-      return -1;
-    
+
+    const segments = transcriptions.sentiment_analysis_results;
+    console.log(segments)
+    // Iterate through each segment to find the one that matches the current time
+    for (let i = 0; i < segments.length; i++) {
+      // Extract start and end times of the current segment
+      const { start, end } = segments[i];
+      console.log("start", start)
+      console.log("end", end)
+      // Check if the current time falls within the duration of this segment
+      if (currentTime >= start && currentTime <= end) {
+        setWordsIndex(i)
+        // If matched, return the index
+        return i;
+      }
+    }
+
+    // If no match found, return -1
+    return -1;
+
 
 
 
@@ -212,11 +212,11 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle, setTranscripti
 
     const updatedSentiments = [...transcriptions.sentiment_analysis_results]; // Copy the utterances array
 
-    
-   
-      updatedSentiments[index].text = updatedText;
-      setTranscriptions({ ...transcriptions, sentiment_analysis_results: updatedSentiments });
-   
+
+
+    updatedSentiments[index].text = updatedText;
+    setTranscriptions({ ...transcriptions, sentiment_analysis_results: updatedSentiments });
+
 
     // Update the text of the specific utterance
 
@@ -225,13 +225,13 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle, setTranscripti
     // Update the state with the new utterances array
     setShowModal(false); // Close the modal
 
-    
+
     setUpdatedText(updatedText); // Set the updated text
   };
 
   const generateSrtContent = () => {
     let content = '';
-  
+
     transcriptions.sentiment_analysis_results.forEach((files, i) => {
       content += `
         ${i}
@@ -239,7 +239,7 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle, setTranscripti
         ${files.text}
       `;
     });
-  
+
     return content;
   };
   return (
@@ -265,44 +265,42 @@ const ViewTranscriptions = ({ transcriptions, filename, subtitle, setTranscripti
           <div className='text-gray-600 font-roboto'>
 
             {
+              <div ref={contentRef}>
 
+                {
+                  transcriptions.sentiment_analysis_results.map((sentiment, i) => {
+                    // Find the utterance that corresponds to the current sentiment
+                    const utterance = transcriptions.utterances.find(u =>
+                      u.start <= sentiment.start && u.end >= sentiment.end
+                    );
 
-                <div ref={contentRef}>
-                  {
-                    transcriptions.sentiment_analysis_results.map((files, i) => (
-
-                      <div className={`w-full  py-2  `} key={i}>
-                     
-                      {
-                        showSRT &&
-
-                        <div >
-                          <p>{i}</p>
-                          <p className=''>{`${files.start}`} -- {`${files.end}`}</p>
-                        </div>
-                      } 
-
-                        <span className='flex '>
-                          {/* <span className='flex gap-1 text-gray-500 font-medium'>  <p >Speaker</p>  <p >{files.sentiment}: </p> </span> */}
-
-
+                    // Render the sentiment along with the speaker label if found
+                    return (
+                      <div className="w-full py-2" key={i}>
+                        {showSRT && (
+                          <div>
+                            <p>{i}</p>
+                            <p>{sentiment.start} -- {sentiment.end}</p>
+                          </div>
+                        )}
+                        <span className="flex gap-2">
+                        {utterance && <p className=''>{`Speaker: ${utterance.speaker}`}</p>}
                           <p
                             style={{ color: i === wordsIndex ? '#f1b900' : 'black' }}
-                            className={` ${isEdit ? "hover:text-blue-500  hover:cursor-pointer" : ""}`}
-                            onClick={() => isEdit && handleTextClick(files.text, i)}
+                            className={`${isEdit ? "hover:text-blue-500 hover:cursor-pointer" : ""}`}
+                            onClick={() => isEdit && handleTextClick(sentiment.text, i)}
                           >
-                            {files.text}
+                            {sentiment.text}
                           </p>
+                         
                         </span>
                       </div>
-                    ))
-                  }
-                </div>
+                    );
+                  })
+                }
+              </div>
 
             }
-          
-
-
 
           </div>
 
