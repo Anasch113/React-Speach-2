@@ -3,7 +3,7 @@ import { FaPause } from "react-icons/fa6";
 import { FaPlay } from "react-icons/fa6";
 import { FaVolumeUp } from "react-icons/fa";
 import { FaVolumeMute } from "react-icons/fa";
-function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex, transcriptions }) {
+function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
   const audioRef = useRef(null);
@@ -28,15 +28,18 @@ function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex, transcriptions
 
 
     };
-
-    audioRef.current.addEventListener('timeupdate', updateProgress);
-    audioRef.current.addEventListener('loadedmetadata', updateTime);
+    if (audioRef.current) {
+      audioRef.current.addEventListener('timeupdate', updateProgress);
+      audioRef.current.addEventListener('loadedmetadata', updateTime);
+    }
 
     return () => {
-      audioRef.current.removeEventListener('timeupdate', updateProgress);
-      audioRef.current.removeEventListener('loadedmetadata', updateTime);
+      if (audioRef.current) {
+        audioRef.current.removeEventListener('timeupdate', updateProgress);
+        audioRef.current.removeEventListener('loadedmetadata', updateTime);
+      }
     };
-  }, []);
+  }, [calculateHighlightedIndex]);
 
   // Function to toggle play/pause
   const togglePlayPause = () => {

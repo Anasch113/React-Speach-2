@@ -1,6 +1,6 @@
 https://www.sembly.ai/pricing/?hsa_acc=4188702770&hsa_cam=15106251293&hsa_grp=138622114303&hsa_ad=636057143258&hsa_src=s&hsa_tgt=dsa-1431605133110&hsa_kw=&hsa_mt=&hsa_net=adwords&hsa_ver=3&gad_source=2
 
-
+https://docs.google.com/spreadsheets/d/1eF7MQAuIac2mMs-jbWL1iOnYAFO_o8pS/edit?usp=sharing&ouid=103869236222874156758&rtpof=true&sd=true
 
 
 
@@ -22,16 +22,45 @@ bg-[#f9e4f8]
                 </button>
 
 
-                https://docs.google.com/spreadsheets/d/1eF7MQAuIac2mMs-jbWL1iOnYAFO_o8pS/edit?usp=sharing&ouid=103869236222874156758&rtpof=true&sd=true
+                
 
 
 https://turboscribe.ai/?ref=bng-2023-11-29&msclkid=23f82b822b04129e93874d8417961a86
 
+https://docs.rev.ai/api/alignment/get-started/
 
 Pre-Transcript File Idea :-
 
 
 I mean the functionality for a user to upload a checked transcript for editing and output to srt file. So they can download raw text, edit it themselves outside the platform if they want to using their own transcription playback software they might have already.  And then go back to the job and replace the raw text with their edited text. And then have captify retime the file and then allow them to download an srt file. This is the key part of the gate.
+
+
+
+ Let say we have a database already and we have make a transcript for a particular video.
+
+
+So once I visit the transcription page I will click on the the history I have done before and it opens. Then the whole transcription that we have before can be deleted and I will replace it with new one. The one I deleted will be same like the new one I will paste but there will be little corrections.
+
+
+I now want the you to do the word alignment where by the video will be playing and it will be marking the section on the words which is tally to what they saying in the video.
+
+Then after that we will now create an srt for the transcription
+The reason why we are pasting the new one is because the human transcription is more accurate than that of AI 
+
+
+So there may be some error in that of AI that is why I am replacing it with mine and creating an srt
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

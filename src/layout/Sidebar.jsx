@@ -22,6 +22,7 @@ import { MdAlternateEmail } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa6";
 import { BiNavigation } from "react-icons/bi";
 import { CgTranscript } from "react-icons/cg";
+import { GrSync } from "react-icons/gr";
 
 function Sidebar() {
   const user1 = {
@@ -195,7 +196,7 @@ function Sidebar() {
         }
 
         <Link to={"/pre-audio-transcriptions"}>
-          <div className={`mx-2 p-4 flex rounded-md ${isActive("/pre-audio-transcriptions") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
+          <div className={`mx-2 p-4 flex rounded-md ${isActive("/pre-audio-transcriptions" || "pre-audio-transcriptions/view:id" ) ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
             <div className="mr-2 mt-1">
               <MdOutlineTranscribe />
             </div>
@@ -206,6 +207,17 @@ function Sidebar() {
         </Link>
 
 
+        <Link to={"/resyncingAi"}>
+          <div className={`mx-2 p-4 flex rounded-md ${isActive("/resyncingAi") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
+            <div className="mr-2 mt-1">
+              <GrSync  />
+            </div>
+
+            <button>Resyncing Ai</button>
+
+          </div>
+        </Link>
+{/* 
         <Link to={"/transcription"}>
           <div className={`mx-2 p-4 flex rounded-md ${isActive("/transcription") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
             <div className="mr-2 mt-1">
@@ -215,7 +227,7 @@ function Sidebar() {
             <button>My Conversations</button>
 
           </div>
-        </Link>
+        </Link> */}
 
 
 

@@ -8,27 +8,34 @@ import { useState } from 'react';
 import { useUserAuth } from '../../context/UserAuthContext';
 
 const Transcripted = ({
-    transcriptions,
-    filename,
+    data,
+    file,
     processing,
-    subtitle,
-    setTranscriptions,
-    dbData,
+    setData,
+    cloudUrl,
+
     setShowFormModal,
-    showFormModal
+    showFormModal,
+
 
 }) => {
-    console.log(transcriptions)
+
     const navigate = useNavigate();
     const { user } = useUserAuth();
 
     const [isView, setIsView] = useState(false);
 
 
-    const handleNavigate = (id) => {
+    const handleNavigate = () => {
 
-        console.log("transcription id", id)
-        navigate(`/pre-audio-transcriptions/view/${id}`);
+if(processing === true){
+    return 
+}
+
+       
+        navigate(`/resyncingAi/view-sync-file`, {
+            state: { data: data, file:file, cloudUrl: cloudUrl }
+        });
 
 
     }
@@ -48,7 +55,7 @@ const Transcripted = ({
                     <div>
                         <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-3 w-full h-16
 rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
-                                <FaCloudUploadAlt size={25} /> <p>Transcribe Files </p>
+                                <FaCloudUploadAlt size={25} /> <p>Sync Files </p>
                             </span></button>
 
                     </div>
@@ -65,9 +72,9 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                         <thead className='my-2'>
                             <tr className="font-poppins text-sm">
 
-                                <th className=" text-text-brown-new px-20 py-2">Name</th>
-                                <th className=" text-text-brown-new px-20 py-2">Uploaded</th>
-                                <th className=" text-text-brown-new px-20 py-2">Duration</th>
+                                <th className=" text-text-brown-new px-20 py-2">Audio File Name</th>
+                                <th className=" text-text-brown-new px-20 py-2">Text File Name</th>
+
                                 <th className=" text-text-brown-new px-20 py-2">Status</th>
 
 
@@ -77,36 +84,16 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                         </thead>
                         <div className=' my-5  border '></div>
                         <tbody className='flex flex-col-reverse max-h-[400px] overflow-y-scroll  py-4'>
-
-
-
                             {
-                                dbData && dbData.map((data, index) => (
-
-                                    <tr onClick={()=> handleNavigate(data.id)} key={index} className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl ">
-
-                                        <td className=" text-text-black font-medium text-lg px-20 py-2">{data.filename}</td>
-
-                                        <td className=" text-text-black font-medium text-lg px-20 py-2">{data.date}</td>
-
-                                        <td className=" text-text-black font-medium text-lg px-20 py-2">{`${data.audio_duration}s`}</td>
-
-                                        <td className=" text-text-black font-medium text-lg px-20 py-2">{<p>{data.status}</p>}</td>
-
-
-                                    </tr>
-                                ))
-                            }
-                            {
-                                processing &&
-                                <tr className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl ">
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{filename}</td>
+                                file &&
+                                <tr  onClick={ handleNavigate} className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl ">
+                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{file.audio.name}</td>
                                     {/* You can set date and duration as needed for the files from props */}
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{filename}</td>
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">-</td>
+                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{file.transcript.name}</td>
+
                                     <td className=" text-text-black font-medium text-lg px-20 py-2">
                                         {/* Always show spinner for files being processed */}
-                                        <div className='spinner'></div>
+                                        {processing ? <div className='spinner'></div> : "Completed"}
                                     </td>
                                 </tr>
 

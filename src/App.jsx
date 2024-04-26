@@ -25,6 +25,8 @@ import UserProfilePage from "./pages/Other/UserProfilePage";
 import UserSecurity from "./components/SideComponents/UserSecurity";
 import UserPaymentInfo from "./components/SideComponents/UserPaymentInfo"
 import ViewTranscriptions from "./components/PreAudio/ViewTranscriptions";
+import SyncAiPage from "./pages/Other/SyncAiPage";
+import ViewSyncFiles from "./components/SyncAI/ViewSyncFiles";
 
 
 
@@ -113,7 +115,9 @@ function App() {
               </ProtectedRoute>}
 
             />
-            <Route exact path="/pre-audio-transcriptions/view" element={
+
+            
+            <Route exact path="/pre-audio-transcriptions/view/:id" element={
 
               <ProtectedRoute>
                 <ViewTranscriptions />
@@ -121,7 +125,26 @@ function App() {
 
             />
 
+
+            <Route exact path="/resyncingAi" element={
+
+              <ProtectedRoute>
+                <SyncAiPage />
+              </ProtectedRoute>}
+
+            />
+
+            <Route exact path="/resyncingAi/view-sync-file" element={
+
+              <ProtectedRoute>
+                <ViewSyncFiles />
+              </ProtectedRoute>}
+
+            />
+
             
+
+
            
 
             <Route exact path="/signup" element={<Signup />} />
