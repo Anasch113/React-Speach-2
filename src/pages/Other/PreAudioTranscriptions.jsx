@@ -14,7 +14,7 @@ import { MdOutlineCloudUpload } from "react-icons/md";
 import { MdClose } from "react-icons/md";
 import Transcripted from '../../components/PreAudio/Transcripted'
 import { useUserAuth } from '../../context/UserAuthContext'
-
+import Spinner from "../../components/PreAudio/Spinner"
 
 
 
@@ -26,6 +26,7 @@ const PreAudioTranscriptions = () => {
     const [cloudUrl, setCloudUrl] = useState("")
     const [progress, setProgress] = useState(0)
     const [isUpload, setIsUpload] = useState(false)
+    const [runUseEffect, setRunUseEffect] = useState(false)
     const [reloadLoading, setReloadLoading] = useState(false)
 
 
@@ -33,7 +34,7 @@ const PreAudioTranscriptions = () => {
     const [transcribeText, setTranscribeText] = useState("");
     const [transcriptions, setTranscriptions] = useState("");
     const [utterances, setUtterances] = useState([]);
-    const [showModal, setShowModal] = useState(false);
+
     const [showFormModal, setShowFormModal] = useState(false);
     const [isTextFiles, setIsTextFiles] = useState(false);
     const [isTranscriptions, setIsTranscriptions] = useState(false);
@@ -122,7 +123,7 @@ const PreAudioTranscriptions = () => {
     const handleTranscriptions = async (event) => {
         event.preventDefault();
         setProcessing(true)
-
+        setRunUseEffect(false)
         setIsTranscriptions(true)
 
         setShowFormModal(false)
@@ -140,7 +141,7 @@ const PreAudioTranscriptions = () => {
             setTranscribeText(transcribe.text)
             setTranscriptions(transcribe)
 
-            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/api/save/savePreAudio`, { transcribe, userId: user.uid, filename:filename }, {
+            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/api/save/savePreAudio`, { transcribe, userId: user.uid, filename: filename }, {
 
 
                 headers: {
@@ -164,7 +165,7 @@ const PreAudioTranscriptions = () => {
             throw new Error("Error while transcribing the audio file")
 
         }
-        window.location.reload()
+       setRunUseEffect(true)
         setProcessing(false)
 
     }
@@ -191,9 +192,9 @@ const PreAudioTranscriptions = () => {
     }
 
     useEffect(() => {
-        
+
         const fetchTranscriptions = async () => {
-           
+
             try {
                 setReloadLoading(true)
                 const fetch = await axios.post(`${import.meta.env.VITE_HOST_URL}/api/save/fetchPreAduio`, {
@@ -213,13 +214,17 @@ const PreAudioTranscriptions = () => {
             } catch (error) {
                 console.log("error while fetching the transcriptions in transcript component")
             }
+            finally {
+                setReloadLoading(false); // Set loading to false after API call is completed
+            }
         }
 
         fetchTranscriptions()
-       
-    }, [user])
+
+    }, [user, runUseEffect])
 
     console.log("dbData", dbData)
+    console.log("isTranscriptions", isTranscriptions)
 
     return (
         <div className='w-full min-h-screen'>
@@ -229,46 +234,54 @@ const PreAudioTranscriptions = () => {
                 <Sidebar />
 
                 <div className='flex flex-col w-full py-5 px-10 bg-[#F7F7F7] min-h-screen overflow-x-hidden '>
+
                     {
-                        !dbData ?
-                            <div className='   rounded-md flex items-center flex-col  min-h-screen py-5 gap-5'>
+                        reloadLoading ? <Spinner /> :
 
 
-                                <div className='border min-h-80 md:w-full shadow-md p-5 flex flex-col  gap-8 h-[300px] bg-white'>
-                                    <span className='flex flex-row items-center gap-2 py-5'>
-                                        <RxDashboard className='text-3xl' />
-                                        <h1 className='text-3xl font-bold font-poppins text-text-black'> Recent Files</h1>
-                                    </span>
 
-                                    <h1 className='text-2xl text-center font-roboto text-text-gray-other'>Welcome to Captify!</h1>
+                            dbData.length === 0 && isTranscriptions == false ?
+                                <div className='   rounded-md flex items-center flex-col  min-h-screen py-5 gap-5'>
 
-                                    <div className='flex items-center justify-center'>
 
-                                        <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 w-2/5 h-20
+                                    <div className='border min-h-80 md:w-full shadow-md p-5 flex flex-col  gap-8 h-[300px] bg-white'>
+                                        <span className='flex flex-row items-center gap-2 py-5'>
+                                            <RxDashboard className='text-3xl' />
+                                            <h1 className='text-3xl font-bold font-poppins text-text-black'> Recent Files</h1>
+                                        </span>
+
+                                        <h1 className='text-2xl text-center font-roboto text-text-gray-other'>Welcome to Captify!</h1>
+
+                                        <div className='flex items-center justify-center'>
+
+                                            <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 w-2/5 h-20
 rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
-                                                <FaCloudUploadAlt size={25} /> <p>Transcribe Your File</p>
-                                            </span></button>
+                                                    <FaCloudUploadAlt size={25} /> <p>Transcribe Your File</p>
+                                                </span></button>
+                                        </div>
+
                                     </div>
 
-                                </div>
+                                </div> :
 
-                            </div> :
+                                <Transcripted
 
-                            <Transcripted
-
-                                transcribeText={transcribeText}
-                                subtitle={subtitle}
-                                transcriptions={transcriptions}
-                                filename={filename}
-                                processing={processing}
-                                setTranscriptions={setTranscriptions}
-                                dbData={dbData}
-                                showFormModal={showFormModal}
-                                setShowFormModal={setShowFormModal}
+                                    transcribeText={transcribeText}
+                                    subtitle={subtitle}
+                                    transcriptions={transcriptions}
+                                    filename={filename}
+                                    processing={processing}
+                                    setTranscriptions={setTranscriptions}
+                                    dbData={dbData}
+                                    showFormModal={showFormModal}
+                                    setShowFormModal={setShowFormModal}
 
 
-                            />
+                                />
+
                     }
+
+
 
 
 

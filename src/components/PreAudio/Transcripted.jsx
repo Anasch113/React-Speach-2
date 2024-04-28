@@ -99,10 +99,10 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                             }
                             {
                                 processing &&
-                                <tr className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl ">
+                                <tr className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl py-4 ">
                                     <td className=" text-text-black font-medium text-lg px-20 py-2">{filename}</td>
                                     {/* You can set date and duration as needed for the files from props */}
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{filename}</td>
+                                   
                                     <td className=" text-text-black font-medium text-lg px-20 py-2">-</td>
                                     <td className=" text-text-black font-medium text-lg px-20 py-2">
                                         {/* Always show spinner for files being processed */}

@@ -134,7 +134,7 @@ function App() {
 
             />
 
-            <Route exact path="/resyncingAi/view-sync-file" element={
+            <Route exact path="/resyncingAi/view-sync-file/:id" element={
 
               <ProtectedRoute>
                 <ViewSyncFiles />

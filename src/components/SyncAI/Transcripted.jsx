@@ -11,31 +11,32 @@ const Transcripted = ({
     data,
     file,
     processing,
-    setData,
-    cloudUrl,
+   
+    isTranscriptions,
 
     setShowFormModal,
     showFormModal,
+    dbData
 
 
 }) => {
 
+
+    
     const navigate = useNavigate();
     const { user } = useUserAuth();
 
     const [isView, setIsView] = useState(false);
 
 
-    const handleNavigate = () => {
+    const handleNavigate = (id) => {
 
-if(processing === true){
-    return 
-}
+        if (processing === true) {
+            return
+        }
 
-       
-        navigate(`/resyncingAi/view-sync-file`, {
-            state: { data: data, file:file, cloudUrl: cloudUrl }
-        });
+
+        navigate(`/resyncingAi/view-sync-file/${id}`);
 
 
     }
@@ -75,6 +76,7 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                 <th className=" text-text-brown-new px-20 py-2">Audio File Name</th>
                                 <th className=" text-text-brown-new px-20 py-2">Text File Name</th>
 
+                                <th className=" text-text-brown-new px-20 py-2">Mode</th>
                                 <th className=" text-text-brown-new px-20 py-2">Status</th>
 
 
@@ -83,21 +85,48 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
                         </thead>
                         <div className=' my-5  border '></div>
-                        <tbody className='flex flex-col-reverse max-h-[400px] overflow-y-scroll  py-4'>
+                        <tbody className='flex px-2 flex-col-reverse max-h-[400px] overflow-y-scroll  py-4'>
+
                             {
-                                file &&
-                                <tr  onClick={ handleNavigate} className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl ">
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{file.audio.name}</td>
+                              dbData && dbData.map((file, i)=>(
+                                    <tr key={i} onClick={() => handleNavigate(file._id)} className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl py-3 ">
+
+                                    <td className=" text-text-black font-medium text-lg px-20 py-2"> {file.audioFilename}</td>
                                     {/* You can set date and duration as needed for the files from props */}
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{file.transcript.name}</td>
+                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{file.transcriptFilename}</td>
 
                                     <td className=" text-text-black font-medium text-lg px-20 py-2">
-                                        {/* Always show spinner for files being processed */}
+                                      
+                                      resync
+                                    </td>
+                                    <td className=" text-text-black font-medium text-lg px-20 py-2">
+                                      
+                                        {file.status}
+                                    </td>
+                                </tr>
+                                ))
+                            }
+
+                            {
+                                isTranscriptions && 
+                                <tr  className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl  py-3">
+
+                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{file && file.audio.name}</td>
+                                   
+                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{file && file.transcript.name}</td>
+                                    <td className=" text-text-black font-medium text-lg px-20 py-2">
+                                      
+                                      resync
+                                    </td>
+
+                                    <td className=" text-text-black font-medium text-lg px-20 py-2">
+                                        
                                         {processing ? <div className='spinner'></div> : "Completed"}
                                     </td>
                                 </tr>
 
                             }
+                            
                         </tbody>
 
                     </table>

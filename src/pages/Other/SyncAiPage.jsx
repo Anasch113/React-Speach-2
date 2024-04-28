@@ -14,12 +14,15 @@ import { LuUploadCloud } from "react-icons/lu";
 import Transcripted from '../../components/SyncAI/Transcripted';
 import { FiFileText } from "react-icons/fi";
 import { LuFileAudio } from "react-icons/lu";
-
-
+import { useUserAuth } from '../../context/UserAuthContext';
+import Spinner from '../../components/PreAudio/Spinner';
+import { reload } from 'firebase/auth';
 
 
 const SyncAiPage = () => {
 
+
+    const { user } = useUserAuth();
     const [file, setFile] = useState({
         audio: null,
         transcript: null
@@ -35,17 +38,17 @@ const SyncAiPage = () => {
         // Add more keys if needed for other types of files
     });
     const [filename, setFileName] = useState("No File Selected")
-
+    const [isTranscriptions, setIsTranscriptions] = useState(false);
 
     const [showFormModal, setShowFormModal] = useState(false);
-
+    const [dbData, setDbData] = useState("")
     const [isUploadAudio, setIsUploadAudio] = useState(false);
     const [isUploadTranscript, setIsUploadTranscript] = useState(false);
     const [data, setData] = useState(false)
     const [initialData, setInitialData] = useState("")
     const [processing, setProcessing] = useState(false)
-
-
+    const [runUseEffect, setRunUseEffect] = useState(false)
+    const [reloadLoading, setReloadLoading] = useState(false)
 
 
     const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dgpwe8xy6";
@@ -121,8 +124,12 @@ const SyncAiPage = () => {
 
 
     const hanldeSync = async () => {
+        setShowFormModal(false)
+        setIsTranscriptions(true)
         setProcessing(true)
-       
+        setRunUseEffect(false)
+
+
         try {
             const requestBody = {
                 source_config: {
@@ -152,8 +159,8 @@ const SyncAiPage = () => {
 
             const responseData = await firstStepRes.json();
             setInitialData(responseData)
-            setShowFormModal(false)
            
+
             console.log("Alignment job submitted successfully:", responseData.id);
 
             const timeOut = await new Promise(resolve => setTimeout(resolve, 50000))
@@ -188,7 +195,33 @@ const SyncAiPage = () => {
             const responseDatathird = await thirdStepRes.json();
             setData(responseDatathird)
             console.log("responseDataSecond", responseDatathird.monologues)
-            setProcessing(false)
+
+
+
+
+            const bodyData = {
+
+                syncData: responseDatathird,
+                userId: user.uid,
+                audio: file.audio.name,
+                transcript: file.transcript.name,
+                cloudUrl: cloudUrl
+
+
+            }
+
+            const handleSave = await axios.post(`${import.meta.env.VITE_HOST_URL}/sync/saveData`, bodyData, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+            ).then((res) => {
+
+                console.log("res:", res.data)
+            }).catch((error) => {
+                console.log("Error occurred while in pre audio upload", error)
+            })
+
 
 
 
@@ -205,23 +238,49 @@ const SyncAiPage = () => {
                 console.error('Error:', error.message);
             }
         }
-       
-        
+        setProcessing(false)
+        setRunUseEffect(true)
+
     }
 
     // console.log("File selected audio", file.audio.name)
     console.log("Cloudurl ", cloudUrl)
     console.log(data.monologues
     )
+    useEffect(() => {
+
+        setIsTranscriptions(false)
+        const fetchTranscriptions = async () => {
+            if (user) { // Check if user is truthy
+                try {
+                    setReloadLoading(true)
+                    const fetch = await axios.post(`${import.meta.env.VITE_HOST_URL}/sync/fetch-data`, {
+                        userId: user.uid
+                    }, {
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    });
+
+                    setDbData(fetch.data);
+                    setReloadLoading(false)
+                } catch (error) {
+                    console.log("Error while fetching the transcriptions in transcript component", error);
+                } finally {
+                    setReloadLoading(false); // Set loading to false after API call is completed
+                }
+            }
+        };
+
+        fetchTranscriptions();
+    }, [user, runUseEffect]);
+
+    console.log("data from database in syncPage", dbData)
+    console.log("file in file state", file)
 
 
 
-
-    console.log("file", file)
-
-
-
-
+    console.log("isTranscriptions", isTranscriptions)
     return (
         <>
             <div className='w-full min-h-screen'>
@@ -230,37 +289,49 @@ const SyncAiPage = () => {
 
                     <Sidebar />
 
-                    {
-                        !initialData ? <div className='flex flex-col w-full py-5 px-10 bg-[#F7F7F7] min-h-screen overflow-x-hidden '>
 
 
-                            <div className='   rounded-md flex items-center flex-col  min-h-screen py-5 gap-5'>
+
+                    <div className='flex flex-col w-full py-5 px-10 bg-[#F7F7F7] min-h-screen overflow-x-hidden '>
+
+                        {
+                            reloadLoading ? <Spinner /> :
+
+                                dbData.length === 0 && isTranscriptions == false ?
+
+                                    <div className='   rounded-md flex items-center flex-col  min-h-screen py-5 gap-5'>
 
 
-                                <div className='border min-h-80 md:w-full shadow-md p-5 flex flex-col  gap-8 h-[300px] bg-white'>
-                                    <span className='flex flex-row items-center gap-2 py-5'>
-                                        <RxDashboard className='text-3xl' />
-                                        <h1 className='text-3xl font-bold font-poppins text-text-black'> Recent Files</h1>
-                                    </span>
+                                        <div className='border min-h-80 md:w-full shadow-md p-5 flex flex-col  gap-8 h-[300px] bg-white'>
+                                            <span className='flex flex-row items-center gap-2 py-5'>
+                                                <RxDashboard className='text-3xl' />
+                                                <h1 className='text-3xl font-bold font-poppins text-text-black'> Recent Files</h1>
+                                            </span>
 
-                                    <h1 className='text-2xl text-center font-roboto text-text-gray-other'>Welcome to Captify!</h1>
+                                            <h1 className='text-2xl text-center font-roboto text-text-gray-other'>Welcome to Captify!</h1>
 
-                                    <div className='flex items-center justify-center'>
+                                            <div className='flex items-center justify-center'>
 
-                                        <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 w-2/5 h-20
+                                                <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 w-2/5 h-20
 rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
-                                                <GrSync size={20} /> <p>Resyncing Ai</p>
-                                            </span></button>
+                                                        <GrSync size={20} /> <p>Resyncing Ai</p>
+                                                    </span></button>
+                                            </div>
+
+                                        </div>
+
                                     </div>
 
-                                </div>
+                                    : <Transcripted processing={processing} data={data} file={file} showFormModal={showFormModal} setShowFormModal={setShowFormModal} dbData={dbData} isTranscriptions={isTranscriptions} />
 
-                            </div>
+                        }
+
+                    </div>
 
 
-                        </div> :
-                            <Transcripted processing={processing} data={data} setData={setData} cloudUrl={cloudUrl} file={file} showFormModal={showFormModal} setShowFormModal={setShowFormModal} />
-                    }
+
+
+
 
                 </div>
 
