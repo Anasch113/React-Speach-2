@@ -111,9 +111,9 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                 isTranscriptions && 
                                 <tr  className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl  py-3">
 
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{file && file.audio.name}</td>
+                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{file && file.audio}</td>
                                    
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{file && file.transcript.name}</td>
+                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{file && file.transcript}</td>
                                     <td className=" text-text-black font-medium text-lg px-20 py-2">
                                       
                                       resync

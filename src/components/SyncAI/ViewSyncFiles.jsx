@@ -202,17 +202,21 @@ const ViewSyncFiles = () => {
                     <div className='w-full' ref={contentRef}>
 
                       {
-                        dbTranscript && dbTranscript.syncData.map((data, i) => (
+                        dbTranscript &&
+                        dbTranscript.syncData.map((data, i) => (
                           <div className="w-full py-2" key={i}>
                             {/* <p>speaker: {data.speaker}</p> */}
                             <div className="flex flex-wrap gap-1">
                               {data.elements.map((words, j) => (
                                 // Check if words.value is not an empty string
-                              
                                 words.value.trim() !== "" && (
                                   <div className='' key={j}>
-                                    <p></p>
-                                    <p style={{ color: j === wordsIndex ? '#f1b900' : 'black' }}>{words.value} ( {words.ts} -- {words.end_ts}) </p>
+                                    <p className='flex gap-3' style={{ color: j === wordsIndex ? '#f1b900' : 'black' }}>
+                                      {words.value}
+                                      {(j + 1) % 3 === 0 && (
+                                        <span>( {data.elements[j - 2].ts} -- {words.end_ts} )</span>
+                                      )}
+                                    </p>
                                   </div>
                                 )
                               ))}
@@ -220,6 +224,8 @@ const ViewSyncFiles = () => {
                           </div>
                         ))
                       }
+
+
 
                     </div>
 

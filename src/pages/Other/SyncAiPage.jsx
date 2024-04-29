@@ -24,8 +24,8 @@ const SyncAiPage = () => {
 
     const { user } = useUserAuth();
     const [file, setFile] = useState({
-        audio: null,
-        transcript: null
+        audio: "",
+        transcript: ""
         // Add more keys if needed for other types of files
     });
     const [progress, setProgress] = useState({
@@ -62,6 +62,13 @@ const SyncAiPage = () => {
     }
 
     const handleFileChange = async (event, stateKey) => {
+        
+        setCloudUrl((prevUrls) => ({
+            ...prevUrls,
+            [stateKey]: ''
+        }));
+        
+        console.log("event", event)
         if (stateKey === 'audio') {
             setIsUploadAudio(true);
         } else if (stateKey === 'transcript') {
@@ -71,10 +78,10 @@ const SyncAiPage = () => {
 
         const selectedFile = event.target.files[0];
 
-        console.log("selectedFile", selectedFile)
+        console.log("selectedFileeeeeeeeeeeeeeeeeee", selectedFile)
         setFile((prevFiles) => ({
             ...prevFiles,
-            [stateKey]: selectedFile
+            [stateKey]: selectedFile.name
         }))
 
         try {
@@ -159,7 +166,7 @@ const SyncAiPage = () => {
 
             const responseData = await firstStepRes.json();
             setInitialData(responseData)
-           
+
 
             console.log("Alignment job submitted successfully:", responseData.id);
 
@@ -203,8 +210,8 @@ const SyncAiPage = () => {
 
                 syncData: responseDatathird,
                 userId: user.uid,
-                audio: file.audio.name,
-                transcript: file.transcript.name,
+                audio: file.audio,
+                transcript: file.transcript,
                 cloudUrl: cloudUrl
 
 
@@ -245,8 +252,7 @@ const SyncAiPage = () => {
 
     // console.log("File selected audio", file.audio.name)
     console.log("Cloudurl ", cloudUrl)
-    console.log(data.monologues
-    )
+
     useEffect(() => {
 
         setIsTranscriptions(false)
@@ -275,12 +281,32 @@ const SyncAiPage = () => {
         fetchTranscriptions();
     }, [user, runUseEffect]);
 
-    console.log("data from database in syncPage", dbData)
+
     console.log("file in file state", file)
 
 
 
-    console.log("isTranscriptions", isTranscriptions)
+
+
+
+    // const hanldeResetFile = (e, stateKey) => {
+    //     console.log("e , state key", e, stateKey);
+
+    //     // Reset the file state
+    //     setFile((prevFile) => ({
+    //         ...prevFile,
+    //         [stateKey]: ''
+    //     }));
+
+
+
+    //     setCloudUrl((prevUrls) => ({
+    //         ...prevUrls,
+    //         [stateKey]: ''
+    //     }));
+    // };
+
+
     return (
         <>
             <div className='w-full min-h-screen'>
@@ -379,21 +405,18 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                     cloudUrl.audio && <section className='mx-2  flex flex-col justify-between items-center px-4 py-5 rounded-md gap-2'>
 
                                         <span className='flex items-center gap-2'>
-                                            <AiFillFileImage color='#1475cf' />
-                                            {file.audio.name}
-                                            <MdDelete className='hover:z-50' cursor="pointer"
+                                            {file.audio && file.audio}
 
-                                            />
+
                                         </span>
 
                                         <img className='w-6 h-6 my-3' src="/checked.png" alt="img" />
                                     </section>
                                 }
-
                                 {
                                     isUploadAudio && <div className='flex  items-center flex-col'>
 
-                                        <p className='py-1'>{file.audio.name}</p>
+                                        <p className='py-1'>{file.audio}</p>
                                         <p className='py-1'>{`${progress.audio}%`}</p>
                                         <div className="progress-bar">
                                             <div className="progress-fill" style={{ width: `${progress}%` }}></div>
@@ -429,16 +452,12 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                 {
                                     cloudUrl.transcript && <section className='mx-2  flex flex-col justify-between items-center px-4 py-5 rounded-md gap-2'>
 
-                                        <span className='flex items-center gap-2'>
-                                            <AiFillFileImage color='#1475cf' />
-                                            {file.transcript.name}
-                                            <MdDelete className='hover:z-50' cursor="pointer"
-                                                onClick={() => {
-                                                    setFileName("No Selected Files")
-                                                    setFile(null)
-                                                }}
-                                            />
+                                        <span className='flex items-center '>
+                                            {file.transcript && file.transcript}
+
+
                                         </span>
+
 
                                         <img className='w-6 h-6 my-3' src="/checked.png" alt="img" />
                                     </section>
@@ -447,7 +466,7 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                 {
                                     isUploadTranscript && <div className='flex  items-center flex-col'>
 
-                                        <p className='py-1'>{file && file.transcript.name}</p>
+                                        <p className='py-1'>{file && file.transcript}</p>
                                         <p className='py-1'>{`${progress.transcript}%`}</p>
                                         <div className="progress-bar">
                                             <div className="progress-fill" style={{ width: `${progress}%` }}></div>
