@@ -59,12 +59,12 @@ const PreAudioTranscriptions = () => {
 
     const handleFileChange = async (event) => {
         setIsUpload(true);
-    
+
         const selectedFile = event.target.files[0];
         setFile(selectedFile);
         setFileName(selectedFile.name);
         console.log('Selected File:', selectedFile);
-    
+
         if (
             selectedFile.type === "text/plain" || // for plain text files
             selectedFile.type === "application/pdf" // for PDF files
@@ -75,7 +75,7 @@ const PreAudioTranscriptions = () => {
             setIsUpload(false);
             return;
         }
-    
+
         try {
             const formData = new FormData();
             formData.append("file", selectedFile);
@@ -83,8 +83,8 @@ const PreAudioTranscriptions = () => {
             formData.append("cloud_name", "dgpwe8xy6");
             formData.append("folder", "Audio");
             formData.append("quality", "auto:good"); // Set the desired quality level
-    
-    
+
+
             const cloudinaryResponse = await axios.post(
                 `${cloudinaryBaseUrl}/upload`,
                 formData,
@@ -94,81 +94,88 @@ const PreAudioTranscriptions = () => {
                         const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
                         setProgress(progress);
                         console.log(`Upload Progress: ${progress}%`);
-    
-                       
-    
-                     
+
+
                     }
                 }
             );
-    
             const cloudinaryFileUrl = cloudinaryResponse.data.secure_url;
             setCloudUrl(cloudinaryFileUrl);
         } catch (error) {
             alert(error.message)
             console.error("Error in uploading file", error.message);
-          
+
         }
-    
+
         setIsUpload(false);
     };
-    
+
     const handleFormClick = () => {
         document.querySelector(".input-field").click();
     };
 
 
+const handleTranscriptions = async (event) => {
+    event.preventDefault();
+    setProcessing(true);
+    setRunUseEffect(false);
+    setIsTranscriptions(true);
+    setShowFormModal(false);
 
+    try {
+        const params = {
+            audio: cloudUrl,
+            speaker_labels: true,
+            sentiment_analysis: true
+        };
 
-    const handleTranscriptions = async (event) => {
-        event.preventDefault();
-        setProcessing(true)
-        setRunUseEffect(false)
-        setIsTranscriptions(true)
+        const transcribe = await client.transcripts.transcribe(params);
+        const subtitle = await getSubtitleFile(transcribe.id, 'srt');
+        setSubtitle(subtitle);
+        setTranscribeText(transcribe.text);
+        setTranscriptions(transcribe);
 
-        setShowFormModal(false)
-        try {
-            const params = {
-                audio: cloudUrl,
-                speaker_labels: true,
-                sentiment_analysis: true
-            }
+        const chunkSize = 1024 * 1024; // 1MB chunks
+        const chunks = [];
+        const utterancesChunks = [];
+        // Split transcribe and utterances data into smaller chunks
+        for (let i = 0; i < transcribe.text.length; i += chunkSize) {
+            chunks.push(transcribe.text.substring(i, i + chunkSize));
+        }
+        for (let i = 0; i < transcribe.utterances.length; i += chunkSize) {
+            utterancesChunks.push(transcribe.utterances.slice(i, i + chunkSize));
+        }
 
-            const transcribe = await client.transcripts.transcribe(params);
-            const subtitle = await getSubtitleFile(transcribe.id, 'srt')
-            setSubtitle(subtitle)
-            console.log("subtitles:", subtitle)
-            setTranscribeText(transcribe.text)
-            setTranscriptions(transcribe)
-
-            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/api/save/savePreAudio`, { transcribe, userId: user.uid, filename: filename }, {
-
-
+        // Send each chunk to the server sequentially
+        for (let i = 0; i < chunks.length; i++) {
+            const body = {
+                id: transcribe.id,
+                text: chunks[i],
+                audio_url: transcribe.audio_url,
+                status: transcribe.status,
+                audio_duration: transcribe.audio_duration,
+                utterances: utterancesChunks[i],
+                sentimentAnalysisResults: transcribe.sentiment_analysis_results.slice(i * chunkSize, (i + 1) * chunkSize),
+                userId: user.uid,
+                filename: filename
+            };
+            await axios.post(`${import.meta.env.VITE_HOST_URL}/api/save/savePreAudio`, body, {
                 headers: {
                     "Content-Type": "application/json"
                 }
-            }
-            ).then((res) => {
-                console.log("res:", res.data)
-            }).catch((error) => {
-                console.log("Error occurred while in pre audio upload", error)
-            })
-
-
-            for (let utterance of transcribe.utterances) {
-                console.log("utterances:", utterance)
-            }
-            setUtterances(utterances)
-
-        } catch (error) {
-            console.log("Error in Transcription", error)
-            throw new Error("Error while transcribing the audio file")
-
+            });
         }
-        setRunUseEffect(true)
-        setProcessing(false)
 
+        console.log("Transcription data sent successfully in chunks");
+
+    } catch (error) {
+        console.log("Error in Transcription", error);
+        throw new Error("Error while transcribing the audio file");
     }
+
+    setRunUseEffect(true);
+    setProcessing(false);
+};
 
 
 
