@@ -17,6 +17,7 @@ import { LuFileAudio } from "react-icons/lu";
 import { useUserAuth } from '../../context/UserAuthContext';
 import Spinner from '../../components/PreAudio/Spinner';
 import { reload } from 'firebase/auth';
+import toast from 'react-hot-toast';
 
 
 const SyncAiPage = () => {
@@ -62,12 +63,17 @@ const SyncAiPage = () => {
     }
 
     const handleFileChange = async (event, stateKey) => {
-        
+
         setCloudUrl((prevUrls) => ({
             ...prevUrls,
             [stateKey]: ''
         }));
-        
+
+        setProgress(prevProgress => ({
+            ...prevProgress,
+            [stateKey]: 0
+        }));
+
         console.log("event", event)
         if (stateKey === 'audio') {
             setIsUploadAudio(true);
@@ -92,6 +98,7 @@ const SyncAiPage = () => {
             formData.append("folder", "Audio");
             formData.append("quality", "auto:good");
 
+
             const cloudinaryResponse = await axios.post(
                 `${cloudinaryBaseUrl}/upload`,
                 formData,
@@ -102,6 +109,7 @@ const SyncAiPage = () => {
                             ...prevProgress,
                             [stateKey]: progress
                         }));
+
                         console.log(`Upload Progress for ${stateKey} file: ${progress}%`);
                     }
                 }
@@ -114,7 +122,9 @@ const SyncAiPage = () => {
                 [stateKey]: cloudinaryFileUrl
             }));
         } catch (error) {
+            alert(error)
             console.error(`Error in uploading ${stateKey} file`, error);
+
         }
 
 
@@ -354,11 +364,6 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
                     </div>
 
-
-
-
-
-
                 </div>
 
 
@@ -393,7 +398,7 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                         <div className='flex w-full p-5 flex-row items-center justify-center gap-5'>
 
                             {/* 1st Form */}
-                            <form onClick={handleInputClick} className='flex flex-col items-center justify-center    h-36   cursor-pointer rounded-md md:w-[400px] w-44 mb-10 bg-offWhite'>
+                            <form onClick={handleInputClick} className='flex flex-col items-center justify-center    h-36   cursor-pointer rounded-md md:w-[400px] w-52 mb-10 bg-offWhite px-4 py-4'>
                                 {
                                     !file.audio && <div className='flex flex-col items-center gap-1 py-3 px-2'>
                                         <h1 className='text-xl py-1 text-text-black font-medium font-roboto text-center'>Upload Audio file</h1>
@@ -402,10 +407,11 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                 }
 
                                 {
-                                    cloudUrl.audio && <section className='mx-2  flex flex-col justify-between items-center px-4 py-5 rounded-md gap-2'>
+                                    cloudUrl.audio && <section className='  flex flex-col justify-between items-center px-4 py-5 rounded-md gap-1'>
 
-                                        <span className='flex items-center gap-2'>
-                                            {file.audio && file.audio}
+                                        <span className='flex items-center justify-center gap-2'>
+
+                                            <p className='text-center'>{file.audio && file.audio}</p>
 
 
                                         </span>
@@ -414,12 +420,12 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                     </section>
                                 }
                                 {
-                                    isUploadAudio && <div className='flex  items-center flex-col'>
+                                    isUploadAudio && <div className='flex  items-center flex-col gap-2 '>
 
-                                        <p className='py-1'>{file.audio}</p>
+                                        <p className='py-1 text-center'>{file.audio}</p>
                                         <p className='py-1'>{`${progress.audio}%`}</p>
-                                        <div className="progress-bar">
-                                            <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                                        <div className="progress-bar bg-white">
+                                            <div className="progress-fill" style={{ width: `${progress.audio}%` }}></div>
                                         </div>
                                     </div>
 
@@ -441,7 +447,7 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
 
 
-                            <form onClick={handleInputClick2} className='flex flex-col items-center justify-center    h-36   cursor-pointer rounded-md md:w-[400px] w-44 mb-10 bg-offWhite'>
+                            <form onClick={handleInputClick2} className='flex flex-col items-center justify-center    h-36   cursor-pointer rounded-md md:w-[400px] w-52 mb-10 bg-offWhite px-4'>
                                 {
                                     !file.transcript && <div className='flex flex-col items-center gap-1 py-3 px-2'>
                                         <h1 className='text-xl py-1 text-text-black font-medium font-roboto text-center'>Upload Text File</h1>
@@ -468,8 +474,8 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
                                         <p className='py-1'>{file && file.transcript}</p>
                                         <p className='py-1'>{`${progress.transcript}%`}</p>
-                                        <div className="progress-bar">
-                                            <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                                        <div className="progress-bar bg-white">
+                                            <div className="progress-fill" style={{ width: `${progress.transcript}%` }}></div>
                                         </div>
                                     </div>
 

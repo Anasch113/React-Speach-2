@@ -15,6 +15,7 @@ import { MdClose } from "react-icons/md";
 import Transcripted from '../../components/PreAudio/Transcripted'
 import { useUserAuth } from '../../context/UserAuthContext'
 import Spinner from "../../components/PreAudio/Spinner"
+import toast from 'react-hot-toast'
 
 
 
@@ -56,33 +57,25 @@ const PreAudioTranscriptions = () => {
 
 
 
-
     const handleFileChange = async (event) => {
-        setIsUpload(true)
-
-
+        setIsUpload(true);
+    
         const selectedFile = event.target.files[0];
-        const fileURL = URL.createObjectURL(selectedFile);
-        console.log(fileURL)
-        setFile(selectedFile)
-        setFileName(selectedFile.name)
-        console.log('Selected Insurance Card File:', selectedFile);
+        setFile(selectedFile);
+        setFileName(selectedFile.name);
+        console.log('Selected File:', selectedFile);
+    
         if (
             selectedFile.type === "text/plain" || // for plain text files
             selectedFile.type === "application/pdf" // for PDF files
         ) {
-            setIsTextFiles(true)
+            setIsTextFiles(true);
             alert("You are going to transcribe text files");
-            // Here you can handle the text file further, for example, you can extract text from it
-            // You can use different libraries or APIs to extract text from PDFs or plain text files
-            // After extracting the text, you can perform operations on it
+            // Handle text files further
             setIsUpload(false);
-
+            return;
         }
-
-
-
-
+    
         try {
             const formData = new FormData();
             formData.append("file", selectedFile);
@@ -90,7 +83,8 @@ const PreAudioTranscriptions = () => {
             formData.append("cloud_name", "dgpwe8xy6");
             formData.append("folder", "Audio");
             formData.append("quality", "auto:good"); // Set the desired quality level
-
+    
+    
             const cloudinaryResponse = await axios.post(
                 `${cloudinaryBaseUrl}/upload`,
                 formData,
@@ -98,21 +92,27 @@ const PreAudioTranscriptions = () => {
                     onUploadProgress: (progressEvent) => {
                         // Calculate and update upload progress
                         const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                        setProgress(progress)
+                        setProgress(progress);
                         console.log(`Upload Progress: ${progress}%`);
-                        // Here, you can update your UI to reflect upload progress
+    
+                       
+    
+                     
                     }
                 }
             );
+    
             const cloudinaryFileUrl = cloudinaryResponse.data.secure_url;
-            setCloudUrl(cloudinaryFileUrl)
+            setCloudUrl(cloudinaryFileUrl);
         } catch (error) {
-            console.log("Error in uploading file", error)
+            alert(error.message)
+            console.error("Error in uploading file", error.message);
+          
         }
-        setIsUpload(false)
+    
+        setIsUpload(false);
     };
-
-
+    
     const handleFormClick = () => {
         document.querySelector(".input-field").click();
     };
@@ -165,7 +165,7 @@ const PreAudioTranscriptions = () => {
             throw new Error("Error while transcribing the audio file")
 
         }
-       setRunUseEffect(true)
+        setRunUseEffect(true)
         setProcessing(false)
 
     }
