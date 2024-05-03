@@ -20,6 +20,7 @@ import toast from 'react-hot-toast'
 
 
 
+
 const PreAudioTranscriptions = () => {
 
     const [file, setFile] = useState(null)
@@ -45,7 +46,7 @@ const PreAudioTranscriptions = () => {
 
     const { user } = useUserAuth();
 
-
+   
 
     const client = new AssemblyAI({
         apiKey: import.meta.env.VITE_ASSEMBLYAI_KEY
@@ -65,20 +66,13 @@ const PreAudioTranscriptions = () => {
         setFileName(selectedFile.name);
         console.log('Selected File:', selectedFile);
 
-        if (
-            selectedFile.type === "text/plain" || // for plain text files
-            selectedFile.type === "application/pdf" // for PDF files
-        ) {
-            setIsTextFiles(true);
-            alert("You are going to transcribe text files");
-            // Handle text files further
-            setIsUpload(false);
-            return;
-        }
 
         try {
+            // Initialize FFmpeg
+        
+
             const formData = new FormData();
-            formData.append("file", selectedFile);
+            formData.append("file", new Blob([processedFile.buffer]),);
             formData.append("upload_preset", "xguxdutu");
             formData.append("cloud_name", "dgpwe8xy6");
             formData.append("folder", "Audio");
@@ -110,72 +104,73 @@ const PreAudioTranscriptions = () => {
         setIsUpload(false);
     };
 
+
     const handleFormClick = () => {
         document.querySelector(".input-field").click();
     };
 
 
-const handleTranscriptions = async (event) => {
-    event.preventDefault();
-    setProcessing(true);
-    setRunUseEffect(false);
-    setIsTranscriptions(true);
-    setShowFormModal(false);
+    const handleTranscriptions = async (event) => {
+        event.preventDefault();
+        setProcessing(true);
+        setRunUseEffect(false);
+        setIsTranscriptions(true);
+        setShowFormModal(false);
 
-    try {
-        const params = {
-            audio: cloudUrl,
-            speaker_labels: true,
-            sentiment_analysis: true
-        };
-
-        const transcribe = await client.transcripts.transcribe(params);
-        const subtitle = await getSubtitleFile(transcribe.id, 'srt');
-        setSubtitle(subtitle);
-        setTranscribeText(transcribe.text);
-        setTranscriptions(transcribe);
-
-        const chunkSize = 1024 * 1024; // 1MB chunks
-        const chunks = [];
-        const utterancesChunks = [];
-        // Split transcribe and utterances data into smaller chunks
-        for (let i = 0; i < transcribe.text.length; i += chunkSize) {
-            chunks.push(transcribe.text.substring(i, i + chunkSize));
-        }
-        for (let i = 0; i < transcribe.utterances.length; i += chunkSize) {
-            utterancesChunks.push(transcribe.utterances.slice(i, i + chunkSize));
-        }
-
-        // Send each chunk to the server sequentially
-        for (let i = 0; i < chunks.length; i++) {
-            const body = {
-                id: transcribe.id,
-                text: chunks[i],
-                audio_url: transcribe.audio_url,
-                status: transcribe.status,
-                audio_duration: transcribe.audio_duration,
-                utterances: utterancesChunks[i],
-                sentimentAnalysisResults: transcribe.sentiment_analysis_results.slice(i * chunkSize, (i + 1) * chunkSize),
-                userId: user.uid,
-                filename: filename
+        try {
+            const params = {
+                audio: cloudUrl,
+                speaker_labels: true,
+                sentiment_analysis: true
             };
-            await axios.post(`${import.meta.env.VITE_HOST_URL}/api/save/savePreAudio`, body, {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
+
+            const transcribe = await client.transcripts.transcribe(params);
+            const subtitle = await getSubtitleFile(transcribe.id, 'srt');
+            setSubtitle(subtitle);
+            setTranscribeText(transcribe.text);
+            setTranscriptions(transcribe);
+
+            const chunkSize = 1024 * 1024; // 1MB chunks
+            const chunks = [];
+            const utterancesChunks = [];
+            // Split transcribe and utterances data into smaller chunks
+            for (let i = 0; i < transcribe.text.length; i += chunkSize) {
+                chunks.push(transcribe.text.substring(i, i + chunkSize));
+            }
+            for (let i = 0; i < transcribe.utterances.length; i += chunkSize) {
+                utterancesChunks.push(transcribe.utterances.slice(i, i + chunkSize));
+            }
+
+            // Send each chunk to the server sequentially
+            for (let i = 0; i < chunks.length; i++) {
+                const body = {
+                    id: transcribe.id,
+                    text: chunks[i],
+                    audio_url: transcribe.audio_url,
+                    status: transcribe.status,
+                    audio_duration: transcribe.audio_duration,
+                    utterances: utterancesChunks[i],
+                    sentimentAnalysisResults: transcribe.sentiment_analysis_results.slice(i * chunkSize, (i + 1) * chunkSize),
+                    userId: user.uid,
+                    filename: filename
+                };
+                await axios.post(`${import.meta.env.VITE_HOST_URL}/api/save/savePreAudio`, body, {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+            }
+
+            console.log("Transcription data sent successfully in chunks");
+
+        } catch (error) {
+            console.log("Error in Transcription", error);
+            throw new Error("Error while transcribing the audio file");
         }
 
-        console.log("Transcription data sent successfully in chunks");
-
-    } catch (error) {
-        console.log("Error in Transcription", error);
-        throw new Error("Error while transcribing the audio file");
-    }
-
-    setRunUseEffect(true);
-    setProcessing(false);
-};
+        setRunUseEffect(true);
+        setProcessing(false);
+    };
 
 
 
