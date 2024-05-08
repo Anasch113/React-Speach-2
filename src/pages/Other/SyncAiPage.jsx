@@ -30,9 +30,23 @@ const SyncAiPage = () => {
     const { user } = useUserAuth();
 
 
+    useEffect(() => {
+        const socket = new WebSocket(`wss://${import.meta.env.VITE_WSS_URL}`);
+
+        socket.addEventListener('open', () => {
+            console.log('WebSocket connected');
+        });
+    
+        socket.addEventListener('message', handleMessage);
+        // Cleanup function to remove event listeners when component unmounts
+        return () => {
+            socket.removeEventListener('message', handleMessage);
+        };
+    }, []); // Empty dependency array ensures this effect runs only once
 
 
-    const socket = new WebSocket(`wss://${import.meta.env.VITE_WSS_URL}`);
+
+    
 
     const [file, setFile] = useState({
         audio: "",
@@ -238,19 +252,6 @@ const SyncAiPage = () => {
 
     // Add event listeners for WebSocket events
    
-
-    useEffect(() => {
-
-        socket.addEventListener('open', () => {
-            console.log('WebSocket connected');
-        });
-    
-        socket.addEventListener('message', handleMessage);
-        // Cleanup function to remove event listeners when component unmounts
-        return () => {
-            socket.removeEventListener('message', handleMessage);
-        };
-    }, []); // Empty dependency array ensures this effect runs only once
 
 
 
