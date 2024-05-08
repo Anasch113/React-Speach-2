@@ -21,6 +21,8 @@ import toast from 'react-hot-toast'
 
 
 
+
+
 const PreAudioTranscriptions = () => {
 
     const [file, setFile] = useState(null)
@@ -46,7 +48,8 @@ const PreAudioTranscriptions = () => {
 
     const { user } = useUserAuth();
 
-   
+
+
 
     const client = new AssemblyAI({
         apiKey: import.meta.env.VITE_ASSEMBLYAI_KEY
@@ -68,11 +71,11 @@ const PreAudioTranscriptions = () => {
 
 
         try {
-            // Initialize FFmpeg
-        
 
+
+           
             const formData = new FormData();
-            formData.append("file", new Blob([processedFile.buffer]),);
+            formData.append("file", selectedFile);
             formData.append("upload_preset", "xguxdutu");
             formData.append("cloud_name", "dgpwe8xy6");
             formData.append("folder", "Audio");

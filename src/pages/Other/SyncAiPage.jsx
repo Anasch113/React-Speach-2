@@ -18,12 +18,22 @@ import { useUserAuth } from '../../context/UserAuthContext';
 import Spinner from '../../components/PreAudio/Spinner';
 import { reload } from 'firebase/auth';
 import toast from 'react-hot-toast';
+import io from 'socket.io-client';
 
 
+
+
+const socket = new WebSocket(`ws://${import.meta.env.VITE_WSS_URL}`);
 const SyncAiPage = () => {
 
-
+  
     const { user } = useUserAuth();
+
+
+
+
+
+
     const [file, setFile] = useState({
         audio: "",
         transcript: ""
@@ -50,9 +60,16 @@ const SyncAiPage = () => {
     const [processing, setProcessing] = useState(false)
     const [runUseEffect, setRunUseEffect] = useState(false)
     const [reloadLoading, setReloadLoading] = useState(false)
+    const [alignmentId, setAlignmentId] = useState("")
+    const [webHookData, setWebHookData] = useState("")
+    const [useEffectTriggered, setUseEffectTriggered] = useState(false);
 
 
     const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dgpwe8xy6";
+
+
+
+
 
 
     const handleInputClick = () => {
@@ -61,6 +78,7 @@ const SyncAiPage = () => {
     const handleInputClick2 = () => {
         document.querySelector(".input-field-2").click()
     }
+
 
     const handleFileChange = async (event, stateKey) => {
 
@@ -74,7 +92,7 @@ const SyncAiPage = () => {
             [stateKey]: 0
         }));
 
-        console.log("event", event)
+
         if (stateKey === 'audio') {
             setIsUploadAudio(true);
         } else if (stateKey === 'transcript') {
@@ -84,7 +102,7 @@ const SyncAiPage = () => {
 
         const selectedFile = event.target.files[0];
 
-        console.log("selectedFileeeeeeeeeeeeeeeeeee", selectedFile)
+
         setFile((prevFiles) => ({
             ...prevFiles,
             [stateKey]: selectedFile.name
@@ -110,7 +128,7 @@ const SyncAiPage = () => {
                             [stateKey]: progress
                         }));
 
-                        console.log(`Upload Progress for ${stateKey} file: ${progress}%`);
+                        // console.log(`Upload Progress for ${stateKey} file: ${progress}%`);
                     }
                 }
             );
@@ -137,15 +155,12 @@ const SyncAiPage = () => {
     };
 
 
-
-
-
     const hanldeSync = async () => {
         setShowFormModal(false)
         setIsTranscriptions(true)
         setProcessing(true)
         setRunUseEffect(false)
-
+        setUseEffectTriggered(false)
 
         try {
             const requestBody = {
@@ -178,66 +193,7 @@ const SyncAiPage = () => {
             setInitialData(responseData)
 
 
-            console.log("Alignment job submitted successfully:", responseData.id);
 
-            const timeOut = await new Promise(resolve => setTimeout(resolve, 50000))
-            console.log("Process in  ", timeOut)
-
-
-
-            const secondStepRes = await fetch(`${import.meta.env.VITE_HOST_URL}/sync/submit-alignment-job-second`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: responseData.id
-                })
-            });
-            const responseDataSecond = await secondStepRes.json();
-
-            console.log("responseDataSecond", responseDataSecond)
-
-
-
-            const thirdStepRes = await fetch(`${import.meta.env.VITE_HOST_URL}/sync/submit-alignment-job-third`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: responseData.id
-                })
-            });
-            const responseDatathird = await thirdStepRes.json();
-            setData(responseDatathird)
-            console.log("responseDataSecond", responseDatathird.monologues)
-
-
-
-
-            const bodyData = {
-
-                syncData: responseDatathird,
-                userId: user.uid,
-                audio: file.audio,
-                transcript: file.transcript,
-                cloudUrl: cloudUrl
-
-
-            }
-
-            const handleSave = await axios.post(`${import.meta.env.VITE_HOST_URL}/sync/saveData`, bodyData, {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
-            ).then((res) => {
-
-                console.log("res:", res.data)
-            }).catch((error) => {
-                console.log("Error occurred while in pre audio upload", error)
-            })
 
 
 
@@ -255,13 +211,124 @@ const SyncAiPage = () => {
                 console.error('Error:', error.message);
             }
         }
-        setProcessing(false)
-        setRunUseEffect(true)
+
 
     }
 
-    // console.log("File selected audio", file.audio.name)
-    console.log("Cloudurl ", cloudUrl)
+
+
+
+
+
+    // Define a function to handle the message event
+    const handleMessage = ({ data }) => {
+        // Parse the received data
+        const parseData = JSON.parse(data);
+        console.log(parseData);
+
+        // Update state or perform other actions with the received data
+        setWebHookData(parseData);
+
+
+        // Remove the event listener after handling the first message
+        socket.removeEventListener('message', handleMessage);
+    };
+
+
+
+    // Add event listeners for WebSocket events
+   
+
+    useEffect(() => {
+
+        socket.addEventListener('open', () => {
+            console.log('WebSocket connected');
+        });
+    
+        socket.addEventListener('message', handleMessage);
+        // Cleanup function to remove event listeners when component unmounts
+        return () => {
+            socket.removeEventListener('message', handleMessage);
+        };
+    }, []); // Empty dependency array ensures this effect runs only once
+
+
+
+    useEffect(() => {
+
+        if (!useEffectTriggered && webHookData) {
+            const finalSync = async () => {
+
+                setUseEffectTriggered(true)
+
+                try {
+                    const thirdStepRes = await fetch(`${import.meta.env.VITE_HOST_URL}/sync/submit-alignment-job-third`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: webHookData.id
+                        })
+                    });
+                    const responseDatathird = await thirdStepRes.json();
+                    setData(responseDatathird)
+                    console.log("responseDataThird", responseDatathird.monologues)
+
+
+
+
+                    const bodyData = {
+
+                        syncData: responseDatathird,
+                        userId: user.uid,
+                        audio: file.audio,
+                        transcript: file.transcript,
+                        cloudUrl: cloudUrl
+
+
+                    }
+
+                    const handleSave = await axios.post(`${import.meta.env.VITE_HOST_URL}/sync/saveData`, bodyData, {
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    }
+                    ).then((res) => {
+
+                        console.log("res:", res.data)
+                    }).catch((error) => {
+                        console.log("Error occurred while in pre audio upload", error)
+                    })
+
+                    toast.success("Resyncing completed")
+
+                } catch (error) {
+                    console.log("Erro in finalsync", error)
+                }
+
+
+                setRunUseEffect(true)
+                setProcessing(false)
+            }
+
+            finalSync()
+
+        }
+
+
+    }, [webHookData, useEffectTriggered])
+
+
+
+
+
+
+
+
+
+
+
 
     useEffect(() => {
 
@@ -292,29 +359,12 @@ const SyncAiPage = () => {
     }, [user, runUseEffect]);
 
 
-    console.log("file in file state", file)
 
 
 
 
 
 
-    // const hanldeResetFile = (e, stateKey) => {
-    //     console.log("e , state key", e, stateKey);
-
-    //     // Reset the file state
-    //     setFile((prevFile) => ({
-    //         ...prevFile,
-    //         [stateKey]: ''
-    //     }));
-
-
-
-    //     setCloudUrl((prevUrls) => ({
-    //         ...prevUrls,
-    //         [stateKey]: ''
-    //     }));
-    // };
 
 
     return (
