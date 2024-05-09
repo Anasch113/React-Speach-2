@@ -26,7 +26,7 @@ import io from 'socket.io-client';
 
 const SyncAiPage = () => {
 
-  
+
     const { user } = useUserAuth();
 
 
@@ -36,17 +36,18 @@ const SyncAiPage = () => {
         socket.addEventListener('open', () => {
             console.log('WebSocket connected');
         });
-    
-        socket.addEventListener('message', handleMessage);
+
+        socket.addEventListener('message',({data})=>{
+            handleMessage(data)
+            console.log("first render data from webhook", data)
+        } );
         // Cleanup function to remove event listeners when component unmounts
-        return () => {
-            socket.removeEventListener('message', handleMessage);
-        };
+       
     }, []); // Empty dependency array ensures this effect runs only once
 
 
 
-    
+
 
     const [file, setFile] = useState({
         audio: "",
@@ -238,7 +239,7 @@ const SyncAiPage = () => {
     const handleMessage = ({ data }) => {
         // Parse the received data
         const parseData = JSON.parse(data);
-        console.log(parseData);
+        console.log("Webhook data in hanldeMessage", parseData);
 
         // Update state or perform other actions with the received data
         setWebHookData(parseData);
@@ -247,11 +248,11 @@ const SyncAiPage = () => {
         // Remove the event listener after handling the first message
         socket.removeEventListener('message', handleMessage);
     };
-
+    console.log("data from webhook in state", webHookData)
 
 
     // Add event listeners for WebSocket events
-   
+
 
 
 
