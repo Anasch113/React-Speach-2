@@ -146,7 +146,7 @@ const SyncAiPage = () => {
 
                         // console.log(`Upload Progress for ${stateKey} file: ${progress}%`);
                     },
-                    timeout: 60000
+                    timeout: 10000000
                 }
             );
 
