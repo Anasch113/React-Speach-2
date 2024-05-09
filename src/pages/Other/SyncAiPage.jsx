@@ -33,7 +33,7 @@ const SyncAiPage = () => {
         console.log('WebSocket connected');
     });
 
-    socket.addEventListener('message',({data})=>{
+    socket.addEventListener('message',(data)=>{
         handleMessage(data)
         console.log("first render data from webhook", data)
     } );
@@ -237,9 +237,9 @@ const SyncAiPage = () => {
 
 
     // Define a function to handle the message event
-    const handleMessage = ({ data }) => {
+    const handleMessage = (data) => {
         // Parse the received data
-        const parseData = JSON.parse(data);
+        const parseData = JSON.parse(data.data);
         console.log("Webhook data in hanldeMessage", parseData);
 
         // Update state or perform other actions with the received data
