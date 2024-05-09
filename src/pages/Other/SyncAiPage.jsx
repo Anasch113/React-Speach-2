@@ -33,17 +33,17 @@ const SyncAiPage = () => {
         console.log('WebSocket connected');
     });
 
-    socket.addEventListener('message',(data)=>{
+    socket.addEventListener('message', (data) => {
         handleMessage(data)
         console.log("first render data from webhook", data)
-    } );
+    });
 
     // useEffect(() => {
-       
 
-       
+
+
     //     // Cleanup function to remove event listeners when component unmounts
-       
+
     // }, []); // Empty dependency array ensures this effect runs only once
 
 
@@ -145,7 +145,8 @@ const SyncAiPage = () => {
                         }));
 
                         // console.log(`Upload Progress for ${stateKey} file: ${progress}%`);
-                    }
+                    },
+                    timeout: 60000
                 }
             );
 
