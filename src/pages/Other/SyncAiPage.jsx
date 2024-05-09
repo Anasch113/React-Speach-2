@@ -25,7 +25,7 @@ import io from 'socket.io-client';
 
 
 const SyncAiPage = () => {
-    const socket = new WebSocket(`ws://${import.meta.env.VITE_WSS_URL}`);
+    const socket = new WebSocket(`wss://${import.meta.env.VITE_WSS_URL}`);
 
     const { user } = useUserAuth();
 
