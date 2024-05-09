@@ -25,25 +25,26 @@ import io from 'socket.io-client';
 
 
 const SyncAiPage = () => {
-
+    const socket = new WebSocket(`ws://${import.meta.env.VITE_WSS_URL}`);
 
     const { user } = useUserAuth();
 
+    socket.addEventListener('open', () => {
+        console.log('WebSocket connected');
+    });
 
-    useEffect(() => {
-        const socket = new WebSocket(`wss://${import.meta.env.VITE_WSS_URL}`);
+    socket.addEventListener('message',({data})=>{
+        handleMessage(data)
+        console.log("first render data from webhook", data)
+    } );
 
-        socket.addEventListener('open', () => {
-            console.log('WebSocket connected');
-        });
-
-        socket.addEventListener('message',({data})=>{
-            handleMessage(data)
-            console.log("first render data from webhook", data)
-        } );
-        // Cleanup function to remove event listeners when component unmounts
+    // useEffect(() => {
        
-    }, []); // Empty dependency array ensures this effect runs only once
+
+       
+    //     // Cleanup function to remove event listeners when component unmounts
+       
+    // }, []); // Empty dependency array ensures this effect runs only once
 
 
 
