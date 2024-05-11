@@ -550,10 +550,15 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
 
                         </div>
-                        <button disabled={isUploadAudio && isUploadTranscript} onClick={hanldeSync} className='text-center px-5 py-4 w-full h-16
-rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
-                                <GrSync size={25} /> <p>Resync </p>
-                            </span></button>
+                        <button disabled={isUploadAudio && isUploadTranscript} onClick={hanldeSync}
+                            className='text-center px-5 py-4 w-2/4 h-16 rounded-full bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '>
+
+                            <span className='flex items-center text-center justify-center gap-2'>
+                                <GrSync size={25} />
+                                <p>Resync </p>
+
+                            </span>
+                        </button>
                     </div>
 
 

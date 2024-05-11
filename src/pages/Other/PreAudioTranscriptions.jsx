@@ -284,17 +284,9 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
                     }
 
-
-
-
-
                 </div>
 
             </div>
-
-
-
-
             {showFormModal && (
                 <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 ">
                     <div className="bg-white h-[550px] p-5 rounded-lg overflow-y-scroll">

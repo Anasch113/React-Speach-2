@@ -2,7 +2,7 @@ import React from 'react'
 import { RxDashboard } from "react-icons/rx";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate, useParams } from 'react-router-dom';
-
+import { GrSync } from "react-icons/gr";
 import { useState } from 'react';
 
 import { useUserAuth } from '../../context/UserAuthContext';
@@ -11,7 +11,7 @@ const Transcripted = ({
     data,
     file,
     processing,
-   
+
     isTranscriptions,
 
     setShowFormModal,
@@ -22,7 +22,7 @@ const Transcripted = ({
 }) => {
 
 
-    
+
     const navigate = useNavigate();
     const { user } = useUserAuth();
 
@@ -56,7 +56,7 @@ const Transcripted = ({
                     <div>
                         <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-3 w-full h-16
 rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
-                                <FaCloudUploadAlt size={25} /> <p>Sync Files </p>
+                                <FaCloudUploadAlt size={25} /> <p>Upload Files </p>
                             </span></button>
 
                     </div>
@@ -71,16 +71,15 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                     <table className="  flex flex-col  ">
 
                         <thead className='my-2'>
-                            <tr className="font-poppins text-sm">
+                            <tr className="font-poppins gap-10  flex justify-between px-5">
 
-                                <th className=" text-text-brown-new px-20 py-2">Audio File Name</th>
-                                <th className=" text-text-brown-new px-20 py-2">Text File Name</th>
+                                <th className="flex-1 text-text-brown-new  py-2">Audio File Name</th>
+                                <th className=" text-text-brown-new  py-2">Text File Name</th>
 
-                                <th className=" text-text-brown-new px-20 py-2">Mode</th>
-                                <th className=" text-text-brown-new px-20 py-2">Status</th>
-
-
-
+                                <span className='flex gap-5'>
+                                    <th className=" text-text-brown-new  py-2">Mode</th>
+                                    <th className=" text-text-brown-new  py-2">Status</th>
+                                </span>
                             </tr>
 
                         </thead>
@@ -88,45 +87,48 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                         <tbody className='flex px-2 flex-col-reverse max-h-[400px] overflow-y-scroll  py-4'>
 
                             {
-                              dbData && dbData.map((file, i)=>(
-                                    <tr key={i} onClick={() => handleNavigate(file._id)} className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl py-3 ">
+                                dbData && dbData.map((file, i) => (
+                                    <tr key={i} onClick={() => handleNavigate(file._id)} className="font-poppins   cursor-pointer hover:bg-[#EDEDED]   flex justify-between gap-10 px-5 border-b">
 
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2"> {file.audioFilename}</td>
-                                    {/* You can set date and duration as needed for the files from props */}
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{file.transcriptFilename}</td>
+                                        <td className="flex-1 text-text-black font-medium  py-5 "> {file.audioFilename}</td>
+                                        {/* You can set date and duration as needed for the files from props */}
+                                        <td className=" text-text-black font-medium  py-5 ">{file.transcriptFilename}</td>
 
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">
-                                      
-                                      resync
-                                    </td>
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">
-                                      
-                                        {file.status}
-                                    </td>
-                                </tr>
+                                        <span className='flex gap-5'>
+
+                                            <td className=" text-text-black font-medium  py-5">
+
+                                                Resync
+                                            </td>
+                                            <td className=" text-text-black font-medium py-5">
+
+                                                <img className='w-6 h-6' src="/greentick.png" alt="" />
+                                            </td>
+                                        </span>
+                                    </tr>
                                 ))
                             }
 
                             {
-                                isTranscriptions && 
-                                <tr  className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl  py-3">
+                                isTranscriptions &&
+                                <tr className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl  py-3">
 
                                     <td className=" text-text-black font-medium text-lg px-20 py-2">{file && file.audio}</td>
-                                   
+
                                     <td className=" text-text-black font-medium text-lg px-20 py-2">{file && file.transcript}</td>
                                     <td className=" text-text-black font-medium text-lg px-20 py-2">
-                                      
-                                      resync
+
+                                        Resync
                                     </td>
 
                                     <td className=" text-text-black font-medium text-lg px-20 py-2">
-                                        
+
                                         {processing ? <div className='spinner'></div> : "Completed"}
                                     </td>
                                 </tr>
 
                             }
-                            
+
                         </tbody>
 
                     </table>
