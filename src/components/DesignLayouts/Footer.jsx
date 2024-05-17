@@ -65,7 +65,7 @@ const Footer = () => {
                                     href="">Integrations</a></li>
                             <li className="mb-2"><a
                                     className="text-sm font-normal transition-all ease-linear duration-200 hover:text-[#0f83d1]"
-                                    href="">Book and Interpreter</a></li>
+                                    href="">Book and Captioning</a></li>
                         </ul>
                     </div>
                     <div>

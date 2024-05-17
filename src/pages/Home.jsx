@@ -11,7 +11,7 @@ const Home = () => {
             <div className="container mx-auto">
                 <div className="flex 2xl:flex-row xl:flex-row flex-col justify-between items-center">
                     <div className="2xl:w-2/5 xl:w-2/5 w-full 2xl:mt-0 xl:mt-0 mt-12">
-                        <h4 className="text-gray-400 text-2xl font-bold">Interprefy Aivia Captions</h4>
+                        <h4 className="text-gray-400 text-2xl font-bold">Captify Aivia Captions</h4>
                         <h1
                             className="2xl:text-4xl xl:text-4xl text-2xl text-white font-bold 2xl:leading-[1.6] xl:leading-[1.6]">
                             Make your events accessible for everyone</h1>
@@ -197,7 +197,7 @@ const Home = () => {
                         and technical support to ensure a seamless, trouble-free event experience for everyone.</p>
                 </div>
                 <div className="2xl:w-2/5 xl:w-2/5 w-full 2xl:mt-0 xl:mt-0 mt-8">
-                    <picture><img src="/assets/images/others/Interprefy Remote Support Technician.webp" alt="" />
+                    <picture><img src="/assets/images/others/Captify Remote Support Technician.webp" alt="" />
                     </picture>
                 </div>
             </div>
@@ -250,7 +250,7 @@ const Home = () => {
                         className="2xl:text-xl xl:text-xl text-base mt-6 text-black font-bold 2xl:leading-[1.6] xl:leading-[1.6]">
                         Stream live captions anywhere</h1>
                     <p className="text-black mt-3 mb-10">Enjoy the freedom to broadcast captions to any of the more than 70
-                        event and meeting platforms that Interprefy integrates with - including Zoom, Teams, YouTube, or
+                        event and meeting platforms that Captify integrates with - including Zoom, Teams, YouTube, or
                         even your auditorium, no matter where you meet.</p>
                 </div>
                 <div className="2xl:w-2/5 xl:w-2/5 w-full 2xl:mt-0 xl:mt-0 mt-8">
