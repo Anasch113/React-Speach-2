@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dgpwe8xy6";
+const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dqtscpu75";
 const assemblyAiBaseUrl = "https://api.assemblyai.com/v2";
 
 const cloudinaryHeaders = {
@@ -19,8 +19,8 @@ export const uploadAudioToCloudinary = async (audioBlob) => {
     // Step 1: Upload the audio file to Cloudinary
     const formData = new FormData();
     formData.append("file", audioBlob);
-    formData.append("upload_preset", "xguxdutu");
-    formData.append("cloud_name", "dgpwe8xy6");
+    formData.append("upload_preset", "brd5uhci");
+    formData.append("cloud_name", "dqtscpu75");
     formData.append("folder", "Audio");
     formData.append("quality", "auto:good"); // Set the desired quality level
 

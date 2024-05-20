@@ -25,7 +25,7 @@ import io from 'socket.io-client';
 
 
 const SyncAiPage = () => {
-    const socket = new WebSocket(`wss://${import.meta.env.VITE_WSS_URL}`);
+    const socket = new WebSocket(`ws://${import.meta.env.VITE_WSS_URL}`);
 
     const { user } = useUserAuth();
 
@@ -81,7 +81,7 @@ const SyncAiPage = () => {
     const [useEffectTriggered, setUseEffectTriggered] = useState(false);
 
 
-    const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dgpwe8xy6";
+    const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dqtscpu75";
 
 
 
@@ -127,8 +127,8 @@ const SyncAiPage = () => {
         try {
             const formData = new FormData();
             formData.append("file", selectedFile);
-            formData.append("upload_preset", "xguxdutu");
-            formData.append("cloud_name", "dgpwe8xy6");
+            formData.append("upload_preset", "brd5uhci");
+            formData.append("cloud_name", "dqtscpu75");
             formData.append("folder", "Audio");
             formData.append("quality", "auto:good");
 

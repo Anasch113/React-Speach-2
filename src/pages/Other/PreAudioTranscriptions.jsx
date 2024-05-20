@@ -55,7 +55,7 @@ const PreAudioTranscriptions = () => {
         apiKey: import.meta.env.VITE_ASSEMBLYAI_KEY
     })
 
-    const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dgpwe8xy6";
+    const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dqtscpu75";
 
 
 
@@ -74,8 +74,8 @@ const PreAudioTranscriptions = () => {
            
             const formData = new FormData();
             formData.append("file", selectedFile);
-            formData.append("upload_preset", "xguxdutu");
-            formData.append("cloud_name", "dgpwe8xy6");
+            formData.append("upload_preset", "brd5uhci");
+            formData.append("cloud_name", "dqtscpu75");
             formData.append("folder", "Audio");
             formData.append("quality", "auto:good"); // Set the desired quality level
 
@@ -95,6 +95,7 @@ const PreAudioTranscriptions = () => {
                 }
             );
             const cloudinaryFileUrl = cloudinaryResponse.data.secure_url;
+            console.log("cloudinaryyyy URRLLLLLLLL: ", cloudinaryFileUrl)
             setCloudUrl(cloudinaryFileUrl);
         } catch (error) {
             alert(error.message)
