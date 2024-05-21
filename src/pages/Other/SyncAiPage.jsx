@@ -25,7 +25,7 @@ import io from 'socket.io-client';
 
 
 const SyncAiPage = () => {
-    const socket = new WebSocket(`ws://${import.meta.env.VITE_WSS_URL}`);
+    const socket = new WebSocket(`wss://${import.meta.env.VITE_WSS_URL}`);
 
     const { user } = useUserAuth();
 
@@ -76,14 +76,17 @@ const SyncAiPage = () => {
     const [processing, setProcessing] = useState(false)
     const [runUseEffect, setRunUseEffect] = useState(false)
     const [reloadLoading, setReloadLoading] = useState(false)
-    const [alignmentId, setAlignmentId] = useState("")
+    const [chunksLoading, setChunksLOading] = useState(false)
     const [webHookData, setWebHookData] = useState("")
     const [useEffectTriggered, setUseEffectTriggered] = useState(false);
 
-
+    const [uploading, setUploading] = useState(false);
+    const [uploadComplete, setUploadComplete] = useState(false);
+    const [cldResponse, setCldResponse] = useState(null);
     const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dqtscpu75";
 
-
+    const CLOUD_NAME = 'dqtscpu75';
+    const UPLOAD_PRESET = 'brd5uhci';
 
 
 
@@ -97,7 +100,6 @@ const SyncAiPage = () => {
 
 
     const handleFileChange = async (event, stateKey) => {
-
         setCloudUrl((prevUrls) => ({
             ...prevUrls,
             [stateKey]: ''
@@ -108,68 +110,152 @@ const SyncAiPage = () => {
             [stateKey]: 0
         }));
 
-
         if (stateKey === 'audio') {
             setIsUploadAudio(true);
         } else if (stateKey === 'transcript') {
             setIsUploadTranscript(true);
         }
 
-
         const selectedFile = event.target.files[0];
-
 
         setFile((prevFiles) => ({
             ...prevFiles,
             [stateKey]: selectedFile.name
-        }))
+        }));
 
         try {
-            const formData = new FormData();
-            formData.append("file", selectedFile);
-            formData.append("upload_preset", "brd5uhci");
-            formData.append("cloud_name", "dqtscpu75");
-            formData.append("folder", "Audio");
-            formData.append("quality", "auto:good");
+            const chunkSize = 5 * 1024 * 1024; // 5MB
+            const isLargeFile = selectedFile.size > 1 * 1024 * 1024; // 20MB
+            if (isLargeFile) {
+                // Use chunked upload for large files
+                await uploadFile(selectedFile, stateKey);
+            } else {
+                // Use regular upload for smaller files
+                const formData = new FormData();
+                formData.append("file", selectedFile);
+                formData.append("upload_preset", "brd5uhci");
+                formData.append("cloud_name", "dqtscpu75");
+                formData.append("folder", "Audio");
+                formData.append("quality", "auto:good");
 
+                const cloudinaryResponse = await axios.post(
+                    `${cloudinaryBaseUrl}/upload`,
+                    formData,
+                    {
+                        onUploadProgress: (progressEvent) => {
+                            const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                            setProgress(prevProgress => ({
+                                ...prevProgress,
+                                [stateKey]: progress
+                            }));
+                        },
+                        timeout: 10000000
+                    }
+                );
 
-            const cloudinaryResponse = await axios.post(
-                `${cloudinaryBaseUrl}/upload`,
-                formData,
-                {
-                    onUploadProgress: (progressEvent) => {
-                        const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                        setProgress(prevProgress => ({
-                            ...prevProgress,
-                            [stateKey]: progress
-                        }));
+                const cloudinaryFileUrl = cloudinaryResponse.data.secure_url;
 
-                        // console.log(`Upload Progress for ${stateKey} file: ${progress}%`);
-                    },
-                    timeout: 10000000
-                }
-            );
-
-            const cloudinaryFileUrl = cloudinaryResponse.data.secure_url;
-
-            setCloudUrl((prevUrls) => ({
-                ...prevUrls,
-                [stateKey]: cloudinaryFileUrl
-            }));
+                console.log("Cloudinary file shortttttt urlllll", cloudUrl)
+                setCloudUrl((prevUrls) => ({
+                    ...prevUrls,
+                    [stateKey]: cloudinaryFileUrl
+                }));
+            }
         } catch (error) {
-            alert(error)
+            alert(error);
             console.error(`Error in uploading ${stateKey} file`, error);
-
         }
 
-
-        // Finish file upload process
         if (stateKey === 'audio') {
             setIsUploadAudio(false);
         } else if (stateKey === 'transcript') {
             setIsUploadTranscript(false);
         }
     };
+
+    const uploadFile = async (file, stateKey) => {
+        if (!file) {
+          console.error('Please select a file.');
+          return;
+        }
+        setChunksLOading(true)
+        const uniqueUploadId = generateUniqueUploadId();
+        const chunkSize = 5 * 1024 * 1024;
+        const totalChunks = Math.ceil(file.size / chunkSize);
+        let currentChunk = 0;
+    
+        setUploading(true);
+    
+        const uploadChunk = async (start, end) => {
+          const formData = new FormData();
+          formData.append('file', file.slice(start, end));
+          formData.append('cloud_name', CLOUD_NAME);
+          formData.append('upload_preset', UPLOAD_PRESET);
+          const contentRange = `bytes ${start}-${end - 1}/${file.size}`;
+    
+          console.log(
+           
+            `Uploading chunk for uniqueUploadId: ${uniqueUploadId}; start: ${start}, end: ${
+              end - 1
+            }`
+          );
+          
+          
+          
+
+    
+          try {
+            const response = await fetch(
+              `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
+              {
+                method: 'POST',
+                body: formData,
+                headers: {
+                  'X-Unique-Upload-Id': uniqueUploadId,
+                  'Content-Range': contentRange,
+                },
+              }
+            );
+    
+            if (!response.ok) {
+              throw new Error('Chunk upload failed.');
+            }
+    
+            currentChunk++;
+    
+            if (currentChunk < totalChunks) {
+              const nextStart = currentChunk * chunkSize;
+              const nextEnd = Math.min(nextStart + chunkSize, file.size);
+              uploadChunk(nextStart, nextEnd);
+            } else {
+              setUploadComplete(true);
+              setUploading(false);
+    
+              const fetchResponse = await response.json();
+              setCldResponse(fetchResponse);
+              const cloudinaryFileUrl = fetchResponse.secure_url
+              setCloudUrl((prevUrls) => ({
+                ...prevUrls,
+                [stateKey]: cloudinaryFileUrl
+            }));
+              console.log("fetchResponseeeee url", cloudinaryFileUrl)
+              console.info('File upload complete.');
+              setChunksLOading(false)
+            }
+          } catch (error) {
+            console.error('Error uploading chunk:', error);
+            setUploading(false);
+          }
+        };
+    
+        const start = 0;
+        const end = Math.min(chunkSize, file.size);
+        uploadChunk(start, end);
+      };
+    
+      const generateUniqueUploadId = () => {
+        return `uqid-${Date.now()}`;
+      };
 
 
     const hanldeSync = async () => {
@@ -474,7 +560,7 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                     </section>
                                 }
                                 {
-                                    isUploadAudio && <div className='flex  items-center flex-col gap-2 '>
+                                    isUploadAudio  && <div className='flex  items-center flex-col gap-2 '>
 
                                         <p className='py-1 text-center'>{file.audio}</p>
                                         <p className='py-1'>{`${progress.audio}%`}</p>
@@ -483,6 +569,10 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                         </div>
                                     </div>
 
+                                }
+
+                                {
+                                    chunksLoading && <p>Uploading...</p>
                                 }
                                 <div className='py-2'>
                                     <input
