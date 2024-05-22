@@ -51,7 +51,7 @@ const SyncAiPage = () => {
 
 
     const [file, setFile] = useState({
-        audio: "",
+        audio: "largefile",
         transcript: ""
         // Add more keys if needed for other types of files
     });
@@ -60,7 +60,7 @@ const SyncAiPage = () => {
         transcript: 0
     });
     const [cloudUrl, setCloudUrl] = useState({
-        audio: "",
+        audio: "https://res.cloudinary.com/dqtscpu75/video/upload/v1716365795/dkykkbvggrsg6oydoond.mp4",
         transcript: ""
         // Add more keys if needed for other types of files
     });
