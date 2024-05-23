@@ -72,7 +72,7 @@ const SyncAiPage = () => {
     const [isUploadAudio, setIsUploadAudio] = useState(false);
     const [isUploadTranscript, setIsUploadTranscript] = useState(false);
     const [data, setData] = useState(false)
-    const [initialData, setInitialData] = useState("")
+    const [isjobCompleted, setIsJobCompleted] = useState(false)
     const [processing, setProcessing] = useState(false)
     const [runUseEffect, setRunUseEffect] = useState(false)
     const [reloadLoading, setReloadLoading] = useState(false)
@@ -175,87 +175,86 @@ const SyncAiPage = () => {
 
     const uploadFile = async (file, stateKey) => {
         if (!file) {
-          console.error('Please select a file.');
-          return;
+            console.error('Please select a file.');
+            return;
         }
         setChunksLOading(true)
         const uniqueUploadId = generateUniqueUploadId();
         const chunkSize = 5 * 1024 * 1024;
         const totalChunks = Math.ceil(file.size / chunkSize);
         let currentChunk = 0;
-    
-        setUploading(true);
-    
-        const uploadChunk = async (start, end) => {
-          const formData = new FormData();
-          formData.append('file', file.slice(start, end));
-          formData.append('cloud_name', CLOUD_NAME);
-          formData.append('upload_preset', UPLOAD_PRESET);
-          const contentRange = `bytes ${start}-${end - 1}/${file.size}`;
-    
-          console.log(
-           
-            `Uploading chunk for uniqueUploadId: ${uniqueUploadId}; start: ${start}, end: ${
-              end - 1
-            }`
-          );
-          
-          
-          
 
-    
-          try {
-            const response = await fetch(
-              `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
-              {
-                method: 'POST',
-                body: formData,
-                headers: {
-                  'X-Unique-Upload-Id': uniqueUploadId,
-                  'Content-Range': contentRange,
-                },
-              }
+        setUploading(true);
+
+        const uploadChunk = async (start, end) => {
+            const formData = new FormData();
+            formData.append('file', file.slice(start, end));
+            formData.append('cloud_name', CLOUD_NAME);
+            formData.append('upload_preset', UPLOAD_PRESET);
+            const contentRange = `bytes ${start}-${end - 1}/${file.size}`;
+
+            console.log(
+
+                `Uploading chunk for uniqueUploadId: ${uniqueUploadId}; start: ${start}, end: ${end - 1
+                }`
             );
-    
-            if (!response.ok) {
-              throw new Error('Chunk upload failed.');
+
+
+
+
+
+            try {
+                const response = await fetch(
+                    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
+                    {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Unique-Upload-Id': uniqueUploadId,
+                            'Content-Range': contentRange,
+                        },
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Chunk upload failed.');
+                }
+
+                currentChunk++;
+
+                if (currentChunk < totalChunks) {
+                    const nextStart = currentChunk * chunkSize;
+                    const nextEnd = Math.min(nextStart + chunkSize, file.size);
+                    uploadChunk(nextStart, nextEnd);
+                } else {
+                    setUploadComplete(true);
+                    setUploading(false);
+
+                    const fetchResponse = await response.json();
+                    setCldResponse(fetchResponse);
+                    const cloudinaryFileUrl = fetchResponse.secure_url
+                    setCloudUrl((prevUrls) => ({
+                        ...prevUrls,
+                        [stateKey]: cloudinaryFileUrl
+                    }));
+                    console.log("fetchResponseeeee url", cloudinaryFileUrl)
+                    console.info('File upload complete.');
+                    setChunksLOading(false)
+                }
+            } catch (error) {
+                console.error('Error uploading chunk:', error);
+                setUploading(false);
             }
-    
-            currentChunk++;
-    
-            if (currentChunk < totalChunks) {
-              const nextStart = currentChunk * chunkSize;
-              const nextEnd = Math.min(nextStart + chunkSize, file.size);
-              uploadChunk(nextStart, nextEnd);
-            } else {
-              setUploadComplete(true);
-              setUploading(false);
-    
-              const fetchResponse = await response.json();
-              setCldResponse(fetchResponse);
-              const cloudinaryFileUrl = fetchResponse.secure_url
-              setCloudUrl((prevUrls) => ({
-                ...prevUrls,
-                [stateKey]: cloudinaryFileUrl
-            }));
-              console.log("fetchResponseeeee url", cloudinaryFileUrl)
-              console.info('File upload complete.');
-              setChunksLOading(false)
-            }
-          } catch (error) {
-            console.error('Error uploading chunk:', error);
-            setUploading(false);
-          }
         };
-    
+
         const start = 0;
         const end = Math.min(chunkSize, file.size);
         uploadChunk(start, end);
-      };
-    
-      const generateUniqueUploadId = () => {
+    };
+
+    const generateUniqueUploadId = () => {
         return `uqid-${Date.now()}`;
-      };
+    };
 
 
     const hanldeSync = async () => {
@@ -264,6 +263,7 @@ const SyncAiPage = () => {
         setProcessing(true)
         setRunUseEffect(false)
         setUseEffectTriggered(false)
+        setIsJobCompleted(false)
 
         try {
             const requestBody = {
@@ -279,7 +279,7 @@ const SyncAiPage = () => {
 
             console.log("requestBody", requestBody)
 
-
+            // First API
             const firstStepRes = await fetch(`${import.meta.env.VITE_HOST_URL}/sync/submit-alignment-job`, {
                 method: 'POST',
                 headers: {
@@ -293,8 +293,39 @@ const SyncAiPage = () => {
 
 
             const responseData = await firstStepRes.json();
-            setInitialData(responseData)
+            console.log("responseData", responseData)
 
+
+
+            // Wait for 3 minutes (180000 milliseconds) before making the second API call
+            setTimeout(async () => {
+                try {
+
+                    if (!useEffectTriggered) {
+                        const secondResponse = await fetch(`${import.meta.env.VITE_HOST_URL}/sync/submit-alignment-job-second`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: responseData.id  // Ensure you use the correct property from responseData
+                            })
+                        });
+
+                        const responseDataSecond = await secondResponse.json();
+
+                        if(responseDataSecond.status === "completed"){
+                            setIsJobCompleted(true)
+                            setWebHookData(responseDataSecond)
+                        }
+                     
+                        console.log("responseDataSecond", responseDataSecond);
+                    }
+
+                } catch (error) {
+                    console.log("Error in second api", error)
+                }
+            }, 360000); // 180000 milliseconds = 3 minutes
 
 
 
@@ -321,7 +352,7 @@ const SyncAiPage = () => {
 
 
 
-
+    console.log("Is Job Completed? :", isjobCompleted)
 
     // Define a function to handle the message event
     const handleMessage = (data) => {
@@ -331,6 +362,7 @@ const SyncAiPage = () => {
 
         // Update state or perform other actions with the received data
         setWebHookData(parseData);
+        setIsJobCompleted(true)
 
 
         // Remove the event listener after handling the first message
@@ -346,7 +378,7 @@ const SyncAiPage = () => {
 
     useEffect(() => {
 
-        if (!useEffectTriggered && webHookData) {
+        if (!useEffectTriggered && isjobCompleted ) {
             const finalSync = async () => {
 
                 setUseEffectTriggered(true)
@@ -407,7 +439,7 @@ const SyncAiPage = () => {
         }
 
 
-    }, [webHookData, useEffectTriggered])
+    }, [webHookData, useEffectTriggered, isjobCompleted ])
 
 
 
@@ -560,7 +592,7 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                     </section>
                                 }
                                 {
-                                    isUploadAudio  && <div className='flex  items-center flex-col gap-2 '>
+                                    isUploadAudio && <div className='flex  items-center flex-col gap-2 '>
 
                                         <p className='py-1 text-center'>{file.audio}</p>
                                         <p className='py-1'>{`${progress.audio}%`}</p>
