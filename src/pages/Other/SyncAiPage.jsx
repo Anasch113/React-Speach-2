@@ -125,7 +125,7 @@ const SyncAiPage = () => {
 
         try {
             const chunkSize = 5 * 1024 * 1024; // 5MB
-            const isLargeFile = selectedFile.size > 1 * 1024 * 1024; // 20MB
+            const isLargeFile = selectedFile.size > 20 * 1024 * 1024; // 20MB
             if (isLargeFile) {
                 // Use chunked upload for large files
                 await uploadFile(selectedFile, stateKey);
@@ -178,11 +178,15 @@ const SyncAiPage = () => {
             console.error('Please select a file.');
             return;
         }
+
+
         setChunksLOading(true)
         const uniqueUploadId = generateUniqueUploadId();
         const chunkSize = 5 * 1024 * 1024;
         const totalChunks = Math.ceil(file.size / chunkSize);
         let currentChunk = 0;
+
+        console.log("total chunks", totalChunks)
 
         setUploading(true);
 
@@ -213,18 +217,33 @@ const SyncAiPage = () => {
                             'X-Unique-Upload-Id': uniqueUploadId,
                             'Content-Range': contentRange,
                         },
+
                     }
+
                 );
 
                 if (!response.ok) {
                     throw new Error('Chunk upload failed.');
                 }
 
+
                 currentChunk++;
 
+
+
                 if (currentChunk < totalChunks) {
+                    console.log("current chunk", currentChunk)
                     const nextStart = currentChunk * chunkSize;
                     const nextEnd = Math.min(nextStart + chunkSize, file.size);
+                    console.log("next end", nextEnd)
+
+                    // Update the progress percentage
+                    const progress = Math.round((currentChunk / totalChunks) * 100);
+                    console.log("progress during chunk file upload", progress)
+                    toast(`In progress, ${progress}% completed `, {
+                        icon: '👏',
+                    });
+
                     uploadChunk(nextStart, nextEnd);
                 } else {
                     setUploadComplete(true);
@@ -237,8 +256,10 @@ const SyncAiPage = () => {
                         ...prevUrls,
                         [stateKey]: cloudinaryFileUrl
                     }));
+                    toast.success("Audio file uploaded")
                     console.log("fetchResponseeeee url", cloudinaryFileUrl)
                     console.info('File upload complete.');
+
                     setChunksLOading(false)
                 }
             } catch (error) {
@@ -256,28 +277,32 @@ const SyncAiPage = () => {
         return `uqid-${Date.now()}`;
     };
 
-
     const hanldeSync = async () => {
-        setShowFormModal(false)
-        setIsTranscriptions(true)
-        setProcessing(true)
-        setRunUseEffect(false)
-        setUseEffectTriggered(false)
-        setIsJobCompleted(false)
+        setShowFormModal(false);
+        setIsTranscriptions(true);
+        setProcessing(true);
+        setRunUseEffect(false);
+        setUseEffectTriggered(false);
+        setIsJobCompleted(false);
+
+
+        toast.success("Progress Started")
 
         try {
+
+
             const requestBody = {
                 source_config: {
                     url: cloudUrl.audio
                 },
-
                 source_transcript_config: {
                     url: cloudUrl.transcript
                 },
                 metaData: "This is forced alignment test"
-            }
+            };
 
-            console.log("requestBody", requestBody)
+            console.log("requestBody", requestBody);
+
 
             // First API
             const firstStepRes = await fetch(`${import.meta.env.VITE_HOST_URL}/sync/submit-alignment-job`, {
@@ -291,63 +316,69 @@ const SyncAiPage = () => {
                 })
             });
 
-
             const responseData = await firstStepRes.json();
-            console.log("responseData", responseData)
+            console.log("responseData", responseData);
+
+            // Function to check job status
+
+
+            const checkJobStatus = async (jobId) => {
+                try {
+                    const secondResponse = await fetch(`${import.meta.env.VITE_HOST_URL}/sync/submit-alignment-job-second`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: jobId
+                        })
+                    });
+
+                    const responseDataSecond = await secondResponse.json();
+                    console.log("responseDataSecond", responseDataSecond);
+
+                    if (responseDataSecond.status === "completed") {
+                        setIsJobCompleted(true);
+                        setWebHookData(responseDataSecond);
+                    } else if (responseDataSecond.status === "in_progress") {
+                        if (!useEffectTriggered) {
+                            setTimeout(() => checkJobStatus(jobId), 380000); // 380000
+                            toast('In progress, Please wait your file is large', {
+                                
+                              });
+                        }
+
+                    }
+                    else if (responseDataSecond.status === "failed") {
+                        toast.error("Failed to process file")
+                        window.location.reload()
+                    }
+                } catch (error) {
+                    console.error("Error in second API", error);
+                    toast.error("Failed", error)
+                }
+            };
 
 
 
             // Wait for 3 minutes (180000 milliseconds) before making the second API call
-            setTimeout(async () => {
-                try {
-
-                    if (!useEffectTriggered) {
-                        const secondResponse = await fetch(`${import.meta.env.VITE_HOST_URL}/sync/submit-alignment-job-second`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                id: responseData.id  // Ensure you use the correct property from responseData
-                            })
-                        });
-
-                        const responseDataSecond = await secondResponse.json();
-
-                        if(responseDataSecond.status === "completed"){
-                            setIsJobCompleted(true)
-                            setWebHookData(responseDataSecond)
-                        }
-                     
-                        console.log("responseDataSecond", responseDataSecond);
-                    }
-
-                } catch (error) {
-                    console.log("Error in second api", error)
+            setTimeout(() => {
+                if (!useEffectTriggered) {
+                    checkJobStatus(responseData.id); // Pass the job ID to the recursive function
                 }
-            }, 360000); // 180000 milliseconds = 3 minutes
-
-
-
-
-
+            }, 150000); // 150000 milliseconds = 2.5 minutes
 
         } catch (error) {
             if (error.response) {
-                // The request was made and the server responded with a status code
                 console.error('Server responded with status:', error.response.status);
                 console.error('Response data:', error.response.data);
             } else if (error.request) {
-                // The request was made but no response was received
                 console.error('No response received:', error.request);
             } else {
-                // Something happened in setting up the request that triggered an Error
                 console.error('Error:', error.message);
             }
         }
-
-
-    }
+    };
 
 
 
@@ -378,7 +409,7 @@ const SyncAiPage = () => {
 
     useEffect(() => {
 
-        if (!useEffectTriggered && isjobCompleted ) {
+        if (!useEffectTriggered && isjobCompleted) {
             const finalSync = async () => {
 
                 setUseEffectTriggered(true)
@@ -439,7 +470,7 @@ const SyncAiPage = () => {
         }
 
 
-    }, [webHookData, useEffectTriggered, isjobCompleted ])
+    }, [webHookData, useEffectTriggered, isjobCompleted])
 
 
 
@@ -604,7 +635,10 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                 }
 
                                 {
-                                    chunksLoading && <p>Uploading...</p>
+                                    chunksLoading && <span> <p>Uploading...</p>
+
+
+                                    </span>
                                 }
                                 <div className='py-2'>
                                     <input
@@ -672,7 +706,7 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
 
                         </div>
-                        <button disabled={isUploadAudio && isUploadTranscript} onClick={hanldeSync}
+                        <button disabled={!cloudUrl.audio && !cloudUrl.transcript} onClick={hanldeSync}
                             className='text-center px-5 py-4 w-2/4 h-16 rounded-full bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '>
 
                             <span className='flex items-center text-center justify-center gap-2'>
