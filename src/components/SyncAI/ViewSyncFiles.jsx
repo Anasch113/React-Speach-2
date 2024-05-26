@@ -213,8 +213,8 @@ const ViewSyncFiles = () => {
                                   <div className='' key={j}>
                                     <p className='flex gap-3' style={{ color: j === wordsIndex ? '#f1b900' : 'black' }}>
                                       {words.value}
-                                      {(j + 1) % 3 === 0 && (
-                                        <span>( {data.elements[j - 2].ts} -- {words.end_ts} )</span>
+                                      {(j + 1) % 12 === 0 && (
+                                        <span>( {data.elements[j - 6].ts} -- {words.end_ts} )</span>
                                       )}
                                     </p>
                                   </div>
