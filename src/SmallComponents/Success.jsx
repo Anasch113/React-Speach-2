@@ -64,11 +64,11 @@ const Success = () => {
   return (
     <div className='flex w-full min-h-screen items-center justify-center bg-white flex-col'>
       <h1 className='text-text-blue font-bold text-4xl font-poppins'>Congratulations! You have subscribed the Captify Pass</h1>
-      <button onClick={() => handlePaymentSuccess()}
+      <a onClick={() => handlePaymentSuccess()}
         className='w-40 uppercase bg-[#009C96] text-white text-xl my-16 px-2 py-2 rounded'
       >
         Proceed
-      </button>
+      </a>
     </div>
   )
 }

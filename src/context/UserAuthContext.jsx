@@ -55,7 +55,7 @@ export function UserAuthContextProvider({ children }) {
       console.log("Verify your email in order to signup")
       setUser(null);
     }
-    await createUserInDatabase(userData.uid, { email: userData.email, name:name });
+    await createUserInDatabase(userData.uid, { email: userData.email, name: name });
 
 
     return userCredential;
@@ -92,7 +92,7 @@ export function UserAuthContextProvider({ children }) {
           if (paymentSnapshot.exists()) {
             const paymentData = paymentSnapshot.val();
 
-           
+
             setPaymentInfo(paymentData)
 
 
@@ -114,15 +114,8 @@ export function UserAuthContextProvider({ children }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentuser) => {
-
-
       setUser(currentuser);
-
-
       console.log("user in useEffect", currentuser)
-
-
-
 
     });
 

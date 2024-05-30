@@ -1,0 +1,44 @@
+const handleFileChangeOld = async (event) => {
+        setIsUpload(true);
+
+        const selectedFile = event.target.files[0];
+        setFile(selectedFile);
+        setFileName(selectedFile.name);
+        console.log('Selected File:', selectedFile);
+
+
+        try {
+
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+            formData.append("upload_preset", "brd5uhci");
+            formData.append("cloud_name", "dqtscpu75");
+            formData.append("folder", "Audio");
+            formData.append("quality", "auto:good"); // Set the desired quality level
+
+
+            const cloudinaryResponse = await axios.post(
+                `${cloudinaryBaseUrl}/upload`,
+                formData,
+                {
+                    onUploadProgress: (progressEvent) => {
+                        // Calculate and update upload progress
+                        const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                        setProgress(progress);
+                        console.log(`Upload Progress: ${progress}%`);
+
+
+                    }
+                }
+            );
+            const cloudinaryFileUrl = cloudinaryResponse.data.secure_url;
+            console.log("cloudinaryyyy URRLLLLLLLL: ", cloudinaryFileUrl)
+            setCloudUrl(cloudinaryFileUrl);
+        } catch (error) {
+            alert(error.message)
+            console.error("Error in uploading file", error.message);
+
+        }
+
+        setIsUpload(false);
+    };

@@ -37,14 +37,18 @@ const PreAudioTranscriptions = () => {
     const [processing, setProcessing] = useState(false);
     const [transcribeText, setTranscribeText] = useState("");
     const [transcriptions, setTranscriptions] = useState("");
-    const [utterances, setUtterances] = useState([]);
+
 
     const [showFormModal, setShowFormModal] = useState(false);
-    const [isTextFiles, setIsTextFiles] = useState(false);
-    const [isTranscriptions, setIsTranscriptions] = useState(false);
-    const [dbData, setDbData] = useState("");
 
+    const [isTranscriptions, setIsTranscriptions] = useState(false);
+    const [dbData, setDbData] = useState("")
     const [subtitle, setSubtitle] = useState([]); // New state variable
+
+    const [chunksLoading, setChunksLOading] = useState(false)
+    const [uploading, setUploading] = useState(false);
+    const [uploadComplete, setUploadComplete] = useState(false);
+    const [cldResponse, setCldResponse] = useState(null);
 
     const { user } = useUserAuth();
 
@@ -56,55 +60,176 @@ const PreAudioTranscriptions = () => {
     })
 
     const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dqtscpu75";
+    const CLOUD_NAME = 'dqtscpu75';
+    const UPLOAD_PRESET = 'brd5uhci';
 
 
 
 
 
-    const handleFileChange = async (event) => {
+
+
+    // New upload function which include chunks method
+
+
+    const handleFileChange = async (event, stateKey) => {
         setIsUpload(true);
+        setCloudUrl("");
+
+        setProgress(0);
+
 
         const selectedFile = event.target.files[0];
         setFile(selectedFile);
         setFileName(selectedFile.name);
         console.log('Selected File:', selectedFile);
 
-
         try {
-           
-            const formData = new FormData();
-            formData.append("file", selectedFile);
-            formData.append("upload_preset", "brd5uhci");
-            formData.append("cloud_name", "dqtscpu75");
-            formData.append("folder", "Audio");
-            formData.append("quality", "auto:good"); // Set the desired quality level
+            const chunkSize = 5 * 1024 * 1024; // 5MB
+            const isLargeFile = selectedFile.size > 20 * 1024 * 1024; // 20MB
+            if (isLargeFile) {
+                // Use chunked upload for large files
+                await uploadFile(selectedFile);
+            } else {
 
 
-            const cloudinaryResponse = await axios.post(
-                `${cloudinaryBaseUrl}/upload`,
-                formData,
-                {
-                    onUploadProgress: (progressEvent) => {
-                        // Calculate and update upload progress
-                        const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                        setProgress(progress);
-                        console.log(`Upload Progress: ${progress}%`);
+                const formData = new FormData();
+                formData.append("file", selectedFile);
+                formData.append("upload_preset", "brd5uhci");
+                formData.append("cloud_name", "dqtscpu75");
+                formData.append("folder", "Audio");
+                formData.append("quality", "auto:good"); // Set the desired quality level
 
 
+                const cloudinaryResponse = await axios.post(
+                    `${cloudinaryBaseUrl}/upload`,
+                    formData,
+                    {
+                        onUploadProgress: (progressEvent) => {
+                            // Calculate and update upload progress
+                            const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                            setProgress(progress);
+                            console.log(`Upload Progress: ${progress}%`);
+
+
+                        }
                     }
-                }
-            );
-            const cloudinaryFileUrl = cloudinaryResponse.data.secure_url;
-            console.log("cloudinaryyyy URRLLLLLLLL: ", cloudinaryFileUrl)
-            setCloudUrl(cloudinaryFileUrl);
+                );
+                const cloudinaryFileUrl = cloudinaryResponse.data.secure_url;
+                console.log("cloudinaryyyy URRLLLLLLLL: ", cloudinaryFileUrl)
+                setCloudUrl(cloudinaryFileUrl);
+            }
         } catch (error) {
-            alert(error.message)
+            alert(error);
             console.error("Error in uploading file", error.message);
-
         }
 
         setIsUpload(false);
     };
+
+    const uploadFile = async (file) => {
+        if (!file) {
+            console.error('Please select a file.');
+            return;
+        }
+
+
+        setChunksLOading(true)
+        const uniqueUploadId = generateUniqueUploadId();
+        const chunkSize = 5 * 1024 * 1024;
+        const totalChunks = Math.ceil(file.size / chunkSize);
+        let currentChunk = 0;
+
+        console.log("total chunks", totalChunks)
+
+        setUploading(true);
+
+        const uploadChunk = async (start, end) => {
+            const formData = new FormData();
+            formData.append('file', file.slice(start, end));
+            formData.append('cloud_name', CLOUD_NAME);
+            formData.append('upload_preset', UPLOAD_PRESET);
+            const contentRange = `bytes ${start}-${end - 1}/${file.size}`;
+
+            console.log(
+
+                `Uploading chunk for uniqueUploadId: ${uniqueUploadId}; start: ${start}, end: ${end - 1
+                }`
+            );
+
+
+
+
+
+            try {
+                const response = await fetch(
+                    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
+                    {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Unique-Upload-Id': uniqueUploadId,
+                            'Content-Range': contentRange,
+                        },
+
+                    }
+
+                );
+
+                if (!response.ok) {
+                    throw new Error('Chunk upload failed.');
+                }
+
+
+                currentChunk++;
+
+
+
+                if (currentChunk < totalChunks) {
+                    console.log("current chunk", currentChunk)
+                    const nextStart = currentChunk * chunkSize;
+                    const nextEnd = Math.min(nextStart + chunkSize, file.size);
+                    console.log("next end", nextEnd)
+
+                    // Update the progress percentage
+                    const progress = Math.round((currentChunk / totalChunks) * 100);
+                    console.log("progress during chunk file upload", progress)
+                    toast(`In progress, ${progress}% completed `, {
+                        icon: '👏',
+                    });
+
+                    uploadChunk(nextStart, nextEnd);
+                } else {
+                    setUploadComplete(true);
+                    setUploading(false);
+
+                    const fetchResponse = await response.json();
+                    setCldResponse(fetchResponse);
+                    const cloudinaryFileUrl = fetchResponse.secure_url
+                    setCloudUrl(cloudinaryFileUrl)
+                    toast.success("Audio file uploaded")
+                    console.log("fetchResponseeeee url", cloudinaryFileUrl)
+                    console.info('File upload complete.');
+
+                    setChunksLOading(false)
+                }
+            } catch (error) {
+                console.error('Error uploading chunk:', error);
+                setUploading(false);
+            }
+        };
+
+        const start = 0;
+        const end = Math.min(chunkSize, file.size);
+        uploadChunk(start, end);
+    };
+
+    const generateUniqueUploadId = () => {
+        return `uqid-${Date.now()}`;
+    };
+
+
+
 
 
     const handleFormClick = () => {
@@ -162,7 +287,7 @@ const PreAudioTranscriptions = () => {
                     }
                 });
             }
-
+            toast.success("Audio Transcriptions Completed")
             console.log("Transcription data sent successfully in chunks");
 
         } catch (error) {
@@ -338,6 +463,12 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                     </div>
                                 </div>
 
+                            }
+                            {
+                                chunksLoading && <span> <p>Uploading...</p>
+
+
+                                </span>
                             }
 
                             <div className='py-2'>
