@@ -9,7 +9,7 @@ const Success = () => {
   const [userId, setUserId] = useState("");
   const [sessionId, setSessionId] = useState("");
   const [trigger, setTrigger] = useState(false);
-  const [isTrigger, setIsTrigger] = useState(false);
+  const [isOk, setIsOk] = useState(false);
   const { user } = useUserAuth();
 
   const navigate = useNavigate();
@@ -55,13 +55,14 @@ const Success = () => {
           .then(res => {
             if (res.ok) return res.json();
             console.log(res.json)
-           
+
 
             return res.json().then(json => Promise.reject(json));
 
           })
           .then(data => {
             toast.success("Purchase Completed")
+            setIsOk(true)
             console.log(data.message);
 
           })
@@ -85,11 +86,13 @@ const Success = () => {
 
   return (
     <div className='flex w-full min-h-screen items-center justify-center bg-white flex-col'>
-      <h1 className='text-text-blue font-bold text-4xl font-poppins'>Congratulations! You have subscribed the Captify Pass</h1>
-      <a href='/pricing'
-        className='w-40 cursor-pointer hover:bg-[#69c2bf] uppercase bg-[#009C96] text-white text-xl my-16 px-2 py-2 rounded'
+      <p className='text-text-blue text-center font-bold  text-xl md:text-3xl font-poppins'>Congratulations! You have subscribed the Captify Pass</p>
+      <a
+        href='/pricing'
+        className={`w-56 text-center  hover:bg-[#69c2bf] uppercase cursor-pointer bg-[#009C96]  text-white text-xl my-16 px-3 py-3 rounded ${!isOk ? 'pointer-events-none cursor-not-allowed bg-gray-400' : ''
+          }`}
       >
-        Proceed
+       Go to Pricing
       </a>
     </div>
   )
