@@ -3,11 +3,13 @@ import { useUserAuth } from '../context/UserAuthContext'
 import { database } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { ref, onValue, } from "firebase/database"
-
+import toast from "react-hot-toast"
 
 const Success = () => {
   const [userId, setUserId] = useState("");
   const [sessionId, setSessionId] = useState("");
+  const [trigger, setTrigger] = useState(false);
+  const [isTrigger, setIsTrigger] = useState(false);
   const { user } = useUserAuth();
 
   const navigate = useNavigate();
@@ -26,7 +28,9 @@ const Success = () => {
 
         if (userData) {
           setSessionId(userData.subscription.sessionId || '');
-          console.log("sessionId in success", userData.subscription.sessionId) // Make sure to handle potential null values
+          setTrigger(true)
+          console.log("sessionId in success", userData.subscription.sessionId)
+          // Make sure to handle potential null values
         }
       });
     }
@@ -34,38 +38,56 @@ const Success = () => {
   }, [user]);
 
 
+  useEffect(() => {
 
-  const handlePaymentSuccess = async () => {
-    await fetch(`${import.meta.env.VITE_HOST_URL}/payment-success`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ sessionId: sessionId, firebaseId: user.uid })
-    })
-      .then(res => {
-        if (res.ok) return res.json();
-        console.log(res.json)
-        return res.json().then(json => Promise.reject(json));
+    if (sessionId && trigger) {
 
-      })
-      .then(data => {
-        console.log(data.message);
 
-      })
-      .catch(e => {
-        console.log(e.error);
-      });
-      navigate("/pricing")
-  }
+      const handlePaymentSuccess = async () => {
+
+        await fetch(`${import.meta.env.VITE_HOST_URL}/payment-success`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ sessionId: sessionId, firebaseId: user.uid })
+        })
+          .then(res => {
+            if (res.ok) return res.json();
+            console.log(res.json)
+           
+
+            return res.json().then(json => Promise.reject(json));
+
+          })
+          .then(data => {
+            toast.success("Purchase Completed")
+            console.log(data.message);
+
+          })
+          .catch(e => {
+            console.log(e.error);
+          });
+
+      }
+
+
+
+      handlePaymentSuccess()
+    }
+
+  }, [trigger, sessionId])
+
+
+
 
 
 
   return (
     <div className='flex w-full min-h-screen items-center justify-center bg-white flex-col'>
       <h1 className='text-text-blue font-bold text-4xl font-poppins'>Congratulations! You have subscribed the Captify Pass</h1>
-      <a onClick={() => handlePaymentSuccess()}
-        className='w-40 uppercase bg-[#009C96] text-white text-xl my-16 px-2 py-2 rounded'
+      <a href='/pricing'
+        className='w-40 cursor-pointer hover:bg-[#69c2bf] uppercase bg-[#009C96] text-white text-xl my-16 px-2 py-2 rounded'
       >
         Proceed
       </a>
