@@ -7,6 +7,7 @@ import { MdCloudUpload, MdDelete } from "react-icons/md"
 import { AiFillFileImage } from "react-icons/ai"
 import { useState, useRef, useEffect } from 'react'
 import Sidebar from '../../layout/Sidebar';
+import { MdPayment } from "react-icons/md";
 import axios from "axios"
 import { GrSync } from "react-icons/gr";
 import { BsDatabaseDown } from "react-icons/bs";
@@ -18,7 +19,11 @@ import { useUserAuth } from '../../context/UserAuthContext';
 import Spinner from '../../components/PreAudio/Spinner';
 import { reload } from 'firebase/auth';
 import toast from 'react-hot-toast';
-import io from 'socket.io-client';
+import { useLocation, useNavigate } from 'react-router-dom';
+import PaymentOptions from '../../components/PreAudio/PaymentOptions';
+
+import { ref, onValue, update } from "firebase/database"
+import { database } from '../../firebase'
 
 
 
@@ -27,7 +32,7 @@ import io from 'socket.io-client';
 const SyncAiPage = () => {
     const socket = new WebSocket(`wss://${import.meta.env.VITE_WSS_URL}`);
 
-    const { user } = useUserAuth();
+    const { user, userBalance } = useUserAuth();
 
     socket.addEventListener('open', () => {
         console.log('WebSocket connected');
@@ -38,20 +43,10 @@ const SyncAiPage = () => {
         console.log("first render data from webhook", data)
     });
 
-    // useEffect(() => {
-
-
-
-    //     // Cleanup function to remove event listeners when component unmounts
-
-    // }, []); // Empty dependency array ensures this effect runs only once
-
-
-
 
 
     const [file, setFile] = useState({
-        audio: "largefile",
+        audio: "",
         transcript: ""
         // Add more keys if needed for other types of files
     });
@@ -60,10 +55,11 @@ const SyncAiPage = () => {
         transcript: 0
     });
     const [cloudUrl, setCloudUrl] = useState({
-        audio: "https://res.cloudinary.com/dqtscpu75/video/upload/v1716365795/dkykkbvggrsg6oydoond.mp4",
+        audio: "",
         transcript: ""
         // Add more keys if needed for other types of files
     });
+
     const [filename, setFileName] = useState("No File Selected")
     const [isTranscriptions, setIsTranscriptions] = useState(false);
 
@@ -80,9 +76,15 @@ const SyncAiPage = () => {
     const [webHookData, setWebHookData] = useState("")
     const [useEffectTriggered, setUseEffectTriggered] = useState(false);
 
-    const [uploading, setUploading] = useState(false);
-    const [uploadComplete, setUploadComplete] = useState(false);
-    const [cldResponse, setCldResponse] = useState(null);
+
+
+
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [isPaymentInProgress, setIsPaymentInProgress] = useState(false)
+    const [fileDuration, setFileDuration] = useState(0);
+    const [cost, setCost] = useState(0);
+
+
     const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dqtscpu75";
 
     const CLOUD_NAME = 'dqtscpu75';
@@ -90,8 +92,133 @@ const SyncAiPage = () => {
 
 
 
+    // >>>>>>>>>>>>>>>>>>>>>> Payment related code start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    const location = useLocation();
+    const navigate = useNavigate();
+    const paidCloudUrl = location.state?.paidCloudUrl;
+    const transcriptUrl = location.state?.transcriptUrl;
+    const paidFilename = location.state?.paidFilename;
+    const paidFileDuration = location.state?.paidFileDuration;
+
+    console.log("cloudurl and filename from location ", paidCloudUrl, transcriptUrl)
+
+    console.log("users balance in pre audio", userBalance)
+
+
+    useEffect(() => {
+        if (paidCloudUrl && transcriptUrl) {
+
+            toast.success("Continue your transcriptions")
+            setCloudUrl({
+                audio: paidCloudUrl,
+                transcript: transcriptUrl
+            }
+            )
+            setFile({
+                audio: paidFileDuration
+            })
+            setFileDuration(paidFileDuration)
+            setIsPaymentInProgress(false)
+            setShowFormModal(true)
+
+
+
+        }
+        // Clear the state from the URL
+        navigate(location.pathname, { replace: true });
+    }, [paidCloudUrl])
+
+    console.log("urls", cloudUrl.audio, cloudUrl.transcript)
+
+
+    // Function to create Stripe session
+    const createStripeSession = async (total, method) => {
+
+
+        try {
+            const userId = user.uid;
+            const audioUrl = cloudUrl.audio;
+            const transcriptUrl = cloudUrl.transcript;
+            const fileName = file.audio
+
+            const body = {
+                cost: cost,
+                cloudUrl: audioUrl,
+                userId: userId,
+                filename: fileName,
+                fileDuration: fileDuration,
+                transcriptUrl: transcriptUrl
+            }
+
+            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/create-stripe-session`, body);
+
+
+            return response.data;
+
+
+        } catch (error) {
+            console.error("Error creating Stripe session", error);
+            return null;
+        }
+    };
+
+    const handlePaymentOptions = async (total, method) => {
+        setShowPaymentModal(false)
+        try {
+            if (total && method === "credit-method") {
+
+                // For credit method
+
+                const stripeSession = await createStripeSession(total, method);
+
+                if (stripeSession && stripeSession.url) {
+                    // Redirect the user to Stripe Checkout
+                    window.location.href = stripeSession.url;
+                } else {
+                    alert("Failed to create Stripe session. Please try again.");
+                }
+            }
+            // For direct method
+            const stripeSession = await createStripeSession();
+
+            if (stripeSession && stripeSession.url) {
+                // Redirect the user to Stripe Checkout
+                window.location.href = stripeSession.url;
+            } else {
+                alert("Failed to create Stripe session. Please try again.");
+            }
+
+        } catch (error) {
+            console.log("error", error)
+        }
+    }
+
+
+    useEffect(() => {
+
+        if (cloudUrl.audio && cloudUrl.transcript) {
+            setShowFormModal(false)
+            setShowPaymentModal(true)
+            setIsPaymentInProgress(true)
+        }
+
+    }, [cloudUrl.audio, cloudUrl.transcript])
+    console.log("cost", cost)
+    console.log("duration", fileDuration)
+    console.log("showpaymentmodal", showPaymentModal)
+    console.log("paymentinprogress", isPaymentInProgress)
+
+
+
+    // >>>>>>>>>>>>>>>>>>>>>> Payment related code End >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
 
     const handleInputClick = () => {
+        if (!cloudUrl.transcript) {
+            toast("Please upload text file first!")
+            return
+        }
         document.querySelector(".input-field").click()
     }
     const handleInputClick2 = () => {
@@ -100,6 +227,9 @@ const SyncAiPage = () => {
 
 
     const handleFileChange = async (event, stateKey) => {
+
+        setFileDuration("")
+        setCost("")
         setCloudUrl((prevUrls) => ({
             ...prevUrls,
             [stateKey]: ''
@@ -160,6 +290,29 @@ const SyncAiPage = () => {
                     ...prevUrls,
                     [stateKey]: cloudinaryFileUrl
                 }));
+
+                // Only proceed with duration and cost calculation for audio files
+
+                const duration = cloudinaryResponse.data.duration;
+
+                const roundedDuration = (duration / 60).toFixed(1);
+                setFileDuration(roundedDuration);
+
+                toast.success("File Uploaded");
+
+                // Calculate the cost
+                const costPrice = (roundedDuration * 0.5).toFixed(2);
+
+                if (stateKey === 'audio' && duration > 0) {
+
+                    setCost(costPrice)
+                }
+
+
+
+
+
+
             }
         } catch (error) {
             alert(error);
@@ -172,6 +325,8 @@ const SyncAiPage = () => {
             setIsUploadTranscript(false);
         }
     };
+
+
 
     const uploadFile = async (file, stateKey) => {
         if (!file) {
@@ -188,7 +343,7 @@ const SyncAiPage = () => {
 
         console.log("total chunks", totalChunks)
 
-        setUploading(true);
+
 
         const uploadChunk = async (start, end) => {
             const formData = new FormData();
@@ -246,16 +401,32 @@ const SyncAiPage = () => {
 
                     uploadChunk(nextStart, nextEnd);
                 } else {
-                    setUploadComplete(true);
-                    setUploading(false);
+                    ;
+
 
                     const fetchResponse = await response.json();
-                    setCldResponse(fetchResponse);
+
                     const cloudinaryFileUrl = fetchResponse.secure_url
                     setCloudUrl((prevUrls) => ({
                         ...prevUrls,
                         [stateKey]: cloudinaryFileUrl
                     }));
+                    // Only proceed with duration and cost calculation for audio files
+
+                    const duration = cloudinaryResponse.data.duration;
+
+                    const roundedDuration = (duration / 60).toFixed(1);
+                    setFileDuration(roundedDuration);
+
+                    toast.success("File Uploaded");
+
+                    // Calculate the cost
+                    const costPrice = (roundedDuration * 0.5).toFixed(2);
+
+                    if (stateKey === 'audio' && duration > 0) {
+
+                        setCost(costPrice)
+                    }
                     toast.success("Audio file uploaded")
                     console.log("fetchResponseeeee url", cloudinaryFileUrl)
                     console.info('File upload complete.');
@@ -264,7 +435,7 @@ const SyncAiPage = () => {
                 }
             } catch (error) {
                 console.error('Error uploading chunk:', error);
-                setUploading(false);
+
             }
         };
 
@@ -284,6 +455,11 @@ const SyncAiPage = () => {
         setRunUseEffect(false);
         setUseEffectTriggered(false);
         setIsJobCompleted(false);
+
+        if (cost > 0 && cost > userBalance) {
+            toast.error("Insufficient credit, Please buy more credit ")
+            return
+        }
 
 
         toast.success("Progress Started")
@@ -344,8 +520,8 @@ const SyncAiPage = () => {
                         if (!useEffectTriggered) {
                             setTimeout(() => checkJobStatus(jobId), 380000); // 380000
                             toast('In progress, Please wait your file is large', {
-                                
-                              });
+
+                            });
                         }
 
                     }
@@ -454,6 +630,15 @@ const SyncAiPage = () => {
                         console.log("Error occurred while in pre audio upload", error)
                     })
 
+                    // Update user balance in Firebase
+                    const newBalance = userBalance - cost; // Assuming `cost` is the transcription cost in state
+                    await update(ref(database, `users/${user.uid}/credit-payment`), {
+                        balance: newBalance
+                    });
+
+
+                    console.log("User balance updated successfully");
+
                     toast.success("Resyncing completed")
 
                 } catch (error) {
@@ -550,6 +735,12 @@ const SyncAiPage = () => {
                                             <h1 className='text-2xl text-center font-roboto text-text-gray-other'>Welcome to Captify!</h1>
 
                                             <div className='flex items-center justify-center'>
+                                            {
+                            isPaymentInProgress && <button onClick={() => setShowPaymentModal(!showPaymentModal)} className='text-center p-2 w-20 h-16 
+                            rounded-3xl bg-purple-500 text-white text-xl font-medium font-roboto hover:bg-purple-400 '><span className='flex items-center text-center justify-center '>
+                                    <MdPayment size={25} />
+                                </span></button>
+                        }
 
                                                 <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 w-2/5 h-20
 rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
@@ -561,7 +752,17 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
                                     </div>
 
-                                    : <Transcripted processing={processing} data={data} file={file} showFormModal={showFormModal} setShowFormModal={setShowFormModal} dbData={dbData} isTranscriptions={isTranscriptions} />
+                                    : <Transcripted
+                                        processing={processing}
+                                        data={data} file={file}
+                                        showFormModal={showFormModal}
+                                        setShowFormModal={setShowFormModal}
+                                        dbData={dbData}
+                                        isTranscriptions={isTranscriptions}
+                                        isPaymentInProgress={isPaymentInProgress}
+                                        setShowPaymentModal={setShowPaymentModal}
+                                        showPaymentModal={showFormModal}
+                                    />
 
                         }
 
@@ -599,6 +800,58 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
 
                         <div className='flex w-full p-5 flex-row items-center justify-center gap-5'>
+
+
+
+                            {/* <p className='text-center text-lg text-gray-500'>Or</p> */}
+                            {/* 2nd Form */}
+
+
+
+                            <form onClick={handleInputClick2} className='flex flex-col items-center justify-center    h-36   cursor-pointer rounded-md md:w-[400px] w-52 mb-10 bg-offWhite px-4'>
+                                {
+                                    !file.transcript && <div className='flex flex-col items-center gap-1 py-3 px-2'>
+                                        <h1 className='text-xl py-1 text-text-black font-medium font-roboto text-center'>Upload Text File</h1>
+                                        <FiFileText color='#1475cf' size={30} />
+                                    </div>
+                                }
+
+                                {
+                                    cloudUrl.transcript && <section className='mx-2  flex flex-col justify-between items-center px-4 py-5 rounded-md gap-2'>
+
+                                        <span className='flex items-center '>
+                                            {file.transcript && file.transcript}
+
+
+                                        </span>
+
+
+                                        <img className='w-6 h-6 my-3' src="/checked.png" alt="img" />
+                                    </section>
+                                }
+
+                                {
+                                    isUploadTranscript && <div className='flex  items-center flex-col'>
+
+                                        <p className='py-1'>{file && file.transcript}</p>
+                                        <p className='py-1'>{`${progress.transcript}%`}</p>
+                                        <div className="progress-bar bg-white">
+                                            <div className="progress-fill" style={{ width: `${progress.transcript}%` }}></div>
+                                        </div>
+                                    </div>
+
+                                }
+                                <div className='py-2'>
+                                    <input
+                                        accept=' .pdf ,.txt,'
+                                        onChange={(event) => handleFileChange(event, 'transcript')}
+                                        className='input-field-2'
+                                        type="file"
+                                        hidden
+                                    />
+                                </div>
+
+                            </form>
 
                             {/* 1st Form */}
                             <form onClick={handleInputClick} className='flex flex-col items-center justify-center    h-36   cursor-pointer rounded-md md:w-[400px] w-52 mb-10 bg-offWhite px-4 py-4'>
@@ -652,58 +905,6 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
                             </form>
 
-                            {/* <p className='text-center text-lg text-gray-500'>Or</p> */}
-                            {/* 2nd Form */}
-
-
-
-                            <form onClick={handleInputClick2} className='flex flex-col items-center justify-center    h-36   cursor-pointer rounded-md md:w-[400px] w-52 mb-10 bg-offWhite px-4'>
-                                {
-                                    !file.transcript && <div className='flex flex-col items-center gap-1 py-3 px-2'>
-                                        <h1 className='text-xl py-1 text-text-black font-medium font-roboto text-center'>Upload Text File</h1>
-                                        <FiFileText color='#1475cf' size={30} />
-                                    </div>
-                                }
-
-                                {
-                                    cloudUrl.transcript && <section className='mx-2  flex flex-col justify-between items-center px-4 py-5 rounded-md gap-2'>
-
-                                        <span className='flex items-center '>
-                                            {file.transcript && file.transcript}
-
-
-                                        </span>
-
-
-                                        <img className='w-6 h-6 my-3' src="/checked.png" alt="img" />
-                                    </section>
-                                }
-
-                                {
-                                    isUploadTranscript && <div className='flex  items-center flex-col'>
-
-                                        <p className='py-1'>{file && file.transcript}</p>
-                                        <p className='py-1'>{`${progress.transcript}%`}</p>
-                                        <div className="progress-bar bg-white">
-                                            <div className="progress-fill" style={{ width: `${progress.transcript}%` }}></div>
-                                        </div>
-                                    </div>
-
-                                }
-                                <div className='py-2'>
-                                    <input
-                                        accept=' .pdf ,.txt,'
-                                        onChange={(event) => handleFileChange(event, 'transcript')}
-                                        className='input-field-2'
-                                        type="file"
-                                        hidden
-                                    />
-                                </div>
-
-                            </form>
-
-
-
 
                         </div>
                         <button disabled={!cloudUrl.audio && !cloudUrl.transcript} onClick={hanldeSync}
@@ -719,6 +920,21 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
 
                 </div>
+            )}
+
+            {showPaymentModal && (
+                <PaymentOptions
+                    fileName={file.audio}
+                    duration={fileDuration}
+                    cost={cost}
+                    setShowPaymentModal={setShowPaymentModal}
+                    handlePaymentOptions={handlePaymentOptions}
+                    currentBalance={userBalance}
+                    handleTranscriptions={hanldeSync}
+
+
+
+                />
             )}
         </>
     )

@@ -4,7 +4,7 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate, useParams } from 'react-router-dom';
 import { GrSync } from "react-icons/gr";
 import { useState } from 'react';
-
+import { MdPayment } from "react-icons/md";
 import { useUserAuth } from '../../context/UserAuthContext';
 
 const Transcripted = ({
@@ -16,7 +16,10 @@ const Transcripted = ({
 
     setShowFormModal,
     showFormModal,
-    dbData
+    dbData,
+    isPaymentInProgress,
+    setShowPaymentModal,
+    showPaymentModal
 
 
 }) => {
@@ -53,10 +56,17 @@ const Transcripted = ({
                         <RxDashboard className='text-3xl' />
                         <h1 className='text-3xl font-bold font-poppins text-text-black'> Recent Files</h1>
                     </span>
-                    <div>
-                        <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-3 w-full h-16
+                    <div className='flex gap-2 w-2/6  justify-end'>
+                        {
+                            isPaymentInProgress && <button onClick={() => setShowPaymentModal(!showPaymentModal)} className='text-center p-2 w-20 h-16 
+                            rounded-3xl bg-purple-500 text-white text-xl font-medium font-roboto hover:bg-purple-400 '><span className='flex items-center text-center justify-center '>
+                                    <MdPayment size={25} />
+                                </span></button>
+                        }
+
+                        <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-3 w-60 h-16 
 rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
-                                <FaCloudUploadAlt size={25} /> <p>Upload Files </p>
+                                <FaCloudUploadAlt size={25} /> <p>Transcribe Files </p>
                             </span></button>
 
                     </div>

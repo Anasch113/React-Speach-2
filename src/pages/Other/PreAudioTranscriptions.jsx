@@ -3,7 +3,7 @@ import Sidebar from '../../layout/Sidebar'
 import { MdCloudUpload, MdDelete } from "react-icons/md"
 import { AiFillFileImage } from "react-icons/ai"
 import { useState, useRef, useEffect } from 'react'
-import { set } from 'firebase/database'
+import { MdPayment } from "react-icons/md";
 import { AssemblyAI } from 'assemblyai'
 import axios from 'axios'
 
@@ -16,6 +16,11 @@ import Transcripted from '../../components/PreAudio/Transcripted'
 import { useUserAuth } from '../../context/UserAuthContext'
 import Spinner from "../../components/PreAudio/Spinner"
 import toast from 'react-hot-toast'
+import { useSelector } from 'react-redux'
+import { useLocation, useNavigate } from 'react-router-dom'
+import PaymentOptions from '../../components/PreAudio/PaymentOptions'
+import { ref, onValue, update } from "firebase/database"
+import { database } from '../../firebase'
 
 
 
@@ -40,17 +45,21 @@ const PreAudioTranscriptions = () => {
 
 
     const [showFormModal, setShowFormModal] = useState(false);
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
 
     const [isTranscriptions, setIsTranscriptions] = useState(false);
     const [dbData, setDbData] = useState("")
     const [subtitle, setSubtitle] = useState([]); // New state variable
 
     const [chunksLoading, setChunksLOading] = useState(false)
-    const [uploading, setUploading] = useState(false);
-    const [uploadComplete, setUploadComplete] = useState(false);
-    const [cldResponse, setCldResponse] = useState(null);
+    const [isPaymentInProgress, setIsPaymentInProgress] = useState(false)
 
-    const { user } = useUserAuth();
+
+    const [fileDuration, setFileDuration] = useState(0);
+    const [cost, setCost] = useState(0);
+
+
+    const { user, userBalance } = useUserAuth();
 
 
 
@@ -66,6 +75,92 @@ const PreAudioTranscriptions = () => {
 
 
 
+    const { cloudUrlRedux } = useSelector((state) => state.payment)
+    console.log("cloudurl from redux after user paid", cloudUrlRedux)
+
+    const location = useLocation();
+    const navigate = useNavigate();
+    const paidCloudUrl = location.state?.paidCloudUrl;
+    const paidFilename = location.state?.paidFilename;
+    const paidFileDuration = location.state?.paidFileDuration;
+
+    console.log("cloudurl and filename from location ", paidCloudUrl, paidFilename)
+
+    console.log("users balance in pre audio", userBalance)
+
+
+    useEffect(() => {
+        if (paidCloudUrl) {
+            setShowFormModal(true)
+            toast.success("Continue your transcriptions")
+            setCloudUrl(paidCloudUrl)
+            setFileName(paidFilename)
+            setFileDuration(paidFileDuration)
+            setIsPaymentInProgress(false)
+            setFile("full")
+
+        }
+        // Clear the state from the URL
+        navigate(location.pathname, { replace: true });
+    }, [paidCloudUrl])
+
+
+
+
+    // Function to create Stripe session
+    const createStripeSession = async (total, method) => {
+        const userId = user.uid
+        try {
+
+            if (total && method && method === "credit-method") {
+                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/buy-credit`, { total, cloudUrl, userId, filename, fileDuration, method });
+
+
+                return response.data;
+            }
+            else {
+                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/create-stripe-session`, { cost, cloudUrl, userId, filename, fileDuration });
+
+
+                return response.data;
+            }
+
+        } catch (error) {
+            console.error("Error creating Stripe session", error);
+            return null;
+        }
+    };
+
+    const handlePaymentOptions = async (total, method) => {
+
+        try {
+            if (total && method === "credit-method") {
+
+                // For credit method
+
+                const stripeSession = await createStripeSession(total, method);
+
+                if (stripeSession && stripeSession.url) {
+                    // Redirect the user to Stripe Checkout
+                    window.location.href = stripeSession.url;
+                } else {
+                    alert("Failed to create Stripe session. Please try again.");
+                }
+            }
+            // For direct method
+            const stripeSession = await createStripeSession();
+
+            if (stripeSession && stripeSession.url) {
+                // Redirect the user to Stripe Checkout
+                window.location.href = stripeSession.url;
+            } else {
+                alert("Failed to create Stripe session. Please try again.");
+            }
+
+        } catch (error) {
+            console.log("error", error)
+        }
+    }
 
 
 
@@ -75,6 +170,9 @@ const PreAudioTranscriptions = () => {
     const handleFileChange = async (event, stateKey) => {
         setIsUpload(true);
         setCloudUrl("");
+        setFile("")
+        setFileDuration("")
+        setCost("")
 
         setProgress(0);
 
@@ -116,8 +214,24 @@ const PreAudioTranscriptions = () => {
                     }
                 );
                 const cloudinaryFileUrl = cloudinaryResponse.data.secure_url;
-                console.log("cloudinaryyyy URRLLLLLLLL: ", cloudinaryFileUrl)
                 setCloudUrl(cloudinaryFileUrl);
+
+                const duration = cloudinaryResponse.data.duration;
+                const roundedDuration = (duration / 60).toFixed(1)
+                setFileDuration(roundedDuration)
+                // Get the duration of the uploaded file
+                console.log("cloudinaryyyy URRLLLLLLLL: ", cloudinaryFileUrl)
+                toast.success("File Uploaded")
+
+                // Calculate the cost
+                const cost = (roundedDuration * 0.5).toFixed(2);
+                console.log("cost", cost)
+                setCost(cost)
+                setShowFormModal(false)
+                setShowPaymentModal(true)
+                setIsPaymentInProgress(true)
+
+
             }
         } catch (error) {
             alert(error);
@@ -142,7 +256,7 @@ const PreAudioTranscriptions = () => {
 
         console.log("total chunks", totalChunks)
 
-        setUploading(true);
+
 
         const uploadChunk = async (start, end) => {
             const formData = new FormData();
@@ -200,22 +314,44 @@ const PreAudioTranscriptions = () => {
 
                     uploadChunk(nextStart, nextEnd);
                 } else {
-                    setUploadComplete(true);
-                    setUploading(false);
+
+
 
                     const fetchResponse = await response.json();
-                    setCldResponse(fetchResponse);
+
                     const cloudinaryFileUrl = fetchResponse.secure_url
                     setCloudUrl(cloudinaryFileUrl)
+
                     toast.success("Audio file uploaded")
-                    console.log("fetchResponseeeee url", cloudinaryFileUrl)
-                    console.info('File upload complete.');
+
+                    const duration = fetchResponse.duration;
+                    const roundedDuration = (duration / 60).toFixed(1)
+                    setFileDuration(roundedDuration)
+
+                    // Calculate the cost
+                    const cost = (roundedDuration * 0.5).toFixed(2);
+                    console.log("cost", cost)
+
+
+                    setCost(cost)
+                    setShowFormModal(false)
+                    setShowPaymentModal(true)
+                    setIsPaymentInProgress(true)
+
+
+
+
+
+
+
+
+                    // Here the payment procssing start as uploading completes 
 
                     setChunksLOading(false)
                 }
             } catch (error) {
                 console.error('Error uploading chunk:', error);
-                setUploading(false);
+
             }
         };
 
@@ -229,7 +365,7 @@ const PreAudioTranscriptions = () => {
     };
 
 
-
+    console.log("duration of uploaded file", fileDuration)
 
 
     const handleFormClick = () => {
@@ -238,11 +374,20 @@ const PreAudioTranscriptions = () => {
 
 
     const handleTranscriptions = async (event) => {
+        toast.success("Transcriptions started")
         event.preventDefault();
+        setShowPaymentModal(false)
         setProcessing(true);
         setRunUseEffect(false);
         setIsTranscriptions(true);
         setShowFormModal(false);
+        setIsPaymentInProgress(false)
+
+        if (cost > 0 && cost > userBalance) {
+            toast.error("Insufficient credit, Please buy more credit ")
+            return
+        }
+
 
         try {
             const params = {
@@ -289,6 +434,16 @@ const PreAudioTranscriptions = () => {
             }
             toast.success("Audio Transcriptions Completed")
             console.log("Transcription data sent successfully in chunks");
+
+
+            // Update user balance in Firebase
+            const newBalance = userBalance - cost; // Assuming `cost` is the transcription cost in state
+            await update(ref(database, `users/${user.uid}/credit-payment`), {
+                balance: newBalance
+            });
+
+
+            console.log("User balance updated successfully");
 
         } catch (error) {
             console.log("Error in Transcription", error);
@@ -382,7 +537,12 @@ const PreAudioTranscriptions = () => {
                                         <h1 className='text-2xl text-center font-roboto text-text-gray-other'>Welcome to Captify!</h1>
 
                                         <div className='flex items-center justify-center'>
-
+                                        {
+                            isPaymentInProgress && <button onClick={() => setShowPaymentModal(!showPaymentModal)} className='text-center p-2 w-20 h-16 
+                            rounded-3xl bg-purple-500 text-white text-xl font-medium font-roboto hover:bg-purple-400 '><span className='flex items-center text-center justify-center '>
+                                    <MdPayment size={25} />
+                                </span></button>
+                        }
                                             <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 w-2/5 h-20
 rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
                                                     <FaCloudUploadAlt size={25} /> <p>Transcribe Your File</p>
@@ -404,7 +564,10 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                     dbData={dbData}
                                     showFormModal={showFormModal}
                                     setShowFormModal={setShowFormModal}
-
+                                    fileDuration={fileDuration}
+                                    isPaymentInProgress={isPaymentInProgress}
+                                    setShowPaymentModal={setShowPaymentModal}
+                                    showPaymentModal={showPaymentModal}
 
                                 />
 
@@ -493,23 +656,27 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                             </select>
 
                         </span>
-                        <button disabled={isUpload} onClick={handleTranscriptions} className='text-center px-5 py-4 w-full h-16
+                        <button disabled={!cloudUrl} onClick={handleTranscriptions} className='text-center px-5 py-4 w-full h-16
 rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
                                 <FaCloudUploadAlt size={25} /> <p>Transcribe </p>
                             </span></button>
                     </div>
                 </div>
             )}
-            {/* {showModal && (
-                <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50">
-                    <div className="bg-white p-5 rounded-lg">
-                        <p className="text-lg font-semibold text-gray-500 text-center font-poppins">Transcribing...</p>
-                        <div className="mt-3 flex justify-center">
-                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                        </div>
-                    </div>
-                </div>
-            )} */}
+            {showPaymentModal && (
+                <PaymentOptions
+                    fileName={filename}
+                    duration={fileDuration}
+                    cost={cost}
+                    setShowPaymentModal={setShowPaymentModal}
+                    handlePaymentOptions={handlePaymentOptions}
+                    currentBalance={userBalance}
+                    handleTranscriptions={handleTranscriptions}
+
+
+
+                />
+            )}
 
 
         </div>

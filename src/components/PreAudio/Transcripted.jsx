@@ -2,7 +2,7 @@ import React from 'react'
 import { RxDashboard } from "react-icons/rx";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate, useParams } from 'react-router-dom';
-
+import { MdPayment } from "react-icons/md";
 import { useState } from 'react';
 
 import { useUserAuth } from '../../context/UserAuthContext';
@@ -15,7 +15,11 @@ const Transcripted = ({
     setTranscriptions,
     dbData,
     setShowFormModal,
-    showFormModal
+    showFormModal,
+    fileDuration,
+    isPaymentInProgress,
+    setShowPaymentModal,
+    showPaymentModal
 
 }) => {
     console.log(transcriptions)
@@ -45,8 +49,15 @@ const Transcripted = ({
                         <RxDashboard className='text-3xl' />
                         <h1 className='text-3xl font-bold font-poppins text-text-black'> Recent Files</h1>
                     </span>
-                    <div>
-                        <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-3 w-full h-16
+                    <div className='flex gap-2 w-2/6  justify-end'>
+                        {
+                            isPaymentInProgress && <button onClick={() => setShowPaymentModal(!showPaymentModal)} className='text-center p-2 w-20 h-16 
+                            rounded-3xl bg-purple-500 text-white text-xl font-medium font-roboto hover:bg-purple-400 '><span className='flex items-center text-center justify-center '>
+                                    <MdPayment size={25} />
+                                </span></button>
+                        }
+
+                        <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-3 w-60 h-16 
 rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
                                 <FaCloudUploadAlt size={25} /> <p>Transcribe Files </p>
                             </span></button>
@@ -98,7 +109,10 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                                 hour12: true
                                             })}</td>
 
-                                            <td className=" text-text-black  font-medium text-lg px-5 py-5">{`${data.audio_duration}s`}</td>
+                                            <td className="text-text-black font-medium text-lg px-5 py-5">
+                                                {`${data.audio_duration <= 60 ? `${data.audio_duration} s` : `${(data.audio_duration / 60).toFixed(1)} min`}`}
+                                            </td>
+
 
                                             <td className=" text-text-black font-medium text-lg px-5 py-5"><img className='w-6 h-6' src="/greentick.png" alt="" /></td>
                                         </span>
@@ -110,32 +124,32 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                             }
                             {
                                 processing &&
-                            <tr className="font-poppins text-sm border-b  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl flex justify-between gap-10 px-5">
-                                <td className=" text-text-black font-medium text-lg p-6">{filename}</td>
-                                <span>
-                                    <td className=" text-text-black   font-medium text-lg p-6">{new Date().toLocaleString('en-US', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                        hour: 'numeric',
-                                        minute: 'numeric',
-                                        hour12: true // 12-hour format
-                                    })}</td>
-                                    <td className=" text-text-black font-medium text-lg p-6">
-                                        {/* Always show spinner for files being processed */}
-                                        Calculating...
-                                    </td>
-                                    <td className=" text-text-black font-medium text-lg p-6">
-                                        {/* Always show spinner for files being processed */}
-                                        <div className='spinner'></div>
-                                    </td>
-                                </span>
+                                <tr className="font-poppins text-sm border-b  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl flex justify-between gap-10 px-5">
+                                    <td className=" text-text-black font-medium text-lg p-6">{filename}</td>
+                                    <span>
+                                        <td className=" text-text-black   font-medium text-lg p-6">{new Date().toLocaleString('en-US', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            hour: 'numeric',
+                                            minute: 'numeric',
+                                            hour12: true // 12-hour format
+                                        })}</td>
+                                        <td className=" text-text-black font-medium text-lg p-6">
+                                            {/* Always show spinner for files being processed */}
+                                            {`${fileDuration} min`}
+                                        </td>
+                                        <td className=" text-text-black font-medium text-lg p-6">
+                                            {/* Always show spinner for files being processed */}
+                                            <div className='spinner'></div>
+                                        </td>
+                                    </span>
 
 
 
-                            </tr>
+                                </tr>
 
-                             }
+                            }
                         </tbody>
 
                     </table>

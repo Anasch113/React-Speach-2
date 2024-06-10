@@ -10,7 +10,7 @@ import {
 
 } from "firebase/auth";
 import { auth } from "../firebase";
-import { getDatabase, ref, get, set } from "firebase/database";
+import { getDatabase, ref, get, set, onValue } from "firebase/database";
 import { database } from "../firebase";
 
 
@@ -18,6 +18,7 @@ const userAuthContext = createContext();
 
 export function UserAuthContextProvider({ children }) {
   const [user, setUser] = useState({});
+  const [userBalance, setUserBalance] = useState(0);
   const [paymentInfo, setPaymentInfo] = useState([]);
 
 
@@ -107,6 +108,36 @@ export function UserAuthContextProvider({ children }) {
     }
   }, [user])
 
+  useEffect(() => {
+    if (user) {
+
+      try {
+
+        const userRef = ref(database, `users/${user.uid}/credit-payment`);
+        onValue(userRef, (snapshot) => {
+          const userData = snapshot.val();
+
+          console.log(userData)
+
+
+          if (userData) {
+            const balance = userData.balance;
+            
+            setUserBalance(balance)
+            console.log("balance of user", userData.balance)
+          }
+          return
+        });
+      } catch (error) {
+        console.log("Error while fething balance of user", error)
+      }
+
+    }
+
+
+
+  }, [user]);
+
 
 
 
@@ -129,7 +160,7 @@ export function UserAuthContextProvider({ children }) {
 
   return (
     <userAuthContext.Provider
-      value={{ user, signUp, logIn, logOut, paymentInfo }}
+      value={{ user, signUp, logIn, logOut, paymentInfo, userBalance }}
 
     >
       {children}

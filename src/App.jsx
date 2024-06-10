@@ -27,6 +27,8 @@ import UserPaymentInfo from "./components/SideComponents/UserPaymentInfo"
 import ViewTranscriptions from "./components/PreAudio/ViewTranscriptions";
 import SyncAiPage from "./pages/Other/SyncAiPage";
 import ViewSyncFiles from "./components/SyncAI/ViewSyncFiles";
+import TranscriptSuccess from "./SmallComponents/TranscriptSuccess";
+import CreditSuccess from "./SmallComponents/CreditSuccess";
 
 
 
@@ -152,7 +154,10 @@ function App() {
             <Route exact path="/forgetPassword" element={<ForgetPassword />} />
             <Route exact path="/emailverification" element={<EmailVerification />} />
             <Route exact path="/success" element={<Success />} />
+            <Route exact path="/transcript-payment-success" element={<TranscriptSuccess />} />
+            <Route exact path="/credit-payment-success" element={<CreditSuccess />} />
             <Route exact path="/cancel" element={<Cancel />} />
+            
           </Routes>
         </BrowserRouter>
         <div> <Toaster /></div>
