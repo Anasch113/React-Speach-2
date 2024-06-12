@@ -214,6 +214,8 @@ const SyncAiPage = () => {
 
 
 
+    // >>>>>>>>>>>>>>> Form related code >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
     const handleInputClick = () => {
         if (!cloudUrl.transcript) {
             toast("Please upload text file first!")
@@ -413,7 +415,7 @@ const SyncAiPage = () => {
                     }));
                     // Only proceed with duration and cost calculation for audio files
 
-                    const duration = cloudinaryResponse.data.duration;
+                    const duration = fetchResponse.duration;
 
                     const roundedDuration = (duration / 60).toFixed(1);
                     setFileDuration(roundedDuration);
@@ -423,10 +425,10 @@ const SyncAiPage = () => {
                     // Calculate the cost
                     const costPrice = (roundedDuration * 0.5).toFixed(2);
 
-                    if (stateKey === 'audio' && duration > 0) {
+                   
 
                         setCost(costPrice)
-                    }
+                    
                     toast.success("Audio file uploaded")
                     console.log("fetchResponseeeee url", cloudinaryFileUrl)
                     console.info('File upload complete.');
@@ -447,6 +449,15 @@ const SyncAiPage = () => {
     const generateUniqueUploadId = () => {
         return `uqid-${Date.now()}`;
     };
+
+
+
+
+
+
+
+
+    // >>>>>>>>>>>>>>>> Transcript related code >>>>>>>>>>>>>>>>>>>>>>>>>>
 
     const hanldeSync = async () => {
         setShowFormModal(false);
@@ -635,6 +646,7 @@ const SyncAiPage = () => {
                     await update(ref(database, `users/${user.uid}/credit-payment`), {
                         balance: newBalance
                     });
+                    setIsPaymentInProgress(false)
 
 
                     console.log("User balance updated successfully");

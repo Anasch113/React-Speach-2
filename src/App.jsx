@@ -29,6 +29,7 @@ import SyncAiPage from "./pages/Other/SyncAiPage";
 import ViewSyncFiles from "./components/SyncAI/ViewSyncFiles";
 import TranscriptSuccess from "./SmallComponents/TranscriptSuccess";
 import CreditSuccess from "./SmallComponents/CreditSuccess";
+import LiveTranscriptSuccess from "./SmallComponents/LiveTranscriptSuccess";
 
 
 
@@ -156,6 +157,7 @@ function App() {
             <Route exact path="/success" element={<Success />} />
             <Route exact path="/transcript-payment-success" element={<TranscriptSuccess />} />
             <Route exact path="/credit-payment-success" element={<CreditSuccess />} />
+            <Route exact path="/live-transcript-payment-success" element={<LiveTranscriptSuccess />} />
             <Route exact path="/cancel" element={<Cancel />} />
             
           </Routes>

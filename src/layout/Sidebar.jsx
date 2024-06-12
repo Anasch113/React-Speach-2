@@ -3,35 +3,38 @@
 import React from "react";
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineHome } from "react-icons/ai";
-import { BiConversation } from "react-icons/bi";
-import { SiTheconversation } from "react-icons/si"
-import { CgMoreVertical } from "react-icons/cg";
+
+
 import { CiLogout } from "react-icons/ci";
 import { useUserAuth } from "../context/UserAuthContext";
 import { useNavigate } from "react-router-dom";
-import { IoPricetagsOutline } from "react-icons/io5";
+
 import { AiOutlineAudio } from "react-icons/ai";
 import { AiOutlineAudioMuted } from "react-icons/ai";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2"
-import { FaCaretDown } from "react-icons/fa";
+
 import { MdOutlineTranscribe } from "react-icons/md";
 import { MdAlternateEmail } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa6";
 import { BiNavigation } from "react-icons/bi";
 import { CgTranscript } from "react-icons/cg";
 import { GrSync } from "react-icons/gr";
+import PaymentModal from "../components/RealTimeTranscript/PaymentModal";
+import toast from "react-hot-toast";
 
-function Sidebar() {
+
+function Sidebar({ isPurchase, minutes }) {
   const user1 = {
     username: "John Doe",
     email: "john@example.com",
     profilePicture: "https://placekitten.com/200/200", // replace with your image source
   };
   const [isLiveTranscript, setIsLiveTranscript] = useState(false)
-  const [isOpen, setIsOpen] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [isPaymentDone, setIsPaymentDone] = useState(false);
   const location = useLocation();
   const newWindowRef = useRef(null)
   const recordingStatus = useSelector((state) => state.audio.isRecording);
@@ -44,16 +47,41 @@ function Sidebar() {
   const navigate = useNavigate();
   const { user, logOut } = useUserAuth();
 
+  const paymentData = useSelector((state) => state.payment);
+  console.log("paymentData in sidebar", paymentData)
+
+
+
+  useEffect(() => {
+    if (isPurchase === "completed") {
+        setIsLiveTranscript(true);
+        setIsPaymentDone(true);
+
+        newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
+        if (newWindowRef.current) {
+            newWindowRef.current.focus();
+        }
+
+        // Schedule to stop the live transcript after the specified number of minutes
+        const timer = setTimeout(() => {
+            stopLiveTranscript();
+            toast.success("Live transcriptions time ended")
+        }, minutes * 60 * 1000); // Convert minutes to milliseconds
+
+        // Cleanup function to clear the timer if the component unmounts or the effect runs again
+        return () => {
+            clearTimeout(timer);
+            if (newWindowRef.current) {
+                newWindowRef.current.close();
+            }
+        };
+    }
+}, [isPurchase, minutes]);
+
   const handleLogout = async () => {
     await logOut()
     navigate('/')
   }
-
-
-
-
-
-
 
 
 
@@ -71,26 +99,23 @@ function Sidebar() {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
+        setShowPaymentModal(true)
 
 
-        // Start transcript when the user chooses "Online Meeting"
-        setIsLiveTranscript(true);
 
-        newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
-        if (newWindowRef.current) {
-          newWindowRef.current.focus();
-        }
+
+
 
       } else if (result.isDenied) {
-        setIsLiveTranscript(true);
-        newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
-        if (newWindowRef.current) {
-          newWindowRef.current.focus();
-        }
+        setShowPaymentModal(true)
+
 
       }
     });
   };
+
+
+
 
 
   const stopLiveTranscript = () => {
@@ -103,13 +128,7 @@ function Sidebar() {
 
 
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
 
-  const closeDropdown = () => {
-    setIsOpen(false);
-  };
   return (
     <aside
       className="w-96 px-3   max-[700px]:hidden  gray-200 bg-bg-left-bar h-full overflow-x-hidden   md:hidden lg:block xl:block 2xl:block"
@@ -121,8 +140,8 @@ function Sidebar() {
 
 
       {/* Add your sidebar content here */}
-      <div  className="flex flex-col  justify-between mx-2 p-4  bg-white  border border-border-dark-color rounded-md">
-      {/* You can use an <img> tag with the user's profile picture as the source */}
+      <div className="flex flex-col  justify-between mx-2 p-4  bg-white  border border-border-dark-color rounded-md">
+        {/* You can use an <img> tag with the user's profile picture as the source */}
         {/* <div className="w-10 h-10  mr-4  rounded-full overflow-hidden">
     
           <img
@@ -132,17 +151,17 @@ function Sidebar() {
           />
         </div> */}
 
-        <div  className="flex  flex-col   font-poppins ">
-          <span className="text-sm text-gray-700 font-bold flex items-center px-2 gap-1"><FaRegUser size={15}/>  {user.displayName} </span>
-          <span className="text-xs flex items-center p-2 gap-1  text-gray-600 font-semibold"> <MdAlternateEmail size={15}/> {user.email}</span>
+        <div className="flex  flex-col   font-poppins ">
+          <span className="text-sm text-gray-700 font-bold flex items-center px-2 gap-1"><FaRegUser size={15} />  {user.displayName} </span>
+          <span className="text-xs flex items-center p-2 gap-1  text-gray-600 font-semibold"> <MdAlternateEmail size={15} /> {user.email}</span>
         </div>
         <div className="flex items-center cursor-pointer">
-         <Link className="flex items-center gap-2 hover:text-gray-600" to={"/user-profile"}> <BiNavigation className="hover:text-gray-600" size={18}  /><p className="">Visit</p> </Link>
+          <Link className="flex items-center gap-2 hover:text-gray-600" to={"/user-profile"}> <BiNavigation className="hover:text-gray-600" size={18} /><p className="">Visit</p> </Link>
 
         </div>
-      
 
-       
+
+
 
       </div>
 
@@ -196,7 +215,7 @@ function Sidebar() {
         }
 
         <Link to={"/pre-audio-transcriptions"}>
-          <div className={`mx-2 p-4 flex rounded-md ${isActive("/pre-audio-transcriptions" || "pre-audio-transcriptions/view:id" ) ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
+          <div className={`mx-2 p-4 flex rounded-md ${isActive("/pre-audio-transcriptions" || "pre-audio-transcriptions/view:id") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
             <div className="mr-2 mt-1">
               <MdOutlineTranscribe />
             </div>
@@ -210,42 +229,13 @@ function Sidebar() {
         <Link to={"/resyncingAi"}>
           <div className={`mx-2 p-4 flex rounded-md ${isActive("/resyncingAi") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
             <div className="mr-2 mt-1">
-              <GrSync  />
+              <GrSync />
             </div>
 
             <button>Resyncing Ai</button>
 
           </div>
         </Link>
-{/* 
-        <Link to={"/transcription"}>
-          <div className={`mx-2 p-4 flex rounded-md ${isActive("/transcription") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
-            <div className="mr-2 mt-1">
-              <BiConversation />
-            </div>
-
-            <button>My Conversations</button>
-
-          </div>
-        </Link> */}
-
-
-
-
-        {/* <Link to={"/pricing"}>
-          <div className={`mx-2 p-4 flex rounded-md ${isActive("/allconversation") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
-            <div className="mr-2 mt-1">
-              <IoPricetagsOutline />
-            </div>
-
-            <button>Pricing</button>
-
-          </div>
-        </Link> */}
-
-
-
-
 
 
 
@@ -264,6 +254,18 @@ function Sidebar() {
 
           </div>
         </button>
+
+        {
+          showPaymentModal && (
+            <PaymentModal
+
+              setShowPaymentModal={setShowPaymentModal}
+              isPaymentDone={isPaymentDone}
+
+
+            />
+          )
+        }
 
       </div>
     </aside>
