@@ -126,8 +126,8 @@ function MainContent() {
   return (
     <main className="flex-1 overflow-x-hidden overflow-y-scroll bg-bg-color-light min-h-screen ">
       <div className="flex flex-col gap-3 mx-4 my-6 p-10 text-text-color-blue bg-white border border-border-dark-color rounded-md">
-        <p className="text-2xl pb-1 text-text-color-blue font-semibold">Getting Started</p>
-        <p>Learn the basics of using ... in just a few minutes! </p>
+        <p className="text-2xl pb-1 text-text-color-blue font-semibold">Welcome back!</p>
+        <p>Captify is readying for take-off! </p>
         <div className="my-4">
           <ProgressBar />
         </div>

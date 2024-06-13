@@ -25,7 +25,7 @@ const PaymentModal = ({
     const handleMinutesChange = (e) => {
         const value = e.target.value;
         setMinutes(value);
-        setTotal(value * 0.5);
+        setTotal(value * 1);
     };
 
 
@@ -96,7 +96,7 @@ const PaymentModal = ({
                     <span className='flex justify-between '>
 
                         <p className='text-gray-500 text-center font-medium  font-poppins'> Charge per minute</p>
-                        <p className='text-gray-500 text-center font-medium  font-poppins'>0.5$ </p>
+                        <p className='text-gray-500 text-center font-medium  font-poppins'>1$ </p>
                     </span>
                     <span className='flex justify-between '>
 

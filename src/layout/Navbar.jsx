@@ -70,7 +70,7 @@ const Navbar = ({isPurchase, minutes }) => {
       <div className="container mx-auto flex justify-between items-center">
         {/* Brand/Logo */}
         <div className="md:text-xl lg:text-xl xl:text-xl 2xl:text-xl font-semibold ">
-          Home
+        Getting Started
         </div>
 
         {/* Search Input */}

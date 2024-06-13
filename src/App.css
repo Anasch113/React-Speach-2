@@ -24,21 +24,29 @@
 
   box-shadow: 1px 1px 10px #126fd6,
     1px 1px 40px #126fd6;
-  
+
 }
 
 .spinner {
   border: 3px solid white;
   border-radius: 50%;
-  border-top: 3px solid #126fd6; /* You can adjust the color */
-  width: 20px; /* Adjust the size as needed */
-  height: 20px; /* Adjust the size as needed */
+  border-top: 3px solid #126fd6;
+  /* You can adjust the color */
+  width: 20px;
+  /* Adjust the size as needed */
+  height: 20px;
+  /* Adjust the size as needed */
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
- 0% {transform: rotate(0deg);}
- 100% {transform: rotate(360deg);}
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 
@@ -48,10 +56,26 @@
   background-color: #efefef;
   border-radius: 5px;
   overflow: hidden;
- margin: 10px 0px;
+  margin: 10px 0px;
 }
 
 .progress-fill {
   height: 100%;
   background-color: #1475cf;
+}
+
+
+.swal2-confirm.custom-confirm {
+  background-color: #A100FF;
+  color: white;
+}
+
+.swal2-deny.custom-deny {
+  background-color: #0041F0;
+  color: white;
+}
+
+.swal2-cancel.custom-cancel {
+  background-color: #E2062E;
+  color: white;
 }

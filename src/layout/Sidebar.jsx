@@ -54,29 +54,29 @@ function Sidebar({ isPurchase, minutes }) {
 
   useEffect(() => {
     if (isPurchase === "completed") {
-        setIsLiveTranscript(true);
-        setIsPaymentDone(true);
+      setIsLiveTranscript(true);
+      setIsPaymentDone(true);
 
-        newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
+      newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
+      if (newWindowRef.current) {
+        newWindowRef.current.focus();
+      }
+
+      // Schedule to stop the live transcript after the specified number of minutes
+      const timer = setTimeout(() => {
+        stopLiveTranscript();
+        toast.success("Live transcriptions time ended")
+      }, minutes * 60 * 1000); // Convert minutes to milliseconds
+
+      // Cleanup function to clear the timer if the component unmounts or the effect runs again
+      return () => {
+        clearTimeout(timer);
         if (newWindowRef.current) {
-            newWindowRef.current.focus();
+          newWindowRef.current.close();
         }
-
-        // Schedule to stop the live transcript after the specified number of minutes
-        const timer = setTimeout(() => {
-            stopLiveTranscript();
-            toast.success("Live transcriptions time ended")
-        }, minutes * 60 * 1000); // Convert minutes to milliseconds
-
-        // Cleanup function to clear the timer if the component unmounts or the effect runs again
-        return () => {
-            clearTimeout(timer);
-            if (newWindowRef.current) {
-                newWindowRef.current.close();
-            }
-        };
+      };
     }
-}, [isPurchase, minutes]);
+  }, [isPurchase, minutes]);
 
   const handleLogout = async () => {
     await logOut()
@@ -89,22 +89,22 @@ function Sidebar({ isPurchase, minutes }) {
 
   const startLiveTranscript = () => {
     Swal.fire({
-      title: "You want Live Transcript for",
+      title: "Transcribe my",
 
       showCancelButton: true,
       showConfirmButton: true,
       showDenyButton: true,
-      confirmButtonText: "Online Meeting",
-      denyButtonText: "Physical Meeting"
+      confirmButtonText: "Virtual Meeting",
+      denyButtonText: "In-person Meeting",
+      customClass: {
+        confirmButton: 'custom-confirm',
+        denyButton: 'custom-deny',
+        cancelButton: 'custom-cancel'
+      }
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
         setShowPaymentModal(true)
-
-
-
-
-
 
       } else if (result.isDenied) {
         setShowPaymentModal(true)
