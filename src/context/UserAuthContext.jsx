@@ -6,6 +6,9 @@ import {
   signOut,
   updateProfile,
   sendEmailVerification,
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+  signInWithPopup
 
 
 } from "firebase/auth";
@@ -63,6 +66,43 @@ export function UserAuthContextProvider({ children }) {
 
 
   };
+
+  // SignUp with google
+
+  const signUpWithGoogle = async ()=>{
+    const provider = new GoogleAuthProvider()
+
+    try {
+      const userCredentials = await signInWithPopup(auth, provider);
+      const userData = userCredentials.user;
+
+      await createUserInDatabase(userData.uid, { email: userData.email, name: userData.displayName });
+      console.log("User signed up with Google and data stored in database.");
+      
+    } catch (error) {
+      console.error("Error signing up with Google:", error.message);
+    }
+
+  }
+
+
+   // SignUp with Facebook
+
+   const signUpWithFaceBook = async ()=>{
+    const provider = new FacebookAuthProvider()
+
+    try {
+      const userCredentials = await signInWithPopup(auth, provider);
+      const userData = userCredentials.user;
+
+      await createUserInDatabase(userData.uid, { email: userData.email, name: userData.displayName });
+      console.log("User signed up with facebook and data stored in database.");
+      
+    } catch (error) {
+      console.error("Error signing up with facebook:", error.message);
+    }
+
+  }
 
   const createUserInDatabase = async (userId, userData) => {
     try {
@@ -160,7 +200,7 @@ export function UserAuthContextProvider({ children }) {
 
   return (
     <userAuthContext.Provider
-      value={{ user, signUp, logIn, logOut, paymentInfo, userBalance }}
+      value={{ user, signUp, logIn, logOut, paymentInfo, userBalance, signUpWithGoogle, signUpWithFaceBook }}
 
     >
       {children}

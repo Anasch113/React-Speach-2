@@ -10,7 +10,7 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { logIn, user } = useUserAuth();
+  const { logIn, user, signUpWithGoogle, signUpWithFaceBook } = useUserAuth();
   const navigate = useNavigate();
 
 
@@ -19,29 +19,60 @@ const Login = () => {
 
     try {
 
-        await logIn(email, password);
-        toast.success("Login Successfully")
-        navigate("/home")
- 
+      await logIn(email, password);
+      toast.success("Login Successfully")
+      navigate("/home")
+
 
     } catch (err) {
 
-        console.log("Error in signUp", err)
+      console.log("Error in signUp", err)
 
-        if (err.code === "auth/invalid-credential") {
-          toast.error("Invalid Crdentials, Please Try Again");
-      }  else {
-          toast.error("Please fill up all fields",);
+      if (err.code === "auth/invalid-credential") {
+        toast.error("Invalid Crdentials, Please Try Again");
+      } else {
+        toast.error("Please fill up all fields",);
       }
- 
+
     }
 
     setEmail("");
     setPassword("")
-    
 
 
-}
+
+  }
+
+
+  const handleSignInWithGoogle = async () => {
+
+    try {
+      await signUpWithGoogle()
+      toast.success("Login Successfully")
+      navigate("/home");
+
+    } catch (error) {
+      console.log("Error while google signUp", error)
+      toast.error("")
+    }
+
+  }
+
+
+  const handleSignInWithFaceBook = async () => {
+
+    try {
+      await signUpWithFaceBook()
+      toast.success("SignUp Successfully")
+      navigate("/home");
+
+    } catch (error) {
+      console.log("Error while google facebook", error)
+      toast.error("Google login failed. Please try later")
+    }
+
+  }
+
 
 
   return (
@@ -68,7 +99,7 @@ const Login = () => {
                       id="email"
                       className="outline-none border border-gray-300 text-gray-900 sm:text-sm rounded block w-full p-2.5"
                       placeholder="Email address"
-                       name="email"
+                      name="email"
                       required />
 
                   </div>
@@ -85,8 +116,8 @@ const Login = () => {
                       placeholder="Password"
 
                       className="outline-none border border-gray-300 text-gray-900 sm:text-sm rounded block w-full p-2.5"
-                      name="password" 
-                      required/>
+                      name="password"
+                      required />
 
                   </div>
 
@@ -119,7 +150,29 @@ const Login = () => {
 
                   <button type="submit"
                     className="w-full text-white font-medium rounded text-sm px-5 py-2.5 text-center bg-blue-600">Sign
-                    in</button>
+                    In</button>
+
+                  <div className="mt-6">
+                    <button
+                      onClick={handleSignInWithGoogle}
+                      type="button"
+                      className="w-full flex items-center gap-2 justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-primary-black focus:outline-none focus:ring-2 focus:ring-offset-2 "
+                    >
+                      <img src="/google.png" alt="" className="w-6 h-6 object-contain" />
+                      <p>Sign In with Google</p>
+                    </button>
+                    {/* <div className="mt-6">
+                                        <button
+                                            onClick={handleSignInWithFaceBook}
+                                            type="button"
+                                            className="w-full flex items-center gap-2 justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-primary-black focus:outline-none focus:ring-2 focus:ring-offset-2 "
+                                        >
+                                            <img src="/facebook.png" alt="" className="w-6 h-6 object-contain" />
+                                            <p>Sign In with FaceBook</p>
+                                        </button>
+                                        </div> */}
+
+                  </div>
 
                   <p className="text-sm font-light flex items-center justify-center text-gray-500">Don’t have an
                     account yet?

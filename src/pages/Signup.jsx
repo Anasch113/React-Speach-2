@@ -3,7 +3,7 @@ import Headers from '../components/DesignLayouts/Headers'
 import Footer from '../components/DesignLayouts/Footer'
 import { useUserAuth } from '../context/UserAuthContext'
 import { useDispatch } from "react-redux"
-import {auth} from "../firebase"
+import { auth } from "../firebase"
 import toast from "react-hot-toast"
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2';
@@ -20,7 +20,7 @@ const Signup = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    const { signUp } = useUserAuth()
+    const { signUp, signUpWithGoogle, signUpWithFaceBook } = useUserAuth()
     const navigate = useNavigate();
 
 
@@ -64,16 +64,48 @@ const Signup = () => {
     }
 
 
+    const handleSignInWithGoogle = async () => {
+
+        try {
+            await signUpWithGoogle()
+            toast.success("SignUp Successfully")
+            navigate("/home");
+
+        } catch (error) {
+            console.log("Error while google signUp", error)
+            toast.error("Google SignUp failed. Please try later")
+        }
+
+    }
+
+
+    const handleSignInWithFaceBook = async () => {
+
+        try {
+            await signUpWithFaceBook()
+            toast.success("SignUp Successfully")
+            navigate("/home");
+
+        } catch (error) {
+            console.log("Error while google facebook", error)
+        }
+
+    }
+
+
     return (
         <>
             <Headers />
 
-            <div className="pt-20">
-                <section className="bg-gray-50">
-                    <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+           
+                
+                    <div className="  flex flex-col items-center justify-center px-6 py-10 md:min-h-screen  bg-gray-50-50 ">
+                        
                         <div
-                            className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0">
-                            <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+                            className="w-full mt-20 bg-white  rounded-lg shadow dark:border sm:max-w-md ">
+
+                            <div className="p-6 h-full space-y-4 md:space-y-6 sm:p-8 ">
+                                
                                 <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">Create and
                                     account</h1>
                                 <form className="space-y-4 md:space-y-6" onSubmit={handleSignup}>
@@ -154,19 +186,40 @@ const Signup = () => {
                                     <button type="submit"
                                         className="w-full text-white font-medium rounded text-sm px-5 py-2.5 text-center bg-blue-600">Create
                                         an account</button>
+                                    <div className="mt-6">
+                                        <button
+                                            onClick={handleSignInWithGoogle}
+                                            type="button"
+                                            className="w-full flex items-center gap-2 justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-primary-black focus:outline-none focus:ring-2 focus:ring-offset-2 "
+                                        >
+                                            <img src="/google.png" alt="" className="w-6 h-6 object-contain" />
+                                            <p>Sign up with Google</p>
+                                        </button>
+                                        {/* <div className="mt-6">
+                                        <button
+                                            onClick={handleSignInWithFaceBook}
+                                            type="button"
+                                            className="w-full flex items-center gap-2 justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-primary-black focus:outline-none focus:ring-2 focus:ring-offset-2 "
+                                        >
+                                            <img src="/facebook.png" alt="" className="w-6 h-6 object-contain" />
+                                            <p>Sign up with FaceBook</p>
+                                        </button>
+                                        </div> */}
+                                        
+                                    </div>
 
 
                                     <p className="text-sm font-light text-gray-500 flex items-center justify-center">Already have an
                                         account? <a
-                                            className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                                            className="font-medium text-primary-600 hover:underline dark:text-primary-500 mx-1"
                                             href="/login">Login here</a></p>
 
                                 </form>
                             </div>
                         </div>
                     </div>
-                </section>
-            </div>
+                
+            
             <Footer />
         </>
     )
