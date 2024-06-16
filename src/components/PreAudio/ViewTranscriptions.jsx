@@ -53,7 +53,7 @@ const ViewTranscriptions = ({ filename }) => {
   const [wordsIndex, setWordsIndex] = useState("");
   const [transcriptions, setTranscriptions] = useState("");
   const [shareLink, setShareLink] = useState('');
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
 
 
@@ -264,13 +264,15 @@ const navigate = useNavigate();
     setUpdatedText(updatedText); // Set the updated text
   };
 
+
+  // function to generate the srt content
   const generateSrtContent = () => {
     let content = '';
 
     transcriptions.sentimentAnalysisResults.forEach((files, i) => {
       content += `
         ${i}
-        ${files.start} --> ${files.end}
+        ${convertToSrtTime(files.start)} --> ${convertToSrtTime(files.end)}
         ${files.text}
       `;
     });
@@ -278,14 +280,27 @@ const navigate = useNavigate();
     return content;
   };
 
+  // function to convert timestamps into correct srt format timestamps
+  const convertToSrtTime = (seconds) => {
+    const pad = (num, size) => ('000' + num).slice(size * -1);
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    const milliseconds = Math.floor((seconds % 1) * 1000);
+    return `${pad(hours, 2)}:${pad(minutes, 2)}:${pad(secs, 2)},${pad(milliseconds, 3)}`;
+  };
+
+
 
   const deleteTranscription = async () => {
 
     try {
-      await axios.delete(`${import.meta.env.VITE_HOST_URL}/api/save/deleteTranscription`, { data : {
-        id: id
-      } }
-       
+      await axios.delete(`${import.meta.env.VITE_HOST_URL}/api/save/deleteTranscription`, {
+        data: {
+          id: id
+        }
+      }
+
       )
       toast.success("File deleted")
       navigate("/pre-audio-transcriptions")
@@ -446,7 +461,7 @@ const navigate = useNavigate();
                     }
 
                     {
-                      showDeleteModal && <DeleteModal deleteTranscript={deleteTranscription} setShowDeleteModal={setShowDeleteModal} filename ={transcriptions.filename}/>
+                      showDeleteModal && <DeleteModal deleteTranscript={deleteTranscription} setShowDeleteModal={setShowDeleteModal} filename={transcriptions.filename} />
                     }
 
 

@@ -163,6 +163,7 @@ const SyncAiPage = () => {
     };
 
     const handlePaymentOptions = async (total, method) => {
+
         setShowPaymentModal(false)
         try {
             if (total && method === "credit-method") {
@@ -466,6 +467,8 @@ const SyncAiPage = () => {
         setRunUseEffect(false);
         setUseEffectTriggered(false);
         setIsJobCompleted(false);
+        setShowPaymentModal(false)
+        setIsPaymentInProgress(false)
 
         if (cost > 0 && cost > userBalance) {
             toast.error("Insufficient credit, Please buy more credit ")
