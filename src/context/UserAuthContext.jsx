@@ -8,13 +8,17 @@ import {
   sendEmailVerification,
   GoogleAuthProvider,
   FacebookAuthProvider,
-  signInWithPopup
+  signInWithPopup,
+
+
 
 
 } from "firebase/auth";
 import { auth } from "../firebase";
 import { getDatabase, ref, get, set, onValue } from "firebase/database";
 import { database } from "../firebase";
+import axios from "axios"
+import toast from "react-hot-toast";
 
 
 const userAuthContext = createContext();
@@ -23,23 +27,36 @@ export function UserAuthContextProvider({ children }) {
   const [user, setUser] = useState({});
   const [userBalance, setUserBalance] = useState(0);
   const [paymentInfo, setPaymentInfo] = useState([]);
+  const [message, setMessage] = useState("");
+
 
 
   async function logIn(email, password) {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+    
+      const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/emails/email-verify-login`, { email });
+      console.log("response from server verify login", response.data)
+
+      if (response.data.message === "Email not verified. Verification email sent") {
+        setMessage(response.data.message)
+
+        return null
+      }
+
+      else if (response.data.message === "Email verified") {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        toast.success("Login successfully")
+        setMessage("Verified Email")
+        console.log("userCredentials in context", userCredential)
+        
+        return userCredential;
+      }
 
 
-    // Check if the user's email is verified
-    if (userCredential.user.emailVerified === false) {
-      console.log("user credentials", userCredential.user.emailVerified)
-      console.log("Please verify your email before logging in");
-      setUser(null)
-      return null;
+    
 
-    }
 
-    console.log("userCredentials in context", userCredential)
-    return userCredential;
+
   }
 
 
@@ -69,7 +86,7 @@ export function UserAuthContextProvider({ children }) {
 
   // SignUp with google
 
-  const signUpWithGoogle = async ()=>{
+  const signUpWithGoogle = async () => {
     const provider = new GoogleAuthProvider()
 
     try {
@@ -78,7 +95,7 @@ export function UserAuthContextProvider({ children }) {
 
       await createUserInDatabase(userData.uid, { email: userData.email, name: userData.displayName });
       console.log("User signed up with Google and data stored in database.");
-      
+
     } catch (error) {
       console.error("Error signing up with Google:", error.message);
     }
@@ -86,9 +103,9 @@ export function UserAuthContextProvider({ children }) {
   }
 
 
-   // SignUp with Facebook
+  // SignUp with Facebook
 
-   const signUpWithFaceBook = async ()=>{
+  const signUpWithFaceBook = async () => {
     const provider = new FacebookAuthProvider()
 
     try {
@@ -97,7 +114,7 @@ export function UserAuthContextProvider({ children }) {
 
       await createUserInDatabase(userData.uid, { email: userData.email, name: userData.displayName });
       console.log("User signed up with facebook and data stored in database.");
-      
+
     } catch (error) {
       console.error("Error signing up with facebook:", error.message);
     }
@@ -162,7 +179,7 @@ export function UserAuthContextProvider({ children }) {
 
           if (userData) {
             const balance = userData.balance;
-            
+
             setUserBalance(balance)
             console.log("balance of user", userData.balance)
           }
@@ -200,7 +217,7 @@ export function UserAuthContextProvider({ children }) {
 
   return (
     <userAuthContext.Provider
-      value={{ user, signUp, logIn, logOut, paymentInfo, userBalance, signUpWithGoogle, signUpWithFaceBook }}
+      value={{ user, signUp, logIn, logOut, paymentInfo, userBalance, signUpWithGoogle, signUpWithFaceBook, message }}
 
     >
       {children}

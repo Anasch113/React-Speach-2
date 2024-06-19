@@ -10,8 +10,11 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { logIn, user, signUpWithGoogle, signUpWithFaceBook } = useUserAuth();
+  const { logIn, user, signUpWithGoogle, signUpWithFaceBook, message } = useUserAuth();
   const navigate = useNavigate();
+
+
+
 
 
   const handleLogin = async (e) => {
@@ -20,8 +23,12 @@ const Login = () => {
     try {
 
       await logIn(email, password);
-      toast.success("Login Successfully")
+
+
+
       navigate("/home")
+
+
 
 
     } catch (err) {
@@ -31,7 +38,7 @@ const Login = () => {
       if (err.code === "auth/invalid-credential") {
         toast.error("Invalid Crdentials, Please Try Again");
       } else {
-        toast.error("Please fill up all fields",);
+        toast.error("Login falied, Please try later",);
       }
 
     }
@@ -148,7 +155,11 @@ const Login = () => {
 
                   </div>
 
-                  <button type="submit"
+                  {
+                    message && message === "Email not verified. Verification email sent" && <p className=" bg-[#7dcfc0] font-medium text-white text-center rounded-md p-2">{message}</p>
+                  }
+
+                  <button disabled={message === "Email not verified. Verification email sent"} type="submit"
                     className="w-full text-white font-medium rounded text-sm px-5 py-2.5 text-center bg-blue-600">Sign
                     In</button>
 

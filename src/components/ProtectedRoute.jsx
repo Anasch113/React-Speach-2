@@ -8,15 +8,15 @@ const ProtectedRoute = ({ children }) => {
   try {
     let { user } = useUserAuth();
 
-    if (!user || user.emailVerified === false) {
-      Swal.fire("Unauthorized Way Detected", "Verify your Email or Login Correctly", "error")
+    if (!user) {
+      toast.error("Login failed")
       return <Navigate to="/login" />;
     }
 
     return children;
   } catch (error) {
     console.log("Error in protected routes", error);
-    toast.error("An error occurred. Please try again later.");
+   
     return <Navigate to="/login" />;
   }
 };
