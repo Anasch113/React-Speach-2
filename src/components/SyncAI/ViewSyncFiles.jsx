@@ -104,8 +104,8 @@ const ViewSyncFiles = () => {
       data.elements.forEach((words, j) => {
         if (words.value.trim() !== '') {
           paragraphContent += words.value + ' ';
-          if ((j + 1) % 12 === 0) {
-            const startTime = convertToSrtTime(data.elements[j - 6].ts);
+          if ((j + 1) % 24 === 0) {
+            const startTime = convertToSrtTime(data.elements[j - 12].ts);
             const endTime = convertToSrtTime(words.end_ts);
             srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
             segmentIndex += 1;

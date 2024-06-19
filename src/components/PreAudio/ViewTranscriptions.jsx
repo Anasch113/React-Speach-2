@@ -264,31 +264,27 @@ const ViewTranscriptions = ({ filename }) => {
     setUpdatedText(updatedText); // Set the updated text
   };
 
-
   // function to generate the srt content
   const generateSrtContent = () => {
     let content = '';
 
-    transcriptions.sentimentAnalysisResults.forEach((files, i) => {
-      content += `
-        ${i}
-        ${convertToSrtTime(files.start)} --> ${convertToSrtTime(files.end)}
-        ${files.text}
-      `;
+    transcriptions.sentimentAnalysisResults.forEach((file, i) => {
+      content += `${i + 1}\n${convertToSrtTime(file.start)} --> ${convertToSrtTime(file.end)}\n${file.text}\n\n`;
     });
 
     return content;
   };
 
   // function to convert timestamps into correct srt format timestamps
-  const convertToSrtTime = (seconds) => {
+  const convertToSrtTime = (milliseconds) => {
     const pad = (num, size) => ('000' + num).slice(size * -1);
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = Math.floor(seconds % 60);
-    const milliseconds = Math.floor((seconds % 1) * 1000);
-    return `${pad(hours, 2)}:${pad(minutes, 2)}:${pad(secs, 2)},${pad(milliseconds, 3)}`;
+    const hours = Math.floor(milliseconds / 3600000);
+    const minutes = Math.floor((milliseconds % 3600000) / 60000);
+    const seconds = Math.floor((milliseconds % 60000) / 1000);
+    const millis = milliseconds % 1000;
+    return `${pad(hours, 2)}:${pad(minutes, 2)}:${pad(seconds, 2)},${pad(millis, 3)}`;
   };
+
 
 
 
