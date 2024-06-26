@@ -38,7 +38,7 @@ function Sidebar({ isPurchase, minutes }) {
   const [isPaymentDone, setIsPaymentDone] = useState(false);
 
   const [isPaused, setIsPaused] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(minutes * 60);
+  const [remainingTime, setRemainingTime] = useState();
 
 
   const location = useLocation();
@@ -61,76 +61,85 @@ function Sidebar({ isPurchase, minutes }) {
 
 
   //>>>>>>>>>>>>>>>>>>> Use Effects >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  useEffect(() => {
 
-
-    if (isPurchase === "completed") {
-
-      
-
-      newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
-
-      if (newWindowRef.current) {
-        newWindowRef.current.focus();
-      }
-
-
-    
-
-
-
-      const startTimer = () => {
-        timerRef.current = setTimeout(() => {
-          stopLiveTranscript();
-          toast.success("Live transcriptions time ended");
-        }, remainingTime * 1000);
-      };
-
-      startTimer();
-      setIsLiveTranscript(true);
-      setIsPaymentDone(true);
-
-    }
-  }, [isPurchase]);
 
 
   console.log("is purchase ", isPurchase)
 
+  // useEffect(() => {
+
+  //     // Event listner to recieve stream events from the realtime transcriptions window
+  //     const handleMessage = (event) => {
+
+  //       if (event.origin !== window.location.origin) {
+  //         // Ignore messages from unknown origins for security
+  //         return;
+  //       }
+
+  //       console.log("event data", event.data)
+
+  //       if (event.data.type === 'PAUSE') {
+  //         setIsPaused(true);
+  //         clearTimeout(timerRef.current);
+  //       } else if (event.data.type === 'RESUME') {
+  //         setIsPaused(false);
+  //         startTimer();
+  //       }
+
+  //       else if (event.data.type === 'STOP') {
+
+  //         stopLiveTranscript();
+  //         toast.success("Live transcriptions time ended");
+
+  //       }
+
+
+  //     window.addEventListener('message', handleMessage);
+
+  //     // Cleanup function to clear the timer if the component unmounts or the effect runs again
+  //     return () => {
+  //       clearTimeout(timerRef.current);
+
+  //       window.removeEventListener('message', handleMessage);
+  //     };
+  //   }
+
+
+  // }, [])
+
+
+
+
+
+
+
   useEffect(() => {
+    if (isPurchase === "completed") {
+      setRemainingTime(minutes * 60)
+      setIsLiveTranscript(true);
+      setIsPaymentDone(true);
 
-    if (isLiveTranscript === true) {
+      newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
+      if (newWindowRef.current) {
+        newWindowRef.current.focus();
+      }
 
-      const startTimer = () => {
-        timerRef.current = setTimeout(() => {
-          stopLiveTranscript();
-          toast.success("Live transcriptions time ended");
-        }, remainingTime * 1000);
-      };
-
-
-      // Event listner to recieve stream events from the realtime transcriptions window
       const handleMessage = (event) => {
-
         if (event.origin !== window.location.origin) {
           // Ignore messages from unknown origins for security
           return;
         }
 
-        console.log("event data", event.data)
+        console.log("event data", event.data);
 
         if (event.data.type === 'PAUSE') {
           setIsPaused(true);
           clearTimeout(timerRef.current);
         } else if (event.data.type === 'RESUME') {
           setIsPaused(false);
-          startTimer();
-        }
-
-        else if (event.data.type === 'STOP') {
-
+        } else if (event.data.type === 'STOP') {
           stopLiveTranscript();
-          toast.success("Live transcriptions time ended");
-
+          toast.success("Live Transcriptions End");
         }
       };
 
@@ -139,37 +148,30 @@ function Sidebar({ isPurchase, minutes }) {
       // Cleanup function to clear the timer if the component unmounts or the effect runs again
       return () => {
         clearTimeout(timerRef.current);
-
+        if (newWindowRef.current) {
+          newWindowRef.current.close();
+        }
         window.removeEventListener('message', handleMessage);
       };
     }
-
-
-  }, [isLiveTranscript])
-
-
-
-  const handleLogout = async () => {
-    await logOut()
-    navigate('/')
-  }
-
-  //>>>>>>>>>>> Time managment code >>>>>>>>>>>>>>>>>>>>>>>>
-
+  }, [isPurchase]);
 
   useEffect(() => {
-
-    if (!isPaused && remainingTime > 0) {
-      const interval = setInterval(() => {
+    if (!isPaused && isLiveTranscript && remainingTime > 0) {
+      timerRef.current = setInterval(() => {
         setRemainingTime(prevTime => prevTime - 1);
       }, 1000);
 
-      return () => clearInterval(interval);
+      return () => clearInterval(timerRef.current);
     } else if (remainingTime === 0) {
       stopLiveTranscript();
-      toast.success("Live transcriptions time ended");
+      toast.success("Live Transcriptions End");
     }
-  }, [isPaused, remainingTime]);
+  }, [isPaused, isLiveTranscript, remainingTime]);
+
+
+  console.log("remaining time", remainingTime)
+
 
 
 
@@ -202,13 +204,9 @@ function Sidebar({ isPurchase, minutes }) {
         setShowPaymentModal(true)
 
       } else if (result.isDenied) {
-        // setShowPaymentModal(true) uncomment it after work done
-        newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
-        if (newWindowRef.current) {
-          newWindowRef.current.focus();
-
-        }
-        setIsLiveTranscript(true);
+        setShowPaymentModal(true)
+       
+       
 
       }
     });
@@ -236,6 +234,12 @@ function Sidebar({ isPurchase, minutes }) {
 
   }
 
+
+
+  const handleLogout = async () => {
+    await logOut()
+    navigate('/')
+  }
 
   return (
     <aside

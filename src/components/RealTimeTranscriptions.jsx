@@ -338,8 +338,8 @@ function RealTimeTranscriptions() {
 
 
             <button className='cursor-pointer hover:text-white' title='stop' onClick={() => window.opener.postMessage({ type: 'STOP' }, '*')} ><FaStop size={20} /></button>
-            <button className='cursor-pointer hover:text-white' title='restart' ><MdOutlineRestartAlt /></button>
-            <button onClick={clearText} className='cursor-pointer hover:text-white' title='clear text' ><GrClearOption size={22} /></button>
+            {/* <button className='cursor-pointer hover:text-white' title='restart' ><MdOutlineRestartAlt /></button> */}
+            {/* <button onClick={clearText} className='cursor-pointer hover:text-white' title='clear text' ><GrClearOption size={22} /></button> */}
 
             <button className='cursor-pointer hover:text-white' title='settings' onClick={handleSettingsClick}><IoIosSettings /></button>
 
