@@ -10,58 +10,58 @@ import { RxOpenInNewWindow } from "react-icons/rx";
 
 const Navbar = ({isPurchase, minutes }) => {
 
-  const [showLiveBtn, setShowLiveBtn] = useState(false)
-  const [isTriggered, setIsTriggered] = useState(false)
-  const [remainingTime, setRemainingTime] = useState(minutes * 60); // initial time in seconds
+  // const [showLiveBtn, setShowLiveBtn] = useState(false)
+  // const [isTriggered, setIsTriggered] = useState(false)
+  // const [remainingTime, setRemainingTime] = useState(minutes * 60); // initial time in seconds
   const newWindowRef = useRef(null)
 
 
   console.log("minutes in the navbar", minutes)
 
-  useEffect(() => {
-    if (isPurchase === "completed" && minutes) {
-      setShowLiveBtn(true);
-      setRemainingTime(minutes * 60); // Reset remaining time
+  // useEffect(() => {
+  //   if (isPurchase === "completed" && minutes) {
+  //     setShowLiveBtn(true);
+  //     setRemainingTime(minutes * 60); // Reset remaining time
 
-      const timer = setTimeout(() => {
-        setShowLiveBtn(false);
-        newWindowRef.current.close();
-        newWindowRef.current = null;
-      }, minutes * 60 * 1000);
+  //     const timer = setTimeout(() => {
+  //       setShowLiveBtn(false);
+  //       newWindowRef.current.close();
+  //       newWindowRef.current = null;
+  //     }, minutes * 60 * 1000);
 
-      return () => {
-        clearTimeout(timer);
-        if (newWindowRef.current && isTriggered) {
-          toast.success("Live transcriptions time ended from navbar");
-          newWindowRef.current.close();
-        }
-      };
-    }
-  }, [isPurchase, minutes]);
+  //     return () => {
+  //       clearTimeout(timer);
+  //       if (newWindowRef.current && isTriggered) {
+  //         toast.success("Live transcriptions time ended from navbar");
+  //         newWindowRef.current.close();
+  //       }
+  //     };
+  //   }
+  // }, [isPurchase, minutes]);
 
-  useEffect(() => {
-    if (remainingTime > 0) {
-      const interval = setInterval(() => {
-        setRemainingTime(prevTime => prevTime - 1);
-      }, 1000);
+  // useEffect(() => {
+  //   if (remainingTime > 0) {
+  //     const interval = setInterval(() => {
+  //       setRemainingTime(prevTime => prevTime - 1);
+  //     }, 1000);
 
-      return () => clearInterval(interval);
-    }
-  }, [remainingTime]);
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [remainingTime]);
 
-  const openLiveTranscriptWindow = () => {
-    setIsTriggered(true);
-    newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
-    if (newWindowRef.current) {
-      newWindowRef.current.focus();
-    }
-  };
+  // const openLiveTranscriptWindow = () => {
+  //   setIsTriggered(true);
+  //   newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
+  //   if (newWindowRef.current) {
+  //     newWindowRef.current.focus();
+  //   }
+  // };
 
-  const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = timeInSeconds % 60;
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
+  // const formatTime = (timeInSeconds) => {
+  //   const minutes = Math.floor(timeInSeconds / 60);
+  //   const seconds = timeInSeconds % 60;
+  //   return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  // };
 
 
 
@@ -75,7 +75,7 @@ const Navbar = ({isPurchase, minutes }) => {
 
         {/* Search Input */}
         <div className="flex items-center space-x-4">
-          {
+          {/* {
             showLiveBtn && <div className="flex items-center gap-2">
 
               <div className="font-semibold mx-2 font-poppins text-gray-500">
@@ -89,7 +89,7 @@ const Navbar = ({isPurchase, minutes }) => {
                   <RxOpenInNewWindow size={17} />
                 </span></button>
             </div>
-          }
+          } */}
 
 
 

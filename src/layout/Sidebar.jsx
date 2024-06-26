@@ -24,7 +24,8 @@ import { CgTranscript } from "react-icons/cg";
 import { GrSync } from "react-icons/gr";
 import PaymentModal from "../components/RealTimeTranscript/PaymentModal";
 import toast from "react-hot-toast";
-
+import { RxOpenInNewWindow } from "react-icons/rx"
+import { MdOutlineTimer } from "react-icons/md";
 
 function Sidebar({ isPurchase, minutes }) {
   const user1 = {
@@ -35,9 +36,17 @@ function Sidebar({ isPurchase, minutes }) {
   const [isLiveTranscript, setIsLiveTranscript] = useState(false)
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isPaymentDone, setIsPaymentDone] = useState(false);
+
+  const [isPaused, setIsPaused] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(minutes * 60);
+
+
   const location = useLocation();
   const newWindowRef = useRef(null)
-  const recordingStatus = useSelector((state) => state.audio.isRecording);
+  const timerRef = useRef(null);
+
+  console.log("is purchase & minutes", isPurchase, minutes)
+
 
 
   // Function to check if the given path matches the current path
@@ -47,46 +56,132 @@ function Sidebar({ isPurchase, minutes }) {
   const navigate = useNavigate();
   const { user, logOut } = useUserAuth();
 
-  const paymentData = useSelector((state) => state.payment);
-  console.log("paymentData in sidebar", paymentData)
 
 
 
+
+  //>>>>>>>>>>>>>>>>>>> Use Effects >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   useEffect(() => {
+
+
     if (isPurchase === "completed") {
-      setIsLiveTranscript(true);
-      setIsPaymentDone(true);
+
+      
 
       newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
+
       if (newWindowRef.current) {
         newWindowRef.current.focus();
       }
 
-      // Schedule to stop the live transcript after the specified number of minutes
-      const timer = setTimeout(() => {
-        stopLiveTranscript();
-        toast.success("Live transcriptions time ended")
-      }, minutes * 60 * 1000); // Convert minutes to milliseconds
+
+    
+
+
+
+      const startTimer = () => {
+        timerRef.current = setTimeout(() => {
+          stopLiveTranscript();
+          toast.success("Live transcriptions time ended");
+        }, remainingTime * 1000);
+      };
+
+      startTimer();
+      setIsLiveTranscript(true);
+      setIsPaymentDone(true);
+
+    }
+  }, [isPurchase]);
+
+
+  console.log("is purchase ", isPurchase)
+
+  useEffect(() => {
+
+    if (isLiveTranscript === true) {
+
+      const startTimer = () => {
+        timerRef.current = setTimeout(() => {
+          stopLiveTranscript();
+          toast.success("Live transcriptions time ended");
+        }, remainingTime * 1000);
+      };
+
+
+      // Event listner to recieve stream events from the realtime transcriptions window
+      const handleMessage = (event) => {
+
+        if (event.origin !== window.location.origin) {
+          // Ignore messages from unknown origins for security
+          return;
+        }
+
+        console.log("event data", event.data)
+
+        if (event.data.type === 'PAUSE') {
+          setIsPaused(true);
+          clearTimeout(timerRef.current);
+        } else if (event.data.type === 'RESUME') {
+          setIsPaused(false);
+          startTimer();
+        }
+
+        else if (event.data.type === 'STOP') {
+
+          stopLiveTranscript();
+          toast.success("Live transcriptions time ended");
+
+        }
+      };
+
+      window.addEventListener('message', handleMessage);
 
       // Cleanup function to clear the timer if the component unmounts or the effect runs again
       return () => {
-        clearTimeout(timer);
-        if (newWindowRef.current) {
-          newWindowRef.current.close();
-        }
+        clearTimeout(timerRef.current);
+
+        window.removeEventListener('message', handleMessage);
       };
     }
-  }, [isPurchase, minutes]);
+
+
+  }, [isLiveTranscript])
+
+
 
   const handleLogout = async () => {
     await logOut()
     navigate('/')
   }
 
+  //>>>>>>>>>>> Time managment code >>>>>>>>>>>>>>>>>>>>>>>>
+
+
+  useEffect(() => {
+
+    if (!isPaused && remainingTime > 0) {
+      const interval = setInterval(() => {
+        setRemainingTime(prevTime => prevTime - 1);
+      }, 1000);
+
+      return () => clearInterval(interval);
+    } else if (remainingTime === 0) {
+      stopLiveTranscript();
+      toast.success("Live transcriptions time ended");
+    }
+  }, [isPaused, remainingTime]);
 
 
 
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
 
+
+
+  // Intital step >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   const startLiveTranscript = () => {
     Swal.fire({
       title: "Transcribe my",
@@ -107,8 +202,13 @@ function Sidebar({ isPurchase, minutes }) {
         setShowPaymentModal(true)
 
       } else if (result.isDenied) {
-        setShowPaymentModal(true)
+        // setShowPaymentModal(true) uncomment it after work done
+        newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
+        if (newWindowRef.current) {
+          newWindowRef.current.focus();
 
+        }
+        setIsLiveTranscript(true);
 
       }
     });
@@ -124,9 +224,17 @@ function Sidebar({ isPurchase, minutes }) {
       newWindowRef.current.close();
       newWindowRef.current = null;
     }
+    clearTimeout(timerRef.current);
   }
 
+  const handleNewWindow = () => {
 
+    newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
+    if (newWindowRef.current) {
+      newWindowRef.current.focus();
+    }
+
+  }
 
 
   return (
@@ -201,16 +309,31 @@ function Sidebar({ isPurchase, minutes }) {
 
               </div>
             </Link>) : (
-            <Link onClick={stopLiveTranscript}>
-              <div className={`mx-2 p-4 flex text-white bg-red-500 rounded-md ${isActive("/notdefined") ? "bg-red-500 " : "hover:bg-red-600 "}`}>
-                <div className="mr-2 mt-1">
+
+            <div >
+
+              <div className={`mx-2 p-4 border flex text-white justify-between items-center bg-red-500 rounded-md `}>
+
+                <div className="mr-2 mt-1 ">
                   <AiOutlineAudioMuted />
                 </div>
 
-                <button>Stop Live Transcript</button>
+                <div className="">
+                  {remainingTime > 0 && (
+                    <div className="font-semibold gap-2 font-poppins text-white-500 flex items-center">
+                      <MdOutlineTimer size={20} />    <p>{formatTime(remainingTime)}</p>
+                    </div>
+
+                  )}
+                </div>
+                <span onClick={handleNewWindow} className="hover:cursor-pointer  p-2 rounded-full hover:bg-red-400">
+                  <RxOpenInNewWindow size={20} />
+                </span>
 
               </div>
-            </Link>
+
+
+            </div>
           )
         }
 
