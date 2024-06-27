@@ -189,7 +189,7 @@ function RealTimeTranscriptions() {
 
     socket.current = await new WebSocket(`wss://api.assemblyai.com/v2/realtime/ws?sample_rate=16000&token=${token}`);
 
-    
+
 
     socket.current.onmessage = (voicePrompt) => {
 
@@ -298,7 +298,7 @@ function RealTimeTranscriptions() {
 
   // Clear Text
 
- 
+
   const clearText = () => {
     setTranscript('');
     texts.current = {};
@@ -338,7 +338,7 @@ function RealTimeTranscriptions() {
 
 
             <button className='cursor-pointer hover:text-white' title='stop' onClick={() => window.opener.postMessage({ type: 'STOP' }, '*')} ><FaStop size={20} /></button>
-            {/* <button className='cursor-pointer hover:text-white' title='restart' ><MdOutlineRestartAlt /></button> */}
+            <button className='cursor-pointer hover:text-white' title='restart' onClick={() => window.opener.postMessage({ type: 'RESTART' }, '*')} ><MdOutlineRestartAlt /></button>
             <button onClick={clearText} className='cursor-pointer hover:text-white' title='clear text' ><GrClearOption size={22} /></button>
 
             <button className='cursor-pointer hover:text-white' title='settings' onClick={handleSettingsClick}><IoIosSettings /></button>

@@ -134,7 +134,17 @@ function Sidebar({ isPurchase, minutes }) {
           clearTimeout(timerRef.current);
         } else if (event.data.type === 'RESUME') {
           setIsPaused(false);
-        } else if (event.data.type === 'STOP') {
+        }
+        else if (event.data.type === 'RESTART') {
+
+          stopLiveTranscript();
+          setIsLiveTranscript(false);
+          setShowPaymentModal(true)
+          toast("Please pay again to restart the transcriptions")
+
+        }
+
+        else if (event.data.type === 'STOP') {
           stopLiveTranscript();
           toast.success("Live Transcriptions End");
         }
@@ -201,9 +211,9 @@ function Sidebar({ isPurchase, minutes }) {
         setShowPaymentModal(true)
 
       } else if (result.isDenied) {
-        setShowPaymentModal(true) 
+        setShowPaymentModal(true)
 
-       
+
 
 
       }
