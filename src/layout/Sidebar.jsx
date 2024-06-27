@@ -26,6 +26,7 @@ import PaymentModal from "../components/RealTimeTranscript/PaymentModal";
 import toast from "react-hot-toast";
 import { RxOpenInNewWindow } from "react-icons/rx"
 import { MdOutlineTimer } from "react-icons/md";
+import { FaPause } from "react-icons/fa";
 
 function Sidebar({ isPurchase, minutes }) {
   const user1 = {
@@ -68,41 +69,37 @@ function Sidebar({ isPurchase, minutes }) {
 
   // useEffect(() => {
 
-  //     // Event listner to recieve stream events from the realtime transcriptions window
-  //     const handleMessage = (event) => {
-
-  //       if (event.origin !== window.location.origin) {
-  //         // Ignore messages from unknown origins for security
-  //         return;
-  //       }
-
-  //       console.log("event data", event.data)
-
-  //       if (event.data.type === 'PAUSE') {
-  //         setIsPaused(true);
-  //         clearTimeout(timerRef.current);
-  //       } else if (event.data.type === 'RESUME') {
-  //         setIsPaused(false);
-  //         startTimer();
-  //       }
-
-  //       else if (event.data.type === 'STOP') {
-
-  //         stopLiveTranscript();
-  //         toast.success("Live transcriptions time ended");
-
-  //       }
 
 
-  //     window.addEventListener('message', handleMessage);
+  //   const handleMessage = (event) => {
+  //     if (event.origin !== window.location.origin) {
+  //       // Ignore messages from unknown origins for security
+  //       return;
+  //     }
 
-  //     // Cleanup function to clear the timer if the component unmounts or the effect runs again
-  //     return () => {
+  //     console.log("event data", event.data);
+
+  //     if (event.data.type === 'PAUSE') {
+  //       setIsPaused(true);
   //       clearTimeout(timerRef.current);
+  //     } else if (event.data.type === 'RESUME') {
+  //       setIsPaused(false);
+  //     } else if (event.data.type === 'STOP') {
+  //       stopLiveTranscript();
+  //       toast.success("Live Transcriptions End");
+  //     }
+  //   };
 
-  //       window.removeEventListener('message', handleMessage);
-  //     };
-  //   }
+  //   window.addEventListener('message', handleMessage);
+
+  //   // Cleanup function to clear the timer if the component unmounts or the effect runs again
+  //   return () => {
+  //     clearTimeout(timerRef.current);
+
+  //     window.removeEventListener('message', handleMessage);
+  //   };
+
+
 
 
   // }, [])
@@ -204,9 +201,10 @@ function Sidebar({ isPurchase, minutes }) {
         setShowPaymentModal(true)
 
       } else if (result.isDenied) {
-        setShowPaymentModal(true)
+        setShowPaymentModal(true) 
+
        
-       
+
 
       }
     });
@@ -316,20 +314,29 @@ function Sidebar({ isPurchase, minutes }) {
 
             <div >
 
-              <div className={`mx-2 p-4 border flex text-white justify-between items-center bg-red-500 rounded-md `}>
+              <div className={`mx-2 p-4 border flex text-white justify-between items-center ${isPaused ? 'bg-green-500' : 'bg-red-500'}   rounded-md `}>
 
                 <div className="mr-2 mt-1 ">
-                  <AiOutlineAudioMuted />
+
+
+                  {isPaused ? (<FaPause size={18} />) : (<AiOutlineAudio size={18} />)}
+
+
+
+
                 </div>
 
-                <div className="">
+                <div className="flex  gap-2">
                   {remainingTime > 0 && (
                     <div className="font-semibold gap-2 font-poppins text-white-500 flex items-center">
                       <MdOutlineTimer size={20} />    <p>{formatTime(remainingTime)}</p>
                     </div>
 
                   )}
+
+
                 </div>
+
                 <span onClick={handleNewWindow} className="hover:cursor-pointer  p-2 rounded-full hover:bg-red-400">
                   <RxOpenInNewWindow size={20} />
                 </span>

@@ -38,7 +38,7 @@ function RealTimeTranscriptions() {
   const colorPickerRef = useRef(null);
   const bgColorPicker = useRef(null);
   const settingsRef = useRef(null);
-  const newWindowRef = useRef(null);
+  const texts = useRef({});
 
 
   // Stream controls state 
@@ -189,7 +189,7 @@ function RealTimeTranscriptions() {
 
     socket.current = await new WebSocket(`wss://api.assemblyai.com/v2/realtime/ws?sample_rate=16000&token=${token}`);
 
-    const texts = {};
+    
 
     socket.current.onmessage = (voicePrompt) => {
 
@@ -200,12 +200,12 @@ function RealTimeTranscriptions() {
 
       let msg = '';
       const res = JSON.parse(voicePrompt.data);
-      texts[res.audio_start] = res.text;
-      const keys = Object.keys(texts);
+      texts.current[res.audio_start] = res.text;
+      const keys = Object.keys(texts.current);
       keys.sort((a, b) => a - b);
       for (const key of keys) {
-        if (texts[key]) {
-          msg += ` ${texts[key]}`
+        if (texts.current[key]) {
+          msg += ` ${texts.current[key]}`;
           console.log(msg)
         }
       }
@@ -298,11 +298,11 @@ function RealTimeTranscriptions() {
 
   // Clear Text
 
+ 
   const clearText = () => {
-
-
+    setTranscript('');
+    texts.current = {};
   };
-
 
   return (
     <div className="w-full flex flex-col items-center gap-3  min-h-screen ">
@@ -339,7 +339,7 @@ function RealTimeTranscriptions() {
 
             <button className='cursor-pointer hover:text-white' title='stop' onClick={() => window.opener.postMessage({ type: 'STOP' }, '*')} ><FaStop size={20} /></button>
             {/* <button className='cursor-pointer hover:text-white' title='restart' ><MdOutlineRestartAlt /></button> */}
-            {/* <button onClick={clearText} className='cursor-pointer hover:text-white' title='clear text' ><GrClearOption size={22} /></button> */}
+            <button onClick={clearText} className='cursor-pointer hover:text-white' title='clear text' ><GrClearOption size={22} /></button>
 
             <button className='cursor-pointer hover:text-white' title='settings' onClick={handleSettingsClick}><IoIosSettings /></button>
 
