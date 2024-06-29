@@ -16,7 +16,8 @@ const TranscriptSuccess = () => {
         transcriptUrl: "",
         filename: "",
         fileDuration: 0,
-        amount: 0
+        amount: 0,
+        transcriptFileName: ""
     }));
     const [trigger, setTrigger] = useState(false);
 
@@ -48,7 +49,8 @@ const TranscriptSuccess = () => {
                             transcriptUrl:  userData.dataDetails.transcriptUrl ? userData.dataDetails.transcriptUrl : "",
                             amount: userData.dataDetails.amount,
                             filename: userData.dataDetails.filename,
-                            fileDuration: userData.dataDetails.fileDuration
+                            fileDuration: userData.dataDetails.fileDuration, 
+                            transcriptFileName : userData.dataDetails.transcriptFileName ? userData.dataDetails.transcriptFileName : "",
 
                         })
                         setTrigger(true)
@@ -94,6 +96,7 @@ const TranscriptSuccess = () => {
                         dataDetails: {
                             fileUrl: dataDetails.cloudUrl,
                             transcriptUrl: dataDetails.transcriptUrl && dataDetails.transcriptUrl,
+                            transcriptFileName: dataDetails.transcriptFileName && dataDetails.transcriptFileName,
                             amount: dataDetails.amount,
                             filename: dataDetails.filename,
                             fileDuration: dataDetails.fileDuration,
@@ -106,7 +109,8 @@ const TranscriptSuccess = () => {
                         cloudUrl: dataDetails.cloudUrl,
                         filename: dataDetails.filename,
                         fileDuration: dataDetails.fileDuration,
-                        transcriptUrl: dataDetails.transcriptUrl && dataDetails.transcriptUrl
+                        transcriptUrl: dataDetails.transcriptUrl && dataDetails.transcriptUrl,
+                        transcriptFileName: dataDetails.transcriptFileName && dataDetails.transcriptFileName
 
                     })
                     toast.success("Purchase Completed")
@@ -140,7 +144,7 @@ const TranscriptSuccess = () => {
 
            } 
            else{
-            navigate("/resyncingAi", { state: { paidCloudUrl: dataDetails.cloudUrl, paidFilename: dataDetails.filename, paidFileDuration: dataDetails.fileDuration, transcriptUrl: dataDetails.transcriptUrl && dataDetails.transcriptUrl } });
+            navigate("/resyncingAi", { state: { paidCloudUrl: dataDetails.cloudUrl, paidFilename: dataDetails.filename, paidFileDuration: dataDetails.fileDuration, transcriptUrl: dataDetails.transcriptUrl && dataDetails.transcriptUrl, transcriptFileName: dataDetails.transcriptFileName && dataDetails.transcriptFileName } });
            }
            
 

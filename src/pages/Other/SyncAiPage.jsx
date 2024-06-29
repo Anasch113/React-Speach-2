@@ -80,6 +80,7 @@ const SyncAiPage = () => {
 
 
     const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [isCreditMethodDone, setIsCreditMethodDone] = useState(false);
     const [isPaymentInProgress, setIsPaymentInProgress] = useState(false)
     const [fileDuration, setFileDuration] = useState(0);
     const [cost, setCost] = useState(0);
@@ -99,28 +100,34 @@ const SyncAiPage = () => {
     const transcriptUrl = location.state?.transcriptUrl;
     const paidFilename = location.state?.paidFilename;
     const paidFileDuration = location.state?.paidFileDuration;
+    const paidTranscriptFileName = location.state?.transcriptFileName
 
     console.log("cloudurl and filename from location ", paidCloudUrl, transcriptUrl)
 
-    console.log("users balance in pre audio", userBalance)
+
 
 
     useEffect(() => {
-        if (paidCloudUrl && transcriptUrl) {
+        if (paidCloudUrl && transcriptUrl && paidTranscriptFileName && paidFileDuration) {
 
-            toast.success("Continue your transcriptions")
+
+
+
             setCloudUrl({
                 audio: paidCloudUrl,
                 transcript: transcriptUrl
-            }
-            )
-            setFile({
-                audio: paidFileDuration
             })
-            setFileDuration(paidFileDuration)
-            setIsPaymentInProgress(false)
-            setShowFormModal(true)
 
+            setFile({
+                audio: paidFilename,
+                transcript: paidTranscriptFileName
+            })
+
+            setFileDuration(paidFileDuration)
+
+
+
+            setIsCreditMethodDone(true)
 
 
         }
@@ -128,7 +135,29 @@ const SyncAiPage = () => {
         navigate(location.pathname, { replace: true });
     }, [paidCloudUrl])
 
-    console.log("urls", cloudUrl.audio, cloudUrl.transcript)
+    useEffect(() => {
+
+        if (isCreditMethodDone === true) {
+            toast.success("Continue your transcriptions")
+            console.log("urls", cloudUrl.audio, cloudUrl.transcript)
+
+            if (cloudUrl.audio && cloudUrl.transcript) {
+                
+                setIsPaymentInProgress(false)
+                setShowPaymentModal(false)
+                setShowFormModal(true)
+              
+            }
+            else {
+                toast.error("Some error occurred. Please try later")
+            }
+
+
+
+        }
+
+    }, [isCreditMethodDone])
+
 
 
     // Function to create Stripe session
@@ -139,7 +168,8 @@ const SyncAiPage = () => {
             const userId = user.uid;
             const audioUrl = cloudUrl.audio;
             const transcriptUrl = cloudUrl.transcript;
-            const fileName = file.audio
+            const fileName = file.audio;
+            const transcriptFileName = file.transcript;
 
             const body = {
                 cost: cost,
@@ -147,7 +177,8 @@ const SyncAiPage = () => {
                 userId: userId,
                 filename: fileName,
                 fileDuration: fileDuration,
-                transcriptUrl: transcriptUrl
+                transcriptUrl: transcriptUrl,
+                transcriptFileName: transcriptFileName
             }
 
             const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/create-stripe-session`, body);
@@ -195,15 +226,16 @@ const SyncAiPage = () => {
     }
 
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        if (cloudUrl.audio && cloudUrl.transcript) {
-            setShowFormModal(false)
-            setShowPaymentModal(true)
-            setIsPaymentInProgress(true)
-        }
+    //     if (cloudUrl.audio && cloudUrl.transcript) {
+    //         setShowFormModal(false)
+    //         setShowPaymentModal(true)
+    //         setIsPaymentInProgress(true)
+    //     }
 
-    }, [cloudUrl.audio, cloudUrl.transcript])
+    // }, [cloudUrl.audio, cloudUrl.transcript])
+
     console.log("cost", cost)
     console.log("duration", fileDuration)
     console.log("showpaymentmodal", showPaymentModal)
@@ -309,6 +341,9 @@ const SyncAiPage = () => {
                 if (stateKey === 'audio' && duration > 0) {
 
                     setCost(costPrice)
+                    setShowFormModal(false)
+                    setShowPaymentModal(true)
+                    setIsPaymentInProgress(true)
                 }
 
 
@@ -426,14 +461,17 @@ const SyncAiPage = () => {
                     // Calculate the cost
                     const costPrice = (roundedDuration * 0.5).toFixed(2);
 
-                   
 
-                        setCost(costPrice)
-                    
-                    toast.success("Audio file uploaded")
+
+                    setCost(costPrice)
+
+                    toast.success("File uploaded")
                     console.log("fetchResponseeeee url", cloudinaryFileUrl)
                     console.info('File upload complete.');
 
+                    setShowFormModal(false)
+                    setShowPaymentModal(true)
+                    setIsPaymentInProgress(true)
                     setChunksLOading(false)
                 }
             } catch (error) {
@@ -453,7 +491,16 @@ const SyncAiPage = () => {
 
 
 
+    const handleInitalClick = () => {
 
+        if (!cloudUrl.audio && !cloudUrl.transcript) {
+            toast("Please upload both files first!")
+            return
+        }
+
+        setShowPaymentModal(true)
+
+    }
 
 
 
@@ -483,10 +530,10 @@ const SyncAiPage = () => {
 
             const requestBody = {
                 source_config: {
-                    url: cloudUrl.audio
+                    url: isCreditMethodDone ? paidCloudUrl : cloudUrl.audio
                 },
                 source_transcript_config: {
-                    url: cloudUrl.transcript
+                    url: isCreditMethodDone ? transcriptUrl : cloudUrl.transcript
                 },
                 metaData: "This is forced alignment test"
             };
@@ -750,12 +797,12 @@ const SyncAiPage = () => {
                                             <h1 className='text-2xl text-center font-roboto text-text-gray-other'>Welcome to Captify!</h1>
 
                                             <div className='flex items-center justify-center'>
-                                            {
-                            isPaymentInProgress && <button onClick={() => setShowPaymentModal(!showPaymentModal)} className='text-center p-2 w-20 h-16 
+                                                {
+                                                    isPaymentInProgress && <button onClick={() => setShowPaymentModal(!showPaymentModal)} className='text-center p-2 w-20 h-16 
                             rounded-3xl bg-purple-500 text-white text-xl font-medium font-roboto hover:bg-purple-400 '><span className='flex items-center text-center justify-center '>
-                                    <MdPayment size={25} />
-                                </span></button>
-                        }
+                                                            <MdPayment size={25} />
+                                                        </span></button>
+                                                }
 
                                                 <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 w-2/5 h-20
 rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
