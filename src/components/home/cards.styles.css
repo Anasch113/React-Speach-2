@@ -1,0 +1,11 @@
+.overlay {
+    position: absolute;
+    top: 0;
+    right: -100%;
+    width: 100%;
+    transition: transform 0.5s ease;
+}
+
+.group:hover .overlay {
+    transform: translateX(-100%);
+}

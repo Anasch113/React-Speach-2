@@ -1,0 +1,130 @@
+.custom__logo {
+    position: absolute;
+    width: 350px;
+    height: 80px;
+    top: 10px;
+    box-sizing: border-box;
+    transition: 0.5s ease-out;
+    overflow: hidden;
+  }
+  
+  .custom__logo > img {
+    width: 70px;
+    border-radius: 5px;
+    transition: 0.5s ease-out;
+  }
+  
+  img {
+    overflow-clip-margin: content-box;
+    overflow: clip;
+  }
+  
+  .custom__logo__text {
+    position: absolute;
+    bottom: -71%;
+    font-size: 30px;
+    font-weight: 700;
+    transition: 0.5s ease-out;
+  }
+  
+  h1 {
+    display: block;
+    font-size: 2em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  ul li {
+    position: relative;
+  }
+  
+  ul li a {
+    text-decoration: none;
+    color: inherit;
+    padding: 8px 12px;
+    display: block;
+  }
+  
+  ul li ul {
+    display: none;
+  }
+  
+  ul li:hover ul {
+    display: block;
+    width: 100vw; /* Full width */
+    left: 0; /* Align to left */
+    right: 0; /* Align to right */
+    margin: 0 auto; /* Center align */
+  }
+  
+  ul li ul li {
+    width: 100%;
+    background-color: white;
+  }
+  
+  ul li ul li a {
+    color: black;
+  }
+  
+  .flex ul li ul {
+    position: absolute;
+  }
+  .hover-underline-animation {
+    display: inline-block;
+    position: relative;
+    color: white;
+  }
+  
+  .hover-underline-animation::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+  }
+  
+  .hover-underline-animation:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+
+  @media (max-width: 768px) {
+    .custom__logo {
+    margin-top: 16px;
+    margin-left: 20px;
+    }
+    .custom__logo > img {
+      max-width: 35px;
+      max-height: 35px;
+      margin: 0 auto;
+     width: 100%;
+    }
+  
+    .custom__logo__text {
+     display: none;
+    }
+    .whatWeDoDropdown,
+    .whatWeAreDropdown {
+      width: 100%;
+    }
+  
+    .whatWeDoDropdown .grid-cols-3,
+    .whatWeAreDropdown .grid-cols-1 {
+      display: block;
+    }
+  }
