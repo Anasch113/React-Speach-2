@@ -228,7 +228,7 @@ const MeetingRecord = () => {
             onChange={(e) => setMeetingUrl(e.target.value)}
             type="text"
             placeholder="Enter Meeting URL"
-            className="px-3 py-2 border border-border-dark-color rounded-md focus:outline-none focus:border-blue-500 w-[150px]"
+            className="bg-blackGray px-3 py-2  rounded-md focus:outline-none focus:border-blue-500 w-[150px]"
           />
           <button
             onClick={() => {

@@ -124,9 +124,12 @@ function MainContent() {
 
 
   return (
-    <main className="flex-1 overflow-x-hidden overflow-y-scroll bg-bg-color-light min-h-screen ">
-      <div className="flex flex-col gap-3 mx-4 my-6 p-10 text-text-color-blue bg-white border border-border-dark-color rounded-md">
-        <p className="text-2xl pb-1 text-text-color-blue font-semibold">Welcome back!</p>
+    <main className="flex-1 overflow-x-hidden overflow-y-scroll bg-bg-color-light min-h-screen "  style={{
+        scrollbarWidth: "thin",
+        scrollbarColor: "transparent transparent",
+      }}>
+      <div className="flex flex-col gap-3 mx-4 my-6 p-10 text-white bg-blackGray   rounded-md">
+        <p className="text-2xl pb-1 text-white font-semibold">Welcome back!</p>
         <p>Captify is readying for take-off! </p>
         <div className="my-4">
           <ProgressBar />
@@ -162,7 +165,7 @@ function MainContent() {
 
 
 
-            <button disabled={isDownloadingtr} className=" hover:bg-gray-200  bg-offWhite p-4 text-text-color-blue rounded-md w-fit" onClick={downloadPdf}>
+            <button disabled={isDownloadingtr} className=" hover:bg-gray-200  bg-blackGray p-4 text-text-color-blue rounded-md w-fit" onClick={downloadPdf}>
 
               <span className="flex items-center gap-1"> <FaRegFilePdf /> {isDownloadingtr ? "Downloading..." : "Download File"}</span>
             </button>
@@ -178,7 +181,7 @@ function MainContent() {
 
       {/* live transcription */}
 
-      <div className=" flex   flex-col gap-7 mx-4 my-4 p-5 px-7 bg-white border border-gray-300 rounded-md">
+      <div className=" flex   flex-col gap-7 mx-4 my-4 p-5 px-7 bg-blackGray  rounded-md">
         <div className="flex flex-col gap-2">
           {myAudioFiles.length > 0 ? (
             myAudioFiles.map((audio, i) => (
@@ -188,7 +191,7 @@ function MainContent() {
                 </div>
                
 
-                <button disabled={isDownloading} className="  bg-offWhite hover:bg-gray-200 p-4 text-text-color-blue rounded-md w-fit" onClick={() => downloadAudio(audio.text.cloudinaryFileUrl, `video_${i}.mp4`)}>
+                <button disabled={isDownloading} className="  bg-blackGray hover:bg-gray-600 p-4 text-text-color-blue rounded-md w-fit" onClick={() => downloadAudio(audio.text.cloudinaryFileUrl, `video_${i}.mp4`)}>
 
                   <span className="flex items-center gap-1"> <p>{isDownloading ? "Downloading..." : "Download Video"}</p>  <p><IoVideocamOffSharp /></p> </span>
                 </button>

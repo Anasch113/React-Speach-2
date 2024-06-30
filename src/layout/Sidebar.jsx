@@ -251,16 +251,16 @@ function Sidebar({ isPurchase, minutes }) {
 
   return (
     <aside
-      className="w-96 px-3   max-[700px]:hidden  gray-200 bg-bg-left-bar h-full overflow-x-hidden   md:hidden lg:block xl:block 2xl:block"
+      className="w-96 px-3   max-[700px]:hidden  gray-200 bg-blackGray h-full overflow-x-hidden   md:hidden lg:block xl:block 2xl:block"
 
     >
       <div className=" p-4 py-10 text-text-blue    md:text-xl lg:text-xl xl:text-xl 2xl:text-xl font-semibold ">
-        <p>Captify</p>
+        {/* <p>Captify</p> */}
       </div>
 
 
       {/* Add your sidebar content here */}
-      <div className="flex flex-col  justify-between mx-2 p-4  bg-white  border border-border-dark-color rounded-md">
+      <div className="flex flex-col  justify-between mx-2 p-4   border border-border-dark-color rounded-md">
         {/* You can use an <img> tag with the user's profile picture as the source */}
         {/* <div className="w-10 h-10  mr-4  rounded-full overflow-hidden">
     
@@ -272,11 +272,11 @@ function Sidebar({ isPurchase, minutes }) {
         </div> */}
 
         <div className="flex  flex-col   font-poppins ">
-          <span className="text-sm text-gray-700 font-bold flex items-center px-2 gap-1"><FaRegUser size={15} />  {user.displayName} </span>
-          <span className="text-xs flex items-center p-2 gap-1  text-gray-600 font-semibold"> <MdAlternateEmail size={15} /> {user.email}</span>
+          <span className="text-sm text-white font-bold flex items-center px-2 gap-1"><FaRegUser size={15} />  {user.displayName} </span>
+          <span className="text-xs flex items-center p-2 gap-1  text-white font-semibold"> <MdAlternateEmail size={15} /> {user.email}</span>
         </div>
         <div className="flex items-center cursor-pointer">
-          <Link className="flex items-center gap-2 hover:text-gray-600" to={"/user-profile"}> <BiNavigation className="hover:text-gray-600" size={18} /><p className="">Visit</p> </Link>
+          <Link className="flex items-center gap-2 hover:text-white" to={"/user-profile"}> <BiNavigation color="white" className="hover:text-white" size={18} /><p className="text-white">Visit</p> </Link>
 
         </div>
 
@@ -286,12 +286,12 @@ function Sidebar({ isPurchase, minutes }) {
       </div>
 
 
-      <div className="flex gap-4 flex-col text-text-color-blue mt-10">
+      <div className="flex gap-4 flex-col text-white mt-10">
 
 
 
         <Link to={"/"}>
-          <div className={`mx-2 p-4 flex rounded-md ${isActive("/") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
+          <div className={`mx-2 p-4 flex rounded-md ${isActive("/") ? "bg-white text-black" : "hover:border border-white "}`}>
             <div className="mr-2 mt-1">
               <AiOutlineHome />
             </div>
@@ -301,7 +301,7 @@ function Sidebar({ isPurchase, minutes }) {
 
 
         <Link to={"/home"}>
-          <div className={`mx-2 p-4 flex rounded-md ${isActive("/home") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
+          <div className={`mx-2 p-4 flex rounded-md ${isActive("/home") ? "bg-white text-black" : "hover:border border-white "}`}>
             <div className="mr-2 mt-1">
               <LuLayoutDashboard />
             </div>
@@ -312,7 +312,7 @@ function Sidebar({ isPurchase, minutes }) {
         {
           !isLiveTranscript ? (
             <Link onClick={startLiveTranscript}>
-              <div className={`mx-2 p-4 flex rounded-md ${isActive("/notdefined") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
+              <div className={`mx-2 p-4 flex rounded-md ${isActive("/notdefined") ? "bg-white text-black" : "hover:border border-white "}`}>
                 <div className="mr-2 mt-1">
                   <AiOutlineAudio />
                 </div>
@@ -359,7 +359,7 @@ function Sidebar({ isPurchase, minutes }) {
         }
 
         <Link to={"/pre-audio-transcriptions"}>
-          <div className={`mx-2 p-4 flex rounded-md ${isActive("/pre-audio-transcriptions" || "pre-audio-transcriptions/view:id") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
+          <div className={`mx-2 p-4 flex rounded-md ${isActive("/pre-audio-transcriptions" || "pre-audio-transcriptions/view:id") ? "bg-white text-black" : "hover:border border-white "}`}>
             <div className="mr-2 mt-1">
               <MdOutlineTranscribe />
             </div>
@@ -371,7 +371,7 @@ function Sidebar({ isPurchase, minutes }) {
 
 
         <Link to={"/resyncingAi"}>
-          <div className={`mx-2 p-4 flex rounded-md ${isActive("/resyncingAi") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
+          <div className={`mx-2 p-4 flex rounded-md ${isActive("/resyncingAi") ? "bg-white text-black" : "hover:border border-white "}`}>
             <div className="mr-2 mt-1">
               <GrSync />
             </div>
@@ -389,7 +389,7 @@ function Sidebar({ isPurchase, minutes }) {
 
 
         <button onClick={handleLogout}>
-          <div className={`mx-2 p-4 flex rounded-md ${isActive("/more") ? "bg-bg-blue text-white" : "hover:bg-blue-100 "}`}>
+          <div className={`mx-2 p-4 flex rounded-md ${isActive("/more") ? "bg-white text-black" : "hover:border border-white "}`}>
             <div className="mr-2 mt-1">
               <CiLogout />
             </div>

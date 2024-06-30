@@ -10,63 +10,11 @@ import { RxOpenInNewWindow } from "react-icons/rx";
 
 const Navbar = ({isPurchase, minutes }) => {
 
-  // const [showLiveBtn, setShowLiveBtn] = useState(false)
-  // const [isTriggered, setIsTriggered] = useState(false)
-  // const [remainingTime, setRemainingTime] = useState(minutes * 60); // initial time in seconds
-  const newWindowRef = useRef(null)
-
-
-  console.log("minutes in the navbar", minutes)
-
-  // useEffect(() => {
-  //   if (isPurchase === "completed" && minutes) {
-  //     setShowLiveBtn(true);
-  //     setRemainingTime(minutes * 60); // Reset remaining time
-
-  //     const timer = setTimeout(() => {
-  //       setShowLiveBtn(false);
-  //       newWindowRef.current.close();
-  //       newWindowRef.current = null;
-  //     }, minutes * 60 * 1000);
-
-  //     return () => {
-  //       clearTimeout(timer);
-  //       if (newWindowRef.current && isTriggered) {
-  //         toast.success("Live transcriptions time ended from navbar");
-  //         newWindowRef.current.close();
-  //       }
-  //     };
-  //   }
-  // }, [isPurchase, minutes]);
-
-  // useEffect(() => {
-  //   if (remainingTime > 0) {
-  //     const interval = setInterval(() => {
-  //       setRemainingTime(prevTime => prevTime - 1);
-  //     }, 1000);
-
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [remainingTime]);
-
-  // const openLiveTranscriptWindow = () => {
-  //   setIsTriggered(true);
-  //   newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
-  //   if (newWindowRef.current) {
-  //     newWindowRef.current.focus();
-  //   }
-  // };
-
-  // const formatTime = (timeInSeconds) => {
-  //   const minutes = Math.floor(timeInSeconds / 60);
-  //   const seconds = timeInSeconds % 60;
-  //   return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  // };
 
 
 
   return (
-    <nav className="bg-white border border-border-dark-color p-4 ">
+    <nav className="bg-bg-color  p-4 ">
       <div className="container mx-auto flex justify-between items-center">
         {/* Brand/Logo */}
         <div className="md:text-xl lg:text-xl xl:text-xl 2xl:text-xl font-semibold ">
@@ -97,12 +45,12 @@ const Navbar = ({isPurchase, minutes }) => {
             <input
               type="text"
               placeholder="Search"
-              className="px-3 py-2 border border-border-dark-color rounded-md focus:outline-none "
+              className=" bg-blackGray px-3 py-2   rounded-md focus:outline-none "
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               {/* Search icon (you can use an SVG or an icon library here) */}
               <svg
-                className="h-5 w-5 text-text-gray-official"
+                className="h-5 w-5 text-white color: white;"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -120,7 +68,7 @@ const Navbar = ({isPurchase, minutes }) => {
           <MeetingRecord />
 
           {/* Import Button */}
-          <button className="bg-white text-text-blue border border-blue-500 px-4 py-2 rounded-md focus:outline-none hover:bg-blue-50 hidden md:block lg:block xl:block 2xl:block">
+          <button className="   bg-bg-purple px-4 py-2 rounded-md focus:outline-none hover:bg-purple-500 hidden md:block lg:block xl:block 2xl:block">
             Import
           </button>
         </div>

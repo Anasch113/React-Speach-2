@@ -1,3 +1,114 @@
+*{
+ 
+  scroll-behavior: smooth;
+  font-family: 'Space Grotesk';
+  
+  
+}
+html{
+  background-color: black;
+  overflow-x: hidden;
+  color: white;
+}
+.customBtn2 {
+  background: #a100ff;
+  padding: 2px 5px;
+  color: #fff;
+  font-family: Montserrat, sans-serif;
+  border: 2px solid #a100ff;
+  transition: 1s;
+  position: relative;
+  transition: ease-in;
+}
+.mt-2 {
+  margin-top: .5rem;
+}
+
+.ml-3 {
+  margin-left: .75rem;
+}
+
+.hover-underline-animation {
+  display: inline-block;
+  position: relative;
+  color: white;
+}
+
+.hover-underline-animation::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.hover-underline-animation:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+.bg-image {
+  background-image: url('./assets/background.png');
+  background-attachment: fixed;
+  background-size: cover; /* This ensures the image covers the whole background */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+  background-position: center; /* Centers the image */
+}
+@media (max-width: 1024px) {
+  .backgroundImg1 {
+      background-image: url(./assets/background1.png);
+      background-size: contain;
+      background-position: center;
+  }
+}
+.fade-in-image { animation: fadeIn 5s; }
+@keyframes fadeIn {
+0% { opacity: 0; }
+100% { opacity: 1; }
+}
+.bttnn {
+background: #a100ff;
+border-radius: 5px;
+padding: 10px 35px;
+color: #fff;
+font-family: Montserrat, sans-serif;
+border: 2px solid #a100ff;
+transition: 1s;
+position: relative;
+transition: ease-in;
+cursor: pointer;
+}
+
+.moving {
+animation: move-rt1 40s linear infinite;
+/* overflow: hidden; */
+
+}
+
+.moving:hover {
+/* float: left; */
+animation-play-state: paused;
+}
+
+@keyframes move-rt1 {
+0% {
+  transform: translateX(0);
+}
+100% {
+  transform: translateX(calc(-250px * 6));
+}
+}
+
+
+
+
+
+
+
 .small-window-container {
   position: fixed;
   top: 50px;

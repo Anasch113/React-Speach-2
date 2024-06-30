@@ -1,5 +1,6 @@
 import video from "../../assets/hero-video.mp4";
-import Wrapper from "../layout/wrapper/Wrapper";
+
+import Wrapper from "../layout/wrapper/Wrapper"
 
 const Hero = () => {
   return (

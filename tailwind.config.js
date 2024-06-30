@@ -9,15 +9,15 @@ export default {
 
       backgroundColor: {
         
-        'bg-color' : '#ffffff',
-        'bg-color-light': '#FBFBFE',
-        'offWhite' : 'hsl(216, 20%, 97%)',
+        'bg-color' : 'black',
+        'bg-color-light': 'black',
+        'blackGray' : '#1F2937',
       
-        'gray-light': '#D9D9D9',
+        'gray-light': 'black',
         "gray-dark": "#5F5F5F",
         "bg-left-bar": "#F6F8FD",
         "bg-blue": "#126fd6",
-        "bg-dark-blue" : "#05294B",
+        "bg-purple" : "#460073",
         "bg-hover-color": "#EAEAEA"
        
 

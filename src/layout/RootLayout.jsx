@@ -44,7 +44,7 @@ function RootLayout() {
   return (
     <>
 
-      <div className="w-full flex lg:flex-row h-screen bg-gray-100">
+      <div className="w-full flex lg:flex-row h-screen bg-black">
 
         <Sidebar isPurchase={isPurchase} minutes={minutes} />
 

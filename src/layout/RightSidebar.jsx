@@ -17,7 +17,7 @@ function RightSidebar() {
 
   return (
     <aside
-      className="w-96 px-2 bg-white h-full overflow-x-hidden overflow-y-scroll hidden md:block lg:block xl:block 2xl:block"
+      className="w-96 px-2 bg-bg-color h-full overflow-x-hidden overflow-y-scroll hidden md:block lg:block xl:block 2xl:block"
       style={{
         scrollbarWidth: "thin",
         scrollbarColor: "transparent transparent",
@@ -27,7 +27,7 @@ function RightSidebar() {
       <div className="m-2 pt-4 flex">
         <p className="text-xl font-semibold">Summary</p>
       </div>
-      <div className="m-2 p-4 flex bg-white  border border-border-dark-color rounded-md">
+      <div className="m-2 p-4 flex bg-blackGray  rounded-md">
       <div>
   {
     summary && summary.length > 0 ? (

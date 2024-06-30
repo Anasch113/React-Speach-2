@@ -3,7 +3,8 @@ import logo from "../../../assets/logo.png";
 import "./header.styles.css";
 import { IoIosArrowBack, IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { FaBars } from 'react-icons/fa6';
-
+import { useUserAuth } from '../../../context/UserAuthContext'
+import { useNavigate } from 'react-router-dom'
 
 const Header = () => {
     const [isWhatWeDoOpen, setIsWhatWeDoOpen] = useState(false);
@@ -11,6 +12,15 @@ const Header = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const whatWeDoRef = useRef(null);
     const whatWeAreRef = useRef(null);
+
+    const navigate = useNavigate();
+    const { user, logOut } = useUserAuth();
+
+
+    const handleLogout = async () => {
+        await logOut()
+        navigate('/')
+    }
 
     const toggleWhatWeDoDropdown = () => {
         setIsWhatWeDoOpen(prevState => !prevState);
@@ -233,6 +243,13 @@ const Header = () => {
                             <IoIosArrowDown />
                         </span>
                     </li>
+                    {
+                user &&  <a href='/home' className='cursor-pointer z-[999] '>
+
+                <button  className='hover:text-[#777] text-white '>Dashboard</button>
+              
+              </a>
+            }
                     {isWhatWeAreOpen && (
                         <ul ref={whatWeAreRef} className="absolute w-full max-w-[1980px] z-[999]  bg-[#202020] text-white   translate-y-[14.8rem] space-y-2 shadow-lg">
                             <div className='max-w-screen-2xl px-20 py-10'>
@@ -261,21 +278,47 @@ const Header = () => {
                     )}
                 </ul>
             </div>
-            <div className="hidden md:flex justify-end items-center -mt-6 gap-x-6 mr-20 z-[999]">
-                <a href="/login" className='cursor-pointer z-[999]'>
+          
+   
+            
+              
+            
+            {
+                user ? (
+                    <div className=" md:flex justify-end items-center -mt-6 gap-x-6 mr-20 ">
 
-                    <button className='hover:text-[#777] text-white '>Login</button>
+                        <a onClick={handleLogout} className='cursor-pointer z-[999]'>
 
-                </a>
-                <a href="/signup" className='cursor-pointer z-[999]'>
-                    <button className='hover:text-[#777] text-white cursor-pointer z-[999]'>Signup</button>
-                </a>
-            </div>
+                            <button className='hover:text-[#777] text-white '>Logout</button>
+
+                        </a>
+
+
+
+                    </div>
+
+
+
+                ) : (
+                    <div className="hidden md:flex justify-end items-center -mt-6 gap-x-6 mr-20 z-[999]">
+
+                        <a href="/login" className='cursor-pointer z-[999]'>
+
+                            <button className='hover:text-[#777] text-white '>Login</button>
+
+                        </a>
+                        <a href="/signup" className='cursor-pointer z-[999]'>
+                            <button className='hover:text-[#777] text-white cursor-pointer z-[999]'>Signup</button>
+                        </a>
+                    </div>
+                )
+            }
+
 
             {isMobileMenuOpen && (
-                
+
                 <div className="md:hidden h-screen bg-black z-50 pt-4 fixed top-0 overflow-y-auto  w-full  pb-5">
-                    <a href="/" className='px-4 text-sm flex items-center gap-x-1'><IoIosArrowBack  size={16} color='white'/> Back</a>
+                    <a href="/" className='px-4 text-sm flex items-center gap-x-1'><IoIosArrowBack size={16} color='white' /> Back</a>
                     <ul className="flex flex-col items-start gap-8 mt-4">
                         <li className="cursor-pointer flex items-center px-4 justify-between w-full gap-2" onClick={toggleWhatWeDoDropdown}>
                             <span>What we do</span>

@@ -33,6 +33,40 @@ import LiveTranscriptSuccess from "./SmallComponents/LiveTranscriptSuccess";
 
 
 
+// New Frontend Changes Imports
+import Main from './pages/main/Main'
+import Think from './pages/what-we-think'
+import TranscriptSummarization from './pages/transcript-summarisation-analysis'
+import RealTranscript from './pages/real-time-transcript'
+import TranscriptSyncVideo from './pages/transcript-sync-video'
+import PredictiveCase from './pages/predictive-case-analytics'
+import AutomatedLegalResearch from './pages/automated-legal-reasearch'
+import DocumentReviewPage from './pages/document-review-analysis'
+import EDiscoveryPage from './pages/e-discovery-solutions'
+import LegalRiskAssessmentPage from './pages/legal-risk-assesment'
+import VirtualLegalAssistancePage from './pages/virtual-legal-assesment'
+import JurySelectionSentimentAnalysisPage from './pages/sentiment-analysis-for-jury-selection'
+import FraudDetectionPage from './pages/fraud-detection-prevention'
+import IntellectualPropertyMonitoringPage from './pages/intellectual-property-monitoring'
+import ComplianceAutomationPage from './pages/compliance-automation'
+import LegalProcessAutomationPage from './pages/legal-process-automation'
+import LitigationStrategyOptimizationPage from './pages/litigation-strategy-optimization'
+import DataDrivenLegalInsightsPage from './pages/data-driven-legal-insights'
+import ExpertWitnessMatchingPage from './pages/expert-witness-matching'
+import PredictiveModelingPage from './pages/predictive-modeling-for-case-outcomes'
+import AIPoweredWritingPage from './pages/ai-powered-brief-memo-writing'
+import ClientCommunicationAutomationPage from './pages/client-communication-automation'
+import LitigationCostManagementPage from './pages/litigation-cost-management'
+import AiBasedSettlementAnalysisPage from './pages/ai-based-settlement-analysis'
+import ContractAnalysisManagementPage from './pages/contract-analysis-management'
+import Aboutus from './pages/about-us'
+import ContactForm from './pages/contact-us'
+import PreferenceCenter from './pages/prefrence/Preference'
+import PrivacyStatement from './pages/privacy-statement'
+import TermsAndConditions from './pages/terms-condition'
+import Header from './components/layout/header/Header'
+
+
 function App() {
 
 
@@ -41,8 +75,133 @@ function App() {
 
       <UserAuthContextProvider>
         <BrowserRouter>
+          <Header />
           <Routes>
-            <Route exact path="/" element={<Home />} />
+            {/* New Frontend pages >>>>>>>>>>>>>>>>>>>>>>>>>> */}
+            <Route path="/" element={<Main />} />
+
+            <Route
+              path="/what-we-think"
+              element={<Think />}
+            />
+
+            <Route
+              path="/transcript-summarisation-analysis"
+              element={<TranscriptSummarization />}
+            />
+            <Route
+              path="/real-time-transcript"
+              element={<RealTranscript />}
+            />
+            <Route
+              path="/transcript-synchronization-with-video"
+              element={<TranscriptSyncVideo />}
+            />
+
+            <Route
+              path="/predictive-case-analytics"
+              element={<PredictiveCase />}
+            />
+            <Route
+              path="/automated-legal-research"
+              element={<AutomatedLegalResearch />}
+            />
+            <Route
+              path="/document-review-analysis"
+              element={<DocumentReviewPage />}
+            />
+            <Route
+              path="/e-discovery-solutions"
+              element={<EDiscoveryPage />}
+            />
+            <Route
+              path="/legal-risk-assessment"
+              element={<LegalRiskAssessmentPage />}
+            />
+            <Route
+              path="/virtual-legal-assessment"
+              element={<VirtualLegalAssistancePage />}
+            />
+            <Route
+              path="/sentiment-analysis-for-jury-selection"
+              element={<JurySelectionSentimentAnalysisPage />}
+            />
+            <Route
+              path="/fraud-detection-prevention"
+              element={<FraudDetectionPage />}
+            />
+            <Route
+              path="/intellectual-property-monitoring"
+              element={<IntellectualPropertyMonitoringPage />}
+            />
+            <Route
+              path="/compliance-automation"
+              element={<ComplianceAutomationPage />}
+            />
+            <Route
+              path="/legal-process-automation"
+              element={<LegalProcessAutomationPage />}
+            />
+            <Route
+              path="/litigation-strategy-optimization"
+              element={<LitigationStrategyOptimizationPage />}
+            />
+            <Route
+              path="/data-driven-legal-insights"
+              element={<DataDrivenLegalInsightsPage />}
+            />
+            <Route
+              path="/expert-witness-matching"
+              element={<ExpertWitnessMatchingPage />}
+            />
+            <Route
+              path="/predictive-modeling-for-case-outcomes"
+              element={<PredictiveModelingPage />}
+            />
+            <Route
+              path="/ai-powered-brief-memo-writing"
+              element={<AIPoweredWritingPage />}
+            />
+            <Route
+              path="/client-communication-automation"
+              element={<ClientCommunicationAutomationPage />}
+            />
+            <Route
+              path="/litigation-cost-management"
+              element={<LitigationCostManagementPage />}
+            />
+            <Route
+              path="/ai-based-settlement-analysis"
+              element={<AiBasedSettlementAnalysisPage />}
+            />
+            <Route
+              path="/contract-analysis-management"
+              element={<ContractAnalysisManagementPage />}
+            />
+            <Route
+              path="/about-us"
+              element={<Aboutus />}
+            />
+            <Route
+              path="/contact-us"
+              element={<ContactForm />}
+            />
+            <Route
+              path="/preference"
+              element={<PreferenceCenter />}
+            />
+            <Route
+              path="/privacy"
+              element={<PrivacyStatement />}
+            />
+            <Route
+              path="/term"
+              element={<TermsAndConditions />}
+            />
+
+
+            {/* Old Application >>>>>>>>>>>>>>>>>>>>>>>>>> */}
+
             <Route exact path="/home" element={
 
               <ProtectedRoute>
@@ -119,7 +278,7 @@ function App() {
 
             />
 
-            
+
             <Route exact path="/pre-audio-transcriptions/view/:id" element={
 
               <ProtectedRoute>
@@ -145,10 +304,10 @@ function App() {
 
             />
 
-            
 
 
-           
+
+
 
             <Route exact path="/signup" element={<Signup />} />
             <Route exact path="/login" element={<Login />} />
@@ -159,7 +318,7 @@ function App() {
             <Route exact path="/credit-payment-success" element={<CreditSuccess />} />
             <Route exact path="/live-transcript-payment-success" element={<LiveTranscriptSuccess />} />
             <Route exact path="/cancel" element={<Cancel />} />
-            
+
           </Routes>
         </BrowserRouter>
         <div> <Toaster /></div>
