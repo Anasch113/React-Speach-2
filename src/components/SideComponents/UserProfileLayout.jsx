@@ -11,25 +11,23 @@ const UserProfileLayout = ({children}) => {
   return (
   
     <>
-    <div className='mb-20'>
-    <Headers/>
-    </div>
+  
      
-    <div className="flex flex-row min-h-screen w-full  text-text-color-blue overflow-x-hidden">
+    <div className="flex flex-row min-h-screen w-full   overflow-x-hidden">
       
     <div className="hidden md:flex flex-col gap-2  border-r border-[#777]/30 min-h-screen py-20 px-2">
         <NavLink to='/user-profile'
-            className={`text-text-color-blue ${isAccountActive  ? 'font-bold' : ''} py-3 px-6 rounded-md `}
+            className={` ${isAccountActive  ? 'font-bold' : ''} py-3 px-6 rounded-md `}
             >
            Account
         </NavLink>
         <NavLink to='/user-security-setting'
-            className={`text-text-color-blue py-3 px-4 rounded-md  ${isSecurity  ? 'font-bold' : ''} `}
+            className={` py-3 px-4 rounded-md  ${isSecurity  ? 'font-bold' : ''} `}
             >
           Security Settings
         </NavLink>
         <NavLink to='/user-payment-info'
-            className={`text-text-color-blue py-3 px-6 rounded-md  ${isPayment  ? 'font-bold' : ''} `}
+            className={` py-3 px-6 rounded-md  ${isPayment  ? 'font-bold' : ''} `}
             >
             Payment & Billing Info
         </NavLink>

@@ -60,21 +60,21 @@ const UserSecurity = () => {
         <UserProfileLayout>
 
 
-            <div className='w-2/3 h-[400px] flex border p-5 bg-white rounded-md'>
+            <div className='w-2/3 h-[400px] flex  p-5 bg-blackGray rounded-md'>
 
                 <div className='w-2/3 flex flex-col gap-4'>
                     <h2 className='text-xl font-medium py-3'>Pssword Reset</h2>
 
                     <span className='w-full flex justify-between items-center p-2'>
                         <label className='text-sm' htmlFor="name">Old Password</label>
-                        <input value={previousPassword} onChange={(e) => setPreviousPassword(e.target.value)} type="text" className='px-3 py-2 w-2/3  border-gray-500 border  rounded-sm outline-none' />
+                        <input value={previousPassword} onChange={(e) => setPreviousPassword(e.target.value)} type="text" className='px-3 py-2 w-2/3  bg-bg-gray-new  rounded-sm outline-none' />
                     </span>
 
                     <span className='w-full flex justify-between items-center p-2'>
 
                         <label className='text-sm' htmlFor="email">New Password</label>
                         <input value={password} onChange={(e) => setPassword(e.target.value)} type="text" className=
-                            'px-3 py-2 w-2/3  border-gray-500 border  rounded-sm outline-none' />
+                            'px-3 py-2 w-2/3  bg-bg-gray-new  rounded-sm outline-none' />
 
                     </span>
                     <span className='flex justify-end'>
@@ -82,7 +82,7 @@ const UserSecurity = () => {
                     </span>
 
                     <div className='flex items-center  py-4'>
-                        <button onClickCapture={handleUpdatePassword} className='px-5 w-2/5 py-3 bg-bg-blue text-white rounded-3xl hover:bg-blue-600'>Update Password</button>
+                        <button onClickCapture={handleUpdatePassword} className='px-5 w-2/5 py-3 bg-bg-purple text-white rounded-3xl hover:bg-purple-600-600'>Update Password</button>
                     </div>
 
                 </div>

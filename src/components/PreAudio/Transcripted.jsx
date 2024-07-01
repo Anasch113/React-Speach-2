@@ -47,7 +47,7 @@ const Transcripted = ({
 
                     <span className='flex flex-row items-center gap-2'>
                         <RxDashboard className='text-3xl' />
-                        <h1 className='text-3xl font-bold font-poppins text-text-black'> Recent Files</h1>
+                        <h1 className='text-3xl font-bold font-poppins text-white lack'> Recent Files</h1>
                     </span>
                     <div className='flex gap-2 w-2/6  justify-end'>
                         {
@@ -58,7 +58,7 @@ const Transcripted = ({
                         }
 
                         <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-3 w-60 h-16 
-rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
+rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
                                 <FaCloudUploadAlt size={25} /> <p>Transcribe Files </p>
                             </span></button>
 
@@ -96,11 +96,11 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                             {
                                 dbData && dbData.map((data, index) => (
 
-                                    <tr onClick={() => handleNavigate(data.id)} key={index} className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] flex justify-between gap-10 px-5 border-b">
+                                    <tr onClick={() => handleNavigate(data.id)} key={index} className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] flex justify-between gap-10 px-5 border-b hover:text-text-black">
 
-                                        <td className=" text-text-black font-medium text-lg px-5 py-5 ">{data.filename}</td>
+                                        <td className=" font-medium text-lg px-5 py-5 hover:text-text-black">{data.filename}</td>
                                         <span>
-                                            <td className="  w-72 text-text-black font-medium text-lg  py-5">{new Date(data.date).toLocaleString('en-US', {
+                                            <td className="  w-72  font-medium text-lg  py-5">{new Date(data.date).toLocaleString('en-US', {
                                                 year: 'numeric',
                                                 month: 'long',
                                                 day: 'numeric',
@@ -109,12 +109,12 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                                 hour12: true
                                             })}</td>
 
-                                            <td className="text-text-black font-medium text-lg px-5 py-5">
+                                            <td className=" font-medium text-lg px-5 py-5">
                                                 {`${data.audio_duration <= 60 ? `${data.audio_duration} s` : `${(data.audio_duration / 60).toFixed(1)} min`}`}
                                             </td>
 
 
-                                            <td className=" text-text-black font-medium text-lg px-5 py-5"><img className='w-6 h-6' src="/greentick.png" alt="" /></td>
+                                            <td className="  font-medium text-lg px-5 py-5"><img className='w-6 h-6' src="/greentick.png" alt="" /></td>
                                         </span>
 
 
@@ -124,10 +124,11 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                             }
                             {
                                 processing &&
-                                <tr className="font-poppins text-sm border-b  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl flex justify-between gap-10 px-5">
-                                    <td className=" text-text-black font-medium text-lg p-6">{filename}</td>
+                                <tr className="font-poppins text-sm border-b  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl flex justify-between gap-10 px-5 hover:text-text-black">
+
+                                    <td className="  font-medium text-lg p-6">{filename}</td>
                                     <span>
-                                        <td className=" text-text-black   font-medium text-lg p-6">{new Date().toLocaleString('en-US', {
+                                        <td className="    font-medium text-lg p-6">{new Date().toLocaleString('en-US', {
                                             year: 'numeric',
                                             month: 'long',
                                             day: 'numeric',
@@ -135,11 +136,11 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                             minute: 'numeric',
                                             hour12: true // 12-hour format
                                         })}</td>
-                                        <td className=" text-text-black font-medium text-lg p-6">
+                                        <td className="  font-medium text-lg p-6">
                                             {/* Always show spinner for files being processed */}
                                             {`${fileDuration} min`}
                                         </td>
-                                        <td className=" text-text-black font-medium text-lg p-6">
+                                        <td className="  font-medium text-lg p-6">
                                             {/* Always show spinner for files being processed */}
                                             <div className='spinner'></div>
                                         </td>

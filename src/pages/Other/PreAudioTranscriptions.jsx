@@ -383,13 +383,17 @@ const PreAudioTranscriptions = () => {
         setShowFormModal(false);
         setIsPaymentInProgress(false)
 
-        if (cost > 0 && cost > userBalance) {
-            toast.error("Insufficient credit, Please buy more credit ")
-            return
-        }
 
 
         try {
+
+            
+        if (cost > 0 && cost > userBalance) {
+            toast.error("Insufficient credit, Please buy more credit ")
+           
+            setProcessing(false)
+            return 
+        }
             const params = {
                 audio: cloudUrl,
                 speaker_labels: true,
@@ -517,7 +521,7 @@ const PreAudioTranscriptions = () => {
 
                 <Sidebar />
 
-                <div className='flex flex-col w-full py-5 px-10 bg-[#F7F7F7] min-h-screen overflow-x-hidden '>
+                <div className='flex flex-col w-full py-5 px-10 bg-bg-color min-h-screen overflow-x-hidden '>
 
                     {
                         reloadLoading ? <Spinner /> :
@@ -528,23 +532,23 @@ const PreAudioTranscriptions = () => {
                                 <div className='   rounded-md flex items-center flex-col  min-h-screen py-5 gap-5'>
 
 
-                                    <div className='border min-h-80 md:w-full shadow-md p-5 flex flex-col  gap-8 h-[300px] bg-white'>
+                                    <div className='rounded-sm min-h-80 md:w-full shadow-md p-5 flex flex-col  gap-8 h-[300px] bg-blackGray'>
                                         <span className='flex flex-row items-center gap-2 py-5'>
                                             <RxDashboard className='text-3xl' />
-                                            <h1 className='text-3xl font-bold font-poppins text-text-black'> Recent Files</h1>
+                                            <h1 className='text-3xl font-bold font-poppins '> Recent Files</h1>
                                         </span>
 
-                                        <h1 className='text-2xl text-center font-roboto text-text-gray-other'>Welcome to Captify!</h1>
+                                        <h1 className='text-2xl text-center font-roboto text-white'>Welcome to Captify!</h1>
 
                                         <div className='flex items-center justify-center'>
-                                        {
-                            isPaymentInProgress && <button onClick={() => setShowPaymentModal(!showPaymentModal)} className='text-center p-2 w-20 h-16 
+                                            {
+                                                isPaymentInProgress && <button onClick={() => setShowPaymentModal(!showPaymentModal)} className='text-center p-2 w-20 h-16 
                             rounded-3xl bg-purple-500 text-white text-xl font-medium font-roboto hover:bg-purple-400 '><span className='flex items-center text-center justify-center '>
-                                    <MdPayment size={25} />
-                                </span></button>
-                        }
+                                                        <MdPayment size={25} />
+                                                    </span></button>
+                                            }
                                             <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 w-2/5 h-20
-rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
+rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
                                                     <FaCloudUploadAlt size={25} /> <p>Transcribe Your File</p>
                                                 </span></button>
                                         </div>
@@ -578,24 +582,24 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
             </div>
             {showFormModal && (
                 <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 ">
-                    <div className="bg-white h-[550px] p-5 rounded-lg overflow-y-scroll">
+                    <div className="bg-bg-navy-blue h-[550px] p-5 rounded-lg overflow-y-scroll">
 
                         <div className='w-full  flex flex-row items-center justify-end  gap-10 px-5 py-5'>
 
                             <span className='flex  flex-row items-center gap-2'>
                                 <MdOutlineCloudUpload className='text-2xl' />
-                                <h1 className='text-2xl font-bold font-poppins text-text-black'> Transcribe Files</h1>
+                                <h1 className='text-2xl font-bold font-poppins text-white'> Transcribe Files</h1>
                             </span>
 
-                            <MdClose onClick={() => setShowFormModal(!showFormModal)} className='text-end w-10 h-10 cursor-pointer hover:bg-gray-300 p-2 rounded-full ' size={25} />
+                            <MdClose onClick={() => setShowFormModal(!showFormModal)} className='text-end w-10 h-10 cursor-pointer hover:bg-gray-800 p-2 rounded-full ' size={25} />
 
                         </div>
 
 
 
-                        <form onClick={handleFormClick} className='flex flex-col items-center justify-center border-2  border-blue-500 h-64 bg-[#DBDBDB]  cursor-pointer rounded-md md:w-[400px] w-72'>
+                        <form onClick={handleFormClick} className='flex flex-col items-center justify-center border-2  border-blue-500 h-64   cursor-pointer rounded-md md:w-[400px] w-72'>
                             {
-                                !file && <h1 className='text-2xl py-2 text-text-black font-medium font-roboto'>Upload Audio File</h1>
+                                !file && <h1 className='text-2xl py-2  font-medium font-roboto'>Upload Audio File</h1>
 
                             }
 
@@ -647,8 +651,8 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
                         </form>
                         <span className="flex flex-col gap-2 p-3 my-2">
-                            <label className="text-sm text-text-black"> Audio Language</label>
-                            <select className="border border-gray-300 py-3 px-4 text-sm rounded-md outline-none" name="language" id="language">
+                            <label className="text-sm "> Audio Language</label>
+                            <select className=" bg-bg-gray-new  py-3 px-4 text-sm rounded-md outline-none" name="language" id="language">
                                 <option disabled>Select Language</option>
                                 <option value="english">English</option>
                                 <option value="spanish">Spanish</option>
@@ -657,7 +661,7 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
                         </span>
                         <button disabled={!cloudUrl} onClick={handleTranscriptions} className='text-center px-5 py-4 w-full h-16
-rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
+rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
                                 <FaCloudUploadAlt size={25} /> <p>Transcribe </p>
                             </span></button>
                     </div>

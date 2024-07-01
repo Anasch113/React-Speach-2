@@ -207,14 +207,14 @@ const ViewSyncFiles = () => {
 
 
 
-              <span className='flex border p-5 w-2/3  shadow-md flex-col h-[430px] overflow-y-scroll  gap-5 py-5 rounded-md bg-white '>
+              <span className='flex  p-5 w-2/3  shadow-md flex-col h-[430px] overflow-y-scroll  gap-5 py-5 rounded-md bg-bg-navy-blue '>
 
                 <span className='flex flex-row  gap-2'>
 
-                  <span className='text-2xl flex gap-3 font-bold font-poppins text-text-black'> ReSyncing <p>{dbTranscript.audioFilename} + {dbTranscript.transcriptFilename} </p>  </span>
+                  <span className='text-2xl flex gap-3 font-bold font-poppins '> ReSyncing <p>{dbTranscript.audioFilename} + {dbTranscript.transcriptFilename} </p>  </span>
                 </span>
 
-                <div className='text-gray-600 font-roboto'>
+                <div className=' font-roboto'>
 
                   {
                     <div className='w-full' >
@@ -229,7 +229,7 @@ const ViewSyncFiles = () => {
                                 // Check if words.value is not an empty string
                                 words.value.trim() !== "" && (
                                   <div className='' key={j}>
-                                    <p className='flex gap-3' style={{ color: j === wordsIndex ? '#f1b900' : 'black' }}>
+                                    <p className='flex gap-3' style={{ color: j === wordsIndex ? '#f1b900' : 'white' }}>
                                       {words.value}
                                       {(j + 1) % 12 === 0 && (
                                         <span>( {data.elements[j - 6].ts} -- {words.end_ts} )</span>
@@ -256,24 +256,24 @@ const ViewSyncFiles = () => {
               </span>
 
 
-              <div className='w-60 bg-white h-[430px] py-5  flex items-center justify-center shadow-md  border overflow-y-scroll rounded-md '>
+              <div className='w-60 bg-bg-navy-blue h-[430px] py-5  flex items-center justify-center shadow-md   rounded-md '>
 
                 <div className='flex px-3  items-start h-full  w-full flex-col '>
-                  <h2 className='text-lg font-semibold text-text-black my-4 mt-5'>Export</h2>
+                  <h2 className='text-lg font-semibold  my-4 mt-5'>Export</h2>
 
 
 
                   <div className='flex flex-col items-start justify-center gap-2'>
 
-                    <button onClick={downloadSrtFile} className=' w-full hover:bg-bg-hover-color rounded-md p-4'>
-                      <span className='flex items-center text-text-black  gap-2 '>
+                    <button onClick={downloadSrtFile} className=' w-full hover:bg-bg-hover-color hover:text-black rounded-md p-4'>
+                      <span className='flex items-center   gap-2 '>
                         <LuSubtitles size={25} />
                         Download SRT
                       </span>
 
                     </button>
 
-                    <span onClick={() => setShowDeleteModal(true)} className='hover:bg-bg-hover-color rounded-md w-full p-4 flex items-center gap-3 cursor-pointer mb-2'>
+                    <span onClick={() => setShowDeleteModal(true)} className='hover:bg-bg-hover-color hover:text-black rounded-md w-full p-4 flex items-center gap-3 cursor-pointer mb-2'>
                       <RiDeleteBin6Line size={25} /> Delete File
                     </span>
 
@@ -289,8 +289,8 @@ const ViewSyncFiles = () => {
               showDeleteModal && <DeleteModal deleteTranscript={deleteTranscription} setShowDeleteModal={setShowDeleteModal} filename={dbTranscript.audioFilename} />
             }
 
-            <div className='w-full bg-white p-5 items-center  mt-20 flex flex-col  gap-2 rounded-md'>
-              <p className='text-center font-semibold text-text-black font-poppins'> {dbTranscript.audioFilename} </p>
+            <div className='w-full bg-bg-navy-blue p-5 items-center  mt-20 flex flex-col  gap-2 rounded-md'>
+              <p className='text-center font-semibold  font-poppins'> {dbTranscript.audioFilename} </p>
               {
                 dbTranscript && <div className='w-full flex items-center justify-center self-end'>
 

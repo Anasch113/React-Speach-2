@@ -76,7 +76,7 @@ const CreditInfo = () => {
 
 
 
-            <div className='bg-white md:w-full p-5 rounded-lg border'>
+            <div className='bg-blackGray md:w-full p-5 rounded-lg border'>
                 <p className='text-2xl py-2'>Credit Info</p>
 
                 <div className='flex flex-col gap-3 px-2 py-5'>
@@ -90,17 +90,17 @@ const CreditInfo = () => {
                     <span className='flex flex-row gap-2 my-1'>
 
                         <span className='flex flex-col justify-between items-start gap-1'>
-                            <label className='text-gray-500 text-center font-medium  font-poppins'>Amount of Minutes* </label>
+                            <label className=' text-center font-medium  font-poppins'>Amount of Minutes* </label>
                             <input type='number' value={minutes}
-                                onChange={handleMinutesChange} className='text-gray-500  font-medium  font-poppins p-2 border border-gray-500 rounded-sm'></input>
+                                onChange={handleMinutesChange} className='bg-bg-gray-new  font-medium  font-poppins p-2 rounded-sm'></input>
 
                         </span>
 
                         <span className='flex flex-col justify-between items-start gap-1'>
 
-                            <label className='text-gray-500 text-center font-medium  font-poppins'>Total* </label>
+                            <label className='0 text-center font-medium  font-poppins'>Total* </label>
                             <input type='text' value={`${total}$`}
-                                readOnly placeholder='20$' className='text-gray-500  font-medium  font-poppins p-2 border border-gray-500 rounded-sm text-center' ></input>
+                                readOnly placeholder='20$' className='  font-medium  font-poppins p-2 bg-bg-gray-new rounded-sm text-center' ></input>
                         </span>
 
                     </span>
@@ -111,7 +111,7 @@ const CreditInfo = () => {
 
                 {/* Buy Credit Button */}
                 <button onClick={() => handlePaymentOptions(total, "credit-method")} className='text-center px-5 py-3 w-2/4 h-14
-rounded-md bg-purple-500 text-white text-xl font-medium font-roboto hover:bg-purple-400 mb-2 '><span className='flex items-center text-center justify-center gap-2 '>
+rounded-md bg-bg-purple-2 text-white text-xl font-medium font-roboto hover:bg-purple-500 mb-2 '><span className='flex items-center text-center justify-center gap-2 '>
                         <MdPayment size={25} /> <p>Purchase </p>
                     </span></button>
 

@@ -14,12 +14,12 @@ const PlanDetails = () => {
 
             {
                 paymentInfo.length === 0 ? (
-                    <div className='bg-white md:w-full p-5 rounded-lg border flex items-center justify-center flex-col'>
+                    <div className='bg-blackGray border md:w-full p-5 rounded-lg  flex items-center justify-center flex-col'>
                         <img  className='w-56 h-56' src="/noplan.png" alt="" />
                         <p className='font-medium text-lg'>No plan Activated</p>
                     </div>
                 ) : (
-                <div className='bg-white md:w-full p-5 rounded-lg border'>
+                <div className='bg-bg-navy-blue md:w-full p-5 rounded-lg border'>
                     <p className='text-2xl py-2'>Plan Type: {paymentInfo.planType}</p>
 
                     <div className='flex flex-col gap-3 px-2 py-5'>

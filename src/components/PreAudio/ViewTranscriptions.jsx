@@ -325,14 +325,14 @@ const ViewTranscriptions = ({ filename }) => {
 
 
 
-              <span className='flex border p-5 w-2/3  shadow-md flex-col h-[430px] overflow-y-scroll  gap-5 py-5 rounded-md bg-white '>
+              <span className='flex  p-5 w-2/3  shadow-md flex-col h-[430px] overflow-y-scroll  gap-5 py-5 rounded-md bg-bg-navy-blue '>
 
                 <span className='flex flex-row  gap-2'>
 
-                  <h1 className='text-3xl flex gap-3 font-bold font-poppins text-text-black'> {isEdit && <p>Edit</p>} {transcriptions && transcriptions.filename}</h1>
+                  <h1 className='text-3xl flex gap-3 font-bold font-poppins '> {isEdit && <p>Edit</p>} {transcriptions && transcriptions.filename}</h1>
                 </span>
-                {isEdit && <p className='text-sm flex items-center gap-1 text-gray-500'><TiPencil /> Double tap on text to edit</p>}
-                <div className='text-gray-600 font-roboto'>
+                {isEdit && <p className='text-sm flex items-center gap-1 '><TiPencil /> Double tap on text to edit</p>}
+                <div className=' font-roboto'>
 
                   {
                     <div ref={contentRef}>
@@ -354,9 +354,9 @@ const ViewTranscriptions = ({ filename }) => {
                                 </div>
                               )}
                               <span className="flex gap-2">
-                                {utterance && <p className=''>{`Speaker: ${utterance.speaker}`}</p>}
+                                {utterance && <p className='font-lg font-bold'>{`Speaker ${utterance.speaker} :`}</p>}
                                 <p
-                                  style={{ color: i === wordsIndex ? '#f1b900' : 'black' }}
+                                  style={{ color: i === wordsIndex ? '#f1b900' : 'white' }}
                                   className={`${isEdit ? "hover:text-blue-500 hover:cursor-pointer" : ""}`}
                                   onClick={() => isEdit && handleTextClick(sentiment.text, i)}
                                 >
@@ -386,43 +386,43 @@ const ViewTranscriptions = ({ filename }) => {
               </span>
 
 
-              <div className='w-60 bg-white h-[430px] py-5  flex items-center justify-center shadow-md  border overflow-y-scroll rounded-md '>
+              <div className='w-60 bg-bg-navy-blue h-[430px] py-5  flex items-center justify-center shadow-md   overflow-y-scroll rounded-md '>
 
                 <div className='flex px-3  items-start h-full  w-full flex-col '>
-                  <h2 className='text-lg font-semibold text-text-black my-4 mt-5'>Export</h2>
+                  <h2 className='text-lg font-semibold  my-4 mt-5'>Export</h2>
 
                   <div className='flex flex-col items-center justify-center gap-2'>
 
-                    <button onClick={downloadPdf} className=' hover:bg-bg-hover-color rounded-md p-4'>
-                      <span className='flex items-center text-text-black    gap-2'>
+                    <button onClick={downloadPdf} className=' hover:bg-bg-hover-color hover:text-black rounded-md p-4'>
+                      <span className='flex items-center     gap-2'>
                         <FaRegFilePdf size={25} />
                         Download PDF
                       </span>
 
                     </button>
-                    <button onClick={downloadTxt} className=' hover:bg-bg-hover-color rounded-md p-4'>
-                      <span className='flex items-center text-text-black  gap-2 '>
+                    <button onClick={downloadTxt} className=' hover:bg-bg-hover-color hover:text-black rounded-md p-4'>
+                      <span className='flex items-center   gap-2 '>
                         <BsFiletypeTxt size={25} />
                         Download TXT
                       </span>
 
                     </button>
-                    <button className=' hover:bg-bg-hover-color rounded-md p-4'>
-                      <span className='flex items-center text-text-black  gap-2 '>
+                    <button className=' hover:bg-bg-hover-color hover:text-black rounded-md p-4'>
+                      <span className='flex items-center   gap-2 '>
                         <BsFiletypeDocx size={25} />
                         Download DOCX
                       </span>
 
                     </button>
-                    <button onClick={downloadSrtFile} className=' hover:bg-bg-hover-color rounded-md p-4'>
-                      <span className='flex items-center text-text-black  gap-2 '>
+                    <button onClick={downloadSrtFile} className=' hover:bg-bg-hover-color hover:text-black rounded-md p-4'>
+                      <span className='flex items-center   gap-2 '>
                         <LuSubtitles size={25} />
                         Download SRT
                       </span>
 
                     </button>
                     <div className='flex self-start'>
-                      <h2 className='text-lg font-semibold text-text-black'>More</h2>
+                      <h2 className='text-lg font-semibold '>More</h2>
                     </div>
 
                     <label className="inline-flex items-center my-2">
@@ -436,19 +436,19 @@ const ViewTranscriptions = ({ filename }) => {
                     </label>
 
 
-                    <span onClick={() => setIsEdit(!isEdit)} className=' flex items-center gap-2 cursor-pointer hover:bg-bg-hover-color rounded-md p-4'>
+                    <span onClick={() => setIsEdit(!isEdit)} className=' flex items-center gap-2 cursor-pointer hover:bg-bg-hover-color hover:text-black rounded-md p-4'>
                       <MdOutlineModeEditOutline size={25} /> {isEdit ? <p>Done Editing</p> : <p>Edit Transcript</p>}
                     </span>
 
-                    <span onClick={downloadAudio} className='hover:bg-bg-hover-color rounded-md p-4 flex items-center gap-2 cursor-pointer'>
+                    <span onClick={downloadAudio} className='hover:bg-bg-hover-color hover:text-black rounded-md p-4 flex items-center gap-2 cursor-pointer'>
                       <MdOutlineCloudUpload size={25} />  {!isAudioDownloading ? <p>Download Audio</p> : <p>Downloading...</p>}
                     </span>
 
-                    <span onClick={generateShareLink} className='hover:bg-bg-hover-color rounded-md p-4 flex items-center gap-3 cursor-pointer mb-2'>
+                    <span onClick={generateShareLink} className='hover:bg-bg-hover-color hover:text-black rounded-md p-4 flex items-center gap-3 cursor-pointer mb-2'>
                       <RiShareForwardLine size={25} /> Share Transcript
                     </span>
 
-                    <span onClick={() => setShowDeleteModal(true)} className='hover:bg-bg-hover-color rounded-md p-4 flex items-center gap-3 cursor-pointer mb-2'>
+                    <span onClick={() => setShowDeleteModal(true)} className='hover:bg-bg-hover-color hover:text-black rounded-md p-4 flex items-center gap-3 cursor-pointer mb-2'>
                       <RiDeleteBin6Line size={25} /> Delete File
                     </span>
 
@@ -470,8 +470,8 @@ const ViewTranscriptions = ({ filename }) => {
             </div>
 
 
-            <div className='w-full bg-white p-5 items-center  mt-20 flex flex-col  gap-2 rounded-md'>
-              <p className='text-center font-semibold text-text-black font-poppins'>{transcriptions.filename}</p>
+            <div className='w-full bg-bg-navy-blue p-5 items-center  mt-20 flex flex-col  gap-2 rounded-md'>
+              <p className='text-center font-semibold  font-poppins'>{transcriptions.filename}</p>
               {
                 transcriptions && <div className='w-full flex items-center justify-center self-end'>
 

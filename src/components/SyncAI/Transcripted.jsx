@@ -54,7 +54,7 @@ const Transcripted = ({
 
                     <span className='flex flex-row items-center gap-2'>
                         <RxDashboard className='text-3xl' />
-                        <h1 className='text-3xl font-bold font-poppins text-text-black'> Recent Files</h1>
+                        <h1 className='text-3xl font-bold font-poppins '> Recent Files</h1>
                     </span>
                     <div className='flex gap-2 w-2/6  justify-end'>
                         {
@@ -65,7 +65,7 @@ const Transcripted = ({
                         }
 
                         <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-3 w-60 h-16 
-rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
+rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
                                 <FaCloudUploadAlt size={25} /> <p>Transcribe Files </p>
                             </span></button>
 
@@ -98,19 +98,19 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
                             {
                                 dbData && dbData.map((file, i) => (
-                                    <tr key={i} onClick={() => handleNavigate(file._id)} className="font-poppins   cursor-pointer hover:bg-[#EDEDED]   flex justify-between gap-10 px-5 border-b">
+                                    <tr key={i} onClick={() => handleNavigate(file._id)} className="font-poppins   cursor-pointer hover:bg-[#EDEDED] hover:text-black   flex justify-between gap-10 px-5 border-b">
 
-                                        <td className="flex-1 text-text-black font-medium  py-5 "> {file.audioFilename}</td>
+                                        <td className="flex-1  font-medium  py-5 "> {file.audioFilename}</td>
                                         {/* You can set date and duration as needed for the files from props */}
-                                        <td className=" text-text-black font-medium  py-5 ">{file.transcriptFilename}</td>
+                                        <td className="  font-medium  py-5 ">{file.transcriptFilename}</td>
 
                                         <span className='flex gap-5'>
 
-                                            <td className=" text-text-black font-medium  py-5">
+                                            <td className="  font-medium  py-5">
 
                                                 Resync
                                             </td>
-                                            <td className=" text-text-black font-medium py-5">
+                                            <td className="  font-medium py-5">
 
                                                 <img className='w-6 h-6' src="/greentick.png" alt="" />
                                             </td>
@@ -123,15 +123,15 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                                 isTranscriptions &&
                                 <tr className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl  py-3">
 
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{file && file.audio}</td>
+                                    <td className="  font-medium text-lg px-20 py-2">{file && file.audio}</td>
 
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">{file && file.transcript}</td>
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">
+                                    <td className="  font-medium text-lg px-20 py-2">{file && file.transcript}</td>
+                                    <td className="  font-medium text-lg px-20 py-2">
 
                                         Resync
                                     </td>
 
-                                    <td className=" text-text-black font-medium text-lg px-20 py-2">
+                                    <td className="  font-medium text-lg px-20 py-2">
 
                                         {processing ? <div className='spinner'></div> : "Completed"}
                                     </td>

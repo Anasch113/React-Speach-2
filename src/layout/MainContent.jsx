@@ -138,7 +138,7 @@ function MainContent() {
     
     
 
-      <div className="flex px-7 py-4  gap-4 text-text-gray-official   max-[500px]:gap-1 max-[500px]:flex-col max-[500px]:items-start">
+      <div className="flex px-7 py-4  gap-4 t   max-[500px]:gap-1 max-[500px]:flex-col max-[500px]:items-start">
         <span className="flex gap-2 items-center text-2xl font-semibold ">
 
           <p>{formatDate(currentDateTime)}</p>

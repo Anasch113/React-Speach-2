@@ -519,6 +519,7 @@ const SyncAiPage = () => {
 
         if (cost > 0 && cost > userBalance) {
             toast.error("Insufficient credit, Please buy more credit ")
+            setProcessing(false)
             return
         }
 
@@ -778,7 +779,7 @@ const SyncAiPage = () => {
 
 
 
-                    <div className='flex flex-col w-full py-5 px-10 bg-[#F7F7F7] min-h-screen overflow-x-hidden '>
+                    <div className='flex flex-col w-full py-5 px-10 bg-bg-color min-h-screen overflow-x-hidden '>
 
                         {
                             reloadLoading ? <Spinner /> :
@@ -788,13 +789,13 @@ const SyncAiPage = () => {
                                     <div className='   rounded-md flex items-center flex-col  min-h-screen py-5 gap-5'>
 
 
-                                        <div className='border min-h-80 md:w-full shadow-md p-5 flex flex-col  gap-8 h-[300px] bg-white'>
+                                        <div className=' rounded-sm min-h-80 md:w-full shadow-md p-5 flex flex-col  gap-8 h-[300px] bg-blackGray'>
                                             <span className='flex flex-row items-center gap-2 py-5'>
                                                 <RxDashboard className='text-3xl' />
-                                                <h1 className='text-3xl font-bold font-poppins text-text-black'> Recent Files</h1>
+                                                <h1 className='text-3xl font-bold font-poppins '> Recent Files</h1>
                                             </span>
 
-                                            <h1 className='text-2xl text-center font-roboto text-text-gray-other'>Welcome to Captify!</h1>
+                                            <h1 className='text-2xl text-center font-roboto'>Welcome to Captify!</h1>
 
                                             <div className='flex items-center justify-center'>
                                                 {
@@ -805,7 +806,7 @@ const SyncAiPage = () => {
                                                 }
 
                                                 <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 w-2/5 h-20
-rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '><span className='flex items-center text-center justify-center gap-2'>
+rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500-500 '><span className='flex items-center text-center justify-center gap-2'>
                                                         <GrSync size={20} /> <p>Resyncing Ai</p>
                                                     </span></button>
                                             </div>
@@ -843,18 +844,18 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                 <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 ">
 
 
-                    <div className=" flex items-center flex-col bg-white min-h-[500px] max-h-[600px] p-5 rounded-lg  md:w-[700px] gap-5">
+                    <div className=" flex items-center flex-col bg-bg-navy-blue min-h-[500px] max-h-[600px] p-5 rounded-lg  md:w-[700px] gap-5">
 
                         <div className='w-full justify-between  flex flex-row  px-5   py-5'>
 
 
                             <span className='flex flex-1  flex-row items-center justify-center gap-2'>
                                 <MdOutlineCloudUpload className='text-2xl' />
-                                <h1 className='text-2xl font-bold font-poppins text-text-black'> Upload Files</h1>
+                                <h1 className='text-2xl font-bold font-poppins '> Upload Files</h1>
                             </span>
                             <div className='ml-auto'>
 
-                                <MdClose onClick={() => setShowFormModal(!showFormModal)} className='text-end w-10 h-10 cursor-pointer hover:bg-gray-300 p-2 rounded-full ' size={25} />
+                                <MdClose onClick={() => setShowFormModal(!showFormModal)} className='text-end w-10 h-10 cursor-pointer hover:bg-gray-900 p-2 rounded-full ' size={25} />
                             </div>
 
                         </div>
@@ -870,10 +871,10 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
 
 
-                            <form onClick={handleInputClick2} className='flex flex-col items-center justify-center    h-36   cursor-pointer rounded-md md:w-[400px] w-52 mb-10 bg-offWhite px-4'>
+                            <form onClick={handleInputClick2} className='flex flex-col items-center justify-center    h-36   cursor-pointer rounded-md md:w-[400px] w-52 mb-10 bg-offWhite px-4 bg-blackGray'>
                                 {
                                     !file.transcript && <div className='flex flex-col items-center gap-1 py-3 px-2'>
-                                        <h1 className='text-xl py-1 text-text-black font-medium font-roboto text-center'>Upload Text File</h1>
+                                        <h1 className='text-xl py-1  font-medium font-roboto text-center'>Upload Text File</h1>
                                         <FiFileText color='#1475cf' size={30} />
                                     </div>
                                 }
@@ -916,10 +917,10 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
                             </form>
 
                             {/* 1st Form */}
-                            <form onClick={handleInputClick} className='flex flex-col items-center justify-center    h-36   cursor-pointer rounded-md md:w-[400px] w-52 mb-10 bg-offWhite px-4 py-4'>
+                            <form onClick={handleInputClick} className='flex flex-col items-center justify-center    h-36   cursor-pointer rounded-md md:w-[400px] w-52 mb-10 bg-offWhite px-4 py-4 bg-blackGray'>
                                 {
                                     !file.audio && <div className='flex flex-col items-center gap-1 py-3 px-2'>
-                                        <h1 className='text-xl py-1 text-text-black font-medium font-roboto text-center'>Upload Audio file</h1>
+                                        <h1 className='text-xl py-1  font-medium font-roboto text-center'>Upload Audio file</h1>
                                         <LuFileAudio color='#1475cf' size={30} />
                                     </div>
                                 }
@@ -970,7 +971,7 @@ rounded-md bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-5
 
                         </div>
                         <button disabled={!cloudUrl.audio && !cloudUrl.transcript} onClick={hanldeSync}
-                            className='text-center px-5 py-4 w-2/4 h-16 rounded-full bg-bg-blue text-white text-xl font-medium font-roboto hover:bg-blue-500 '>
+                            className='text-center px-5 py-4 w-2/4 h-16 rounded-md bg-bg-purple-2 text-white text-xl font-medium font-roboto hover:bg-bg-purple-500 '>
 
                             <span className='flex items-center text-center justify-center gap-2'>
                                 <GrSync size={25} />

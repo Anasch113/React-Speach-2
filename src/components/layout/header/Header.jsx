@@ -196,25 +196,37 @@ const Header = () => {
 
                 </div>
             </div>
+
             <div className='md:block hidden'>
                 <ul className="flex relative justify-center items-center gap-x-6 mt-8">
-                    <li className="cursor-pointer flex items-center gap-x-2 hover:text-[#777]" onClick={toggleWhatWeDoDropdown}>
+                    {
+                        !user &&  <li className="cursor-pointer flex items-center gap-x-2 hover:text-[#777]" onClick={toggleWhatWeDoDropdown}>
                         <span>
                             What we do
                         </span>
+
                         <span className=''>
                             <IoIosArrowDown />
                         </span>
                     </li>
+                    }
+
+                   
+
+
                     {isWhatWeDoOpen && (
                         <ul ref={whatWeDoRef} className="absolute z-[999] w-full ease-in duration-200 transition-all  bg-[#202020] text-white   translate-y-[19.8rem] space-y-2 shadow-lg">
                             <div className='max-w-screen-2xl px-20 py-10'>
                                 <div>
+
                                     <h1 className='flex items-center gap-5 cursor-pointer    '>
+
                                         <span className='hover-underline-animation'>
                                             What we do
                                         </span>
                                         <IoIosArrowForward size={20} className='bg-purple-600 w-8 h-5 p-[2px]' /></h1>
+
+
                                     <p className='mb-7 text-[#777]'>Services</p>
                                     <div className='grid grid-cols-3'>
                                         {
@@ -232,24 +244,33 @@ const Header = () => {
                             </div>
                         </ul>
                     )}
-                    <a href={'/what-we-think'} className='hover:text-[#777] cursor-pointer'>
+                    {
+                        !user &&    <a href={'/what-we-think'} className='hover:text-[#777] cursor-pointer'>
                         What we think
                     </a>
-                    <li className="relative cursor-pointer flex items-center gap-x-2 hover:text-[#777]" onClick={toggleWhatWeAreDropdown}>
-                        <span className=''>
-                            What are we
-                        </span>
-                        <span className=''>
-                            <IoIosArrowDown />
-                        </span>
-                    </li>
-                    {
-                user &&  <a href='/home' className='cursor-pointer z-[999] '>
+                    }
 
-                <button  className='hover:text-[#777] text-white '>Dashboard</button>
-              
-              </a>
-            }
+                 
+{
+    !user &&   <li className="relative cursor-pointer flex items-center gap-x-2 hover:text-[#777]" onClick={toggleWhatWeAreDropdown}>
+    <span className=''>
+        What are we
+    </span>
+    <span className=''>
+        <IoIosArrowDown />
+    </span>
+</li>
+}
+                  
+
+
+                    {
+                        user && <a href='/home' className='cursor-pointer z-[999] '>
+
+                            <button className='hover:text-[#777] text-white '>Dashboard</button>
+
+                        </a>
+                    }
                     {isWhatWeAreOpen && (
                         <ul ref={whatWeAreRef} className="absolute w-full max-w-[1980px] z-[999]  bg-[#202020] text-white   translate-y-[14.8rem] space-y-2 shadow-lg">
                             <div className='max-w-screen-2xl px-20 py-10'>
@@ -278,11 +299,12 @@ const Header = () => {
                     )}
                 </ul>
             </div>
-          
-   
-            
-              
-            
+
+
+
+
+
+
             {
                 user ? (
                     <div className=" md:flex justify-end items-center -mt-6 gap-x-6 mr-20 ">
