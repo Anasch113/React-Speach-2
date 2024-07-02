@@ -17,7 +17,7 @@ function RightSidebar() {
 
   return (
     <aside
-      className="w-96 px-2 bg-bg-color h-full overflow-x-hidden overflow-y-scroll hidden md:block lg:block xl:block 2xl:block"
+      className="md:w-96  px-2 bg-bg-color h-full overflow-x-hidden overflow-y-scroll  md:block lg:block xl:block 2xl:block"
       style={{
         scrollbarWidth: "thin",
         scrollbarColor: "transparent transparent",
@@ -28,19 +28,19 @@ function RightSidebar() {
         <p className="text-xl font-semibold">Summary</p>
       </div>
       <div className="m-2 p-4 flex bg-blackGray  rounded-md">
-      <div>
-  {
-    summary && summary.length > 0 ? (
-      summary.map((sum, i) => (
-        <div key={i}>
-          <p>{sum.summary}</p>
+        <div>
+          {
+            summary && summary.length > 0 ? (
+              summary.map((sum, i) => (
+                <div key={i}>
+                  <p>{sum.summary}</p>
+                </div>
+              ))
+            ) : (
+              <p>There is no summary</p>
+            )
+          }
         </div>
-      ))
-    ) : (
-      <p>There is no summary</p>
-    )
-  }
-</div>
       </div>
 
     </aside>

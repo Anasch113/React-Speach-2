@@ -35,7 +35,7 @@ const PaymentOptions = ({
 
                     <span className='flex flex-1  flex-row items-center gap-2'>
                         {/* <MdOutlinePaid className='text-2xl' /> */}
-                        <h1 className='text-2xl font-semibold font-poppins '> Billing </h1>
+                        <h1 className='md:text-2xl font-semibold font-poppins '> Billing </h1>
                     </span>
 
                     <MdClose onClick={() => setShowPaymentModal(false)} className='text-end w-10 h-10 cursor-pointer hover:bg-gray-800 p-2 rounded-full ' size={25} />
@@ -47,7 +47,7 @@ const PaymentOptions = ({
 
 
 
-               
+
 
 
                 {/* Direct Payment Method */}
@@ -83,7 +83,7 @@ rounded-md bg-purple-500 text-white text-xl font-medium font-roboto hover:bg-pur
 rounded-md bg-purple-500 text-white text-xl font-medium font-roboto hover:bg-purple-400 mb-2 '><span className='flex items-center text-center justify-center gap-2'>
                             <MdPayment size={25} /> <p>Direct Pay </p>
                         </span></button>
-                      
+
                 </div>
             </div>
         </div>

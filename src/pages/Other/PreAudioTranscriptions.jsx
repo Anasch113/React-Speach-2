@@ -387,13 +387,13 @@ const PreAudioTranscriptions = () => {
 
         try {
 
-            
-        if (cost > 0 && cost > userBalance) {
-            toast.error("Insufficient credit, Please buy more credit ")
-           
-            setProcessing(false)
-            return 
-        }
+
+            if (cost > 0 && cost > userBalance) {
+                toast.error("Insufficient credit, Please buy more credit ")
+
+                setProcessing(false)
+                return
+            }
             const params = {
                 audio: cloudUrl,
                 speaker_labels: true,
@@ -521,7 +521,7 @@ const PreAudioTranscriptions = () => {
 
                 <Sidebar />
 
-                <div className='flex flex-col w-full py-5 px-10 bg-bg-color min-h-screen overflow-x-hidden '>
+                <div className='flex flex-col w-full py-3 px-1 md:py-5 md:px-10 bg-bg-color min-h-screen overflow-x-hidden '>
 
                     {
                         reloadLoading ? <Spinner /> :
@@ -582,13 +582,13 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
             </div>
             {showFormModal && (
                 <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 ">
-                    <div className="bg-bg-navy-blue h-[550px] p-5 rounded-lg overflow-y-scroll">
+                    <div className="bg-bg-navy-blue md:h-[550px] p-5 rounded-lg overflow-y-scroll ">
 
                         <div className='w-full  flex flex-row items-center justify-end  gap-10 px-5 py-5'>
 
                             <span className='flex  flex-row items-center gap-2'>
-                                <MdOutlineCloudUpload className='text-2xl' />
-                                <h1 className='text-2xl font-bold font-poppins text-white'> Transcribe Files</h1>
+                                <MdOutlineCloudUpload className='md:text-2xl' />
+                                <h1 className='md:text-2xl font-bold font-poppins text-white'> Transcribe Files</h1>
                             </span>
 
                             <MdClose onClick={() => setShowFormModal(!showFormModal)} className='text-end w-10 h-10 cursor-pointer hover:bg-gray-800 p-2 rounded-full ' size={25} />

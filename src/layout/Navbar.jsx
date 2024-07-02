@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { RxOpenInNewWindow } from "react-icons/rx";
 
 
-const Navbar = ({isPurchase, minutes }) => {
+const Navbar = ({ isPurchase, minutes }) => {
 
 
 
@@ -17,27 +17,12 @@ const Navbar = ({isPurchase, minutes }) => {
     <nav className="bg-bg-color  p-4 ">
       <div className="container mx-auto flex justify-between items-center">
         {/* Brand/Logo */}
-        <div className="md:text-xl lg:text-xl xl:text-xl 2xl:text-xl font-semibold ">
-        Getting Started
+        <div className="md:text-xl text-sm md:block hidden lg:text-xl xl:text-xl 2xl:text-xl font-semibold ">
+          Getting Started
         </div>
 
         {/* Search Input */}
         <div className="flex items-center space-x-4">
-          {/* {
-            showLiveBtn && <div className="flex items-center gap-2">
-
-              <div className="font-semibold mx-2 font-poppins text-gray-500">
-                {remainingTime > 0 && (
-                  <p>Remaining Time: {formatTime(remainingTime)}</p>
-                )}
-              </div>
-
-              <button onClick={openLiveTranscriptWindow} className='text-center p-2 w-10 h-10 
-                            rounded-full bg-blue-500 text-white text-xl font-medium font-roboto hover:bg-blue-400 '><span className='flex items-center text-center justify-center '>
-                  <RxOpenInNewWindow size={17} />
-                </span></button>
-            </div>
-          } */}
 
 
 

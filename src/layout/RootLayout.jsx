@@ -37,14 +37,14 @@ function RootLayout() {
   }, [isPurchaseFromLocation, minutesFromLocation])
 
 
-  
+
 
 
 
   return (
     <>
 
-      <div className="w-full flex lg:flex-row h-screen bg-black">
+      <div className="w-full flex lg:flex-row min-h-screen bg-black overflow-x-hidden">
 
         <Sidebar isPurchase={isPurchase} minutes={minutes} />
 
@@ -53,7 +53,7 @@ function RootLayout() {
 
           <Navbar isPurchase={isPurchase} minutes={minutes} />
 
-          <div className="flex w-full">
+          <div className="flex w-full md:flex-row flex-col">
             <MainContent />
             <RightSidebar />
           </div>

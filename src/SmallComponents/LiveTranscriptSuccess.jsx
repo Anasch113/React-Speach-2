@@ -140,11 +140,11 @@ const LiveTranscriptSuccess = () => {
 
 
     return (
-        <div className='flex w-full min-h-screen items-center justify-center bg-white flex-col'>
-            <p className='text-text-blue text-center font-bold  text-xl md:text-3xl font-poppins'>Thank you for your purchase!</p>
+        <div className='flex w-full min-h-screen items-center justify-center bg-bg-color flex-col'>
+            <p className='text-white text-center font-bold  text-xl md:text-3xl font-poppins'>Thank you for your purchase!</p>
             <button
                 onClick={handleContinueTranscription}
-                className={`min-w[556px] text-center  hover:bg-blue-400 uppercase cursor-pointer bg-blue-500  text-white text-xl my-16 px-3 py-3 rounded ${!isOk ? 'pointer-events-none cursor-not-allowed bg-gray-400' : ''
+                className={`min-w[556px] text-center  hover:bg-purple-400 uppercase cursor-pointer bg-bg-purple-2  text-white text-xl my-16 px-3 py-3 rounded ${!isOk ? 'pointer-events-none cursor-not-allowed bg-gray-400' : ''
                     }`}
             >
                 Continue Transcriptions

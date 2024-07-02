@@ -17,7 +17,7 @@ const DeleteModal = ({ deleteTranscript, setShowDeleteModal, filename}) => {
 
                     <span className='flex  flex-row items-center gap-2'>
                         <RiDeleteBin6Line className='text-2xl' />
-                        <h1 className='text-2xl font-semibold font-poppins '> Delete Transcript</h1>
+                        <h1 className='md:text-2xl font-semibold font-poppins '> Delete Transcript</h1>
                     </span>
 
                     <MdClose onClick={() => setShowDeleteModal(false)} className='text-end w-10 h-10 cursor-pointer hover:bg-gray-900 p-2 rounded-full ' size={25} />
@@ -36,7 +36,7 @@ const DeleteModal = ({ deleteTranscript, setShowDeleteModal, filename}) => {
 
                 
 
-                <button onClick={deleteTranscript} className='text-center px-5 py-3 w-full h-14
+                <button onClick={deleteTranscript} className='text-center md:px-5 md:py-3 w-full h-14
 rounded-md bg-red-400 text-white text-xl font-medium font-roboto hover:bg-red-500 '><span className='flex items-center text-center justify-center gap-2'>
                         <RiDeleteBin6Line size={25} /> <p>Delete </p>
                     </span></button>

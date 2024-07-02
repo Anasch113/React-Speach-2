@@ -41,24 +41,25 @@ const Transcripted = ({
     return (
         <>
 
-            <div className='border md:w-full shadow-md p-5 flex flex-col  gap-8 min-h-[300px] '>
+            <div className='border md:w-full shadow-md md:p-5 px-2 flex flex-col  gap-8 min-h-[300px] '>
 
                 <span className='flex flex-row justify-between items-center gap-2 py-5'>
 
                     <span className='flex flex-row items-center gap-2'>
-                        <RxDashboard className='text-3xl' />
-                        <h1 className='text-3xl font-bold font-poppins text-white lack'> Recent Files</h1>
+                        <RxDashboard className='md:text-3xl text-lg' />
+                        <h1 className='md:text-3xl font-bold font-poppins text-white lack'> Recent Files</h1>
                     </span>
+
                     <div className='flex gap-2 w-2/6  justify-end'>
                         {
-                            isPaymentInProgress && <button onClick={() => setShowPaymentModal(!showPaymentModal)} className='text-center p-2 w-20 h-16 
-                            rounded-3xl bg-purple-500 text-white text-xl font-medium font-roboto hover:bg-purple-400 '><span className='flex items-center text-center justify-center '>
+                            isPaymentInProgress && <button onClick={() => setShowPaymentModal(!showPaymentModal)} className='text-center p-2 md:w-20 md:h-16 
+                            rounded-3xl bg-purple-500 text-white md:text-xl font-medium font-roboto hover:bg-purple-400 '><span className='flex items-center text-center justify-center '>
                                     <MdPayment size={25} />
                                 </span></button>
                         }
 
-                        <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-3 w-60 h-16 
-rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
+                        <button onClick={() => setShowFormModal(!showFormModal)} className='text-center md:px-5 md:py-3 md:w-60 md:h-16 p-2
+rounded-md bg-bg-purple text-white md:text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
                                 <FaCloudUploadAlt size={25} /> <p>Transcribe Files </p>
                             </span></button>
 
@@ -74,14 +75,14 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                     <table className="  flex flex-col  ">
 
                         <thead className='my-2'>
-                            <tr className="font-poppins text-sm flex gap-10 justify-between px-5">
+                            <tr className="font-poppins text-sm flex md:gap-10 sm:items-center md:justify-between  md:px-5">
 
-                                <th className=" text-text-brown-new px-10 py-2">Name</th>
+                                <th className=" text-text-brown-new md:px-10 md:py-2">Name</th>
 
                                 <span>
-                                    <th className=" text-text-brown-new px-10 py-2  w-72">Uploaded</th>
-                                    <th className=" text-text-brown-new px-10 py-2">Duration</th>
-                                    <th className=" text-text-brown-new px-10 py-2">Status</th>
+                                    <th className=" text-text-brown-new md:px-10 md:py-2  w-72">Uploaded</th>
+                                    <th className=" text-text-brown-new md:px-10 md:py-2 px-2">Duration</th>
+                                    <th className=" text-text-brown-new md:px-10 md:py-2 ">Status</th>
 
                                 </span>
 
@@ -96,11 +97,11 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                             {
                                 dbData && dbData.map((data, index) => (
 
-                                    <tr onClick={() => handleNavigate(data.id)} key={index} className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] flex justify-between gap-10 px-5 border-b hover:text-text-black">
+                                    <tr onClick={() => handleNavigate(data.id)} key={index} className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] flex justify-between items-center md:gap-10 md:px-5 border-b hover:text-text-black px-1">
 
-                                        <td className=" font-medium text-lg px-5 py-5 hover:text-text-black">{data.filename}</td>
+                                        <td className="max-[500px]:w-32 font-medium md:text-lg md:px-5 md:py-5 hover:text-text-black">{data.filename}</td>
                                         <span>
-                                            <td className="  w-72  font-medium text-lg  py-5">{new Date(data.date).toLocaleString('en-US', {
+                                            <td className="  md:w-72  font-medium md:text-lg  md:py-5">{new Date(data.date).toLocaleString('en-US', {
                                                 year: 'numeric',
                                                 month: 'long',
                                                 day: 'numeric',
@@ -114,7 +115,7 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                                             </td>
 
 
-                                            <td className="  font-medium text-lg px-5 py-5"><img className='w-6 h-6' src="/greentick.png" alt="" /></td>
+                                            <td className="  font-medium text-lg md:px-5 md:py-5"><img className='w-6 h-6' src="/greentick.png" alt="" /></td>
                                         </span>
 
 
@@ -124,11 +125,11 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                             }
                             {
                                 processing &&
-                                <tr className="font-poppins text-sm border-b  cursor-pointer hover:bg-[#EDEDED] hover:rounded-3xl flex justify-between gap-10 px-5 hover:text-text-black">
+                                <tr className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] flex justify-between items-center md:gap-10 md:px-5 border-b hover:text-text-black px-1">
 
-                                    <td className="  font-medium text-lg p-6">{filename}</td>
+                                    <td className="max-[500px]:w-32 font-medium md:text-lg md:px-5 md:py-5 hover:text-text-black">{filename}</td>
                                     <span>
-                                        <td className="    font-medium text-lg p-6">{new Date().toLocaleString('en-US', {
+                                        <td className="  md:w-72  font-medium md:text-lg  md:py-5">{new Date().toLocaleString('en-US', {
                                             year: 'numeric',
                                             month: 'long',
                                             day: 'numeric',
@@ -136,11 +137,11 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                                             minute: 'numeric',
                                             hour12: true // 12-hour format
                                         })}</td>
-                                        <td className="  font-medium text-lg p-6">
+                                        <td className=" font-medium text-lg px-5 py-5">
                                             {/* Always show spinner for files being processed */}
                                             {`${fileDuration} min`}
                                         </td>
-                                        <td className="  font-medium text-lg p-6">
+                                        <td className="  font-medium text-lg md:px-5 md:py-5">
                                             {/* Always show spinner for files being processed */}
                                             <div className='spinner'></div>
                                         </td>

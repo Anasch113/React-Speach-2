@@ -42,7 +42,8 @@ export default {
         "text-black": "#303030",
         "text-brown-new": "#838383",
         "text-hover-color": "#EAEAEA",
-        "text-gray-new": "#374151"
+        "text-gray-new": "#374151",
+        "text-purple": "#460073"
 
 
 

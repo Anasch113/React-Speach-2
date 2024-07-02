@@ -19,7 +19,7 @@ const Header = () => {
 
     const handleLogout = async () => {
         await logOut()
-        navigate('/')
+        navigate('/login')
     }
 
     const toggleWhatWeDoDropdown = () => {
@@ -177,6 +177,8 @@ const Header = () => {
                 </a>
 
             </div>
+
+
             <div className='w-full md:hidden  h-[70px] px-4 flex items-center justify-between  '>
                 <div className="cursor-pointer" onClick={() => setIsMobileMenuOpen(prev => !prev)}>
                     <FaBars size={24} />
@@ -186,13 +188,27 @@ const Header = () => {
                         <img src={logo} alt="logo" className='w-[35px] rounded-md' />
                     </a>
 
+
                 </div>
                 <div className="">
-                    <li className="hover:text-[#777] list-none">
-                        <a href="/login" className='cursor-pointer z-[999]'>
-                            <button className="hover:text-[#777]">Login</button>
-                        </a>
-                    </li>
+                    {
+                        !user ? (<li className="hover:text-[#777] list-none">
+                            <a href="/login" className='cursor-pointer z-[999]'>
+                                <button className="hover:text-[#777]">Login</button>
+                            </a>
+                        </li>) : (
+
+                            <li className="hover:text-[#777] list-none ">
+                                <a href="/home" className='cursor-pointer z-[999] '>
+                                    <button className="hover:text-[#777]">Dashboard</button>
+                                </a>
+
+
+
+
+                            </li>
+                        )
+                    }
 
                 </div>
             </div>
@@ -200,18 +216,18 @@ const Header = () => {
             <div className='md:block hidden'>
                 <ul className="flex relative justify-center items-center gap-x-6 mt-8">
                     {
-                        !user &&  <li className="cursor-pointer flex items-center gap-x-2 hover:text-[#777]" onClick={toggleWhatWeDoDropdown}>
-                        <span>
-                            What we do
-                        </span>
+                        !user && <li className="cursor-pointer flex items-center gap-x-2 hover:text-[#777]" onClick={toggleWhatWeDoDropdown}>
+                            <span>
+                                What we do
+                            </span>
 
-                        <span className=''>
-                            <IoIosArrowDown />
-                        </span>
-                    </li>
+                            <span className=''>
+                                <IoIosArrowDown />
+                            </span>
+                        </li>
                     }
 
-                   
+
 
 
                     {isWhatWeDoOpen && (
@@ -245,23 +261,23 @@ const Header = () => {
                         </ul>
                     )}
                     {
-                        !user &&    <a href={'/what-we-think'} className='hover:text-[#777] cursor-pointer'>
-                        What we think
-                    </a>
+                        !user && <a href={'/what-we-think'} className='hover:text-[#777] cursor-pointer'>
+                            What we think
+                        </a>
                     }
 
-                 
-{
-    !user &&   <li className="relative cursor-pointer flex items-center gap-x-2 hover:text-[#777]" onClick={toggleWhatWeAreDropdown}>
-    <span className=''>
-        What are we
-    </span>
-    <span className=''>
-        <IoIosArrowDown />
-    </span>
-</li>
-}
-                  
+
+                    {
+                        !user && <li className="relative cursor-pointer flex items-center gap-x-2 hover:text-[#777]" onClick={toggleWhatWeAreDropdown}>
+                            <span className=''>
+                                What are we
+                            </span>
+                            <span className=''>
+                                <IoIosArrowDown />
+                            </span>
+                        </li>
+                    }
+
 
 
                     {
@@ -298,6 +314,38 @@ const Header = () => {
                         </ul>
                     )}
                 </ul>
+
+
+                {
+                    user ? (
+                        <div className=" md:flex justify-end items-center -mt-6 gap-x-6 mr-20 ">
+
+                            <a onClick={handleLogout} className='cursor-pointer z-[999]'>
+
+                                <button className='hover:text-[#777] text-white '>Logout</button>
+
+                            </a>
+
+
+
+                        </div>
+
+
+
+                    ) : (
+                        <div className="hidden md:flex justify-end items-center -mt-6 gap-x-6 mr-20 z-[999]">
+
+                            <a href="/login" className='cursor-pointer z-[999]'>
+
+                                <button className='hover:text-[#777] text-white '>Login</button>
+
+                            </a>
+                            <a href="/signup" className='cursor-pointer z-[999]'>
+                                <button className='hover:text-[#777] text-white cursor-pointer z-[999]'>Signup</button>
+                            </a>
+                        </div>
+                    )
+                }
             </div>
 
 
@@ -305,36 +353,6 @@ const Header = () => {
 
 
 
-            {
-                user ? (
-                    <div className=" md:flex justify-end items-center -mt-6 gap-x-6 mr-20 ">
-
-                        <a onClick={handleLogout} className='cursor-pointer z-[999]'>
-
-                            <button className='hover:text-[#777] text-white '>Logout</button>
-
-                        </a>
-
-
-
-                    </div>
-
-
-
-                ) : (
-                    <div className="hidden md:flex justify-end items-center -mt-6 gap-x-6 mr-20 z-[999]">
-
-                        <a href="/login" className='cursor-pointer z-[999]'>
-
-                            <button className='hover:text-[#777] text-white '>Login</button>
-
-                        </a>
-                        <a href="/signup" className='cursor-pointer z-[999]'>
-                            <button className='hover:text-[#777] text-white cursor-pointer z-[999]'>Signup</button>
-                        </a>
-                    </div>
-                )
-            }
 
 
             {isMobileMenuOpen && (
@@ -378,7 +396,27 @@ const Header = () => {
                             </ul>
                         )}
 
+                        {
+                            user && <div className='flex flex-col gap-7'>
 
+                                <a href='/home' className='cursor-pointer z-[999] mx-3'>
+                                    <button className="hover:text-[#777]">Dashboard</button>
+                                </a>
+
+                                <a href='/pre-audio-transcriptions' className='cursor-pointer z-[999] mx-3'>
+                                    <button className="hover:text-[#777]">Pre Audio Transcriptions</button>
+                                </a>
+
+                                <a href='/resyncingAi' className='cursor-pointer z-[999] mx-3'>
+                                    <button className="hover:text-[#777]">Resyncing AI</button>
+                                </a>
+
+                                <a onClick={handleLogout} className='cursor-pointer z-[999] mx-3'>
+                                    <button className="hover:text-[#777]">Logout</button>
+                                </a>
+
+                            </div>
+                        }
                     </ul>
                 </div>
             )}
