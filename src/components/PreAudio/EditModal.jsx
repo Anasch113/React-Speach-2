@@ -14,14 +14,14 @@ const EditModal = ({ selectedText, onClose, onUpdateText }) => {
 
     return (
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
-            <div className="bg-white p-4 w-[400px] rounded shadow-md">
+            <div className="bg-blackGray p-4 md:w-[400px] w-2/3 rounded shadow-md">
                 <div className="mb-4">
-                    <h2 className="text-xl flex gap-3 items-center  font-semibold font-poppins text-text-black">
+                    <h2 className="text-xl flex gap-3 items-center  font-semibold font-poppins">
                         <BsChatLeftText/>
                         Edit Text
                         </h2>
                     <textarea
-                        className="w-full h-40 p-2 border-2 border-blue-500 rounded"
+                        className="w-full h-40 p-2 bg-bg-navy-blue border-2 border-blue-500 rounded"
                         value={editedText}
                         onChange={handleInputChange}
                     />

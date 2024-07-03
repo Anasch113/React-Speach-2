@@ -199,24 +199,25 @@ const ViewSyncFiles = () => {
           <Sidebar />
 
 
-          <div className=' md:w-full px-5 flex flex-col   gap-5  '>
+          <div className=' md:w-full w-full md:px-5 flex flex-col   gap-5  '>
 
 
-            <div className='w-full flex p-5  gap-8'>
+            <div className='w-full flex p-5  gap-8 md:flex-row flex-col items-center justify-center'>
 
 
 
 
-              <span className='flex  p-5 w-2/3  shadow-md flex-col h-[430px] overflow-y-scroll  gap-5 py-5 rounded-md bg-bg-navy-blue '>
+              <span className='flex w-full  p-5 md:w-2/3   shadow-md flex-col h-[430px] overflow-y-scroll  gap-5 py-5 rounded-md bg-bg-navy-blue '>
 
-                <span className='flex flex-row  gap-2'>
+                <span className='flex flex-row    gap-2'>
 
-                  <span className='text-2xl flex gap-3 font-bold font-poppins '> ReSyncing <p>{dbTranscript.audioFilename} + {dbTranscript.transcriptFilename} </p>  </span>
+                  <span className='md:text-2xl text-lg flex-col gap-3 font-bold font-poppins   '> ReSyncing <p>{dbTranscript.audioFilename} + {dbTranscript.transcriptFilename} </p>  </span>
                 </span>
 
                 <div className=' font-roboto'>
 
                   {
+
                     <div className='w-full' >
 
                       {

@@ -547,7 +547,7 @@ const PreAudioTranscriptions = () => {
                                                         <MdPayment size={25} />
                                                     </span></button>
                                             }
-                                            <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 w-2/5 h-20
+                                            <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 md:w-2/5 h-20
 rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
                                                     <FaCloudUploadAlt size={25} /> <p>Transcribe Your File</p>
                                                 </span></button>

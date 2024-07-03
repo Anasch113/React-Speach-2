@@ -52,9 +52,9 @@ const Transcripted = ({
 
                     <div className='flex gap-2 w-2/6  justify-end'>
                         {
-                            isPaymentInProgress && <button onClick={() => setShowPaymentModal(!showPaymentModal)} className='text-center p-2 md:w-20 md:h-16 
+                            isPaymentInProgress && <button onClick={() => setShowPaymentModal(!showPaymentModal)} className='text-center md:p-2 p-4 md:w-20 md:h-20 
                             rounded-3xl bg-purple-500 text-white md:text-xl font-medium font-roboto hover:bg-purple-400 '><span className='flex items-center text-center justify-center '>
-                                    <MdPayment size={25} />
+                                    <MdPayment className='text-2xl'  />
                                 </span></button>
                         }
 

@@ -779,7 +779,7 @@ const SyncAiPage = () => {
 
 
 
-                    <div className='flex flex-col w-full py-5 px-10 bg-bg-color min-h-screen overflow-x-hidden '>
+                    <div className='flex flex-col w-full py-5 md:px-10 px-2 bg-bg-color min-h-screen overflow-x-hidden '>
 
                         {
                             reloadLoading ? <Spinner /> :
@@ -805,7 +805,7 @@ const SyncAiPage = () => {
                                                         </span></button>
                                                 }
 
-                                                <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 w-2/5 h-20
+                                                <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 md:w-2/5 h-20
 rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500-500 '><span className='flex items-center text-center justify-center gap-2'>
                                                         <GrSync size={20} /> <p>Resyncing Ai</p>
                                                     </span></button>
@@ -844,14 +844,14 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                 <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 ">
 
 
-                    <div className=" flex items-center flex-col bg-bg-navy-blue min-h-[500px] max-h-[600px] p-5 rounded-lg  md:w-[700px] gap-5">
+                    <div className=" flex items-center flex-col bg-bg-navy-blue md:min-h-[500px] max-h-[600px] p-5 rounded-lg  md:w-[700px] gap-5">
 
-                        <div className='w-full justify-between  flex flex-row  px-5   py-5'>
+                        <div className='w-full justify-between  flex flex-row  md:px-5   py-5'>
 
 
                             <span className='flex flex-1  flex-row items-center justify-center gap-2'>
-                                <MdOutlineCloudUpload className='text-2xl' />
-                                <h1 className='text-2xl font-bold font-poppins '> Upload Files</h1>
+                                <MdOutlineCloudUpload className='md:text-2xl' />
+                                <h1 className='md:text-2xl font-bold font-poppins '> Upload Files</h1>
                             </span>
                             <div className='ml-auto'>
 
@@ -862,7 +862,7 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
 
 
 
-                        <div className='flex w-full p-5 flex-row items-center justify-center gap-5'>
+                        <div className='flex w-full md:p-5 flex-row items-center justify-center gap-2 md:gap-5'>
 
 
 
@@ -871,10 +871,10 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
 
 
 
-                            <form onClick={handleInputClick2} className='flex flex-col items-center justify-center    h-36   cursor-pointer rounded-md md:w-[400px] w-52 mb-10 bg-offWhite px-4 bg-blackGray'>
+                            <form onClick={handleInputClick2} className='flex flex-col items-center justify-center    md:h-36   cursor-pointer rounded-md md:w-[400px] w-32 md:mb-10 bg-offWhite md:px-4 bg-blackGray'>
                                 {
                                     !file.transcript && <div className='flex flex-col items-center gap-1 py-3 px-2'>
-                                        <h1 className='text-xl py-1  font-medium font-roboto text-center'>Upload Text File</h1>
+                                        <h1 className='md:text-xl py-1  font-medium font-roboto text-center'>Upload Text File</h1>
                                         <FiFileText color='#1475cf' size={30} />
                                     </div>
                                 }
@@ -917,10 +917,10 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                             </form>
 
                             {/* 1st Form */}
-                            <form onClick={handleInputClick} className='flex flex-col items-center justify-center    h-36   cursor-pointer rounded-md md:w-[400px] w-52 mb-10 bg-offWhite px-4 py-4 bg-blackGray'>
+                            <form onClick={handleInputClick} className='flex flex-col items-center justify-center    md:h-36   cursor-pointer rounded-md md:w-[400px] w-32 md:mb-10 bg-offWhite md:px-4 bg-blackGray'>
                                 {
                                     !file.audio && <div className='flex flex-col items-center gap-1 py-3 px-2'>
-                                        <h1 className='text-xl py-1  font-medium font-roboto text-center'>Upload Audio file</h1>
+                                        <h1 className='md:text-xl py-1  font-medium font-roboto text-center'>Upload Audio file</h1>
                                         <LuFileAudio color='#1475cf' size={30} />
                                     </div>
                                 }
@@ -971,10 +971,10 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
 
                         </div>
                         <button disabled={!cloudUrl.audio && !cloudUrl.transcript} onClick={hanldeSync}
-                            className='text-center px-5 py-4 w-2/4 h-16 rounded-md bg-bg-purple-2 text-white text-xl font-medium font-roboto hover:bg-bg-purple-500 '>
+                            className='text-center md:px-5 md:py-4 w-2/4 md:h-16 h-12 rounded-md bg-bg-purple-2 text-white md:text-xl font-medium font-roboto hover:bg-bg-purple-500 '>
 
                             <span className='flex items-center text-center justify-center gap-2'>
-                                <GrSync size={25} />
+                                <GrSync  className='text-xl' />
                                 <p>Resync </p>
 
                             </span>

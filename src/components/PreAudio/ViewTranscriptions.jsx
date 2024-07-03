@@ -317,7 +317,7 @@ const ViewTranscriptions = ({ filename }) => {
           <Sidebar />
 
 
-          <div className=' md:w-full w-full px-5 flex flex-col   gap-5  '>
+          <div className=' md:w-full w-full md:px-5 flex flex-col   gap-5  '>
 
 
             <div className='w-full flex p-5  gap-8 md:flex-row flex-col items-center justify-center'>
