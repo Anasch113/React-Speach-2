@@ -9,7 +9,7 @@ const PlanDetails = () => {
     const { paymentInfo } = useUserAuth();
     console.log("payment info", paymentInfo)
     return (
-        <div className='flex w-full'>
+        <div className='flex w-full  justify-center'>
 
 
             {

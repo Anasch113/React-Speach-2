@@ -191,3 +191,27 @@ animation-play-state: paused;
   background-color: #E2062E;
   color: white;
 }
+
+
+
+
+.hamburger-menu {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  margin: 4px 0;
+  transition: 0.4s;
+}
+
+/* .fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+} */
+
+.transition-transform {
+  transition: transform 0.3s ease-in-out;
+}

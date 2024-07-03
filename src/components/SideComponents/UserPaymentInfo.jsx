@@ -7,7 +7,7 @@ const UserPaymentInfo = () => {
     <UserProfileLayout>
 
 
-      <div className='w-full flex flex-row gap-5'>
+      <div className='w-full flex md:flex-row gap-5 flex-col '>
 
         <PlanDetails />
         <CreditInfo/>

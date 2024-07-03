@@ -5,6 +5,7 @@ import { IoIosArrowBack, IoIosArrowDown, IoIosArrowForward } from "react-icons/i
 import { FaBars } from 'react-icons/fa6';
 import { useUserAuth } from '../../../context/UserAuthContext'
 import { useNavigate } from 'react-router-dom'
+import Sidebar from "../../../layout/Sidebar"
 
 const Header = () => {
     const [isWhatWeDoOpen, setIsWhatWeDoOpen] = useState(false);
@@ -178,12 +179,15 @@ const Header = () => {
 
             </div>
 
+            <div className={`w-full md:hidden  h-[70px] px-4 flex items-center ${!user ? 'justify-between ' : 'justify-around mx-10'}   `}>
 
-            <div className='w-full md:hidden  h-[70px] px-4 flex items-center justify-between  '>
-                <div className="cursor-pointer" onClick={() => setIsMobileMenuOpen(prev => !prev)}>
-                    <FaBars size={24} />
-                </div>
-                <div>
+                {
+                    !user && <div className="cursor-pointer" onClick={() => setIsMobileMenuOpen(prev => !prev)}>
+                        <FaBars size={24} />
+                    </div>
+                }
+
+                <div >
                     <a href="/">
                         <img src={logo} alt="logo" className='w-[35px] rounded-md' />
                     </a>
@@ -357,6 +361,9 @@ const Header = () => {
 
             {isMobileMenuOpen && (
 
+
+
+
                 <div className="md:hidden h-screen bg-black z-50 pt-4 fixed top-0 overflow-y-auto  w-full  pb-5">
                     <a href="/" className='px-4 text-sm flex items-center gap-x-1'><IoIosArrowBack size={16} color='white' /> Back</a>
                     <ul className="flex flex-col items-start gap-8 mt-4">
@@ -396,29 +403,15 @@ const Header = () => {
                             </ul>
                         )}
 
-                        {
-                            user && <div className='flex flex-col gap-7'>
 
-                                <a href='/home' className='cursor-pointer z-[999] mx-3'>
-                                    <button className="hover:text-[#777]">Dashboard</button>
-                                </a>
-
-                                <a href='/pre-audio-transcriptions' className='cursor-pointer z-[999] mx-3'>
-                                    <button className="hover:text-[#777]">Pre Audio Transcriptions</button>
-                                </a>
-
-                                <a href='/resyncingAi' className='cursor-pointer z-[999] mx-3'>
-                                    <button className="hover:text-[#777]">Resyncing AI</button>
-                                </a>
-
-                                <a onClick={handleLogout} className='cursor-pointer z-[999] mx-3'>
-                                    <button className="hover:text-[#777]">Logout</button>
-                                </a>
-
-                            </div>
-                        }
                     </ul>
                 </div>
+
+
+
+
+
+
             )}
 
 

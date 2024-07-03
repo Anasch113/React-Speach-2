@@ -76,7 +76,7 @@ const CreditInfo = () => {
 
 
 
-            <div className='bg-blackGray md:w-full p-5 rounded-lg border'>
+            <div className='bg-blackGray md:w-full p-5  rounded-lg border'>
                 <p className='text-2xl py-2'>Credit Info</p>
 
                 <div className='flex flex-col gap-3 px-2 py-5'>
@@ -87,7 +87,7 @@ const CreditInfo = () => {
                     <span className='flex  items-center gap-3 py-1'> <CiTimer size={30} /> <p className='font-medium text-lg'>Total Minutes </p><p className='text-lg'> {userBalance.toFixed(2) * 2} min </p></span>
 
                     {/* Buy Credit Inputs  */}
-                    <span className='flex flex-row gap-2 my-1'>
+                    <span className='flex md:flex-row gap-2 my-1 flex-col'>
 
                         <span className='flex flex-col justify-between items-start gap-1'>
                             <label className=' text-center font-medium  font-poppins'>Amount of Minutes* </label>

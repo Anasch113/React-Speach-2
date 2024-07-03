@@ -27,6 +27,8 @@ import toast from "react-hot-toast";
 import { RxOpenInNewWindow } from "react-icons/rx"
 import { MdOutlineTimer } from "react-icons/md";
 import { FaPause } from "react-icons/fa";
+import { FaBars } from 'react-icons/fa6';
+import { MdClose } from "react-icons/md";
 
 function Sidebar({ isPurchase, minutes }) {
   const user1 = {
@@ -249,170 +251,148 @@ function Sidebar({ isPurchase, minutes }) {
     navigate('/')
   }
 
+
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+
   return (
-    <aside
-      className="w-96 px-3   max-[700px]:hidden  gray-200 bg-blackGray h-full overflow-x-hidden   md:hidden lg:block xl:block 2xl:block"
-
-    >
-      <div className=" p-4 py-10 text-text-blue    md:text-xl lg:text-xl xl:text-xl 2xl:text-xl font-semibold ">
-        {/* <p>Captify</p> */}
-      </div>
+    <>
+      {
+        !isSidebarOpen ? <button onClick={toggleSidebar} className="lg:hidden xl:hidden 2xl:hidden fixed top-7 left-4 z-50">
+          <FaBars size={24} />
 
 
-      {/* Add your sidebar content here */}
-      <div className="flex flex-col  justify-between mx-2 p-4   border border-border-dark-color rounded-md">
-        {/* You can use an <img> tag with the user's profile picture as the source */}
-        {/* <div className="w-10 h-10  mr-4  rounded-full overflow-hidden">
-    
-          <img
-            src="https://placekitten.com/200/200" // replace with your image source
-            alt="Profile"
-            className="w-full h-full object-cover"
-          />
-        </div> */}
+        </button> :
 
-        <div className="flex  flex-col   font-poppins ">
-          <span className="text-sm text-white font-bold flex items-center px-2 gap-1"><FaRegUser size={15} />  {user.displayName} </span>
-          <span className="text-xs flex items-center p-2 gap-1  text-white font-semibold"> <MdAlternateEmail size={15} /> {user.email}</span>
-        </div>
-        <div className="flex items-center cursor-pointer">
-          <Link className="flex items-center gap-2 hover:text-white" to={"/user-profile"}> <BiNavigation color="white" className="hover:text-white" size={18} /><p className="text-white">Visit</p> </Link>
+          <button onClick={toggleSidebar} className="lg:hidden xl:hidden 2xl:hidden fixed top-4 left-64 z-50 hover:bg-gray-800 border p-2 rounded-sm">
+            <MdClose size={18} />
 
+
+          </button>
+      }
+
+
+
+
+      <aside
+
+        className={`max-[768px]:fixed max-[768px]:top-0 max-[768px]:left-0 w-80 px-3 gray-200 bg-blackGray h-full overflow-x-hidden z-40 transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } lg:translate-x-0 xl:translate-x-0 2xl:translate-x-0`}
+      >
+        <div className="p-4 py-10 text-text-blue md:text-xl lg:text-xl xl:text-xl 2xl:text-xl font-semibold">
+          {/* <p>Captify</p> */}
         </div>
 
+        {/* Add your sidebar content here */}
+        <div className="flex flex-col justify-between mx-2 p-4 border border-border-dark-color rounded-md">
+          {/* You can use an <img> tag with the user's profile picture as the source */}
+          {/* <div className="w-10 h-10 mr-4 rounded-full overflow-hidden">
+            <img
+              src="https://placekitten.com/200/200" // replace with your image source
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
+          </div> */}
 
-
-
-      </div>
-
-
-      <div className="flex gap-4 flex-col text-white mt-10">
-
-
-
-        <Link to={"/"}>
-          <div className={`mx-2 p-4 flex rounded-md ${isActive("/") ? "bg-white text-black" : "hover:border border-white "}`}>
-            <div className="mr-2 mt-1">
-              <AiOutlineHome />
-            </div>
-            <button>Home</button>
+          <div className="flex flex-col font-poppins">
+            <span className="text-sm text-white font-bold flex items-center px-2 gap-1"><FaRegUser size={15} />  {user.displayName}</span>
+            <span className="text-xs flex items-center p-2 gap-1 text-white font-semibold"><MdAlternateEmail size={15} /> {user.email}</span>
           </div>
-        </Link>
 
-
-        <Link to={"/home"}>
-          <div className={`mx-2 p-4 flex rounded-md ${isActive("/home") ? "bg-white text-black" : "hover:border border-white "}`}>
-            <div className="mr-2 mt-1">
-              <LuLayoutDashboard />
-            </div>
-            <button>Dashboard</button>
+          <div className="flex items-center cursor-pointer">
+            <Link className="flex items-center gap-2 hover:text-white" to={"/user-profile"}><BiNavigation color="white" className="hover:text-white" size={18} /><p className="text-white">Visit</p></Link>
           </div>
-        </Link>
+        </div>
 
-        {
-          !isLiveTranscript ? (
+        <div className="flex gap-4 flex-col text-white mt-10">
+          <Link to={"/"}>
+            <div className={`mx-2 p-4 flex rounded-md ${isActive("/") ? "bg-white text-black" : "hover:border border-white"}`}>
+              <div className="mr-2 mt-1">
+                <AiOutlineHome />
+              </div>
+              <button>Home</button>
+            </div>
+          </Link>
+
+          <Link to={"/home"}>
+            <div className={`mx-2 p-4 flex rounded-md ${isActive("/home") ? "bg-white text-black" : "hover:border border-white"}`}>
+              <div className="mr-2 mt-1">
+                <LuLayoutDashboard />
+              </div>
+              <button>Dashboard</button>
+            </div>
+          </Link>
+
+          {!isLiveTranscript ? (
             <Link onClick={startLiveTranscript}>
-              <div className={`mx-2 p-4 flex rounded-md ${isActive("/notdefined") ? "bg-white text-black" : "hover:border border-white "}`}>
+              <div className={`mx-2 p-4 flex rounded-md ${isActive("/notdefined") ? "bg-white text-black" : "hover:border border-white"}`}>
                 <div className="mr-2 mt-1">
                   <AiOutlineAudio />
                 </div>
-
                 <button>Live Transcript</button>
-
               </div>
-            </Link>) : (
-
-            <div >
-
-              <div className={`mx-2 p-4 border flex text-white justify-between items-center ${isPaused ? 'bg-green-500' : 'bg-red-500'}   rounded-md `}>
-
-                <div className="mr-2 mt-1 ">
-
-
+            </Link>
+          ) : (
+            <div>
+              <div className={`mx-2 p-4 border flex text-white justify-between items-center ${isPaused ? 'bg-green-500' : 'bg-red-500'} rounded-md`}>
+                <div className="mr-2 mt-1">
                   {isPaused ? (<FaPause size={18} />) : (<AiOutlineAudio size={18} />)}
-
-
-
-
                 </div>
-
-                <div className="flex  gap-2">
+                <div className="flex gap-2">
                   {remainingTime > 0 && (
                     <div className="font-semibold gap-2 font-poppins text-white-500 flex items-center">
-                      <MdOutlineTimer size={20} />    <p>{formatTime(remainingTime)}</p>
+                      <MdOutlineTimer size={20} /> <p>{formatTime(remainingTime)}</p>
                     </div>
-
                   )}
-
-
                 </div>
-
-                <span onClick={handleNewWindow} className="hover:cursor-pointer  p-2 rounded-full hover:bg-red-400">
+                <span onClick={handleNewWindow} className="hover:cursor-pointer p-2 rounded-full hover:bg-red-400">
                   <RxOpenInNewWindow size={20} />
                 </span>
-
               </div>
-
-
             </div>
-          )
-        }
+          )}
 
-        <Link to={"/pre-audio-transcriptions"}>
-          <div className={`mx-2 p-4 flex rounded-md ${isActive("/pre-audio-transcriptions" || "pre-audio-transcriptions/view:id") ? "bg-white text-black" : "hover:border border-white "}`}>
-            <div className="mr-2 mt-1">
-              <MdOutlineTranscribe />
+          <Link to={"/pre-audio-transcriptions"}>
+            <div className={`mx-2 p-4 flex rounded-md ${isActive("/pre-audio-transcriptions" || "pre-audio-transcriptions/view:id") ? "bg-white text-black" : "hover:border border-white"}`}>
+              <div className="mr-2 mt-1">
+                <MdOutlineTranscribe />
+              </div>
+              <button>Audio Transcription</button>
             </div>
+          </Link>
 
-            <button>Audio Transcription</button>
-
-          </div>
-        </Link>
-
-
-        <Link to={"/resyncingAi"}>
-          <div className={`mx-2 p-4 flex rounded-md ${isActive("/resyncingAi") ? "bg-white text-black" : "hover:border border-white "}`}>
-            <div className="mr-2 mt-1">
-              <GrSync />
+          <Link to={"/resyncingAi"}>
+            <div className={`mx-2 p-4 flex rounded-md ${isActive("/resyncingAi") ? "bg-white text-black" : "hover:border border-white"}`}>
+              <div className="mr-2 mt-1">
+                <GrSync />
+              </div>
+              <button>Resyncing Ai</button>
             </div>
+          </Link>
 
-            <button>Resyncing Ai</button>
-
-          </div>
-        </Link>
-
-
-
-
-
-
-
-
-        <button onClick={handleLogout}>
-          <div className={`mx-2 p-4 flex rounded-md ${isActive("/more") ? "bg-white text-black" : "hover:border border-white "}`}>
-            <div className="mr-2 mt-1">
-              <CiLogout />
+          <button onClick={handleLogout}>
+            <div className={`mx-2 p-4 flex rounded-md ${isActive("/more") ? "bg-white text-black" : "hover:border border-white"}`}>
+              <div className="mr-2 mt-1">
+                <CiLogout />
+              </div>
+              <button>Logout</button>
             </div>
+          </button>
 
-            <button>Logout</button>
-
-          </div>
-        </button>
-
-        {
-          showPaymentModal && (
+          {showPaymentModal && (
             <PaymentModal
-
               setShowPaymentModal={setShowPaymentModal}
               isPaymentDone={isPaymentDone}
-
-
             />
-          )
-        }
-
-      </div>
-    </aside>
+          )}
+        </div>
+      </aside>
+    </>
   );
 }
 
