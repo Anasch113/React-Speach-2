@@ -106,6 +106,7 @@ const PaymentModal = ({
                     {/* Live Transcript Amount Inputs  */}
                     <span className='flex flex-row gap-2 my-1'>
 
+
                         <span className='flex flex-col justify-between items-start gap-1'>
                             <label className='text-center font-medium  font-poppins'>Amount of Minutes* </label>
                             <input type='number' value={minutes}
