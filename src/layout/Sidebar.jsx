@@ -213,7 +213,9 @@ function Sidebar({ isPurchase, minutes }) {
         setShowPaymentModal(true)
 
       } else if (result.isDenied) {
-        setShowPaymentModal(true)
+        setShowPaymentModal(true) 
+
+       
 
 
 
@@ -290,14 +292,6 @@ function Sidebar({ isPurchase, minutes }) {
 
         {/* Add your sidebar content here */}
         <div className="flex flex-col justify-between mx-2 p-4 border border-border-dark-color rounded-md">
-          {/* You can use an <img> tag with the user's profile picture as the source */}
-          {/* <div className="w-10 h-10 mr-4 rounded-full overflow-hidden">
-            <img
-              src="https://placekitten.com/200/200" // replace with your image source
-              alt="Profile"
-              className="w-full h-full object-cover"
-            />
-          </div> */}
 
           <div className="flex flex-col font-poppins">
             <span className="text-sm text-white font-bold flex items-center px-2 gap-1"><FaRegUser size={15} />  {user.displayName}</span>
@@ -384,14 +378,17 @@ function Sidebar({ isPurchase, minutes }) {
             </div>
           </button>
 
-          {showPaymentModal && (
-            <PaymentModal
-              setShowPaymentModal={setShowPaymentModal}
-              isPaymentDone={isPaymentDone}
-            />
-          )}
+
         </div>
       </aside>
+
+
+      {showPaymentModal && (
+        <PaymentModal
+          setShowPaymentModal={setShowPaymentModal}
+          isPaymentDone={isPaymentDone}
+        />
+      )}
     </>
   );
 }

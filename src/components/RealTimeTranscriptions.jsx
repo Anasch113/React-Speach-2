@@ -27,11 +27,19 @@ function RealTimeTranscriptions() {
   const [isRecordingAuto, setIsRecordingAuto] = useState(false)
   const [transcript, setTranscript] = useState('')
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [fontSize, setFontSize] = useState(16);
 
-  const [fontFamily, setFontFamily] = useState('Open Sans');
-  const [textColor, setTextColor] = useState('#000000');
-  const [bgColor, setBgColor] = useState('#ffffff');
+  // large window
+  const [fontSize, setFontSize] = useState(26);
+  const [fontFamily, setFontFamily] = useState('Arial');
+  const [textColor, setTextColor] = useState('#ffffff');
+  const [bgColor, setBgColor] = useState('#000000');
+
+  // small window
+  const [fontSize2, setFontSize2] = useState(26);
+  const [fontFamily2, setFontFamily2] = useState('Arial');
+  const [textColor2, setTextColor2] = useState('#ffffff');
+  const [bgColor2, setBgColor2] = useState('#000000');
+
   const [headerVanish, setHeaderVanish] = useState(false);
   const [lineSpacing, setLineSpacing] = useState('normal');
   const [showLineNumbers, setShowLineNumbers] = useState(false);
@@ -103,6 +111,21 @@ function RealTimeTranscriptions() {
 
   const handleBgColorChange = (e) => {
     setBgColor(e.target.value);
+  };
+  const handleFontSizeChange2 = (e) => {
+    setFontSize2(e.target.value);
+  };
+
+  const handleFontFamilyChange2 = (e) => {
+    setFontFamily2(e.target.value);
+  };
+
+  const handleTextColorChange2 = (e) => {
+    setTextColor2(e.target.value);
+  };
+
+  const handleBgColorChange2 = (e) => {
+    setBgColor2(e.target.value);
   };
 
   const handleCheckboxChange = (event) => {
@@ -292,8 +315,6 @@ function RealTimeTranscriptions() {
     }
 
 
-
-
   }
 
   // Clear Text
@@ -303,6 +324,18 @@ function RealTimeTranscriptions() {
     setTranscript('');
     texts.current = {};
   };
+
+
+  const containerRef = useRef(null);
+  const pRef = useRef(null);
+
+  useEffect(() => {
+    if (pRef.current) {
+      pRef.current.scrollTop = pRef.current.scrollHeight;
+    }
+  }, [transcript]);
+
+
 
   return (
     <div className="w-full flex flex-col items-center gap-3  min-h-screen ">
@@ -365,8 +398,10 @@ function RealTimeTranscriptions() {
             showLineNumbers={showLineNumbers}
             setShowLineNumbers={setShowLineNumbers}
             fontFamily={fontFamily}
+
             handleFontFamilyChange={handleFontFamilyChange}
             fontSize={fontSize}
+
             handleFontSizeChange={handleFontSizeChange}
             handleLineSpacingChange={handleLineSpacingChange}
             lineSpacing={lineSpacing}
@@ -378,9 +413,58 @@ function RealTimeTranscriptions() {
             handleSettingsClick={handleSettingsClick}
             fontFamilies={fontFamilies}
             fontSizes={fontSizes}
+            fontFamily2={fontFamily2}
+            fontSize2={fontSize2}
+            textColor2={textColor2}
+            bgColor2={bgColor2}
+            handleFontSizeChange2={handleFontSizeChange2}
+            handleFontFamilyChange2={handleFontFamilyChange2}
+            handleTextColorChange2={handleTextColorChange2}
+            handleBgColorChange2={handleBgColorChange2}
+
+
+
           />
         )}
 
+        {/* small window */}
+
+        <div
+          id="container-id"
+          className="border shadow-sm h-20 w-full text-black flex  font-sans px-2 my-2 relative"
+          style={{
+            fontSize: `${fontSize2}px`,
+            fontFamily2,
+            color: textColor2,
+            backgroundColor: bgColor2,
+          
+          }}
+        >
+          <p className='text-white text-lg'>Events Display:</p>
+          <div className=" w-full overflow-hidden" ref={containerRef}>
+            <div
+              ref={pRef}
+              style={{
+                height: '100%',
+                overflowY: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <p>
+                {showLineNumbers
+                  ? transcript.split('\n').map((line, index) => (
+                    <span key={index}>
+                      {index + 1}. {line}
+                      <br />
+                    </span>
+                  ))
+                  : transcript}
+              </p>
+            </div>
+          </div>
+        </div>
 
 
 
@@ -388,16 +472,18 @@ function RealTimeTranscriptions() {
         {/* next section */}
         <div className='w-full flex   flex-col  '>
 
-          <div className='p-2 flex items-center justify-between border text-sm font-bold font-roboto'>
+          {/* <div className='p-2 flex items-center justify-between border text-sm font-bold font-roboto'>
             <p>StreamBox</p>
 
             <div className='flex gap-3 text-lg '>
               <BsBoxArrowInDownLeft className='hover:text-gray-400 w-full    hover:rounded-md  cursor-pointer' title='Open in new window' onClick={handleOpenInNewTab} />
               <MdCloseFullscreen className='hover:text-gray-400 w-full    hover:rounded-md  cursor-pointer' title='fullscreen' />
             </div>
-          </div>
+          </div> */}
 
-          <div id='container-id' className=" border shadow-sm min-h-500  w-full text-black flex font-sans p-3 relative"
+          {/* large window */}
+
+          <div id='container-id' className=" border  shadow-sm min-h-500  w-full text-black flex font-sans p-3 relative overflow-hidden"
             style={{
               fontSize: `${fontSize}px`,
               fontFamily,
@@ -411,7 +497,7 @@ function RealTimeTranscriptions() {
             <p >
               {showLineNumbers &&
                 transcript.split('\n').map((line, index) => (
-                  <span key={index}>
+                  <span className='' key={index}>
                     {index + 1}. {line}
 
                   </span>
@@ -419,6 +505,8 @@ function RealTimeTranscriptions() {
               {!showLineNumbers && transcript}
             </p>
           </div>
+
+
           <div className='p-2 flex   border text-sm font-bold font-roboto'>
 
             <div className='flex items-end text-end gap-3 text-xl '>
@@ -474,5 +562,4 @@ function RealTimeTranscriptions() {
 }
 
 export default RealTimeTranscriptions;
-
 

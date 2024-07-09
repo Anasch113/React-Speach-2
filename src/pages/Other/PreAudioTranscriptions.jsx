@@ -676,6 +676,7 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                     handlePaymentOptions={handlePaymentOptions}
                     currentBalance={userBalance}
                     handleTranscriptions={handleTranscriptions}
+                   
 
 
 

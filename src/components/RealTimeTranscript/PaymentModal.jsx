@@ -10,7 +10,7 @@ const PaymentModal = ({
     fileName,
     duration,
     cost,
-  
+
     setShowPaymentModal,
     setCost,
     currentBalance,
@@ -34,54 +34,54 @@ const PaymentModal = ({
     const createStripeSession = async () => {
         const userId = user.uid
         try {
-  
-                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/live-transcript-payment`, { total, userId, minutes });
-  
-  
-                return response.data;
-            
-  
+
+            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/live-transcript-payment`, { total, userId, minutes });
+
+
+            return response.data;
+
+
         } catch (error) {
             console.error("Error creating Stripe session", error);
             return null;
         }
     };
-  
+
     const handlePaymentOptions = async () => {
-  
+
         try {
-            
+
             // For direct method
             const stripeSession = await createStripeSession();
-  
+
             if (stripeSession && stripeSession.url) {
                 // Redirect the user to Stripe Checkout
                 window.location.href = stripeSession.url;
             } else {
                 alert("Failed to create Stripe session. Please try again.");
             }
-  
+
         } catch (error) {
             console.log("error", error)
         }
     }
-  
-  
-  
-  
+
+
+
+
 
     return (
         <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 py-3">
-            <div className="bg-white h-[500px] w-[500px] p-5 rounded-lg overflow-y-scroll overflow-x-hidden">
+            <div className="bg-bg-navy-blue h-[500px] w-[500px] p-5 rounded-lg overflow-y-scroll overflow-x-hidden">
 
                 <div className='w-full  flex flex-row items-center justify-end  gap-10 px-5 py-5'>
 
                     <span className='flex flex-1  flex-row items-center gap-2'>
                         {/* <MdOutlinePaid className='text-2xl' /> */}
-                        <h1 className='text-2xl font-semibold font-poppins text-text-black'> Billing </h1>
+                        <h1 className='text-2xl font-semibold font-poppins '> Billing </h1>
                     </span>
 
-                    <MdClose onClick={() => setShowPaymentModal(false)} className='text-end w-10 h-10 cursor-pointer hover:bg-gray-300 p-2 rounded-full ' size={25} />
+                    <MdClose onClick={() => setShowPaymentModal(false)} className='text-end w-10 h-10 cursor-pointer hover:bg-gray-800 p-2 rounded-full ' size={25} />
 
                 </div>
 
@@ -90,40 +90,40 @@ const PaymentModal = ({
                 {/* Direct Payment Method */}
                 <div className='flex flex-col my-2 gap-2 p-2  border-b'>
 
-                    <p className='text-xl mb-2 font-semibold font-poppins text-text-black'>Choose Duration</p>
+                    <p className='text-xl mb-2 font-semibold font-poppins '>Choose Duration</p>
 
 
                     <span className='flex justify-between '>
 
-                        <p className='text-gray-500 text-center font-medium  font-poppins'> Charge per minute</p>
-                        <p className='text-gray-500 text-center font-medium  font-poppins'>1$ </p>
+                        <p className=' text-center font-medium  font-poppins'> Charge per minute</p>
+                        <p className=' text-center font-medium  font-poppins'>1$ </p>
                     </span>
                     <span className='flex justify-between '>
 
-                        <p className='text-gray-500 text-center font-medium  font-poppins'> Total</p>
-                        <p className='text-gray-500 text-center font-medium  font-poppins'>{total} $ </p>
+                        <p className=' text-center font-medium  font-poppins'> Total</p>
+                        <p className=' text-center font-medium  font-poppins'>{total} $ </p>
                     </span>
                     {/* Live Transcript Amount Inputs  */}
                     <span className='flex flex-row gap-2 my-1'>
 
                         <span className='flex flex-col justify-between items-start gap-1'>
-                            <label className='text-gray-500 text-center font-medium  font-poppins'>Amount of Minutes* </label>
+                            <label className='text-center font-medium  font-poppins'>Amount of Minutes* </label>
                             <input type='number' value={minutes}
-                                onChange={handleMinutesChange} className='text-gray-500  sfont-medium  font-poppins p-2 border border-gray-500 rounded-sm'></input>
+                                onChange={handleMinutesChange} className=' bg-bg-navy-blue  sfont-medium  font-poppins p-2 border border-white rounded-sm'></input>
 
                         </span>
 
                         <span className='flex flex-col justify-between items-start gap-1'>
 
-                            <label className='text-gray-500 text-center font-medium  font-poppins'>Total* </label>
+                            <label className=' text-center font-medium  font-poppins'>Total* </label>
                             <input type='text' value={`${total}$`}
-                                readOnly placeholder='20$' className='text-gray-500  font-medium  font-poppins p-2 border border-gray-500 rounded-sm text-center' ></input>
+                                readOnly placeholder='20$' className='bg-bg-navy-blue  font-medium  font-poppins p-2 border border-white rounded-sm text-center' ></input>
                         </span>
 
                     </span>
 
                     <button onClick={handlePaymentOptions} className='text-center px-5 py-3 w-full h-14
-rounded-md bg-purple-500 text-white text-xl font-medium font-roboto hover:bg-purple-400 mb-2 '><span className='flex items-center text-center justify-center gap-2'>
+rounded-md bg-bg-purple-2 text-white text-xl font-medium font-roboto hover:bg-bg-purple mb-2 '><span className='flex items-center text-center justify-center gap-2'>
                             <MdPayment size={25} /> <p>Pay Now </p>
                         </span></button>
 

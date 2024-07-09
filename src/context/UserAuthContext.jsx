@@ -33,27 +33,27 @@ export function UserAuthContextProvider({ children }) {
 
   async function logIn(email, password) {
 
-    
-      const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/emails/email-verify-login`, { email });
-      console.log("response from server verify login", response.data)
 
-      if (response.data.message === "Email not verified. Verification email sent") {
-        setMessage(response.data.message)
+    const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/emails/email-verify-login`, { email });
+    console.log("response from server verify login", response.data)
 
-        return null
-      }
+    if (response.data.message === "Email not verified. Verification email sent") {
+      setMessage(response.data.message)
 
-      else if (response.data.message === "Email verified") {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        toast.success("Login successfully")
-        setMessage("Verified Email")
-        console.log("userCredentials in context", userCredential)
-        
-        return userCredential;
-      }
+      return null
+    }
+
+    else if (response.data.message === "Email verified") {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      toast.success("Login successfully")
+      setMessage("Verified Email")
+      console.log("userCredentials in context", userCredential)
+
+      return userCredential;
+    }
 
 
-    
+
 
 
 
@@ -90,11 +90,31 @@ export function UserAuthContextProvider({ children }) {
     const provider = new GoogleAuthProvider()
 
     try {
+
       const userCredentials = await signInWithPopup(auth, provider);
+
+
       const userData = userCredentials.user;
 
-      await createUserInDatabase(userData.uid, { email: userData.email, name: userData.displayName });
+      const userRef = ref(database, `users/${userData.uid}`)
+
+      onValue(userRef, (snapshot) => {
+        const userDetails = snapshot.val();
+        if (userDetails) {
+          console.log("userdetails:", userDetails)
+          
+          return
+        }
+        else {
+        
+        }
+
+      })
+
+      createUserInDatabase(userData.uid, { email: userData.email, name: userData.displayName });
       console.log("User signed up with Google and data stored in database.");
+
+
 
     } catch (error) {
       console.error("Error signing up with Google:", error.message);
