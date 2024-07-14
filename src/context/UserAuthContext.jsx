@@ -101,18 +101,20 @@ export function UserAuthContextProvider({ children }) {
       onValue(userRef, (snapshot) => {
         const userDetails = snapshot.val();
         if (userDetails) {
-          console.log("userdetails:", userDetails)
-          
+          console.log("user already have account in realtime database userdetails:", userDetails)
+
+
+
           return
         }
         else {
-        
+          createUserInDatabase(userData.uid, { email: userData.email, name: userData.displayName });
+          console.log("User signed up with Google and data stored in database.");
         }
 
       })
 
-      createUserInDatabase(userData.uid, { email: userData.email, name: userData.displayName });
-      console.log("User signed up with Google and data stored in database.");
+
 
 
 

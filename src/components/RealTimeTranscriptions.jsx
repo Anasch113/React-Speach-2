@@ -43,6 +43,7 @@ function RealTimeTranscriptions() {
   const [headerVanish, setHeaderVanish] = useState(false);
   const [lineSpacing, setLineSpacing] = useState('normal');
   const [showLineNumbers, setShowLineNumbers] = useState(false);
+  const [dynamicHeight, setDynamicHeight] = useState(80)
   const colorPickerRef = useRef(null);
   const bgColorPicker = useRef(null);
   const settingsRef = useRef(null);
@@ -328,13 +329,31 @@ function RealTimeTranscriptions() {
 
   const containerRef = useRef(null);
   const pRef = useRef(null);
+  const pRefLarge = useRef(null);
 
+  // for small window
   useEffect(() => {
     if (pRef.current) {
       pRef.current.scrollTop = pRef.current.scrollHeight;
     }
+  }, [transcript, dynamicHeight]);
+
+
+  // for large window
+  useEffect(() => {
+    if (pRefLarge.current) {
+      pRefLarge.current.scrollTop = pRefLarge.current.scrollHeight;
+    }
   }, [transcript]);
 
+
+  useEffect(() => {
+
+    setDynamicHeight(fontSize2 * 3)
+
+  }, [fontSize2])
+
+  console.log("dynamic height", dynamicHeight)
 
 
   return (
@@ -431,16 +450,18 @@ function RealTimeTranscriptions() {
 
         <div
           id="container-id"
-          className="border shadow-sm h-20 w-full text-black flex  font-sans px-2 my-2 relative"
+          className={`border shadow-sm w-full text-black flex  font-sans px-2 my-2 relative`}
           style={{
             fontSize: `${fontSize2}px`,
             fontFamily2,
             color: textColor2,
             backgroundColor: bgColor2,
-          
+            height: `${dynamicHeight}px`
+
           }}
         >
-          <p className='text-white text-lg'>Events Display:</p>
+          <p className='text-white text-lg  text-center w-40 my-2  font-bold mr-5'>Events Display:</p>
+
           <div className=" w-full overflow-hidden" ref={containerRef}>
             <div
               ref={pRef}
@@ -449,7 +470,7 @@ function RealTimeTranscriptions() {
                 overflowY: 'auto',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'flex-end',
+                justifyContent: 'flex-start',
               }}
             >
               <p>
@@ -483,27 +504,41 @@ function RealTimeTranscriptions() {
 
           {/* large window */}
 
-          <div id='container-id' className=" border  shadow-sm min-h-500  w-full text-black flex font-sans p-3 relative overflow-hidden"
+          <div
+            id="container-id"
+            className="border shadow-sm h-[500px]  w-full  flex  font-sans px-2 my-2 relative"
             style={{
               fontSize: `${fontSize}px`,
               fontFamily,
               color: textColor,
               backgroundColor: bgColor,
-              lineHeight: lineSpacing,
-
 
             }}
           >
-            <p >
-              {showLineNumbers &&
-                transcript.split('\n').map((line, index) => (
-                  <span className='' key={index}>
-                    {index + 1}. {line}
 
-                  </span>
-                ))}
-              {!showLineNumbers && transcript}
-            </p>
+            <div className=" w-full overflow-hidden" ref={containerRef}>
+              <div
+                ref={pRefLarge}
+                style={{
+                  height: '100%',
+                  overflowY: 'auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start',
+                }}
+              >
+                <p>
+                  {showLineNumbers
+                    ? transcript.split('\n').map((line, index) => (
+                      <span key={index}>
+                        {index + 1}. {line}
+                        <br />
+                      </span>
+                    ))
+                    : transcript}
+                </p>
+              </div>
+            </div>
           </div>
 
 

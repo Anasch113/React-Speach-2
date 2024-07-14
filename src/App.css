@@ -1,16 +1,18 @@
-*{
- 
+* {
+
   scroll-behavior: smooth;
   font-family: 'Space Grotesk';
   /* overflow-x: hidden; */
-  
-  
+
+
 }
-html{
+
+html {
   background-color: black;
   overflow-x: hidden;
   color: white;
 }
+
 .customBtn2 {
   background: #a100ff;
   padding: 2px 5px;
@@ -21,6 +23,7 @@ html{
   position: relative;
   transition: ease-in;
 }
+
 .mt-2 {
   margin-top: .5rem;
 }
@@ -52,56 +55,72 @@ html{
   transform: scaleX(1);
   transform-origin: bottom left;
 }
+
 .bg-image {
   background-image: url('./assets/background.png');
   background-attachment: fixed;
-  background-size: cover; /* This ensures the image covers the whole background */
-  background-repeat: no-repeat; /* Prevents the image from repeating */
-  background-position: center; /* Centers the image */
+  background-size: cover;
+  /* This ensures the image covers the whole background */
+  background-repeat: no-repeat;
+  /* Prevents the image from repeating */
+  background-position: center;
+  /* Centers the image */
 }
+
 @media (max-width: 1024px) {
   .backgroundImg1 {
-      background-image: url(./assets/background1.png);
-      background-size: contain;
-      background-position: center;
+    background-image: url(./assets/background1.png);
+    background-size: contain;
+    background-position: center;
   }
 }
-.fade-in-image { animation: fadeIn 5s; }
-@keyframes fadeIn {
-0% { opacity: 0; }
-100% { opacity: 1; }
+
+.fade-in-image {
+  animation: fadeIn 5s;
 }
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
 .bttnn {
-background: #a100ff;
-border-radius: 5px;
-padding: 10px 35px;
-color: #fff;
-font-family: Montserrat, sans-serif;
-border: 2px solid #a100ff;
-transition: 1s;
-position: relative;
-transition: ease-in;
-cursor: pointer;
+  background: #a100ff;
+  border-radius: 5px;
+  padding: 10px 35px;
+  color: #fff;
+  font-family: Montserrat, sans-serif;
+  border: 2px solid #a100ff;
+  transition: 1s;
+  position: relative;
+  transition: ease-in;
+  cursor: pointer;
 }
 
 .moving {
-animation: move-rt1 40s linear infinite;
-/* overflow: hidden; */
+  animation: move-rt1 40s linear infinite;
+  /* overflow: hidden; */
 
 }
 
 .moving:hover {
-/* float: left; */
-animation-play-state: paused;
+  /* float: left; */
+  animation-play-state: paused;
 }
 
 @keyframes move-rt1 {
-0% {
-  transform: translateX(0);
-}
-100% {
-  transform: translateX(calc(-250px * 6));
-}
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(calc(-250px * 6));
+  }
 }
 
 
@@ -176,19 +195,33 @@ animation-play-state: paused;
   background-color: #1475cf;
 }
 
+.swal2-popup.custom-swal-popup {
+  background-color: #111827;
+  /* Set the desired background color */
+  color: white;
+  /* Optional: Set text color */
+  /* border: 1px solid white; */
+}
+
 
 .swal2-confirm.custom-confirm {
-  background-color: #A100FF;
+  /* background-color: #a100ff; */
   color: white;
+  /* border: 1px solid rgb(97, 74, 180); */
+  
 }
 
 .swal2-deny.custom-deny {
-  background-color: #0041F0;
+  /* background-color: #1F2937;
+  color: white; */
+  background-color: #a100ff;
   color: white;
+  /* border: 3px solid #a100ff; */
+  /* border-radius: 8px; */
 }
 
 .swal2-cancel.custom-cancel {
-  background-color: #E2062E;
+  background-color: #1F2937;
   color: white;
 }
 

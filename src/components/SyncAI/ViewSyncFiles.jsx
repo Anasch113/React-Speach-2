@@ -72,7 +72,7 @@ const ViewSyncFiles = () => {
     const element = document.createElement("a");
 
     const srtContent = generateSrtContent()
-    console.log("srt content from the generateSrtContent function", srtContent)
+
 
     const file = new Blob([srtContent], { type: "text/plain" }); // Create blob with text content
     element.href = URL.createObjectURL(file);
@@ -84,6 +84,11 @@ const ViewSyncFiles = () => {
 
   // function to convert timestamps into correct srt format timestamps
   const convertToSrtTime = (seconds) => {
+    // if (isNaN(seconds) || seconds < 0) {
+    //   // Return a default timestamp or handle the error as needed
+    //   return '00:00:00,000';
+    // }
+
     const pad = (num, size) => ('000' + num).slice(size * -1);
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -97,41 +102,53 @@ const ViewSyncFiles = () => {
   const generateSrtContent = () => {
     let srtContent = '';
     let segmentIndex = 1;
+    let lastValidTime = 0;
 
     dbTranscript.syncData.forEach((data, i) => {
       let paragraphContent = '';
 
       data.elements.forEach((words, j) => {
-        if (words.value.trim() !== '') {
-          paragraphContent += words.value + ' ';
-          if ((j + 1) % 24 === 0) {
-            const startTime = convertToSrtTime(data.elements[j - 12].ts);
-            const endTime = convertToSrtTime(words.end_ts);
-            srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
-            segmentIndex += 1;
-            paragraphContent = ''; // Reset paragraph content for next segment
+        // if (words.value.trim() !== '') {
+        paragraphContent += words.value + '';
+        if ((j + 1) % 14 === 0) {
+
+          let startTs = data.elements[j - 7].ts;
+          let endTs = data.elements[j - 1].end_ts;
+
+          if (isNaN(startTs) || startTs < 0) {
+            startTs = lastValidTime + 1; // Add 1 second to the last valid time
           }
+          if (isNaN(endTs) || endTs < 0) {
+            endTs = startTs + 1; // Add 1 second to start time if end time is invalid
+          }
+          const startTime = convertToSrtTime(startTs);
+          const endTime = convertToSrtTime(endTs);
+
+          srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
+          segmentIndex += 1;
+          paragraphContent = ''; // Reset paragraph content for next segment
+          // }
         }
       });
 
       // If there is any remaining paragraph content that wasn't added due to the 12-word condition
-      if (paragraphContent.trim() !== '') {
-        const lastElement = data.elements[data.elements.length - 1];
-        const startTime = convertToSrtTime(data.elements[data.elements.length - 12]?.ts || 0);
-        const endTime = convertToSrtTime(lastElement.end_ts);
-        srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
-        segmentIndex += 1;
-      }
+      // if (paragraphContent.trim() !== '') {
+      //   const lastElement = data.elements[data.elements.length - 1];
+      //   const startTime = convertToSrtTime(data.elements[data.elements.length - 12]?.ts || 0);
+      //   const endTime = convertToSrtTime(lastElement.end_ts);
+      //   srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
+      //   segmentIndex += 1;
+      // }
     });
 
     return srtContent;
   };
 
-  const handleToggleSRT = () => {
-    console.log("Before toggle:", showSRT); // Log current state before toggle
-    setShowSRT(!showSRT); // Toggle the value of showSRT
-    console.log("After toggle:", showSRT); // Log current state after toggle
-  };
+  // const handleToggleSRT = () => {
+  //   console.log("Before toggle:", showSRT); // Log current state before toggle
+  //   setShowSRT(!showSRT); // Toggle the value of showSRT
+  //   console.log("After toggle:", showSRT); // Log current state after toggle
+  // };
 
   const calculateHighlightedIndex = (currentTime) => {
     console.log("currentTime", currentTime);
@@ -165,7 +182,7 @@ const ViewSyncFiles = () => {
   };
 
 
-  console.log("wordsIndex", wordsIndex)
+  // console.log("wordsIndex", wordsIndex)
 
 
 
@@ -228,16 +245,16 @@ const ViewSyncFiles = () => {
                             <div className="flex flex-wrap gap-1">
                               {data.elements.map((words, j) => (
                                 // Check if words.value is not an empty string
-                                words.value.trim() !== "" && (
-                                  <div className='' key={j}>
-                                    <p className='flex gap-3' style={{ color: j === wordsIndex ? '#f1b900' : 'white' }}>
-                                      {words.value}
-                                      {(j + 1) % 12 === 0 && (
-                                        <span>( {data.elements[j - 6].ts} -- {words.end_ts} )</span>
-                                      )}
-                                    </p>
-                                  </div>
-                                )
+                                // words.value.trim() !== "" && (
+                                <div className='' key={j}>
+                                  <p className='flex gap-3' style={{ color: j === wordsIndex ? '#f1b900' : 'white' }}>
+                                    {words.value}
+                                    {(j + 1) % 10 === 0 && (
+                                      <span>( {data.elements[j - 5].ts} -- {data.elements[j - 5].end_ts})</span>
+                                    )}
+                                  </p>
+                                </div>
+                                // )
                               ))}
                             </div>
                           </div>
