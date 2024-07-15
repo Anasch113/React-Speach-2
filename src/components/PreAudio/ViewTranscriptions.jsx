@@ -354,7 +354,7 @@ const ViewTranscriptions = ({ filename }) => {
                                 </div>
                               )}
                               <span className="flex gap-2">
-                                {utterance && <p className='font-lg font-bold'>{`Speaker ${utterance.speaker} :`}</p>}
+                                {/* {utterance && <p className='font-lg font-bold'>{`Speaker ${utterance.speaker} :`}</p>} */}
                                 <p
                                   style={{ color: i === wordsIndex ? '#f1b900' : 'white' }}
                                   className={`${isEdit ? "hover:text-blue-500 hover:cursor-pointer" : ""}`}
