@@ -69,42 +69,42 @@ function Sidebar({ isPurchase, minutes }) {
 
   console.log("is purchase ", isPurchase)
 
-  useEffect(() => {
+  // useEffect(() => {
 
 
 
-    const handleMessage = (event) => {
-      if (event.origin !== window.location.origin) {
-        // Ignore messages from unknown origins for security
-        return;
-      }
+  //   const handleMessage = (event) => {
+  //     if (event.origin !== window.location.origin) {
+  //       // Ignore messages from unknown origins for security
+  //       return;
+  //     }
 
-      console.log("event data", event.data);
+  //     console.log("event data", event.data);
 
-      if (event.data.type === 'PAUSE') {
-        setIsPaused(true);
-        clearTimeout(timerRef.current);
-      } else if (event.data.type === 'RESUME') {
-        setIsPaused(false);
-      } else if (event.data.type === 'STOP') {
-        stopLiveTranscript();
-        toast.success("Live Transcriptions End");
-      }
-    };
+  //     if (event.data.type === 'PAUSE') {
+  //       setIsPaused(true);
+  //       clearTimeout(timerRef.current);
+  //     } else if (event.data.type === 'RESUME') {
+  //       setIsPaused(false);
+  //     } else if (event.data.type === 'STOP') {
+  //       stopLiveTranscript();
+  //       toast.success("Live Transcriptions End");
+  //     }
+  //   };
 
-    window.addEventListener('message', handleMessage);
+  //   window.addEventListener('message', handleMessage);
 
-    // Cleanup function to clear the timer if the component unmounts or the effect runs again
-    return () => {
-      clearTimeout(timerRef.current);
+  //   // Cleanup function to clear the timer if the component unmounts or the effect runs again
+  //   return () => {
+  //     clearTimeout(timerRef.current);
 
-      window.removeEventListener('message', handleMessage);
-    };
-
-
+  //     window.removeEventListener('message', handleMessage);
+  //   };
 
 
-  }, [])
+
+
+  // }, [])
 
 
 
@@ -214,13 +214,9 @@ function Sidebar({ isPurchase, minutes }) {
         setShowPaymentModal(true)
 
       } else if (result.isDenied) {
-        // setShowPaymentModal(true) uncomment this after work done
-setIsLiveTranscript(true)
-        newWindowRef.current = window.open('/realtimetranscriptions', '_blank', 'width=400,height=500');
-        if (newWindowRef.current) {
-          newWindowRef.current.focus();
-        }
-       
+        setShowPaymentModal(true)
+
+
 
 
 

@@ -163,7 +163,7 @@ function RealTimeTranscriptions() {
 
   useEffect(() => {
 
-    setIsRecordingAuto(true) // make it true after work done
+    setIsRecordingAuto(true) 
 
     const handleMessage = (event) => {
 
