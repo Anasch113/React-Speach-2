@@ -21,15 +21,15 @@ function MainContent() {
   const [isDownloading, setIsDownloading] = useState(false); // New state variable
   const [isDownloadingtr, setIsDownloadingtr] = useState(false); // New state variable
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
- 
+
 
 
   const myAudioFiles = useSelector((state) => state.audio.audioFiles);
   const transcriptionFiles = useSelector((state) => state.audio.typesTranscriptionFiles);
- 
 
 
-  
+
+
 
 
 
@@ -124,10 +124,10 @@ function MainContent() {
 
 
   return (
-    <main className="flex-1 overflow-x-hidden overflow-y-scroll bg-bg-color-light min-h-screen "  style={{
-        scrollbarWidth: "thin",
-        scrollbarColor: "transparent transparent",
-      }}>
+    <main className="flex-1 overflow-x-hidden overflow-y-scroll bg-bg-color-light min-h-screen " style={{
+      scrollbarWidth: "thin",
+      scrollbarColor: "transparent transparent",
+    }}>
       <div className="flex flex-col gap-3 mx-4 my-6 p-10 text-white bg-blackGray   rounded-md">
         <p className="text-2xl pb-1 text-white font-semibold">Welcome back!</p>
         <p>Captify is readying for take-off! </p>
@@ -135,8 +135,8 @@ function MainContent() {
           <ProgressBar />
         </div>
       </div>
-    
-    
+
+
 
       <div className="flex px-7 py-4  gap-4 t   max-[500px]:gap-1 max-[500px]:flex-col max-[500px]:items-start">
         <span className="flex gap-2 items-center text-2xl font-semibold ">
@@ -148,26 +148,26 @@ function MainContent() {
       {transcriptionFiles.length > 0 ? (
         transcriptionFiles.map((files, i) => (
 
-          <div key={i} className="flex items-center justify-between bg-bg-color border border-border-dark-color my-2 px-7 p-5  rounded-md mx-4 gap-3">
+          <div key={i} className="flex items-center justify-between bg-bg-navy-blue  my-2 px-7 p-5  rounded-md mx-4 gap-3">
 
 
-            <div className="flex items-center text-text-color-blue flex-col gap-2">
+            <div className="flex items-center  flex-col gap-2">
 
               <div className="  flex items-center gap-3">
-             
+
                 <p className="text-2xl"> Notes</p>
-                
-               </div>
-              
+
+              </div>
+
 
 
             </div>
 
 
 
-            <button disabled={isDownloadingtr} className=" hover:bg-gray-200  bg-blackGray p-4 text-text-color-blue rounded-md w-fit" onClick={downloadPdf}>
+            <button disabled={isDownloadingtr} className="  bg-white hover:bg-slate-50 p-4 text-text-color-blue rounded-md w-fit" onClick={downloadPdf}>
 
-              <span className="flex items-center gap-1"> <FaRegFilePdf /> {isDownloadingtr ? "Downloading..." : "Download File"}</span>
+              <span className="flex items-center gap-1 text-black font-semibold  "> <FaRegFilePdf /> {isDownloadingtr ? "Downloading..." : "Download File"}</span>
             </button>
 
 
@@ -181,7 +181,7 @@ function MainContent() {
 
       {/* live transcription */}
 
-      <div className=" flex   flex-col gap-7 mx-4 my-4 p-5 px-7 bg-blackGray  rounded-md">
+      <div className=" flex   flex-col gap-7 mx-4 my-4 p-5 px-7   bg-bg-navy-blue  rounded-md">
         <div className="flex flex-col gap-2">
           {myAudioFiles.length > 0 ? (
             myAudioFiles.map((audio, i) => (
@@ -189,11 +189,11 @@ function MainContent() {
                 <div className="text-xl  flex items-center gap-5">
                   <p className="text-2xl"> Notes</p>
                 </div>
-               
 
-                <button disabled={isDownloading} className="  bg-blackGray hover:bg-gray-600 p-4 text-text-color-blue rounded-md w-fit" onClick={() => downloadAudio(audio.text.cloudinaryFileUrl, `video_${i}.mp4`)}>
 
-                  <span className="flex items-center gap-1"> <p>{isDownloading ? "Downloading..." : "Download Video"}</p>  <p><IoVideocamOffSharp /></p> </span>
+                <button disabled={isDownloading} className="  bg-white  p-4 text-black rounded-md w-fit" onClick={() => downloadAudio(audio.text.cloudinaryFileUrl, `video_${i}.mp4`)}>
+
+                  <span className="flex items-center gap-1"> <p className="font-semibold font-poppins text-black"> {isDownloading ? "Downloading..." : "Download Video"}</p>  <p><IoVideocamOffSharp /></p> </span>
                 </button>
 
               </div>

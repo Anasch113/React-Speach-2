@@ -211,15 +211,12 @@ function Sidebar({ isPurchase, minutes }) {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
+
         setShowPaymentModal(true)
 
       } else if (result.isDenied) {
+      
         setShowPaymentModal(true)
-
-
-
-
-
 
       }
     });
