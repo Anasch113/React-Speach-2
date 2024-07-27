@@ -1,7 +1,7 @@
 // MainContent.jsx
 
 import React, { useEffect, useState, useRef } from "react";
-import ProgressBar from "../components/ProgressBar";
+import ProgressBar from "../components/StartingFeatures/ProgressBar";
 
 import { useSelector } from "react-redux";
 // import LiveTranscription from "../components/LiveTranscription";

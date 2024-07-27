@@ -3,13 +3,13 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 // import LiveTranscription from "../components/LiveTranscription";
 import { useDispatch, useSelector } from "react-redux";
-import {  addTypesTranscriptionsFiles, AddAudio, setVideoStream, addSummary, startRecordingRed, stopRecordingRed  } from "../GlobalState/features/audioSlice";
+import {  addTypesTranscriptionsFiles, AddAudio, setVideoStream, addSummary, startRecordingRed, stopRecordingRed  } from "../../GlobalState/features/audioSlice";
 import { useNavigate } from "react-router-dom";
-import { uploadAudioToCloudinary } from "../components/audioUtils";
+import { uploadAudioToCloudinary } from "../StartingFeatures/audioUtils";
 import { MdOutlineKeyboardVoice } from "react-icons/md";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FaStop } from "react-icons/fa";
-import MainContent from "../layout/MainContent";
+import toast from 'react-hot-toast'
 
 
 const MeetingRecord = () => {
@@ -154,6 +154,7 @@ const MeetingRecord = () => {
           
           // ... other dispatch or state updates ...
         } catch (error) {
+          toast.error("Captify not detected any audio from this meeting")
           console.error("Error handling transcript text from cloudinary:", error);
         }
         

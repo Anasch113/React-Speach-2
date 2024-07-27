@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import React from "react";
-import MeetingRecord from "../components/MeetingRecord";
+import MeetingRecord from "../components/StartingFeatures/MeetingRecord";
 import { AiOutlineAudio } from "react-icons/ai";
 import toast from "react-hot-toast";
 import { RxOpenInNewWindow } from "react-icons/rx";

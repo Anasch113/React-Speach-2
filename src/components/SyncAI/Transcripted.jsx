@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { MdPayment } from "react-icons/md";
 import { useUserAuth } from '../../context/UserAuthContext';
 
+
 const Transcripted = ({
     data,
     file,
@@ -55,6 +56,7 @@ const Transcripted = ({
                     <span className='flex flex-row items-center gap-2'>
                         <RxDashboard className='md:text-3xl' />
                         <h1 className='md:text-3xl font-bold font-poppins '> Recent Files</h1>
+                       
                     </span>
 
                     <div className='flex gap-2 w-2/6  justify-end'>

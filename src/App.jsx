@@ -3,7 +3,7 @@ import "./App.css";
 import Dashboard from "./pages/Dashboard";
 import RootLayout from "./layout/RootLayout";
 import BotApi from "./pages/Bot";
-import RealTimeTranscriptions from "./components/RealTimeTranscriptions";
+import RealTimeTranscriptions from "./components/StartingFeatures/RealTimeTranscriptions";
 
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
@@ -12,7 +12,7 @@ import Home from "./pages/Home";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
 import { UserAuthContextProvider } from "./context/UserAuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/StartingFeatures/ProtectedRoute";
 import ForgetPassword from "./SmallComponents/ForgetPassword";
 import { EmailAuthCredential } from "firebase/auth";
 import EmailVerification from "./SmallComponents/EmailVerification";
@@ -30,6 +30,7 @@ import ViewSyncFiles from "./components/SyncAI/ViewSyncFiles";
 import TranscriptSuccess from "./SmallComponents/TranscriptSuccess";
 import CreditSuccess from "./SmallComponents/CreditSuccess";
 import LiveTranscriptSuccess from "./SmallComponents/LiveTranscriptSuccess";
+
 
 
 
@@ -65,6 +66,8 @@ import PreferenceCenter from './pages/prefrence/Preference'
 import PrivacyStatement from './pages/privacy-statement'
 import TermsAndConditions from './pages/terms-condition'
 import Header from './components/layout/header/Header'
+
+import Notecase from "./pages/lawyers-advice/CaseNote";
 
 
 function App() {
@@ -300,6 +303,14 @@ function App() {
 
               <ProtectedRoute>
                 <ViewSyncFiles />
+              </ProtectedRoute>}
+
+            />
+
+            <Route exact path="/note-case" element={
+
+              <ProtectedRoute>
+                <Notecase />
               </ProtectedRoute>}
 
             />

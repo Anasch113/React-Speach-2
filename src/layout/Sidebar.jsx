@@ -29,6 +29,7 @@ import { MdOutlineTimer } from "react-icons/md";
 import { FaPause } from "react-icons/fa";
 import { FaBars } from 'react-icons/fa6';
 import { MdClose } from "react-icons/md";
+import { MdOutlineCases } from "react-icons/md";
 
 function Sidebar({ isPurchase, minutes }) {
   const user1 = {
@@ -367,12 +368,21 @@ function Sidebar({ isPurchase, minutes }) {
             </div>
           </Link>
 
+          <Link to={"/note-case"}>
+            <div className={`mx-2 p-4 flex rounded-md ${isActive("/resyncingAi") ? "bg-white text-black" : "hover:border border-white"}`}>
+              <div className="mr-2 mt-1">
+              <MdOutlineCases />
+              </div>
+              <button>Note Case</button>
+            </div>
+          </Link>
+
           <button onClick={handleLogout}>
-            <div className={`mx-2 p-4 flex rounded-md ${isActive("/more") ? "bg-white text-black" : "hover:border border-white"}`}>
+            <div className={`mx-2 p-4  flex rounded-md ${isActive("/more") ? "bg-white text-black" : "hover:border border-white"}`}>
               <div className="mr-2 mt-1">
                 <CiLogout />
               </div>
-              <button>Logout</button>
+              <button >Logout</button>
             </div>
           </button>
 

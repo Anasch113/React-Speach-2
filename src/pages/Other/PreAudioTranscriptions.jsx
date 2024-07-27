@@ -220,6 +220,7 @@ const PreAudioTranscriptions = () => {
                 const roundedDuration = (duration / 60).toFixed(1)
                 setFileDuration(roundedDuration)
                 // Get the duration of the uploaded file
+                console.log("cloudinaryResponseeeeee:", cloudinaryResponse)
                 console.log("cloudinaryyyy URRLLLLLLLL: ", cloudinaryFileUrl)
                 toast.success("File Uploaded")
 
@@ -394,6 +395,8 @@ const PreAudioTranscriptions = () => {
                 setProcessing(false)
                 return
             }
+
+            console.log("urllllllllllllllllllllllllllll", cloudUrl)
             const params = {
                 audio: cloudUrl,
                 speaker_labels: true,

@@ -1,18 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
-import TranslatedText from "../components/TranslatedText";
-import VoiceRecorder from "../components/VoiceRecorder";
+import TranslatedText from "../components/StartingFeatures/TranslatedText";
+import VoiceRecorder from "../components/StartingFeatures/VoiceRecorder";
 import axios from "axios";
 // import LiveTranscription from "../components/LiveTranscription";
 import { useDispatch, useSelector } from "react-redux";
 import { AddAudio, addTypesTranscriptionsFiles, stopRecordingRed } from "../GlobalState/features/audioSlice";
 import { useNavigate } from "react-router-dom";
-import { uploadAudioToCloudinary } from "../components/audioUtils";
+import { uploadAudioToCloudinary } from "../components/StartingFeatures/audioUtils";
 import Sidebar from "../layout/Sidebar";
 import { AiOutlineHome } from "react-icons/ai";
 import { BiConversation } from "react-icons/bi";
 import { SiTheconversation } from "react-icons/si";
 import { CgMoreVertical } from "react-icons/cg";
-import NavbarOther from "../components/NavbarOther";
+import NavbarOther from "../components/StartingFeatures/NavbarOther";
 
 const Dashboard = () => {
  
