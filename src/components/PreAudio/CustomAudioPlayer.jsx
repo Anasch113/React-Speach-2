@@ -3,6 +3,9 @@ import { FaPause } from "react-icons/fa6";
 import { FaPlay } from "react-icons/fa6";
 import { FaVolumeUp } from "react-icons/fa";
 import { FaVolumeMute } from "react-icons/fa";
+import { Slider } from "@/components/ui/slider"
+
+
 function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
@@ -60,6 +63,7 @@ function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
 
 
   // Function to handle seeking
+
   const handleSeek = (event) => {
     const value = parseFloat(event.target.value);
     setCurrentTime(value);
@@ -67,35 +71,45 @@ function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
     const newIndex = calculateHighlightedIndex(currentTime);
 
   };
-
+ 
 
   return (
     <div>
       <audio ref={audioRef} src={audioUrl}></audio>
       <div className='flex gap-1 md:flex-row flex-col '>
-        <div className='flex items-center'>
-        <button onClick={togglePlayPause}>{isPlaying ? <FaPause className='hover:bg-bg-blue  hover:text-white w-7 h-7 p-1 text-3xl  rounded-md transition-colors duration-300' /> : <FaPlay className='hover:bg-bg-blue  hover:text-white w-7 h-7 p-1 text-3xl  rounded-md transition-colors duration-300' />}</button>
+        <div className=' w-full flex items-center'>
+          <button onClick={togglePlayPause}>{isPlaying ? <FaPause className='hover:bg-bg-blue  hover:text-white w-7 h-7 p-1 text-3xl  rounded-md transition-colors duration-300' /> : <FaPlay className='hover:bg-bg-blue  hover:text-white w-7 h-7 p-1 text-3xl  rounded-md transition-colors duration-300' />}</button>
 
-<input
-  type="range"
-  min="0"
-  max={duration}
-  step="1"
-  value={currentTime}
-  onChange={handleSeek}
-  className='md:w-[500px] bg-gray-500 border-none mx-5'
+          <input
+            type="range"
+            min="0"
+            max={duration}
+            step="1"
+            value={currentTime}
+            onChange={handleSeek}
+            className='md:w-[500px] bg-gray-500 border-none mx-5'
 
-/>
+          />
+
+
+          {/* <Slider
+            className='md:w-[500px] border-none mx-5'
+            value={[currentTime]}
+            min={0}
+            max={duration}
+            step={1}
+            onValueChange={handleSeek}
+          /> */}
         </div>
-   
-       <p className='text-center'>{currentTime && `${Math.floor(currentTime)}s`}</p> 
+
+        <p className='text-center'>{currentTime && `${Math.floor(currentTime)}s`}</p>
         <div className='flex items-center gap-1 mx-4'>
 
 
           {
             volume === "0" ? (<FaVolumeMute size={22} />) : (<FaVolumeUp size={22} />)
           }
-
+          
           <input
             type="range"
             min="0"
@@ -105,6 +119,13 @@ function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
             onChange={handleVolumeChange}
             className='mx-2 w-28'
           />
+          {/* <Slider
+            className='md:w-[150px] border-none mx-5'
+            value={[volume]}
+            max={1}
+            step={0.01}
+            onValueChange={handleVolumeChange}
+          /> */}
         </div>
       </div>
     </div>

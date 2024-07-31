@@ -4,14 +4,18 @@ import { MdClose } from "react-icons/md";
 import { MdPayment } from "react-icons/md";
 import { useState } from 'react';
 const PaymentOptions = ({
-    fileName,
-    duration,
+    fileNames,
+    fileDurations,
+
     cost,
     handlePaymentOptions,
     setShowPaymentModal,
     setCost,
     currentBalance,
-    handleTranscriptions
+    handleTranscriptions,
+    setIsPaymentDone,
+    fileName,
+    duration
 }) => {
 
 
@@ -24,6 +28,14 @@ const PaymentOptions = ({
         setTotal(value * 0.5);
     };
 
+
+    const startTranscriptions = () => {
+        setIsPaymentDone(true)
+
+        setTimeout(() => {
+            handleTranscriptions()
+        }, 2000);
+    }
 
 
 
@@ -58,12 +70,44 @@ const PaymentOptions = ({
                     <span className='flex justify-between '>
 
                         <p className=' text-center font-medium  font-poppins'>File Name</p>
-                        <p className=' text-center font-medium  font-poppins'>{fileName}</p>
+
+                        {
+                            fileNames && fileNames.length > 0 ?
+
+                                <p className=' text-center font-medium  font-poppins'>
+                                    {fileNames.map((file, i) => (
+
+                                        <p key={i}>{file}</p>
+                                    ))}</p>
+
+                                :
+
+                                <p className=' text-center font-medium  font-poppins'>{fileName}</p>
+                        }
+
+
+
+
                     </span>
                     <span className='flex justify-between '>
 
                         <p className='text-center font-medium  font-poppins'>Transcript Duration:</p>
-                        <p className=' text-center font-medium  font-poppins'>{duration} min</p>
+
+                        {
+                         fileDurations &&   fileDurations.length > 0 ?
+
+                                <p className=' text-center font-medium  font-poppins'>
+                                    {fileDurations.map((file, i) => (
+
+                                        <p key={i}>{file} min</p>
+                                    ))}</p>
+
+                                :
+
+                                <p className=' text-center font-medium  font-poppins'>{duration}</p>
+                        }
+
+
                     </span>
                     <span className='flex justify-between '>
 

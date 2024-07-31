@@ -3,6 +3,7 @@ import { Switch } from '@/components/ui/switch'
 import React from 'react'
 
 const ParametersBox = ({
+    showSpeakerLabels,
     showNotes,
     handleSwitchChange }) => {
 
@@ -20,9 +21,9 @@ const ParametersBox = ({
 
                 <span className='flex gap-2 w-full'>
 
-                    <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch />Tasks</span>
+                    <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch checked={showSpeakerLabels}  onCheckedChange={()=> handleSwitchChange("speakerLabels")} />Speaker Labels</span>
 
-                    <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch checked={showNotes}  onCheckedChange={handleSwitchChange} />Notes</span>
+                    <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch checked={showNotes}  onCheckedChange={()=> handleSwitchChange("notes")} />Notes</span>
                 </span>
                 <span className='flex gap-2 w-full'>
                     <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch />Emails</span>

@@ -7,17 +7,26 @@ import toast from 'react-hot-toast'
 import RecordRTC from 'recordrtc';
 import { AssemblyAI } from 'assemblyai'
 import axios from 'axios'
+import "../styles/style.css"
+// import { uploadAudioToCloudinary } from "../../StartingFeatures/audioUtils";
 import { FaPlay, FaPause, FaStop, FaTrash, FaCheck } from "react-icons/fa";
+import SpeakerDiarization from './SpeakerDiarization'
+import CustomAudioPlayer from '@/components/PreAudio/CustomAudioPlayer'
 
 
 const MainLayout = () => {
 
     // states declaration
     const [showNotes, setShowNotes] = useState(false);
+    const [showSpeakerLabels, setShowSpeakerLabels] = useState(false);
     const [transcript, setTranscript] = useState('')
+    const [transcriptions, setTranscriptions] = useState([])
     const [isPaused, setIsPaused] = useState(false);
     const [isRecording, setIsRecording] = useState(false)
     const [progress, setProgress] = useState("")
+    const [speakerLabelsText, setSpeakerLabelsText] = useState([])
+    const [wordsIndex, setWordsIndex] = useState("");
+    const [isVisible, setIsVisible] = useState(true);
 
 
     // Refs
@@ -41,10 +50,31 @@ const MainLayout = () => {
     };
 
 
-    const handleSwitchChange = () => {
-        setShowNotes(prevState => !prevState);
+    const handleSwitchChange = (identifier) => {
+        if (identifier === 'notes') {
+            setShowNotes(prevState => !prevState);
+        } else if (identifier === 'speakerLabels') {
+            setShowSpeakerLabels(prevState => !prevState);
+        }
     };
 
+// >>>>>>>>>>>>>>>> UI Logics >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    useEffect(() => {
+        let timeout;
+        const handleScroll = () => {
+            if (window.scrollY > 50) {
+                setIsVisible(false);
+                timeout = setTimeout(() => setIsVisible(true), 500); // Hide for 500ms
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            clearTimeout(timeout);
+        };
+    }, []);
 
     //>>>>>>>>>>>>>>>>>>>>>>>> Live Transcriptions code >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -134,6 +164,7 @@ const MainLayout = () => {
     console.log("recorder.current:", recorder.current)
 
     // Function to upload the audio blob to Cloudinary
+
     const uploadAudioToCloudinary = async (audioBlob) => {
         try {
             const formData = new FormData();
@@ -141,8 +172,8 @@ const MainLayout = () => {
             formData.append("upload_preset", UPLOAD_PRESET);
             formData.append("cloud_name", CLOUD_NAME);
             formData.append("folder", "Audio");
-            formData.append("resource_type", "auto"); // Ensure correct resource type for audio
-    
+            // Ensure correct resource type for audio
+
             const cloudinaryResponseData = await axios.post(`${cloudinaryBaseUrl}/upload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', // Ensure correct Content-Type
@@ -155,16 +186,19 @@ const MainLayout = () => {
             });
 
             console.log("cloudinaryResponseData", cloudinaryResponseData.data)
-    
+
             const cloudinarySecureURL = cloudinaryResponseData.data.secure_url;
             console.log("Cloud URL of audio file of live transcription:", cloudinarySecureURL);
-            getSpeakerLabels(cloudinarySecureURL);
-    
+
+            await getSpeakerLabels(cloudinarySecureURL);
+
         } catch (uploadError) {
             console.error("Error uploading audio:", uploadError);
             console.error("Error details:", uploadError.response ? uploadError.response.data : uploadError.message);
         }
     };
+
+
 
     // Function to end transcription and upload audio
     const endTranscription = async (event) => {
@@ -182,7 +216,9 @@ const MainLayout = () => {
             recorder.current.stopRecording(async () => {
                 const audioBlob = recorder.current.getBlob();
                 console.log("Audio blob created:", audioBlob);
-                await uploadAudioToCloudinary(audioBlob);
+                const myAudios = await uploadAudioToCloudinary(audioBlob)
+                // setSpeakerLabelsText(myAudios.transcriptText.utterances)
+
                 recorder.current = null; // Reset the recorder
             });
         } else {
@@ -197,14 +233,19 @@ const MainLayout = () => {
 
         console.log("audio url in the getspakerlabels function", audioUrl)
         const params = {
-            audio_url: audioUrl,
+            audio: audioUrl,
             speaker_labels: true,
+            sentiment_analysis: true
         };
 
         try {
+
             const transcript = await client.transcripts.transcribe(params);
+            setTranscriptions(transcript)
+            setSpeakerLabelsText(transcript.utterances)
+            toast.success("speaker diarazation completed")
             console.log("transcript from the speaker diarazation model", transcript)
-            toast.success("Speaker diarization completed ")
+
 
         } catch (error) {
             console.error('Error during speaker diarization:', error);
@@ -231,77 +272,131 @@ const MainLayout = () => {
         if (recorder.current) {
             recorder.current.resumeRecording();
         }
-
-
     }
 
 
 
+    // >>>>>>>>>>>>>>>>>>>>>>>>> Audio play back code >>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+
+
+    const calculateHighlightedIndex = (currentTime) => {
+        currentTime *= 1000;
+        console.log("currentTime", currentTime)
+        // Get the segment analysis results from the transcriptions state
+        // const segments = transcriptions.sentiment_analysis_results;
+
+
+
+        const segments = transcriptions.sentiment_analysis_results
+
+        // Iterate through each segment to find the one that matches the current time
+        for (let i = 0; i < segments.length; i++) {
+            // Extract start and end times of the current segment
+            const { start, end } = segments[i];
+            console.log("start", start)
+            console.log("end", end)
+            // Check if the current time falls within the duration of this segment
+            if (currentTime >= start && currentTime <= end) {
+                setWordsIndex(i)
+                // If matched, return the index
+                return i;
+            }
+        }
+
+        // If no match found, return -1
+        return -1;
+
+
+
+
+    };
+
+
     return (
-        <div className='min-h-screen w-full flex md:flex-row flex-col'>
-            {/* 50% width recording and transcript parts */}
+        <div className='min-h-screen w-full flex items-center flex-col'>
 
-            <div className='md:w-2/4 w-full h-full  flex flex-col items-center p-5 gap-5 '>
-
-                <span className='flex-row flex'>
-                    {
-                        isRecording ? <Button onClick={endTranscription} className="mx-2" variant={"destructive"}><FaStop className='mx-2' /> Stop Recording</Button>
-
-                            :
-
-                            <Button onClick={generateTranscript} className="mx-2" variant={"customPurple"}>Start Recording <FaPlay className='mx-2' /></Button>
-                    }
-
-                    {
-                        isPaused && isRecording && <Button onClick={resumeTranscriptions} className="mx-2" variant={"customGreen"}>Resume Recording <FaPlay className='mx-2' /></Button>
-                    }
-
-                    {
-                        !isPaused && isRecording && <Button onClick={pauseTranscriptions} className="mx-2" variant={"customBlue"}>Pause Recording  <FaPause className='mx-2' /></Button>
-                    }
+            <div className='w-full h-full flex md:flex-row flex-col'>
+                {/* 50% width recording and transcript parts */}
 
 
 
+                <div className='md:w-2/4 w-full h-full  flex flex-col items-center p-5 gap-5 '>
 
-                    <Button className="mx-2" variant={"customPurple"}>Generate Notes</Button>
-                </span>
+                    <span className='flex-row flex'>
+                        {
+                            isRecording ? <Button onClick={endTranscription} className="mx-2" variant={"destructive"}><FaStop className='mx-2' /> Stop Recording</Button>
 
-                <div className='w-full'>
-                    <TranscriptSummary
-                        transcript={transcript}
+                                :
 
-                    />
+                                <Button onClick={generateTranscript} className="mx-2" variant={"customPurple"}>Start Recording <FaPlay className='mx-2' /></Button>
+                        }
+
+                        {
+                            isPaused && isRecording && <Button onClick={resumeTranscriptions} className="mx-2" variant={"customGreen"}>Resume Recording <FaPlay className='mx-2' /></Button>
+                        }
+
+                        {
+                            !isPaused && isRecording && <Button onClick={pauseTranscriptions} className="mx-2" variant={"customBlue"}>Pause Recording  <FaPause className='mx-2' /></Button>
+                        }
+
+
+
+
+                        <Button className="mx-2" variant={"customPurple"}>Generate Notes</Button>
+                    </span>
+
+                    <div className='w-full'>
+                        <TranscriptSummary
+                            transcriptions={transcriptions}
+                            transcript={transcript}
+                            speakerLabelsText={speakerLabelsText}
+                            showSpeakerLabels={showSpeakerLabels}
+                            wordsIndex = {wordsIndex}
+
+                        />
+                    </div>
+
+                    <div className='w-full'>
+                        <ParametersBox showSpeakerLabels={showSpeakerLabels} showNotes={showNotes} handleSwitchChange={handleSwitchChange} />
+                    </div>
+
+
                 </div>
 
-                <div className='w-full'>
-                    <ParametersBox showNotes={showNotes} handleSwitchChange={handleSwitchChange} />
+
+
+                {/* 50% width notes parts */}
+                <div className='md:w-2/4 w-full h-full  flex flex-col items-center p-5 gap-5 '>
+
+                    <span className='flex-row flex my-5 md:my-0'>
+                        <Button className="mx-2" variant={"customPurple"}>Copy All Text</Button>
+                        <Button className="mx-2" variant={"customPurple"}>New Client</Button>
+                    </span>
+
+
+                    <div className='w-full'>
+                        {
+                            showNotes ? <GeneralNotes /> : <div></div>
+                        }
+                    </div>
+
+
+
                 </div>
-
-
             </div>
 
 
-
-            {/* 50% width notes parts */}
-            <div className='md:w-2/4 w-full h-full  flex flex-col items-center p-5 gap-5 '>
-
-                <span className='flex-row flex my-5 md:my-0'>
-                    <Button className="mx-2" variant={"customPurple"}>Copy All Text</Button>
-                    <Button className="mx-2" variant={"customPurple"}>New Client</Button>
-                </span>
-
-
-                <div className='w-full'>
-                    {
-                        showNotes ? <GeneralNotes /> : <div></div>
-                    }
-                </div>
-
-            </div>
-
-
-
-
+            <div className={`fixed-bottom ${!isVisible ? 'hidden-audio-box' : 'px-5 py-5 border flex items-center justify-center bg-bg-navy-blue'}`}>
+            <CustomAudioPlayer
+                calculateHighlightedIndex={calculateHighlightedIndex}
+                audioUrl={transcriptions.audio_url}
+                transcriptions={transcriptions}
+            />
+        </div>
+            
         </div>
     )
 }

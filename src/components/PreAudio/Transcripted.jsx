@@ -19,7 +19,10 @@ const Transcripted = ({
     fileDuration,
     isPaymentInProgress,
     setShowPaymentModal,
-    showPaymentModal
+    showPaymentModal,
+    fileNames,
+    cloudUrls,
+    fileDurations
 
 }) => {
     console.log(transcriptions)
@@ -54,7 +57,7 @@ const Transcripted = ({
                         {
                             isPaymentInProgress && <button onClick={() => setShowPaymentModal(!showPaymentModal)} className='text-center md:p-2 p-4 md:w-20 md:h-20 
                             rounded-3xl bg-purple-500 text-white md:text-xl font-medium font-roboto hover:bg-purple-400 '><span className='flex items-center text-center justify-center '>
-                                    <MdPayment className='text-2xl'  />
+                                    <MdPayment className='text-2xl' />
                                 </span></button>
                         }
 
@@ -127,7 +130,11 @@ rounded-md bg-bg-purple text-white md:text-xl font-medium font-roboto hover:bg-p
                                 processing &&
                                 <tr className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] flex justify-between items-center md:gap-10 md:px-5 border-b hover:text-text-black px-1">
 
-                                    <td className="max-[500px]:w-32 font-medium md:text-lg md:px-5 md:py-5 hover:text-text-black">{filename}</td>
+                                    <td className="max-[500px]:w-32 font-medium md:text-lg md:px-5 md:py-5 hover:text-text-black"> {
+                                        fileNames.map((file, i) => (
+                                            <p key={i}> {`${file} min`}</p>
+                                        ))
+                                    }</td>
                                     <span>
                                         <td className="  md:w-72  font-medium md:text-lg  md:py-5">{new Date().toLocaleString('en-US', {
                                             year: 'numeric',
@@ -139,7 +146,12 @@ rounded-md bg-bg-purple text-white md:text-xl font-medium font-roboto hover:bg-p
                                         })}</td>
                                         <td className=" font-medium text-lg px-5 py-5">
                                             {/* Always show spinner for files being processed */}
-                                            {`${fileDuration} min`}
+                                            {
+                                                fileDurations.map((time, i) => (
+                                                    <p key={i}> {`${time} min`}</p>
+                                                ))
+                                            }
+
                                         </td>
                                         <td className="  font-medium text-lg md:px-5 md:py-5">
                                             {/* Always show spinner for files being processed */}

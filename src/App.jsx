@@ -68,6 +68,7 @@ import TermsAndConditions from './pages/terms-condition'
 import Header from './components/layout/header/Header'
 
 import Notecase from "./pages/lawyers-advice/CaseNote";
+import PreAudioSuccess from "./SmallComponents/PreAudioSuccess";
 
 
 function App() {
@@ -328,6 +329,7 @@ function App() {
             <Route exact path="/transcript-payment-success" element={<TranscriptSuccess />} />
             <Route exact path="/credit-payment-success" element={<CreditSuccess />} />
             <Route exact path="/live-transcript-payment-success" element={<LiveTranscriptSuccess />} />
+            <Route exact path="/transcript-payment-success-preaudio" element={<PreAudioSuccess />} />
             <Route exact path="/cancel" element={<Cancel />} />
 
           </Routes>

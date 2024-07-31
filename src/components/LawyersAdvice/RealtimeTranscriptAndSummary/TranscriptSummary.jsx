@@ -4,7 +4,11 @@ import { MdContentCopy } from "react-icons/md";
 import { useState, useEffect, useRef } from 'react';
 
 const TranscriptSummary = ({
-    transcript
+    transcript,
+    speakerLabelsText,
+    showSpeakerLabels,
+    transcriptions,
+    wordsIndex
 }) => {
     const [showCopied, setShowCopied] = useState(false);
     const pRefLarge = useRef(null);
@@ -24,13 +28,15 @@ const TranscriptSummary = ({
 
     };
 
+
+    console.log("transcriptions", transcriptions)
     return (
 
 
         <div className='border w-full min-h-[300px] bg-bg-navy-blue rounded-md flex flex-col items-center p-5 gap-5'>
             <h1 className='md:text-3xl text-xl font-semibold'>Transcript</h1>
 
-            <div className='border rounded-md w-full max-[768px]:text-sm p-2 h-[150px] overflow-hidden'>
+            <div className={`border rounded-md w-full max-[768px]:text-sm p-2 min-h-[250px] max-h-[650px] ${showSpeakerLabels ? 'overflow-y-scroll' : 'overflow-hidden'} `}>
 
                 <div ref={pRefLarge}
                     style={{
@@ -42,12 +48,44 @@ const TranscriptSummary = ({
                     }} >
 
                     {
-                        transcript.split('\n').map((line, index) => (
+                        !showSpeakerLabels && transcript.split('\n').map((line, index) => (
                             <span key={index}>
                                 {line}
                             </span>
                         ))
                     }
+
+                    {
+
+                        showSpeakerLabels && transcriptions.sentiment_analysis_results.length
+                        > 0 && transcriptions.sentiment_analysis_results.map((sentiment, i) => {
+                            // Find the utterance that corresponds to the current sentiment
+                            const utterance = transcriptions.utterances.find(u =>
+                                u.start <= sentiment.start && u.end >= sentiment.end
+                            );
+
+                            // Render the sentiment along with the speaker label if found
+                            return (
+                                <div className="w-full py-2 h-full" key={i}>
+
+                                    <span className="flex gap-2">
+                                        {utterance && <p className='font-lg font-bold'>{`Speaker ${utterance.speaker} :`}</p>}
+                                        <p
+                                            style={{ color: i === wordsIndex ? '#f1b900' : 'white' }}
+                                            // className={`${isEdit ? "hover:text-blue-500 hover:cursor-pointer" : ""}`}
+                                        // onClick={() => isEdit && handleTextClick(sentiment.text, i)}
+                                        >
+                                            {sentiment.text}
+                                        </p>
+
+                                    </span>
+                                </div>
+                            );
+                        })
+
+
+                    }
+
                 </div>
 
 
