@@ -368,14 +368,14 @@ function Sidebar({ isPurchase, minutes }) {
             </div>
           </Link>
 
-          {/* <Link to={"/note-case"}>
+          <Link to={"/note-case"}>
             <div className={`mx-2 p-4 flex rounded-md ${isActive("/note-case") ? "bg-white text-black" : "hover:border border-white"}`}>
               <div className="mr-2 mt-1">
               <MdOutlineCases />
               </div>
               <button>Note Case</button>
             </div>
-          </Link> */}
+          </Link>
 
           <button onClick={handleLogout}>
             <div className={`mx-2 p-4  flex rounded-md ${isActive("/more") ? "bg-white text-black" : "hover:border border-white"}`}>

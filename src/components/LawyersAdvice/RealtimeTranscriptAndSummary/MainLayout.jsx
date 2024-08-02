@@ -27,6 +27,7 @@ const MainLayout = () => {
     const [speakerLabelsText, setSpeakerLabelsText] = useState([])
     const [wordsIndex, setWordsIndex] = useState("");
     const [isVisible, setIsVisible] = useState(true);
+    const [isEdit, setIsEdit] = useState(false);
 
 
     // Refs
@@ -56,9 +57,12 @@ const MainLayout = () => {
         } else if (identifier === 'speakerLabels') {
             setShowSpeakerLabels(prevState => !prevState);
         }
+        else if (identifier === 'edit') {
+            setIsEdit(prevState => !prevState);
+        }
     };
 
-// >>>>>>>>>>>>>>>> UI Logics >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // >>>>>>>>>>>>>>>> UI Logics >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
     useEffect(() => {
         let timeout;
@@ -354,13 +358,23 @@ const MainLayout = () => {
                             transcript={transcript}
                             speakerLabelsText={speakerLabelsText}
                             showSpeakerLabels={showSpeakerLabels}
-                            wordsIndex = {wordsIndex}
+                            wordsIndex={wordsIndex}
+                            setTranscriptions={setTranscriptions}
+                            isEdit={isEdit}
 
                         />
                     </div>
 
                     <div className='w-full'>
-                        <ParametersBox showSpeakerLabels={showSpeakerLabels} showNotes={showNotes} handleSwitchChange={handleSwitchChange} />
+
+                        <ParametersBox
+
+                            showSpeakerLabels={showSpeakerLabels}
+                            showNotes={showNotes}
+                            handleSwitchChange={handleSwitchChange}
+                            isEdit={isEdit}
+
+                        />
                     </div>
 
 
@@ -390,13 +404,13 @@ const MainLayout = () => {
 
 
             <div className={`fixed-bottom ${!isVisible ? 'hidden-audio-box' : 'px-5 py-5 border flex items-center justify-center bg-bg-navy-blue'}`}>
-            <CustomAudioPlayer
-                calculateHighlightedIndex={calculateHighlightedIndex}
-                audioUrl={transcriptions.audio_url}
-                transcriptions={transcriptions}
-            />
-        </div>
-            
+                <CustomAudioPlayer
+                    calculateHighlightedIndex={calculateHighlightedIndex}
+                    audioUrl={transcriptions.audio_url}
+                    transcriptions={transcriptions}
+                />
+            </div>
+
         </div>
     )
 }

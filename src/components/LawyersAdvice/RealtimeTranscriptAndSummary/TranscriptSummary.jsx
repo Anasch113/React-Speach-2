@@ -2,16 +2,29 @@ import { Button } from '@/components/ui/button'
 import React from 'react'
 import { MdContentCopy } from "react-icons/md";
 import { useState, useEffect, useRef } from 'react';
+import EditModal from '@/components/PreAudio/EditModal';
 
 const TranscriptSummary = ({
     transcript,
     speakerLabelsText,
     showSpeakerLabels,
     transcriptions,
-    wordsIndex
+    wordsIndex,
+    setTranscriptions,
+    isEdit,
+
+
+
 }) => {
     const [showCopied, setShowCopied] = useState(false);
     const pRefLarge = useRef(null);
+
+    const [selectedText, setSelectedText] = useState("");
+    const [updatedText, setUpdatedText] = useState("");
+    const [showModal, setShowModal] = useState(false);
+
+
+
 
     // for large window
     useEffect(() => {
@@ -28,6 +41,36 @@ const TranscriptSummary = ({
 
     };
 
+
+
+    const handleTextClick = (text, index) => {
+
+        setSelectedText({ text, index });
+        setShowModal(true);
+    };
+
+    const handleUpdateText = async (updatedText, index) => {
+
+        const updatedSentiments = [...transcriptions.sentiment_analysis_results]; // Copy the utterances array
+
+        updatedSentiments[index].text = updatedText;
+        setTranscriptions({ ...transcriptions, sentiment_analysis_results: updatedSentiments });
+
+
+        toast.success("Text Updated Successfully")
+
+
+        // Update the state with the new utterances array
+        setShowModal(false); // Close the modal
+        setUpdatedText(updatedText); // Set the updated text
+    };
+
+
+
+    
+  const handleModalClose = () => {
+    setShowModal(false);
+  };
 
     console.log("transcriptions", transcriptions)
     return (
@@ -57,8 +100,7 @@ const TranscriptSummary = ({
 
                     {
 
-                        showSpeakerLabels && transcriptions.sentiment_analysis_results.length
-                        > 0 && transcriptions.sentiment_analysis_results.map((sentiment, i) => {
+                        showSpeakerLabels &&  transcriptions.sentiment_analysis_results.map((sentiment, i) => {
                             // Find the utterance that corresponds to the current sentiment
                             const utterance = transcriptions.utterances.find(u =>
                                 u.start <= sentiment.start && u.end >= sentiment.end
@@ -72,8 +114,8 @@ const TranscriptSummary = ({
                                         {utterance && <p className='font-lg font-bold'>{`Speaker ${utterance.speaker} :`}</p>}
                                         <p
                                             style={{ color: i === wordsIndex ? '#f1b900' : 'white' }}
-                                            // className={`${isEdit ? "hover:text-blue-500 hover:cursor-pointer" : ""}`}
-                                        // onClick={() => isEdit && handleTextClick(sentiment.text, i)}
+                                            className={`${isEdit ? "hover:text-blue-500 hover:cursor-pointer" : ""}`}
+                                            onClick={() => isEdit && handleTextClick(sentiment.text, i)}
                                         >
                                             {sentiment.text}
                                         </p>
@@ -92,6 +134,15 @@ const TranscriptSummary = ({
             </div>
 
             <Button onClick={copyText} variant={"outline"}> {!showCopied ? "Copy Text  " : "Copied"} <MdContentCopy className='mx-2' /> </Button>
+
+
+            {showModal && (
+                <EditModal
+                    selectedText={selectedText}
+                    onClose={handleModalClose}
+                    onUpdateText={handleUpdateText}
+                />
+            )}
 
         </div>
     )

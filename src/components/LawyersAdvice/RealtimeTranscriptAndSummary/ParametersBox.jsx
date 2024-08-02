@@ -5,7 +5,9 @@ import React from 'react'
 const ParametersBox = ({
     showSpeakerLabels,
     showNotes,
-    handleSwitchChange }) => {
+    handleSwitchChange,
+    isEdit
+}) => {
 
 
     return (
@@ -21,12 +23,12 @@ const ParametersBox = ({
 
                 <span className='flex gap-2 w-full'>
 
-                    <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch checked={showSpeakerLabels}  onCheckedChange={()=> handleSwitchChange("speakerLabels")} />Speaker Labels</span>
+                    <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch checked={showSpeakerLabels} onCheckedChange={() => handleSwitchChange("speakerLabels")} />Speaker Labels</span>
 
-                    <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch checked={showNotes}  onCheckedChange={()=> handleSwitchChange("notes")} />Notes</span>
+                    <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch checked={showNotes} onCheckedChange={() => handleSwitchChange("notes")} />Notes</span>
                 </span>
                 <span className='flex gap-2 w-full'>
-                    <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch />Emails</span>
+                    <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch  checked={isEdit} onCheckedChange={() => handleSwitchChange("edit")}/>Edit Transcript</span>
 
                     <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch />Letters</span>
                 </span>

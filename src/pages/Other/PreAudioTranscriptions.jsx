@@ -39,6 +39,7 @@ const PreAudioTranscriptions = () => {
     const [reloadLoading, setReloadLoading] = useState(false)
 
     const [fileNames, setFileNames] = useState([]);
+    const [uploadingfileNames, setUploadingFileNames] = useState([]);
     const [fileDurations, setFileDurations] = useState([]);
 
     const [cloudUrls, setCloudUrls] = useState([]);
@@ -267,7 +268,7 @@ const PreAudioTranscriptions = () => {
         const fileUploadPromises = [];
         for (let i = 0; i < selectedFiles.length; i++) {
             const file = selectedFiles[i];
-            // setProgress((prevProgress) => [...prevProgress, 0]); // Initialize progress for each file
+
             fileUploadPromises.push(uploadAndTranscribeFile(file, i));
         }
 
@@ -295,8 +296,8 @@ const PreAudioTranscriptions = () => {
     console.log("progress", progress)
     const uploadAndTranscribeFile = async (file, index) => {
         setFile(file);
-        setFileNames((prevNames) => [...prevNames, file.name]);
 
+        setUploadingFileNames((prevNames) => [...prevNames, file.name]);
         try {
             const isLargeFile = file.size > 20 * 1024 * 1024; // 20MB
             if (isLargeFile) {
@@ -332,6 +333,7 @@ const PreAudioTranscriptions = () => {
                 );
 
                 const cloudinaryFileUrl = cloudinaryResponse.data.secure_url;
+                setFileNames((prevNames) => [...prevNames, file.name]);
                 setCloudUrls((prevUrls) => [...prevUrls, cloudinaryFileUrl])
 
                 const duration = cloudinaryResponse.data.duration;
@@ -434,7 +436,7 @@ const PreAudioTranscriptions = () => {
                     } else {
                         const fetchResponse = await response.json();
                         const cloudinaryFileUrl = fetchResponse.secure_url;
-
+                        setFileNames((prevNames) => [...prevNames, file.name]);
                         setCloudUrls((prevUrls) => [...prevUrls, cloudinaryFileUrl]);
                         toast.success("Audio file uploaded");
 
@@ -483,7 +485,7 @@ const PreAudioTranscriptions = () => {
 
         event.preventDefault();
         toast.success("Transcriptions started")
-     
+
         setShowPaymentModal(false)
         setProcessing(true);
         setRunUseEffect(false);
@@ -757,15 +759,17 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                                 </div>
 
                             }
+
                             {
 
                                 chunksLoading && <span>
 
                                     {
-                                        fileNames.map((file, i) => (
+                                        uploadingfileNames.map((file, i) => (
                                             <p key={i}>Uploading... {file}</p>
                                         ))
                                     }
+                                  
 
 
 
@@ -812,7 +816,7 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                     handlePaymentOptions={handlePaymentOptions}
                     currentBalance={userBalance}
                     handleTranscriptions={handleTranscriptions}
-                    setIsPaymentDone ={setIsPaymentDone}
+                    setIsPaymentDone={setIsPaymentDone}
 
 
 
