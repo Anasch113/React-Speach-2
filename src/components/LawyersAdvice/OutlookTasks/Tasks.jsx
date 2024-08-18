@@ -49,7 +49,7 @@ const Tasks = ({
         })
         toast.success("Tasks Generated Successfully")
         const data = response.data;
-        setTasksData(data)
+        setTasksData(data.tasks)
         console.log(" task data from server", data)
 
     }
@@ -68,9 +68,9 @@ const Tasks = ({
 
                 <h1 className='md:text-3xl text-xl font-semibold flex-1  text-center'>Tasks</h1>
                 {
-                    !tasksData &&    <Button onClick={hanldeTasks} variant="outline">Generate Task</Button>
+                    tasksData.length === 0 && <Button onClick={hanldeTasks} variant="outline">Generate Task</Button>
                 }
-             
+
                 {/* <Dialog>
                     <DialogTrigger asChild>
                         <Button onClick={hanldeTasks} variant="outline">Generate Task</Button>
@@ -105,7 +105,7 @@ const Tasks = ({
 
 
                 {
-                    tasksData.tasks?.map((task, i) => (
+                    tasksData.length > 0 && tasksData.map((task, i) => (
                         <div key={i} className='w-2/5 border min-h-[240px]  rounded-2xl p-4 flex flex-col gap-3'>
                             <div className='flex justify-between items-center'>
 
