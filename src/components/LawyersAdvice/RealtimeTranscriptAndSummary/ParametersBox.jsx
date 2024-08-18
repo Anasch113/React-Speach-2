@@ -6,7 +6,9 @@ const ParametersBox = ({
     showSpeakerLabels,
     showNotes,
     handleSwitchChange,
-    isEdit
+    isEdit,
+    showTasks,
+    showSummary
 }) => {
 
 
@@ -30,7 +32,13 @@ const ParametersBox = ({
                 <span className='flex gap-2 w-full'>
                     <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch  checked={isEdit} onCheckedChange={() => handleSwitchChange("edit")}/>Edit Transcript</span>
 
-                    <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch />Letters</span>
+                    <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch checked={showTasks} onCheckedChange={() => handleSwitchChange("tasks")} />Tasks</span>
+
+
+                 
+                </span>
+                <span className='flex gap-2 w-full'>
+                <span className='flex gap-3 items-center space-x-2 border p-2 w-2/4 rounded-2xl'><Switch checked={showSummary} onCheckedChange={() => handleSwitchChange("summary")} />Summary</span>
                 </span>
 
 

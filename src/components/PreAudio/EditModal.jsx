@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BsChatLeftText } from "react-icons/bs";
-const EditModal = ({ selectedText, onClose, onUpdateText }) => {
+import toast from "react-hot-toast";
+const EditModal = ({ selectedText, onClose, onUpdateText , setShowModal}) => {
 
     const [editedText, setEditedText] = useState(selectedText.text);
 
@@ -10,6 +11,8 @@ const EditModal = ({ selectedText, onClose, onUpdateText }) => {
 
     const handleUpdate = () => {
         onUpdateText(editedText, selectedText.index);
+        toast.success("Text Updated Successfully")
+        setShowModal(false)
     };
 
     return (

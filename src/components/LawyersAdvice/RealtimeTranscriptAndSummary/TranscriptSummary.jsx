@@ -12,6 +12,7 @@ const TranscriptSummary = ({
     wordsIndex,
     setTranscriptions,
     isEdit,
+    sentimentAnalysis
 
 
 
@@ -29,6 +30,7 @@ const TranscriptSummary = ({
     // for large window
     useEffect(() => {
         if (pRefLarge.current) {
+            console.log("workking")
             pRefLarge.current.scrollTop = pRefLarge.current.scrollHeight;
         }
     }, [transcript])
@@ -67,19 +69,23 @@ const TranscriptSummary = ({
 
 
 
-    
-  const handleModalClose = () => {
-    setShowModal(false);
-  };
 
-    console.log("transcriptions", transcriptions)
+    const handleModalClose = () => {
+        setShowModal(false);
+    };
+
+
+
+
+
+
     return (
 
 
         <div className='border w-full min-h-[300px] bg-bg-navy-blue rounded-md flex flex-col items-center p-5 gap-5'>
             <h1 className='md:text-3xl text-xl font-semibold'>Transcript</h1>
 
-            <div className={`border rounded-md w-full max-[768px]:text-sm p-2 min-h-[250px] max-h-[650px] ${showSpeakerLabels ? 'overflow-y-scroll' : 'overflow-hidden'} `}>
+            <div className={`border rounded-md w-full max-[768px]:text-sm p-2 min-h-[250px] max-h-[250px] ${showSpeakerLabels ? 'overflow-y-scroll' : 'overflow-y-scroll'} `}>
 
                 <div ref={pRefLarge}
                     style={{
@@ -90,17 +96,17 @@ const TranscriptSummary = ({
                         justifyContent: 'flex-start',
                     }} >
 
-                    {
+                    {/* {
                         !showSpeakerLabels && transcript.split('\n').map((line, index) => (
                             <span key={index}>
                                 {line}
                             </span>
                         ))
-                    }
+                    } */}
 
                     {
 
-                        showSpeakerLabels &&  transcriptions.sentiment_analysis_results.map((sentiment, i) => {
+                        sentimentAnalysis.length > 0 ? transcriptions.sentiment_analysis_results.map((sentiment, i) => {
                             // Find the utterance that corresponds to the current sentiment
                             const utterance = transcriptions.utterances.find(u =>
                                 u.start <= sentiment.start && u.end >= sentiment.end
@@ -123,7 +129,11 @@ const TranscriptSummary = ({
                                     </span>
                                 </div>
                             );
-                        })
+                        }) : transcript.split('\n').map((line, index) => (
+                            <span key={index}>
+                                {line}
+                            </span>
+                        ))
 
 
                     }
@@ -141,6 +151,7 @@ const TranscriptSummary = ({
                     selectedText={selectedText}
                     onClose={handleModalClose}
                     onUpdateText={handleUpdateText}
+                    setShowModal={setShowModal}
                 />
             )}
 

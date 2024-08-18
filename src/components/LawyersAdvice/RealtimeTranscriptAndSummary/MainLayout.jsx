@@ -12,6 +12,8 @@ import "../styles/style.css"
 import { FaPlay, FaPause, FaStop, FaTrash, FaCheck } from "react-icons/fa";
 import SpeakerDiarization from './SpeakerDiarization'
 import CustomAudioPlayer from '@/components/PreAudio/CustomAudioPlayer'
+import Tasks from '../OutlookTasks/Tasks'
+import GeneralSummary from './GeneralSummary'
 
 
 const MainLayout = () => {
@@ -19,8 +21,11 @@ const MainLayout = () => {
     // states declaration
     const [showNotes, setShowNotes] = useState(false);
     const [showSpeakerLabels, setShowSpeakerLabels] = useState(false);
+    const [showTasks, setShowTasks] = useState(false);
+    const [showSummary, setShowSummary] = useState(false);
     const [transcript, setTranscript] = useState('')
     const [transcriptions, setTranscriptions] = useState([])
+    const [sentimentAnalysis, setSentimentAnalysis] = useState([])
     const [isPaused, setIsPaused] = useState(false);
     const [isRecording, setIsRecording] = useState(false)
     const [progress, setProgress] = useState("")
@@ -28,6 +33,7 @@ const MainLayout = () => {
     const [wordsIndex, setWordsIndex] = useState("");
     const [isVisible, setIsVisible] = useState(true);
     const [isEdit, setIsEdit] = useState(false);
+    const [formattedTranscript, setFormattedTranscript] = useState("")
 
 
     // Refs
@@ -52,16 +58,41 @@ const MainLayout = () => {
 
 
     const handleSwitchChange = (identifier) => {
-        if (identifier === 'notes') {
-            setShowNotes(prevState => !prevState);
-        } else if (identifier === 'speakerLabels') {
-            setShowSpeakerLabels(prevState => !prevState);
+
+        if (sentimentAnalysis.length > 0) {
+
+
+            if (identifier === 'notes') {
+                setShowNotes(prevState => !prevState);
+
+            } else if (identifier === 'speakerLabels') {
+
+                setShowSpeakerLabels(prevState => !prevState);
+            }
+            else if (identifier === 'edit') {
+                setIsEdit(prevState => !prevState);
+                if (isEdit === false) {
+                    toast.success("Click on the transcript to edit!")
+                }
+            }
+            else if (identifier === 'tasks') {
+
+                setShowTasks(prevState => !prevState);
+
+
+            }
+            else if (identifier === "summary") {
+                setShowSummary(prevState => !prevState)
+            }
         }
-        else if (identifier === 'edit') {
-            setIsEdit(prevState => !prevState);
+
+        else {
+            toast("There is no transcriptions yet")
         }
+
     };
 
+    console.log("transcriptions:", transcriptions)
     // >>>>>>>>>>>>>>>> UI Logics >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
     useEffect(() => {
@@ -165,7 +196,7 @@ const MainLayout = () => {
 
     }
 
-    console.log("recorder.current:", recorder.current)
+
 
     // Function to upload the audio blob to Cloudinary
 
@@ -235,11 +266,14 @@ const MainLayout = () => {
 
     const getSpeakerLabels = async (audioUrl) => {
 
-        console.log("audio url in the getspakerlabels function", audioUrl)
+
         const params = {
             audio: audioUrl,
             speaker_labels: true,
-            sentiment_analysis: true
+            sentiment_analysis: true,
+            summarization: true,
+            summary_model: "informative",
+            summary_type: "bullets"
         };
 
         try {
@@ -247,14 +281,41 @@ const MainLayout = () => {
             const transcript = await client.transcripts.transcribe(params);
             setTranscriptions(transcript)
             setSpeakerLabelsText(transcript.utterances)
+            setSentimentAnalysis(transcript.sentiment_analysis_results)
+            const formatText = extractFormatTranscriptionText(transcript);
+            setFormattedTranscript(formatText);
             toast.success("speaker diarazation completed")
-            console.log("transcript from the speaker diarazation model", transcript)
-
 
         } catch (error) {
             console.error('Error during speaker diarization:', error);
         }
     };
+
+
+
+
+
+    // Function to extract the formatted text from transcriptions
+    const extractFormatTranscriptionText = (transcriptions) => {
+        if (!transcriptions || !transcriptions.sentiment_analysis_results || !transcriptions.utterances) return '';
+
+        let text = '';
+
+        transcriptions.sentiment_analysis_results.forEach((sentiment, i) => {
+            const utterance = transcriptions.utterances.find(u =>
+                u.start <= sentiment.start && u.end >= sentiment.end
+            );
+
+            if (utterance) {
+                text += `Speaker ${utterance.speaker}: `;
+            }
+
+            text += `${sentiment.text} `;
+        });
+
+        return text.trim(); // Trim any extra spaces at the end
+    };
+
 
     // Pause function
     const pauseTranscriptions = () => {
@@ -280,6 +341,8 @@ const MainLayout = () => {
 
 
 
+
+
     // >>>>>>>>>>>>>>>>>>>>>>>>> Audio play back code >>>>>>>>>>>>>>>>>>>>>>>>
 
 
@@ -300,8 +363,7 @@ const MainLayout = () => {
         for (let i = 0; i < segments.length; i++) {
             // Extract start and end times of the current segment
             const { start, end } = segments[i];
-            console.log("start", start)
-            console.log("end", end)
+
             // Check if the current time falls within the duration of this segment
             if (currentTime >= start && currentTime <= end) {
                 setWordsIndex(i)
@@ -348,12 +410,14 @@ const MainLayout = () => {
 
 
 
-
-                        <Button className="mx-2" variant={"customPurple"}>Generate Notes</Button>
+{/* 
+                        <Button className="mx-2" variant={"customPurple"}>Generate Notes</Button> */}
                     </span>
 
                     <div className='w-full'>
                         <TranscriptSummary
+
+
                             transcriptions={transcriptions}
                             transcript={transcript}
                             speakerLabelsText={speakerLabelsText}
@@ -361,6 +425,7 @@ const MainLayout = () => {
                             wordsIndex={wordsIndex}
                             setTranscriptions={setTranscriptions}
                             isEdit={isEdit}
+                            sentimentAnalysis = {sentimentAnalysis}
 
                         />
                     </div>
@@ -373,6 +438,8 @@ const MainLayout = () => {
                             showNotes={showNotes}
                             handleSwitchChange={handleSwitchChange}
                             isEdit={isEdit}
+                            showTasks={showTasks}
+                            showSummary={showSummary}
 
                         />
                     </div>
@@ -393,8 +460,40 @@ const MainLayout = () => {
 
                     <div className='w-full'>
                         {
-                            showNotes ? <GeneralNotes /> : <div></div>
+                            showNotes ? <GeneralNotes
+
+                                transcript={transcript}
+                                transcriptions={transcriptions}
+                                formattedTranscript={formattedTranscript}
+
+                            /> : <div></div>
                         }
+                    </div>
+
+                    <div className='w-full'>
+
+                        {
+                            showTasks ? <Tasks
+
+                                transcript={transcript}
+                                transcriptions={transcriptions}
+
+                            /> : <div></div>
+                        }
+
+                    </div>
+
+                    <div className='w-full'>
+
+                        {
+                            showSummary ? <GeneralSummary
+
+                                transcript={transcript}
+                                transcriptions={transcriptions}
+
+                            /> : <div></div>
+                        }
+
                     </div>
 
 

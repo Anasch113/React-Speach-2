@@ -42,3 +42,57 @@ const handleFileChangeOld = async (event) => {
 
         setIsUpload(false);
     };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Endpoint for task generation 
+
+
+router.post("/create-tasks", async (req, res) => {
+    try {
+        const { taskListName, accessToken } = req.body;
+
+        if (!accessToken) {
+            return res.status(401).send("User is not authenticated");
+        }
+
+        // Step 1 : Extract tasks related text using gpt 4
+
+        // const tasks = await extractTasksWithGPT(transcript);
+       
+        // For testing, use hardcoded tasks
+        const tasks = [
+            
+            'Explain how Mr. Gang supports funding for charter schools over limiting them by arguing against Democratic policies.',
+
+            "Address why he believes taxpayers' money would be better spent improving traditional public schools through increased investment.",
+
+
+            'Advocate paying teachers higher salaries based on evidence showing its positive impact on student performance.',
+        ];
+
+        // Step 2: Create the tasks list id
+
+        const taskListId = await createTaskListId(taskListName, accessToken);
+
+        // Step 3: Finally create the tasks using microsft graph to do api
+        const createdTasks = await createTasksInList(tasks, taskListId, accessToken);
+
+        res.status(201).json({ message: "Tasks created successfully", createdTasks });
+    } catch (error) {
+        res.status(500).json({ message: "Error while creating tasks", error: error.response?.data || error.message });
+    }
+});
