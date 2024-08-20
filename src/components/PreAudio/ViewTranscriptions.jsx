@@ -21,6 +21,15 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import CustomAudioPlayer from './CustomAudioPlayer';
 import toast from 'react-hot-toast';
 import DeleteModal from './DeleteModal';
+import { Button } from '../ui/button';
+import ConfirmationBox from './HumanTranscription/ConfirmationBox';
+import { useUserAuth } from '@/context/UserAuthContext';
+import { MdOutlinePendingActions } from "react-icons/md";
+import { IoCheckmarkDone } from "react-icons/io5";
+import NotificationPage from './HumanTranscription/NotificationPage';
+import { ref, onValue, update } from "firebase/database"
+import { database } from '../../firebase'
+
 const ViewTranscriptions = ({ filename }) => {
   // const location = useLocation();
   // const transcriptionsState = location.state?.transcriptions;
@@ -31,6 +40,7 @@ const ViewTranscriptions = ({ filename }) => {
 
 
   const { id } = useParams();
+  const { user, userBalance } = useUserAuth()
   console.log("id in view transcriptions", id)
 
 
@@ -38,11 +48,10 @@ const ViewTranscriptions = ({ filename }) => {
 
 
   const contentRef = useRef(null)
-  const srtRef = useRef(null)
-  const updatedContentRef = useRef(null)
-  const [isDownloadingtr, setIsDownloadingtr] = useState(false); // New state variable
+
+
+
   const [showSRT, setShowSRT] = useState(false);
-  const [showSpeakerLables, setShowSpeakerLabels] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -53,6 +62,14 @@ const ViewTranscriptions = ({ filename }) => {
   const [wordsIndex, setWordsIndex] = useState("");
   const [transcriptions, setTranscriptions] = useState("");
   const [shareLink, setShareLink] = useState('');
+  const [isHtSend, setIsHtSend] = useState(false)
+  const [htStatus, setHtStatus] = useState('')
+  const [humanTranscript, setHumanTranscript] = useState({})
+  const [reloadLoading, setReloadLoading] = useState(false)
+  const [cost, setCost] = useState(0)
+  const [transcriptDuration, setTranscriptDuration] = useState(0)
+
+
   const navigate = useNavigate();
 
 
@@ -69,8 +86,14 @@ const ViewTranscriptions = ({ filename }) => {
       }).catch((err) => {
         console.log("Error while fetching the transcription in view transcriptions", err)
       })
+      const transcription = fetch.data;
       setTranscriptions(fetch.data)
 
+      const duration = transcription.audio_duration
+      const roundedDuration = (duration / 60).toFixed(1);
+      setTranscriptDuration(roundedDuration)
+      const cost = (roundedDuration * 0.5).toFixed(2);
+      setCost(cost)
 
     }
 
@@ -79,11 +102,12 @@ const ViewTranscriptions = ({ filename }) => {
     fetchSingleTranscription()
 
   }, [id])
+  console.log("cost and duration of human transcript:", cost, transcriptDuration)
 
 
   const downloadPdf = async () => {
     setShowSRT(false)
-    setIsDownloadingtr(true);
+
 
     const pdfOptions = {
       margin: 5,
@@ -100,7 +124,7 @@ const ViewTranscriptions = ({ filename }) => {
       console.log(error)
     }
 
-    setIsDownloadingtr(false);
+
 
   };
 
@@ -306,11 +330,115 @@ const ViewTranscriptions = ({ filename }) => {
 
 
   }
+  console.log("transcriptions:", transcriptions)
 
 
-  
+  // >>>>>>>>>>>>>>>>>>>>> Human Transcript code >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
+  const handleHumanTranscript = async (event) => {
+
+
+
+
+
+    event.preventDefault();
+
+
+
+    try {
+
+      if (cost > 0 && cost > userBalance) {
+        toast.error("Insufficient credit, Please buy more credit ")
+
+
+        return
+      }
+      const chunkSize = 1024 * 1024; // 1MB chunks
+      const chunks = [];
+
+      // Send each chunk to the server sequentially
+
+      const body = {
+        id: transcriptions.id,
+        audio_url: transcriptions.audio_url,
+        status: "Pending",
+        audio_duration: transcriptions.audio_duration,
+
+        sentimentAnalysisResults: transcriptions.sentimentAnalysisResults,
+
+        userId: user.uid,
+        filename: filename,
+        userName: user.displayName,
+        email: user.email
+      };
+      await axios.post(`${import.meta.env.VITE_HOST_URL}/ht/send`, body, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      // Update user balance in Firebase
+      const newBalance = userBalance - cost; // Assuming `cost` is the transcription cost in state
+      await update(ref(database, `users/${user.uid}/credit-payment`), {
+        balance: newBalance
+      });
+
+      toast.success("Transcriptions send for Human Transcribing")
+
+      setIsHtSend(true)
+      console.log("Transcription data sent successfully in chunks for human transcription");
+      window.location.reload()
+
+
+    } catch (error) {
+      console.log("Error in Human Transcription", error);
+      throw new Error("Error while human transcriptions");
+    }
+  };
+
+
+  useEffect(() => {
+
+    const fetchTranscriptions = async () => {
+
+
+      try {
+        setReloadLoading(true)
+
+
+        const body = {
+          id: id
+        }
+
+
+        const response = await axios.post
+          (`${import.meta.env.VITE_HOST_URL}/ht/fetch`, body
+
+            , {
+              headers: {
+                "Content-Type": "application/json"
+              }
+            })
+
+        console.log("ht data:", response)
+        const data = response.data
+        setHumanTranscript(data.transcript)
+
+        setReloadLoading(false)
+        setHtStatus(data.transcript.status)
+
+
+      } catch (error) {
+        console.log("error while fetching the human transcriptions", error)
+      }
+
+    }
+
+    fetchTranscriptions()
+
+  }, [])
+  console.log("human transcript:", humanTranscript)
   return (
 
     <>
@@ -330,10 +458,48 @@ const ViewTranscriptions = ({ filename }) => {
 
               <span className='flex w-full  p-5 md:w-2/3   shadow-md flex-col h-[430px] overflow-y-scroll  gap-5 py-5 rounded-md bg-bg-navy-blue '>
 
-                <span className='flex flex-row  gap-2'>
+                <span className='flex flex-row  justify-between items-center gap-2'>
 
                   <h1 className='md:text-3xl text-2xl flex gap-3 font-bold font-poppins '> {isEdit && <p>Edit</p>} {transcriptions && transcriptions.filename}</h1>
+
+                  {
+                    humanTranscript.status ? (
+                      <div className='border p-4 flex gap-2 flex-col rounded-lg'>
+                        <p className='text-lg font-semibold font-poppins'>Human Transcript</p>
+                        {
+                          humanTranscript.status === "completed" ? (<span className='flex gap-2'>
+
+
+                            <span className='flex items-center gap-1'><IoCheckmarkDone className='text-lg' /> {humanTranscript.status}</span>
+                            <NotificationPage
+                              humanTranscript={humanTranscript}
+                            />
+                          </span>)
+                            :
+                            (<span className='flex gap-2'>
+
+
+                              <span className='flex items-center gap-1'><MdOutlinePendingActions className='text-lg' /> {humanTranscript.status}</span>
+                            </span>)
+                        }
+
+
+
+                      </div>
+
+                    ) : (
+                      <ConfirmationBox
+                        handleHumanTranscript={handleHumanTranscript}
+                        isHtSend={isHtSend}
+                        humanTranscript={humanTranscript}
+                        cost={cost}
+                        transcriptDuration={transcriptDuration}
+
+                      />)
+                  }
+
                 </span>
+
                 {isEdit && <p className='text-sm flex items-center gap-1 '><TiPencil /> Double tap on text to edit</p>}
                 <div className=' font-roboto'>
 
@@ -385,6 +551,7 @@ const ViewTranscriptions = ({ filename }) => {
                     onUpdateText={handleUpdateText}
                   />
                 )}
+
 
               </span>
 
