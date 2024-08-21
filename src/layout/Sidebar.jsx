@@ -302,9 +302,9 @@ function Sidebar({ isPurchase, minutes }) {
           </div>
         </div>
 
-        <div className="flex gap-4 flex-col text-white mt-10">
+        <div className="flex gap-4 flex-col text-white mt-10 ">
           <Link to={"/"}>
-            <div className={`mx-2 p-4 flex rounded-md ${isActive("/") ? "bg-white text-black" : "hover:border border-white"}`}>
+            <div className={`mx-2 p-4 flex rounded-md ${isActive("/") ? "bg-white text-black" : "hover:bg-white hover:text-text-black"}`}>
               <div className="mr-2 mt-1">
                 <AiOutlineHome />
               </div>
@@ -313,7 +313,7 @@ function Sidebar({ isPurchase, minutes }) {
           </Link>
 
           <Link to={"/home"}>
-            <div className={`mx-2 p-4 flex rounded-md ${isActive("/home") ? "bg-white text-black" : "hover:border border-white"}`}>
+            <div className={`mx-2 p-4 flex rounded-md ${isActive("/home") ? "bg-white text-black" : "hover:bg-white hover:text-text-black"}`}>
               <div className="mr-2 mt-1">
                 <LuLayoutDashboard />
               </div>
@@ -323,7 +323,7 @@ function Sidebar({ isPurchase, minutes }) {
 
           {!isLiveTranscript ? (
             <Link onClick={startLiveTranscript}>
-              <div className={`mx-2 p-4 flex rounded-md ${isActive("/notdefined") ? "bg-white text-black" : "hover:border border-white"}`}>
+              <div className={`mx-2 p-4 flex rounded-md ${isActive("/notdefined") ? "bg-white text-black" : "hover:bg-white hover:text-text-black"}`}>
                 <div className="mr-2 mt-1">
                   <AiOutlineAudio />
                 </div>
@@ -351,7 +351,7 @@ function Sidebar({ isPurchase, minutes }) {
           )}
 
           <Link to={"/pre-audio-transcriptions"}>
-            <div className={`mx-2 p-4 flex rounded-md ${isActive("/pre-audio-transcriptions" || "pre-audio-transcriptions/view:id") ? "bg-white text-black" : "hover:border border-white"}`}>
+            <div className={`mx-2 p-4 flex rounded-md ${isActive("/pre-audio-transcriptions" || "pre-audio-transcriptions/view:id") ? "bg-white text-black" : "hover:bg-white hover:text-text-black"}`}>
               <div className="mr-2 mt-1">
                 <MdOutlineTranscribe />
               </div>
@@ -360,7 +360,7 @@ function Sidebar({ isPurchase, minutes }) {
           </Link>
 
           <Link to={"/resyncingAi"}>
-            <div className={`mx-2 p-4 flex rounded-md ${isActive("/resyncingAi") ? "bg-white text-black" : "hover:border border-white"}`}>
+            <div className={`mx-2 p-4 flex rounded-md ${isActive("/resyncingAi") ? "bg-white text-black" : "hover:bg-white hover:text-text-black"}`}>
               <div className="mr-2 mt-1">
                 <GrSync />
               </div>
@@ -369,7 +369,7 @@ function Sidebar({ isPurchase, minutes }) {
           </Link>
 
           <Link to={"/note-case"}>
-            <div className={`mx-2 p-4 flex rounded-md ${isActive("/note-case") ? "bg-white text-black" : "hover:border border-white"}`}>
+            <div className={`mx-2 p-4 flex rounded-md ${isActive("/note-case") ? "bg-white text-black" : "hover:bg-white hover:text-text-black"}`}>
               <div className="mr-2 mt-1">
               <MdOutlineCases />
               </div>
@@ -378,7 +378,7 @@ function Sidebar({ isPurchase, minutes }) {
           </Link>
 
           <button onClick={handleLogout}>
-            <div className={`mx-2 p-4  flex rounded-md ${isActive("/more") ? "bg-white text-black" : "hover:border border-white"}`}>
+            <div className={`mx-2 p-4  flex rounded-md ${isActive("/more") ? "bg-white text-black" : "hover:bg-white hover:text-text-black"}`}>
               <div className="mr-2 mt-1">
                 <CiLogout />
               </div>
