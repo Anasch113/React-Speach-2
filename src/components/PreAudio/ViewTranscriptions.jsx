@@ -458,14 +458,14 @@ const ViewTranscriptions = ({ filename }) => {
 
               <span className='flex w-full  p-5 md:w-2/3   shadow-md flex-col h-[430px] overflow-y-scroll  gap-5 py-5 rounded-md bg-bg-navy-blue '>
 
-                <span className='flex flex-row  justify-between items-center gap-2'>
+                <span className='flex md:flex-row flex-col  justify-between items-center md:gap-2 gap-4'>
 
                   <h1 className='md:text-3xl text-2xl flex gap-3 font-bold font-poppins '> {isEdit && <p>Edit</p>} {transcriptions && transcriptions.filename}</h1>
 
                   {
                     humanTranscript.status ? (
-                      <div className='border p-4 flex gap-2 flex-col rounded-lg'>
-                        <p className='text-lg font-semibold font-poppins'>Human Transcript</p>
+                      <div className='border md:p-4 p-2 flex gap-2 flex-col rounded-lg'>
+                        <p className='md:text-lg text-sm font-semibold font-poppins'>Human Transcript</p>
                         {
                           humanTranscript.status === "completed" ? (<span className='flex gap-2'>
 
@@ -482,7 +482,6 @@ const ViewTranscriptions = ({ filename }) => {
                               <span className='flex items-center gap-1'><MdOutlinePendingActions className='text-lg' /> {humanTranscript.status}</span>
                             </span>)
                         }
-
 
 
                       </div>

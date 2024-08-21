@@ -22,7 +22,7 @@ const NotificationPage = ({
             <DialogTrigger asChild>
                 <p className='underline font-semibold cursor-pointer hover:text-gray-200'>View</p>
             </DialogTrigger>
-            <DialogContent className="min-w-[800px]  h-[600px] overflow-y-auto">
+            <DialogContent className="md:min-w-[800px]  md:h-[600px] overflow-y-auto h-[500px] max-w-[350px]">
                 <DialogHeader>
                     <DialogTitle>Human Transcript</DialogTitle>
                     <DialogDescription>
@@ -40,7 +40,7 @@ const NotificationPage = ({
                                     return (
                                         <div className="w-full py-2" key={i}>
 
-                                            <span className="flex gap-2 text-lg">
+                                            <span className="flex gap-2 md:text-lg text-sm">
                                               
                                                 <p
                                                 >
