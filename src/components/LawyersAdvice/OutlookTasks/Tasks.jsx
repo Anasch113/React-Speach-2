@@ -22,37 +22,12 @@ import toast from 'react-hot-toast';
 
 const Tasks = ({
 
-    transcript,
-    transcriptions
+    tasksData
 
 }) => {
 
 
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> States Declaration >>>>>>>>>>>>>>>>>>>>>>
-
-    const [tasksData, setTasksData] = useState([])
-
-    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Logic Part >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-    const hanldeTasks = async () => {
-        toast.success("In progress, please wait for shortly")
-        const body = {
-
-            transcript: transcript
-        }
-
-        const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/tasks/create-tasks`, body, {
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-        toast.success("Tasks Generated Successfully")
-        const data = response.data;
-        setTasksData(data.tasks)
-        console.log(" task data from server", data)
-
-    }
 
 
     console.log("tasksData state", tasksData)
@@ -67,9 +42,7 @@ const Tasks = ({
             <span className='flex items-center w-full justify-end '>
 
                 <h1 className='md:text-3xl text-xl font-semibold flex-1  text-center'>Tasks</h1>
-                {
-                    tasksData.length === 0 && <Button onClick={hanldeTasks} variant="outline">Generate Task</Button>
-                }
+                
 
                 {/* <Dialog>
                     <DialogTrigger asChild>

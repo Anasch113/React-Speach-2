@@ -14,6 +14,7 @@ import SpeakerDiarization from './SpeakerDiarization'
 import CustomAudioPlayer from '@/components/PreAudio/CustomAudioPlayer'
 import Tasks from '../OutlookTasks/Tasks'
 import GeneralSummary from './GeneralSummary'
+import { useUserAuth } from '@/context/UserAuthContext'
 
 
 const MainLayout = () => {
@@ -32,8 +33,10 @@ const MainLayout = () => {
     const [speakerLabelsText, setSpeakerLabelsText] = useState([])
     const [wordsIndex, setWordsIndex] = useState("");
     const [isVisible, setIsVisible] = useState(true);
+    const [isTranscriptionsReady, setIsTranscriptionsReady] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [formattedTranscript, setFormattedTranscript] = useState("")
+
 
 
     // Refs
@@ -49,7 +52,7 @@ const MainLayout = () => {
     const CLOUD_NAME = 'dqtscpu75';
     const UPLOAD_PRESET = 'brd5uhci';
 
-
+    const { user } = useUserAuth();
 
     const assemblyAiHeaders = {
         authorization: "ce2c1d53c1af4f02a15b539ffd7bc68c",
@@ -78,8 +81,6 @@ const MainLayout = () => {
             else if (identifier === 'tasks') {
 
                 setShowTasks(prevState => !prevState);
-
-
             }
             else if (identifier === "summary") {
                 setShowSummary(prevState => !prevState)
@@ -92,7 +93,19 @@ const MainLayout = () => {
 
     };
 
-    console.log("transcriptions:", transcriptions)
+    useEffect(() => {
+
+        if (isTranscriptionsReady) {
+            setShowSpeakerLabels(true)
+            setShowSummary(true)
+            setShowTasks(true)
+            setShowNotes(true)
+        }
+
+
+    }, [isTranscriptionsReady])
+
+
     // >>>>>>>>>>>>>>>> UI Logics >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
     useEffect(() => {
@@ -238,7 +251,7 @@ const MainLayout = () => {
     // Function to end transcription and upload audio
     const endTranscription = async (event) => {
         event.preventDefault();
-        toast.success(" Transcription Stopped");
+        toast.success(" Recording stopped, Note case Transcriptions are getting ready!");
 
         if (socket.current) {
             socket.current.send(JSON.stringify({ terminate_session: true }));
@@ -279,12 +292,16 @@ const MainLayout = () => {
         try {
 
             const transcript = await client.transcripts.transcribe(params);
+            await hanldeTasks(transcript)
+            console.log("summaryyyyyyyyyyyyyyyyyy", transcript.summary)
+            await sendSummaryToEmail(transcript.summary)
             setTranscriptions(transcript)
             setSpeakerLabelsText(transcript.utterances)
             setSentimentAnalysis(transcript.sentiment_analysis_results)
             const formatText = extractFormatTranscriptionText(transcript);
             setFormattedTranscript(formatText);
-            toast.success("speaker diarazation completed")
+            setIsTranscriptionsReady(true)
+            toast.success("Note case Transcriptions ready!")
 
         } catch (error) {
             console.error('Error during speaker diarization:', error);
@@ -380,6 +397,63 @@ const MainLayout = () => {
 
     };
 
+    //>>>>>>>>>>>>>>>>>>>>>>> Tasks code >>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+    const [tasksData, setTasksData] = useState([])
+
+
+
+    const hanldeTasks = async (transcript) => {
+        try {
+
+            const body = {
+
+                transcript: transcript
+            }
+
+            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/tasks/create-tasks`, body, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            toast.success("Tasks Generated Successfully")
+            const data = response.data;
+            setTasksData(data.tasks)
+            console.log(" task data from server", data)
+        } catch (error) {
+            console.log("error:", error)
+        }
+
+    }
+
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>> Sending Summary to User Email >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    const sendSummaryToEmail = async (summary) => {
+
+
+        try {
+            const body = {
+                summary: summary,
+                email: user.email
+            }
+            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/generate-notes/send-summary`, body, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            console.log("summary related message:", response.data.message)
+
+        } catch (error) {
+            console.log("error", error)
+        }
+
+
+    }
+
+
 
     return (
         <div className='min-h-screen w-full flex items-center flex-col'>
@@ -410,7 +484,7 @@ const MainLayout = () => {
 
 
 
-{/* 
+                        {/* 
                         <Button className="mx-2" variant={"customPurple"}>Generate Notes</Button> */}
                     </span>
 
@@ -425,7 +499,7 @@ const MainLayout = () => {
                             wordsIndex={wordsIndex}
                             setTranscriptions={setTranscriptions}
                             isEdit={isEdit}
-                            sentimentAnalysis = {sentimentAnalysis}
+                            sentimentAnalysis={sentimentAnalysis}
 
                         />
                     </div>
@@ -457,6 +531,18 @@ const MainLayout = () => {
                         <Button className="mx-2" variant={"customPurple"}>New Client</Button>
                     </span>
 
+                    <div className='w-full'>
+
+                        {
+                            showSummary ? <GeneralSummary
+
+                                transcript={transcript}
+                                transcriptions={transcriptions}
+
+                            /> : <div></div>
+                        }
+
+                    </div>
 
                     <div className='w-full'>
                         {
@@ -477,24 +563,13 @@ const MainLayout = () => {
 
                                 transcript={transcript}
                                 transcriptions={transcriptions}
+                                tasksData={tasksData}
 
                             /> : <div></div>
                         }
 
                     </div>
 
-                    <div className='w-full'>
-
-                        {
-                            showSummary ? <GeneralSummary
-
-                                transcript={transcript}
-                                transcriptions={transcriptions}
-
-                            /> : <div></div>
-                        }
-
-                    </div>
 
 
 

@@ -69,6 +69,7 @@ import Header from './components/layout/header/Header'
 
 import Notecase from "./pages/lawyers-advice/CaseNote";
 import PreAudioSuccess from "./SmallComponents/PreAudioSuccess";
+import SummriazationDeposition from "./pages/SummriazationDeposition/SummriazationDeposition";
 
 
 function App() {
@@ -312,6 +313,13 @@ function App() {
 
               <ProtectedRoute>
                 <Notecase />
+              </ProtectedRoute>}
+
+            />
+            <Route exact path="/summarization-deposition" element={
+
+              <ProtectedRoute>
+                <SummriazationDeposition />
               </ProtectedRoute>}
 
             />

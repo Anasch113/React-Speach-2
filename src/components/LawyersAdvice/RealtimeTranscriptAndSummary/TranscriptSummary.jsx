@@ -30,7 +30,7 @@ const TranscriptSummary = ({
     // for large window
     useEffect(() => {
         if (pRefLarge.current) {
-            console.log("workking")
+           
             pRefLarge.current.scrollTop = pRefLarge.current.scrollHeight;
         }
     }, [transcript])
@@ -85,7 +85,7 @@ const TranscriptSummary = ({
         <div className='border w-full min-h-[300px] bg-bg-navy-blue rounded-md flex flex-col items-center p-5 gap-5'>
             <h1 className='md:text-3xl text-xl font-semibold'>Transcript</h1>
 
-            <div className={`border rounded-md w-full max-[768px]:text-sm p-2 min-h-[250px] max-h-[250px] ${showSpeakerLabels ? 'overflow-y-scroll' : 'overflow-y-scroll'} `}>
+            <div className={`border rounded-md w-full max-[768px]:text-sm p-2 min-h-[250px] max-h-[250px] ${showSpeakerLabels ? 'overflow-y-auto' : 'overflow-y-auto'} `}>
 
                 <div ref={pRefLarge}
                     style={{
