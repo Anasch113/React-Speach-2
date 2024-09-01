@@ -53,6 +53,13 @@ const MainLayout = ({
     }, []);
     // function to handle the summary deposition
     const handleSummaryDeposition = async () => {
+
+        if (summaryName === "" || selectedValue === '' || fileContent === "") {
+            toast("Please provide all the details first!")
+
+            return
+        }
+
         toast.success("Deposition started")
         setProcessing(true)
         setActiveSection("transcriptions")
@@ -107,6 +114,7 @@ const MainLayout = ({
 
     const generateSummaryDeposition = async (subtitle) => {
         try {
+
             const body = {
 
                 subtitle: subtitle,
