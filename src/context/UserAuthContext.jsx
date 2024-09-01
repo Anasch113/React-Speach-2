@@ -19,6 +19,7 @@ import { getDatabase, ref, get, set, onValue } from "firebase/database";
 import { database } from "../firebase";
 import axios from "axios"
 import toast from "react-hot-toast";
+import { uploadingFunctions } from "./contextFiles/uploadingFunctions";
 
 
 const userAuthContext = createContext();
@@ -29,6 +30,7 @@ export function UserAuthContextProvider({ children }) {
   const [paymentInfo, setPaymentInfo] = useState([]);
   const [message, setMessage] = useState("");
 
+  const { file, setFile, filename, setFileName, cloudUrl, setCloudUrl, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, fileDurations, setFileDurations, cost, setCost, showFormModal, setShowFormModal, showPaymentModal, setShowPaymentModal, uploadingfileNames, setUploadingFileNames, fileNames, setFileNames, chunksLoading, setChunksLOading, handleFileChange, fileDuration, isPaymentInProgress, setIsPaymentInProgress , handleTextFileChange, fileContent} = uploadingFunctions()
 
 
   async function logIn(email, password) {
@@ -239,7 +241,7 @@ export function UserAuthContextProvider({ children }) {
 
   return (
     <userAuthContext.Provider
-      value={{ user, signUp, logIn, logOut, paymentInfo, userBalance, signUpWithGoogle, signUpWithFaceBook, message }}
+      value={{ user, signUp, logIn, logOut, paymentInfo, userBalance, signUpWithGoogle, signUpWithFaceBook, message, file, setFile, filename, setFileName, cloudUrl, setCloudUrl, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, fileDurations, setFileDurations, cost, setCost, showFormModal, setShowFormModal, showPaymentModal, setShowPaymentModal, uploadingfileNames, setUploadingFileNames, fileNames, setFileNames, chunksLoading, setChunksLOading, handleFileChange, fileDuration, isPaymentInProgress, setIsPaymentInProgress, handleTextFileChange, fileContent }}
 
     >
       {children}

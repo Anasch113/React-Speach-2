@@ -30,41 +30,37 @@ import { database } from '../../firebase'
 
 const PreAudioTranscriptions = () => {
 
-    const [file, setFile] = useState(null)
-    const [filename, setFileName] = useState("No File Selected")
-    const [cloudUrl, setCloudUrl] = useState("")
-    const [progress, setProgress] = useState(0)
-    const [isUpload, setIsUpload] = useState(false)
+
     const [runUseEffect, setRunUseEffect] = useState(false)
     const [reloadLoading, setReloadLoading] = useState(false)
 
-    const [fileNames, setFileNames] = useState([]);
-    const [uploadingfileNames, setUploadingFileNames] = useState([]);
-    const [fileDurations, setFileDurations] = useState([]);
 
-    const [cloudUrls, setCloudUrls] = useState([]);
+
+
+
+
 
     const [processing, setProcessing] = useState(false);
     const [transcribeText, setTranscribeText] = useState("");
     const [transcriptions, setTranscriptions] = useState("");
 
 
-    const [showFormModal, setShowFormModal] = useState(false);
-    const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+
 
     const [isTranscriptions, setIsTranscriptions] = useState(false);
     const [dbData, setDbData] = useState("")
     const [subtitle, setSubtitle] = useState([]); // New state variable
 
-    const [chunksLoading, setChunksLOading] = useState(false)
-    const [isPaymentInProgress, setIsPaymentInProgress] = useState(false)
 
 
-    const [fileDuration, setFileDuration] = useState(0);
-    const [cost, setCost] = useState(0);
+
+
+
+
     const [isPaymentDone, setIsPaymentDone] = useState(false)
 
-    const { user, userBalance } = useUserAuth();
+    const { user, userBalance, file, setFile, filename, setFileName, cloudUrl, setCloudUrl, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, fileDurations, setFileDurations, cost, setCost, showFormModal, setShowFormModal, showPaymentModal, setShowPaymentModal, uploadingfileNames, setUploadingFileNames, fileNames, setFileNames, chunksLoading, setChunksLOading, handleFileChange, fileDuration, isPaymentInProgress, setIsPaymentInProgress } = useUserAuth();
 
 
 
@@ -73,9 +69,7 @@ const PreAudioTranscriptions = () => {
         apiKey: import.meta.env.VITE_ASSEMBLYAI_KEY
     })
 
-    const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dqtscpu75";
-    const CLOUD_NAME = 'dqtscpu75';
-    const UPLOAD_PRESET = 'brd5uhci';
+
 
 
 
@@ -171,198 +165,12 @@ const PreAudioTranscriptions = () => {
 
 
 
-    // New upload function which include chunks method
 
 
-    // const handleFileChange = async (event, stateKey) => {
-    //     setIsUpload(true);
-    //     setCloudUrl("");
-    //     setFile("")
-    //     setFileDuration("")
-    //     setCost("")
-
-    //     setProgress(0);
-
-
-    //     const selectedFile = event.target.files[0];
-    //     setFile(selectedFile);
-    //     setFileName(selectedFile.name);
-    //     console.log('Selected File:', selectedFile);
-
-    //     try {
-    //         const chunkSize = 5 * 1024 * 1024; // 5MB
-    //         const isLargeFile = selectedFile.size > 20 * 1024 * 1024; // 20MB
-    //         if (isLargeFile) {
-    //             // Use chunked upload for large files
-    //             await uploadFile(selectedFile);
-    //         } else {
-
-
-    //             const formData = new FormData();
-    //             formData.append("file", selectedFile);
-    //             formData.append("upload_preset", "brd5uhci");
-    //             formData.append("cloud_name", "dqtscpu75");
-    //             formData.append("folder", "Audio");
-    //             formData.append("quality", "auto:good"); // Set the desired quality level
-
-
-    //             const cloudinaryResponse = await axios.post(
-    //                 `${cloudinaryBaseUrl}/upload`,
-    //                 formData,
-    //                 {
-    //                     onUploadProgress: (progressEvent) => {
-    //                         // Calculate and update upload progress
-    //                         const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-    //                         setProgress(progress);
-    //                         console.log(`Upload Progress: ${progress}%`);
-
-
-    //                     }
-    //                 }
-    //             );
-    //             const cloudinaryFileUrl = cloudinaryResponse.data.secure_url;
-    //             setCloudUrl(cloudinaryFileUrl);
-
-    //             const duration = cloudinaryResponse.data.duration;
-    //             const roundedDuration = (duration / 60).toFixed(1)
-    //             setFileDuration(roundedDuration)
-    //             // Get the duration of the uploaded file
-    //             console.log("cloudinaryResponseeeeee:", cloudinaryResponse)
-    //             console.log("cloudinaryyyy URRLLLLLLLL: ", cloudinaryFileUrl)
-    //             toast.success("File Uploaded")
-
-    //             // Calculate the cost
-    //             const cost = (roundedDuration * 0.5).toFixed(2);
-    //             console.log("cost", cost)
-    //             setCost(cost)
-    //             setShowFormModal(false)
-    //             setShowPaymentModal(true)
-    //             setIsPaymentInProgress(true)
-
-
-    //         }
-    //     } catch (error) {
-    //         alert(error);
-    //         console.error("Error in uploading file", error.message);
-    //     }
-
-    //     setIsUpload(false);
-    // };
-
-
-
-
-    // Bulk file experiment start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-    const handleFileChange = async (event) => {
-        setIsUpload(true);
-        setCloudUrls("");
-        setFile("");
-        setFileDurations("");
-        setCost(0)
-        setProgress(0);
-
-        const selectedFiles = event.target.files;
-        console.log('Selected Files:', selectedFiles);
-
-        const fileUploadPromises = [];
-        for (let i = 0; i < selectedFiles.length; i++) {
-            const file = selectedFiles[i];
-
-            fileUploadPromises.push(uploadAndTranscribeFile(file, i));
-        }
-
-        try {
-            // Wait for all file uploads to complete
-            await Promise.all(fileUploadPromises);
-            toast.success("All files uploaded ");
-
-            setShowFormModal(false)
-            setShowPaymentModal(true)
-
-        } catch (error) {
-            alert(error);
-            console.error("Error in uploading files", error.message);
-        }
-
-        setIsUpload(false);
-
-
-
-    };
 
 
 
     console.log("progress", progress)
-    const uploadAndTranscribeFile = async (file, index) => {
-        setFile(file);
-
-        setUploadingFileNames((prevNames) => [...prevNames, file.name]);
-        try {
-            const isLargeFile = file.size > 20 * 1024 * 1024; // 20MB
-            if (isLargeFile) {
-                // Handle large file upload with chunking (return a promise that resolves when complete)
-                return uploadFile(file, index);
-            } else {
-
-
-                const formData = new FormData();
-                formData.append("file", file);
-                formData.append("upload_preset", "brd5uhci");
-                formData.append("cloud_name", "dqtscpu75");
-                formData.append("folder", "Audio");
-                formData.append("quality", "auto:good"); // Set the desired quality level
-
-                const cloudinaryResponse = await axios.post(
-                    `${cloudinaryBaseUrl}/upload`,
-                    formData,
-
-                    {
-                        onUploadProgress: (progressEvent) => {
-                            const progressPercentage = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                            setProgress((prevProgress) => {
-                                // If prevProgress is not an array, default to an empty array
-                                const newProgress = Array.isArray(prevProgress) ? [...prevProgress] : [];
-                                newProgress[index] = progressPercentage;
-                                return newProgress;
-                            });
-                            console.log(`Upload Progress for ${file.name}: ${progressPercentage}%`);
-                        }
-                    }
-
-                );
-
-                const cloudinaryFileUrl = cloudinaryResponse.data.secure_url;
-                setFileNames((prevNames) => [...prevNames, file.name]);
-                setCloudUrls((prevUrls) => [...prevUrls, cloudinaryFileUrl])
-
-                const duration = cloudinaryResponse.data.duration;
-                const roundedDuration = (duration / 60).toFixed(1);
-                setFileDurations((prevDurations) => [...prevDurations, roundedDuration]);
-                // console.log("cloudinaryResponse:", cloudinaryResponse);
-                // console.log("cloudinary URL:", cloudinaryFileUrl);
-                toast.success(`File ${file.name} uploaded`);
-
-
-
-                //   Calculate the cost
-
-                const cost = (roundedDuration * 0.5).toFixed(2);
-                console.log("cost", cost)
-                setCost((prevCost) => parseFloat(prevCost) + parseFloat(cost));
-
-
-                setIsPaymentInProgress(true)
-
-
-
-                // Call your transcription function here
-                // await transcribeFile(cloudinaryFileUrl);
-            }
-        } catch (error) {
-            console.error(`Error in uploading file ${file.name}`, error.message);
-        }
-    };
 
 
 
@@ -377,102 +185,6 @@ const PreAudioTranscriptions = () => {
 
     };
 
-    // Bulk file experiment end >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-    const uploadFile = (file) => {
-        return new Promise(async (resolve, reject) => {
-            if (!file) {
-                console.error('Please select a file.');
-                reject('No file selected.');
-                return;
-            }
-
-            setChunksLOading(true);
-            const uniqueUploadId = generateUniqueUploadId();
-            const chunkSize = 5 * 1024 * 1024;
-            const totalChunks = Math.ceil(file.size / chunkSize);
-            let currentChunk = 0;
-
-            console.log("total chunks", totalChunks);
-
-            const uploadChunk = async (start, end) => {
-                const formData = new FormData();
-                formData.append('file', file.slice(start, end));
-                formData.append('cloud_name', CLOUD_NAME);
-                formData.append('upload_preset', UPLOAD_PRESET);
-                const contentRange = `bytes ${start}-${end - 1}/${file.size}`;
-
-                console.log(`Uploading chunk for uniqueUploadId: ${uniqueUploadId}; start: ${start}, end: ${end - 1}`);
-
-                try {
-                    const response = await fetch(
-                        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
-                        {
-                            method: 'POST',
-                            body: formData,
-                            headers: {
-                                'X-Unique-Upload-Id': uniqueUploadId,
-                                'Content-Range': contentRange,
-                            },
-                        }
-                    );
-
-                    if (!response.ok) {
-                        throw new Error('Chunk upload failed.');
-                    }
-
-                    currentChunk++;
-
-                    if (currentChunk < totalChunks) {
-                        const nextStart = currentChunk * chunkSize;
-                        const nextEnd = Math.min(nextStart + chunkSize, file.size);
-
-                        // Update the progress percentage
-                        const progress = Math.round((currentChunk / totalChunks) * 100);
-                        console.log("Progress during chunk file upload:", progress);
-                        toast(`In progress, ${file.name && file.name} ${progress}% uploaded `, { icon: '👏' });
-
-                        await uploadChunk(nextStart, nextEnd); // Ensure the next chunk is awaited
-                    } else {
-                        const fetchResponse = await response.json();
-                        const cloudinaryFileUrl = fetchResponse.secure_url;
-                        setFileNames((prevNames) => [...prevNames, file.name]);
-                        setCloudUrls((prevUrls) => [...prevUrls, cloudinaryFileUrl]);
-                        toast.success("Audio file uploaded");
-
-                        const duration = fetchResponse.duration;
-                        const roundedDuration = (duration / 60).toFixed(1);
-                        setFileDurations((prevDurations) => [...prevDurations, roundedDuration]);
-
-                        const cost = (roundedDuration * 0.5).toFixed(2);
-                        console.log("Cost:", cost);
-                        setCost((prevCost) => parseFloat(prevCost) + parseFloat(cost));
-
-                        setChunksLOading(false);
-                        resolve(); // Resolve the promise when done
-                    }
-                } catch (error) {
-                    console.error('Error uploading chunk:', error);
-                    reject(error); // Reject the promise on error
-                }
-            };
-
-            const start = 0;
-            const end = Math.min(chunkSize, file.size);
-            uploadChunk(start, end);
-        });
-    };
-
-
-
-
-
-    const generateUniqueUploadId = () => {
-        return `uqid-${Date.now()}`;
-    };
-
-
-    console.log("duration of uploaded file", fileDuration)
 
 
     const handleFormClick = () => {
@@ -769,7 +481,7 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                                             <p key={i}>Uploading... {file}</p>
                                         ))
                                     }
-                                  
+
 
 
 
@@ -807,6 +519,8 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                     </div>
                 </div>
             )}
+
+            
             {showPaymentModal && (
                 <PaymentOptions
                     fileNames={fileNames}
@@ -817,8 +531,6 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                     currentBalance={userBalance}
                     handleTranscriptions={handleTranscriptions}
                     setIsPaymentDone={setIsPaymentDone}
-
-
 
 
                 />

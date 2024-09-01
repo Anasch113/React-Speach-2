@@ -96,3 +96,89 @@ router.post("/create-tasks", async (req, res) => {
         res.status(500).json({ message: "Error while creating tasks", error: error.response?.data || error.message });
     }
 });
+
+
+
+
+
+
+
+
+
+    // New upload function which include chunks method
+
+
+    // const handleFileChange = async (event, stateKey) => {
+    //     setIsUpload(true);
+    //     setCloudUrl("");
+    //     setFile("")
+    //     setFileDuration("")
+    //     setCost("")
+
+    //     setProgress(0);
+
+
+    //     const selectedFile = event.target.files[0];
+    //     setFile(selectedFile);
+    //     setFileName(selectedFile.name);
+    //     console.log('Selected File:', selectedFile);
+
+    //     try {
+    //         const chunkSize = 5 * 1024 * 1024; // 5MB
+    //         const isLargeFile = selectedFile.size > 20 * 1024 * 1024; // 20MB
+    //         if (isLargeFile) {
+    //             // Use chunked upload for large files
+    //             await uploadFile(selectedFile);
+    //         } else {
+
+
+    //             const formData = new FormData();
+    //             formData.append("file", selectedFile);
+    //             formData.append("upload_preset", "brd5uhci");
+    //             formData.append("cloud_name", "dqtscpu75");
+    //             formData.append("folder", "Audio");
+    //             formData.append("quality", "auto:good"); // Set the desired quality level
+
+
+    //             const cloudinaryResponse = await axios.post(
+    //                 `${cloudinaryBaseUrl}/upload`,
+    //                 formData,
+    //                 {
+    //                     onUploadProgress: (progressEvent) => {
+    //                         // Calculate and update upload progress
+    //                         const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+    //                         setProgress(progress);
+    //                         console.log(`Upload Progress: ${progress}%`);
+
+
+    //                     }
+    //                 }
+    //             );
+    //             const cloudinaryFileUrl = cloudinaryResponse.data.secure_url;
+    //             setCloudUrl(cloudinaryFileUrl);
+
+    //             const duration = cloudinaryResponse.data.duration;
+    //             const roundedDuration = (duration / 60).toFixed(1)
+    //             setFileDuration(roundedDuration)
+    //             // Get the duration of the uploaded file
+    //             console.log("cloudinaryResponseeeeee:", cloudinaryResponse)
+    //             console.log("cloudinaryyyy URRLLLLLLLL: ", cloudinaryFileUrl)
+    //             toast.success("File Uploaded")
+
+    //             // Calculate the cost
+    //             const cost = (roundedDuration * 0.5).toFixed(2);
+    //             console.log("cost", cost)
+    //             setCost(cost)
+    //             setShowFormModal(false)
+    //             setShowPaymentModal(true)
+    //             setIsPaymentInProgress(true)
+
+
+    //         }
+    //     } catch (error) {
+    //         alert(error);
+    //         console.error("Error in uploading file", error.message);
+    //     }
+
+    //     setIsUpload(false);
+    // };

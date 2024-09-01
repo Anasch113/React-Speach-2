@@ -70,6 +70,7 @@ import Header from './components/layout/header/Header'
 import Notecase from "./pages/lawyers-advice/CaseNote";
 import PreAudioSuccess from "./SmallComponents/PreAudioSuccess";
 import SummriazationDeposition from "./pages/SummriazationDeposition/SummriazationDeposition";
+import ViewSummaryDeposition from "./components/SummriazationDepostion/ViewSummaryDeposition";
 
 
 function App() {
@@ -320,6 +321,14 @@ function App() {
 
               <ProtectedRoute>
                 <SummriazationDeposition />
+              </ProtectedRoute>}
+
+            />
+
+            <Route exact path="/view-summarization-deposition/:id" element={
+
+              <ProtectedRoute>
+                <ViewSummaryDeposition />
               </ProtectedRoute>}
 
             />

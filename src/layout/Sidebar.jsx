@@ -30,7 +30,7 @@ import { FaPause } from "react-icons/fa";
 import { FaBars } from 'react-icons/fa6';
 import { MdClose } from "react-icons/md";
 import { MdOutlineCases } from "react-icons/md";
-
+import { MdOutlineSummarize } from "react-icons/md";
 function Sidebar({ isPurchase, minutes }) {
   const user1 = {
     username: "John Doe",
@@ -374,6 +374,15 @@ function Sidebar({ isPurchase, minutes }) {
               <MdOutlineCases />
               </div>
               <button>Note Case</button>
+            </div>
+          </Link>
+
+          <Link to={"/summarization-deposition"}>
+            <div className={`mx-2 p-4 flex rounded-md ${isActive("/note-case") ? "bg-white text-black" : "hover:bg-white hover:text-text-black"}`}>
+              <div className="mr-2 mt-1">
+              <MdOutlineSummarize />
+              </div>
+              <button>Summary Deposition</button>
             </div>
           </Link>
 
