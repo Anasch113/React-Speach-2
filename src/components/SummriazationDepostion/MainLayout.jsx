@@ -6,6 +6,9 @@ import { AssemblyAI } from 'assemblyai'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import Spinner from '../PreAudio/Spinner'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { ref, update } from "firebase/database"
+import { database } from '../../firebase'
 
 
 const MainLayout = ({
@@ -25,16 +28,20 @@ const MainLayout = ({
     const [formattedTranscript, setFormattedTranscript] = useState("")
     const [reloadLoading, setReloadLoading] = useState(false)
     const [runUseEffect, setRunUseEffect] = useState(false)
+    const [isPaymentDone, setIsPaymentDone] = useState(false)
     const [summaryName, setSummaryName] = useState("")
     const [selectedValue, setSelectedValue] = useState('');
+    const [isStepOneDone, setIsStepOneDone] = useState(false)
 
 
-
-    const { user, cloudUrls, fileContent } = useUserAuth()
+    const { user, cloudUrls, fileContent, setFileContent, userBalance, setIsPaymentInProgress, fileNames, setFileNames , cost} = useUserAuth()
 
     // uploading section code 
-    console.log("file contenr of text file:", fileContent)
+    console.log("cost of deposition :", cost)
 
+
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const client = new AssemblyAI({
         apiKey: import.meta.env.VITE_ASSEMBLYAI_KEY
@@ -47,10 +54,100 @@ const MainLayout = ({
     };
 
 
+    const hanldeStepOne = (type) => {
+        setIsStepOneDone(true)
+        setDepositionType(type)
+    }
+
+
+    // >>>>>>>>>> Payment Intgeration start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    const paidFileContent = location.state?.paidFileContent;
+    const paidSummaryName = location.state?.paidSummaryName;
+    const paidDepostionType = location.state?.paidDepostionType;
+    const paidDeponant = location.state?.paidDeponant;
+    const paidFileNames = location.state?.paidFileNames;
+
+  
+    console.log("users balance in pre audio", userBalance)
+
 
     useEffect(() => {
-        console.log("useEffect running on page load");
-    }, []);
+
+        if (paidFileContent) {
+
+            setFileContent(paidFileContent)
+            setDepositionType(paidDepostionType)
+            setSelectedValue(paidDeponant)
+            setSummaryName(paidSummaryName)
+            setFileNames(paidFileNames)
+            setActiveSection("upload")
+            setIsStepOneDone(true)
+            toast.success("Continue your Depsotion")
+
+            setIsPaymentInProgress(false)
+
+            setIsPaymentDone(true)
+
+        }
+        // Clear the state from the URL
+        navigate(location.pathname, { replace: true });
+    }, [paidFileContent])
+
+
+
+    // Function to create Stripe session
+    const createStripeSession = async () => {
+        const userId = user.uid
+        
+        try {
+
+            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/create-stripe-session-sd`, {
+                userId,
+                cost,
+                summaryName,
+                fileContent,
+                depositionType,
+                selectedValue,
+                fileNames
+            });
+
+
+            return response.data;
+        }
+
+        catch (error) {
+            console.error("Error creating Stripe session", error);
+            return null;
+        }
+    };
+
+    const handleCardPayment = async () => {
+
+        try {
+
+            // For direct method
+            const stripeSession = await createStripeSession();
+
+            if (stripeSession && stripeSession.url) {
+                // Redirect the user to Stripe Checkout
+                window.location.href = stripeSession.url;
+            } else {
+                alert("Failed to create Stripe session. Please try again.");
+            }
+
+        } catch (error) {
+            console.log("error", error)
+        }
+    }
+
+
+
+    // >>>>>>>>>> Payment Intgeration End >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+
     // function to handle the summary deposition
     const handleSummaryDeposition = async () => {
 
@@ -60,9 +157,18 @@ const MainLayout = ({
             return
         }
 
+        if (cost > userBalance) {
+            toast.error("Insufficient credit, Please buy more credit ")
+
+            setProcessing(false)
+            return
+        }
+
         toast.success("Deposition started")
         setProcessing(true)
         setActiveSection("transcriptions")
+
+
         try {
             const generateSd = await generateSummaryDeposition(fileContent)
             setProcessing(false)
@@ -100,7 +206,6 @@ const MainLayout = ({
             // }
 
 
-            toast.success("Audio Transcriptions Completed")
 
         } catch (error) {
             console.log("error in summary deposition", error)
@@ -127,8 +232,7 @@ const MainLayout = ({
                 }
             });
             const data = response.data
-            console.log("dataaaaaaaaaaaa", data.summaryDeposition.data)
-
+          
 
 
 
@@ -167,6 +271,16 @@ const MainLayout = ({
             });
             const message = saveResponse.data.message;
             toast.success(message)
+
+           
+            // Update user balance in Firebase
+            const newBalance = userBalance - cost; // Assuming `cost` is the transcription cost in state
+            await update(ref(database, `users/${user.uid}/credit-payment`), {
+                balance: newBalance
+            });
+
+
+            console.log("User balance updated successfully");
             console.log("data stored in database:", saveResponse.data)
             window.location.reload()
 
@@ -218,7 +332,7 @@ const MainLayout = ({
         }
 
     }
-    console.log(depositionType)
+    console.log(depositionType, summaryName, selectedValue)
 
 
 
@@ -238,7 +352,7 @@ const MainLayout = ({
 
                     setDbData(res.data)
 
-                    if (res.data.length > 0) {
+                    if (res.data.length > 0 && !paidFileContent) {
                         setActiveSection("transcriptions")
                     }
 
@@ -298,6 +412,15 @@ const MainLayout = ({
                         setSummaryName={setSummaryName}
                         handleSelectChange={handleSelectChange}
                         selectedValue={selectedValue}
+                        isPaymentDone={isPaymentDone}
+                        handleCardPayment={handleCardPayment}
+                        hanldeStepOne={hanldeStepOne}
+                        isStepOneDone={isStepOneDone}
+                        setIsStepOneDone={setIsStepOneDone}
+
+
+
+
 
                     />}
                 {activeSection === 'transcriptions' &&
@@ -312,6 +435,7 @@ const MainLayout = ({
                         summaryName={summaryName}
                         depositionType={depositionType}
                         selectedValue={selectedValue}
+
                     />}
             </div>
 

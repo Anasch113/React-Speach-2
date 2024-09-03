@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios"
 import toast from "react-hot-toast"
+import * as pdfjs from 'pdfjs-dist';
+
+
 export function uploadingFunctions() {
 
     const [file, setFile] = useState(null)
@@ -280,6 +283,8 @@ export function uploadingFunctions() {
         setFile(file);
         setIsUpload(true)
         setUploadingFileNames((prevNames) => [...prevNames, file.name]);
+        setCost(20)
+
 
         try {
             // Check if the uploaded file is a text file
@@ -304,7 +309,8 @@ export function uploadingFunctions() {
                         return newProgress;
                     });
 
-                    setIsPaymentInProgress(false);
+                    setIsPaymentInProgress(true);
+                    setShowPaymentModal(true)
                 };
 
                 reader.onerror = (error) => {
@@ -315,7 +321,38 @@ export function uploadingFunctions() {
                 // Read the file content as text
                 reader.readAsText(file);
 
-            } else {
+            }
+            else if (file.type === "application/pdf") {
+                // Handle PDF file
+                const fileReader = new FileReader();
+
+                fileReader.onload = async (e) => {
+                    const typedArray = new Uint8Array(e.target.result);
+                    const pdf = await pdfjs.getDocument({ data: typedArray }).promise;
+                    let textContent = '';
+
+                    // Extract text from each page
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContentPage = await page.getTextContent();
+                        textContentPage.items.forEach((item) => {
+                            textContent += item.str + ' ';
+                        });
+                    }
+
+                    setFileContent(textContent)
+                };
+
+                fileReader.onerror = (error) => {
+                    console.error(`Error reading PDF file ${file.name}`, error);
+                    toast.error(`Failed to read PDF file ${file.name}`);
+                };
+
+                fileReader.readAsArrayBuffer(file);
+
+            }
+
+            else {
                 throw new Error("Uploaded file is not a text file");
             }
 
@@ -326,7 +363,7 @@ export function uploadingFunctions() {
     };
 
     return {
-        file, setFile, filename, setFileName, cloudUrl, setCloudUrl, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, fileDurations, setFileDurations, cost, setCost, showFormModal, setShowFormModal, showPaymentModal, setShowPaymentModal, uploadingfileNames, setUploadingFileNames, fileNames, setFileNames, chunksLoading, setChunksLOading, handleFileChange, fileDuration, isPaymentInProgress, setIsPaymentInProgress, handleTextFileChange, fileContent
+        file, setFile, filename, setFileName, cloudUrl, setCloudUrl, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, fileDurations, setFileDurations, cost, setCost, showFormModal, setShowFormModal, showPaymentModal, setShowPaymentModal, uploadingfileNames, setUploadingFileNames, fileNames, setFileNames, chunksLoading, setChunksLOading, handleFileChange, fileDuration, isPaymentInProgress, setIsPaymentInProgress, handleTextFileChange, fileContent, setFileContent
     }
 }
 

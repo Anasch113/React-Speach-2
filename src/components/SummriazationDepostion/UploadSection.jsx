@@ -13,6 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import PaymentBox from './PaymentBox'
+import toast from 'react-hot-toast'
 
 
 
@@ -23,23 +25,34 @@ const UploadSection = ({
 
   setSummaryName,
   handleSelectChange,
-  selectedValue
+  selectedValue,
+  isPaymentDone,
+  handleCardPayment,
+  summaryName,
+  hanldeStepOne,
+  isStepOneDone,
+  setIsStepOneDone 
 
 
 }) => {
 
 
   const handleFormClick = () => {
+    if (summaryName === "" || selectedValue === "") {
+      toast("Please provide above details first")
+      return
+    }
     document.querySelector(".input-field").click();
+
   };
 
-  const { user, file, setFile, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, uploadingfileNames, fileNames, setFileNames, chunksLoading, handleFileChange, handleTextFileChange, fileContent, setUploadingfileNames } = useUserAuth();
+  const { user, file, setFile, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, uploadingfileNames, fileNames, setFileNames, chunksLoading, handleFileChange, handleTextFileChange, fileContent, setUploadingfileNames, showPaymentModal, isPaymentInProgress, setShowPaymentModal } = useUserAuth();
 
 
   console.log("filenames", fileNames)
   console.log("upladingfile names", uploadingfileNames)
   console.log("progress", progress)
-  const [isStepOneDone, setIsStepOneDone] = useState(false)
+ 
 
   const resetUploadStates = () => {
     setCloudUrls([]);     // Reset cloudUrls array
@@ -54,11 +67,7 @@ const UploadSection = ({
   };
 
 
-  const hanldeStepOne = (type) => {
-    setIsStepOneDone(true)
-    setDepositionType(type)
-  }
-
+  console.log("payment in progress", isPaymentInProgress)
 
 
   return (
@@ -79,7 +88,7 @@ const UploadSection = ({
 
             <div className=" flex flex-col md:w-2/3 w-full items-center gap-2">
               <Label className="w-full" htmlFor="email">Summary Name <span className='text-red-400'>*</span></Label>
-              <Input onChange={(e) => setSummaryName(e.target.value)} className="w-full border " type="text" id="summary" />
+              <Input value = {summaryName} onChange={(e) => setSummaryName(e.target.value)} className="w-full border " type="text" id="summary" />
             </div>
 
             <Select value={selectedValue} onValueChange={handleSelectChange} className="">
@@ -121,7 +130,7 @@ const UploadSection = ({
               }
 
 
-              
+
 
               {
                 isUpload && <div className='flex  items-center flex-col'>
@@ -139,15 +148,15 @@ const UploadSection = ({
 
               }
               <input
-                
-                accept=' .txt '
+
+                accept=' .txt , .pdf'
                 onChange={handleTextFileChange}
                 className='input-field'
                 type="file"
                 hidden
               />
               {
-                !file && <span className='flex items-center justify-center flex-col gap-4 '><MdCloudUpload color='#126fd6' size={70} />
+                !fileNames.length > 0 && <span className='flex items-center justify-center flex-col gap-4 '><MdCloudUpload color='#126fd6' size={70} />
                   <p className='font-poppins font-semibold md:text-lg text-sm'>Click to upload the file</p>
                   <p>.txt files only</p></span>
               }
@@ -155,12 +164,33 @@ const UploadSection = ({
 
 
             </form>
-            <Button onClick={handleSummaryDeposition} variant={"customLightPurple"} className="w-56">Transcribe</Button>
+            {
+              isPaymentInProgress ? (
+
+                <Button onClick={() => {
+                  setShowPaymentModal(true)
+                }} variant={"customLightPurple"} className="w-56">Pay Now</Button>
+
+              ) : (
+
+                <Button disabled={!isPaymentDone} onClick={handleSummaryDeposition} variant={"customLightPurple"} className="w-56">Generate Summary</Button>
+
+              )
+            }
+
+
           </div>
         )
       }
 
-
+      {
+        showPaymentModal && <PaymentBox
+          handleCardPayment={handleCardPayment}
+          summaryName={summaryName}
+          setShowPaymentModal={setShowPaymentModal}
+          handleSummaryDeposition = {handleSummaryDeposition}
+        />
+      }
 
 
 

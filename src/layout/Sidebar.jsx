@@ -373,7 +373,7 @@ function Sidebar({ isPurchase, minutes }) {
               <div className="mr-2 mt-1">
               <MdOutlineCases />
               </div>
-              <button>Note Case</button>
+              <button> Case Note</button>
             </div>
           </Link>
 
@@ -382,7 +382,7 @@ function Sidebar({ isPurchase, minutes }) {
               <div className="mr-2 mt-1">
               <MdOutlineSummarize />
               </div>
-              <button>Summary Deposition</button>
+              <button>Deposition Summarization</button>
             </div>
           </Link>
 

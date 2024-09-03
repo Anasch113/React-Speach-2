@@ -30,7 +30,7 @@ import ViewSyncFiles from "./components/SyncAI/ViewSyncFiles";
 import TranscriptSuccess from "./SmallComponents/TranscriptSuccess";
 import CreditSuccess from "./SmallComponents/CreditSuccess";
 import LiveTranscriptSuccess from "./SmallComponents/LiveTranscriptSuccess";
-
+import SdSucess from "./SmallComponents/SdSucess"
 
 
 
@@ -347,6 +347,7 @@ function App() {
             <Route exact path="/credit-payment-success" element={<CreditSuccess />} />
             <Route exact path="/live-transcript-payment-success" element={<LiveTranscriptSuccess />} />
             <Route exact path="/transcript-payment-success-preaudio" element={<PreAudioSuccess />} />
+            <Route exact path="/transcript-payment-success-sd" element={<SdSucess />} />
             <Route exact path="/cancel" element={<Cancel />} />
 
           </Routes>
