@@ -378,7 +378,7 @@ function Sidebar({ isPurchase, minutes }) {
           </Link>
 
           <Link to={"/summarization-deposition"}>
-            <div className={`mx-2 p-4 flex rounded-md ${isActive("/note-case") ? "bg-white text-black" : "hover:bg-white hover:text-text-black"}`}>
+            <div className={`mx-2 border w-full py-4 px-2 flex rounded-md ${isActive("/note-case") ? "bg-white text-black" : "hover:bg-white hover:text-text-black"}`}>
               <div className="mr-2 mt-1">
               <MdOutlineSummarize />
               </div>

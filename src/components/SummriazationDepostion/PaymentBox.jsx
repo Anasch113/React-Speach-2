@@ -51,7 +51,7 @@ const PaymentBox = ({
                     <span className='flex justify-between '>
 
                         <p className=' text-center font-medium  font-poppins'> Total</p>
-                        <p className=' text-center font-medium  font-poppins'>20$ </p>
+                        <p className=' text-center font-medium  font-poppins'>10$ </p>
                     </span>
 
 

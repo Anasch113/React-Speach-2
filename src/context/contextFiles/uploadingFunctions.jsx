@@ -283,7 +283,7 @@ export function uploadingFunctions() {
         setFile(file);
         setIsUpload(true)
         setUploadingFileNames((prevNames) => [...prevNames, file.name]);
-        setCost(20)
+        setCost(10)
 
 
         try {

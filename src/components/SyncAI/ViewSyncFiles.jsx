@@ -29,7 +29,7 @@ const ViewSyncFiles = () => {
   const [selectedText, setSelectedText] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [wordsIndex, setWordsIndex] = useState("");
-  const [transcriptions, setTranscriptions] = useState("");
+  const [transcriptElements, setTranscriptElements] = useState([]);
   const [dbTranscript, setDbTranscript] = useState("");
 
   const navigate = useNavigate();
@@ -53,7 +53,12 @@ const ViewSyncFiles = () => {
       }).catch((err) => {
         console.log("Error while fetching the transcription in view transcriptions", err)
       })
+
+
+
+
       setDbTranscript(fetch.data)
+
 
 
     }
@@ -63,86 +68,76 @@ const ViewSyncFiles = () => {
   }, [id])
   console.log("dbTranscript", dbTranscript)
 
+// Function to download the SRT file
+const downloadSrtFile = () => {
+  const element = document.createElement("a");
+  const srtContent = generateSrtContent();
+  const file = new Blob([srtContent], { type: "text/plain" });
+  element.href = URL.createObjectURL(file);
+  element.download = `${dbTranscript.audioFilename}.srt`;
+  document.body.appendChild(element); // Required for Firefox
+  element.click();
+};
 
+// Function to convert timestamps into correct SRT format (HH:MM:SS,MS)
+const convertToSrtTime = (seconds) => {
+  const pad = (num, size) => ('000' + num).slice(size * -1);
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+  const milliseconds = Math.floor((seconds % 1) * 1000);
+  return `${pad(hours, 2)}:${pad(minutes, 2)}:${pad(secs, 2)},${pad(milliseconds, 3)}`;
+};
 
-  // funtion to download the srt file
+// Function to generate SRT content
+const generateSrtContent = () => {
+  let srtContent = '';
+  let segmentIndex = 1;
+  let lastValidTime = 0;
 
-  const downloadSrtFile = () => {
+  dbTranscript.syncData.forEach((data, i) => {
+    let paragraphContent = '';
+    let wordCount = 0;
 
-    const element = document.createElement("a");
+    // Only consider elements that have a `ts` and `end_ts`
+    const validWords = data.elements.filter(word => word.ts !== undefined && word.end_ts !== undefined);
 
-    const srtContent = generateSrtContent()
+    validWords.forEach((word, j) => {
+      paragraphContent += word.value + ' '; // Add word to paragraph content
 
+      wordCount++; // Increment word count for grouping
 
-    const file = new Blob([srtContent], { type: "text/plain" }); // Create blob with text content
-    element.href = URL.createObjectURL(file);
-    element.download = `${dbTranscript.audioFilename}.srt`;
-    document.body.appendChild(element); // Required for Firefox
-    element.click();
+      // If we have a group of 6 words, process timestamps
+      if (wordCount % 6 === 0) {
+        const startTs = validWords[j - 5]?.ts;  // Start time of the 1st word in the group
+        const endTs = validWords[j]?.end_ts;    // End time of the 6th word in the group
 
-  };
+        const startTime = convertToSrtTime(startTs || lastValidTime);  // Default to lastValidTime if undefined
+        const endTime = convertToSrtTime(endTs || startTime + 1);      // Default to startTime + 1 if undefined
 
-  // function to convert timestamps into correct srt format timestamps
-  const convertToSrtTime = (seconds) => {
-    // if (isNaN(seconds) || seconds < 0) {
-    //   // Return a default timestamp or handle the error as needed
-    //   return '00:00:00,000';
-    // }
+        srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
 
-    const pad = (num, size) => ('000' + num).slice(size * -1);
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = Math.floor(seconds % 60);
-    const milliseconds = Math.floor((seconds % 1) * 1000);
-    return `${pad(hours, 2)}:${pad(minutes, 2)}:${pad(secs, 2)},${pad(milliseconds, 3)}`;
-  };
-
-  // function to generate the srt content
-
-  const generateSrtContent = () => {
-    let srtContent = '';
-    let segmentIndex = 1;
-    let lastValidTime = 0;
-
-    dbTranscript.syncData.forEach((data, i) => {
-      let paragraphContent = '';
-
-      data.elements.forEach((words, j) => {
-        // if (words.value.trim() !== '') {
-        paragraphContent += words.value + '';
-        if ((j + 1) % 14 === 0) {
-
-          let startTs = data.elements[j - 7].ts;
-          let endTs = data.elements[j - 1].end_ts;
-
-          if (isNaN(startTs) || startTs < 0) {
-            startTs = lastValidTime + 1; // Add 1 second to the last valid time
-          }
-          if (isNaN(endTs) || endTs < 0) {
-            endTs = startTs + 1; // Add 1 second to start time if end time is invalid
-          }
-          const startTime = convertToSrtTime(startTs);
-          const endTime = convertToSrtTime(endTs);
-
-          srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
-          segmentIndex += 1;
-          paragraphContent = ''; // Reset paragraph content for next segment
-          // }
-        }
-      });
-
-      // If there is any remaining paragraph content that wasn't added due to the 12-word condition
-      // if (paragraphContent.trim() !== '') {
-      //   const lastElement = data.elements[data.elements.length - 1];
-      //   const startTime = convertToSrtTime(data.elements[data.elements.length - 12]?.ts || 0);
-      //   const endTime = convertToSrtTime(lastElement.end_ts);
-      //   srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
-      //   segmentIndex += 1;
-      // }
+        segmentIndex += 1;  // Increment the SRT segment index
+        paragraphContent = '';  // Reset for the next group
+        lastValidTime = endTs || startTs; // Update lastValidTime to the most recent endTs
+      }
     });
 
-    return srtContent;
-  };
+    // Handle any leftover words that didn't complete a group of 6
+    if (paragraphContent.trim() !== '') {
+      const startTs = validWords[wordCount - (wordCount % 6)]?.ts;
+      const endTs = validWords[validWords.length - 1]?.end_ts;
+
+      const startTime = convertToSrtTime(startTs || lastValidTime);
+      const endTime = convertToSrtTime(endTs || startTime + 1);
+
+      srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
+    }
+  });
+
+  return srtContent;
+};
+
 
   // const handleToggleSRT = () => {
   //   console.log("Before toggle:", showSRT); // Log current state before toggle
@@ -165,8 +160,8 @@ const ViewSyncFiles = () => {
 
         // Extract start and end times of the current segment
         const { ts, end_ts } = segment;
-        console.log("start", ts);
-        console.log("end", end_ts);
+        // console.log("start", ts);
+        // console.log("end", end_ts);
 
         // Check if the current time falls within the duration of this segment
         if (currentTime >= ts && currentTime <= end_ts) {
@@ -235,35 +230,38 @@ const ViewSyncFiles = () => {
 
                   {
 
-                    <div className='w-full' >
-
+                    <div className='w-full'>
                       {
-                        dbTranscript &&
-                        dbTranscript.syncData.map((data, i) => (
+                        dbTranscript && dbTranscript.syncData.map((data, i) => (
                           <div className="w-full py-2" key={i}>
-                            {/* <p>speaker: {data.speaker}</p> */}
                             <div className="flex flex-wrap gap-1">
-                              {data.elements.map((words, j) => (
-                                // Check if words.value is not an empty string
-                                // words.value.trim() !== "" && (
-                                <div className='' key={j}>
-                                  <p className='flex gap-3' style={{ color: j === wordsIndex ? '#f1b900' : 'white' }}>
-                                    {words.value}
-                                    {(j + 1) % 10 === 0 && (
-                                      <span>( {data.elements[j - 5].ts} -- {data.elements[j - 5].end_ts})</span>
-                                    )}
-                                  </p>
-                                </div>
-                                // )
-                              ))}
+                              {data.elements
+                                // Filter out words that don't have timestamps
+                                .filter((word) => word.ts !== undefined && word.end_ts !== undefined)
+                                // Group words in sets of six
+                                .map((word, j, wordsArray) => {
+                                  const isLastInGroup = (j + 1) % 6 === 0; // Every 6th word
+                                  const startWord = wordsArray[j - 5]; // The first word in the group
+                                  const endWord = wordsArray[j];       // The sixth word in the group
+
+                                  return (
+                                    <div className='' key={j}>
+                                      <p className='flex gap-3' style={{ color: j === wordsIndex ? '#f1b900' : 'white' }}>
+                                        {word.value}
+                                        {/* Show timestamp after every 6th word */}
+                                        {isLastInGroup && startWord && (
+                                          <span>({startWord.ts} -- {endWord.end_ts})</span>
+                                        )}
+                                      </p>
+                                    </div>
+                                  );
+                                })}
                             </div>
                           </div>
                         ))
                       }
-
-
-
                     </div>
+
 
                   }
 
