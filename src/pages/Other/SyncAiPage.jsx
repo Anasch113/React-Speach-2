@@ -74,6 +74,7 @@ const SyncAiPage = () => {
     const [reloadLoading, setReloadLoading] = useState(false)
     const [chunksLoading, setChunksLOading] = useState(false)
     const [webHookData, setWebHookData] = useState("")
+    const [error, setError] = useState("")
     const [useEffectTriggered, setUseEffectTriggered] = useState(false);
 
 
@@ -142,11 +143,11 @@ const SyncAiPage = () => {
             console.log("urls", cloudUrl.audio, cloudUrl.transcript)
 
             if (cloudUrl.audio && cloudUrl.transcript) {
-                
+
                 setIsPaymentInProgress(false)
                 setShowPaymentModal(false)
                 setShowFormModal(true)
-              
+
             }
             else {
                 toast.error("Some error occurred. Please try later")
@@ -610,10 +611,15 @@ const SyncAiPage = () => {
             if (error.response) {
                 console.error('Server responded with status:', error.response.status);
                 console.error('Response data:', error.response.data);
+
+                setError(error.response)
+
             } else if (error.request) {
                 console.error('No response received:', error.request);
+                setError(error.request)
             } else {
                 console.error('Error:', error.message);
+                setError(error.message)
             }
         }
     };
@@ -706,6 +712,7 @@ const SyncAiPage = () => {
 
                 } catch (error) {
                     console.log("Erro in finalsync", error)
+                    setError(error)
                 }
 
 
@@ -778,8 +785,10 @@ const SyncAiPage = () => {
 
 
 
-
                     <div className='flex flex-col w-full py-5 md:px-10 px-2 bg-bg-color min-h-screen overflow-x-hidden '>
+                        <div className=' flex items-center justify-center'>
+                           <p className='text-red-500 text-lg'>{error}</p> 
+                        </div>
 
                         {
                             reloadLoading ? <Spinner /> :
@@ -974,7 +983,7 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                             className='text-center md:px-5 md:py-4 w-2/4 md:h-16 h-12 rounded-md bg-bg-purple-2 text-white md:text-xl font-medium font-roboto hover:bg-bg-purple-500 '>
 
                             <span className='flex items-center text-center justify-center gap-2'>
-                                <GrSync  className='text-xl' />
+                                <GrSync className='text-xl' />
                                 <p>Resync </p>
 
                             </span>
