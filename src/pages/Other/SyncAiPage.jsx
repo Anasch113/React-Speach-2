@@ -915,7 +915,7 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                                 }
                                 <div className='py-2'>
                                     <input
-                                        accept=' .pdf ,.txt,'
+                                        accept=' .pdf ,.txt, .docx'
                                         onChange={(event) => handleFileChange(event, 'transcript')}
                                         className='input-field-2'
                                         type="file"
