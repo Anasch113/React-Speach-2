@@ -68,16 +68,16 @@ const ViewSyncFiles = () => {
   }, [id])
   console.log("dbTranscript", dbTranscript)
 
-// Function to download the SRT file
-const downloadSrtFile = () => {
-  const element = document.createElement("a");
-  const srtContent = generateSrtContent();
-  const file = new Blob([srtContent], { type: "text/plain" });
-  element.href = URL.createObjectURL(file);
-  element.download = `${dbTranscript.audioFilename}.srt`;
-  document.body.appendChild(element); // Required for Firefox
-  element.click();
-};
+  // Function to download the SRT file
+  const downloadSrtFile = () => {
+    const element = document.createElement("a");
+    const srtContent = generateSrtContent();
+    const file = new Blob([srtContent], { type: "text/plain" });
+    element.href = URL.createObjectURL(file);
+    element.download = `${dbTranscript.audioFilename}.srt`;
+    document.body.appendChild(element); // Required for Firefox
+    element.click();
+  };
 
 // Function to convert timestamps into correct SRT format (HH:MM:SS,MS)
 const convertToSrtTime = (seconds) => {
@@ -89,55 +89,56 @@ const convertToSrtTime = (seconds) => {
   return `${pad(hours, 2)}:${pad(minutes, 2)}:${pad(secs, 2)},${pad(milliseconds, 3)}`;
 };
 
+
 // Function to generate SRT content
 const generateSrtContent = () => {
-  let srtContent = '';
-  let segmentIndex = 1;
-  let lastValidTime = 0;
+  let srtContent = '';   // Stores the final SRT content
+  let segmentIndex = 1;   // SRT segment index
+  let wordCount = 0;      // Count words per segment (group of 6)
+  let paragraphContent = ''; // Content of the current segment
+  let startTs = null;     // Start timestamp of the current group
+  let endTs = null;       // End timestamp of the current group
 
-  dbTranscript.syncData.forEach((data, i) => {
-    let paragraphContent = '';
-    let wordCount = 0;
+  // Iterate over transcript data
+  dbTranscript.syncData.forEach((data) => {
+    data.elements.forEach((word, index) => {
+      if (word.ts !== undefined && word.end_ts !== undefined) {
+        // Set start timestamp for the first word in the group
+        if (wordCount === 0) {
+          startTs = word.ts;
+        }
 
-    // Only consider elements that have a `ts` and `end_ts`
-    const validWords = data.elements.filter(word => word.ts !== undefined && word.end_ts !== undefined);
+        // Add word directly to the paragraph content (including punctuation as is)
+        paragraphContent += word.value;
 
-    validWords.forEach((word, j) => {
-      paragraphContent += word.value + ' '; // Add word to paragraph content
+        // Increment the word count
+        wordCount++;
 
-      wordCount++; // Increment word count for grouping
+        // Update end timestamp for the last word in the group
+        endTs = word.end_ts;
 
-      // If we have a group of 6 words, process timestamps
-      if (wordCount % 6 === 0) {
-        const startTs = validWords[j - 5]?.ts;  // Start time of the 1st word in the group
-        const endTs = validWords[j]?.end_ts;    // End time of the 6th word in the group
+        // Every group of 6 words or last word in the array
+        if (wordCount === 6 || index === data.elements.length - 1) {
+          const startTime = convertToSrtTime(startTs);
+          const endTime = convertToSrtTime(endTs);
 
-        const startTime = convertToSrtTime(startTs || lastValidTime);  // Default to lastValidTime if undefined
-        const endTime = convertToSrtTime(endTs || startTime + 1);      // Default to startTime + 1 if undefined
+          // Add this segment to the SRT content
+          srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
 
-        srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
-
-        segmentIndex += 1;  // Increment the SRT segment index
-        paragraphContent = '';  // Reset for the next group
-        lastValidTime = endTs || startTs; // Update lastValidTime to the most recent endTs
+          // Reset for the next segment
+          paragraphContent = '';
+          wordCount = 0;
+          segmentIndex++;
+        }
+      } else if (word.ts === undefined && word.value) {
+        // Handle punctuation that has no timestamp (add it to the current segment)
+        paragraphContent += word.value;
       }
     });
-
-    // Handle any leftover words that didn't complete a group of 6
-    if (paragraphContent.trim() !== '') {
-      const startTs = validWords[wordCount - (wordCount % 6)]?.ts;
-      const endTs = validWords[validWords.length - 1]?.end_ts;
-
-      const startTime = convertToSrtTime(startTs || lastValidTime);
-      const endTime = convertToSrtTime(endTs || startTime + 1);
-
-      srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
-    }
   });
 
   return srtContent;
 };
-
 
   // const handleToggleSRT = () => {
   //   console.log("Before toggle:", showSRT); // Log current state before toggle
@@ -201,7 +202,7 @@ const generateSrtContent = () => {
 
   }
 
-
+console.log("dbtranscript", dbTranscript)
   return (
 
     <>
@@ -229,37 +230,37 @@ const generateSrtContent = () => {
                 <div className=' font-roboto'>
 
                   {
-
                     <div className='w-full'>
-                      {
-                        dbTranscript && dbTranscript.syncData.map((data, i) => (
-                          <div className="w-full py-2" key={i}>
-                            <div className="flex flex-wrap gap-1">
-                              {data.elements
-                                // Filter out words that don't have timestamps
-                                .filter((word) => word.ts !== undefined && word.end_ts !== undefined)
-                                // Group words in sets of six
-                                .map((word, j, wordsArray) => {
-                                  const isLastInGroup = (j + 1) % 6 === 0; // Every 6th word
-                                  const startWord = wordsArray[j - 5]; // The first word in the group
-                                  const endWord = wordsArray[j];       // The sixth word in the group
+                      {dbTranscript && dbTranscript.syncData.map((data, i) => (
+                        <div className="w-full py-2" key={i}>
+                          <div className="flex flex-wrap gap-1">
+                            {data.elements.map((word, j, wordsArray) => {
+                              const isTimestamped = word.ts !== undefined && word.end_ts !== undefined;
 
-                                  return (
-                                    <div className='' key={j}>
-                                      <p className='flex gap-3' style={{ color: j === wordsIndex ? '#f1b900' : 'white' }}>
-                                        {word.value}
-                                        {/* Show timestamp after every 6th word */}
-                                        {isLastInGroup && startWord && (
-                                          <span>({startWord.ts} -- {endWord.end_ts})</span>
-                                        )}
-                                      </p>
-                                    </div>
-                                  );
-                                })}
-                            </div>
+                              // Only count words with valid timestamps for grouping
+                              const validWords = wordsArray.filter((w) => w.ts !== undefined && w.end_ts !== undefined);
+                              const validIndex = validWords.indexOf(word); // Get index in validWords array
+
+                              const isLastInGroup = (validIndex + 1) % 6 === 0; // Every 6th valid word
+                              const startWord = validWords[validIndex - 5]; // The first valid word in the group
+                              const endWord = validWords[validIndex];       // The sixth valid word in the group
+
+                              return (
+                                <div className='' key={j}>
+                                  <p className='flex gap-3' style={{ color: j === wordsIndex ? '#f1b900' : 'white' }}>
+                                    {word.value}
+
+                                    {/* Show timestamp after every 6th valid word */}
+                                    {isLastInGroup && startWord && (
+                                      <span>({startWord.ts} -- {endWord.end_ts})</span>
+                                    )}
+                                  </p>
+                                </div>
+                              );
+                            })}
                           </div>
-                        ))
-                      }
+                        </div>
+                      ))}
                     </div>
 
 
