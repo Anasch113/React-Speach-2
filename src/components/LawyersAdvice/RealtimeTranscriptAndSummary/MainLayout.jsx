@@ -52,7 +52,7 @@ const MainLayout = () => {
     const CLOUD_NAME = 'dqtscpu75';
     const UPLOAD_PRESET = 'brd5uhci';
 
-    const { user } = useUserAuth();
+    const { user, userBalance } = useUserAuth();
 
     const assemblyAiHeaders = {
         authorization: "ce2c1d53c1af4f02a15b539ffd7bc68c",

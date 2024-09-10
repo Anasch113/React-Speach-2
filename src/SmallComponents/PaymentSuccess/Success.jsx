@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { useUserAuth } from '../context/UserAuthContext'
-import { database } from '../firebase';
+import { useUserAuth } from '../../context/UserAuthContext'
+import { database } from "../../firebase"
 import { useNavigate } from 'react-router-dom';
 import { ref, onValue, } from "firebase/database"
 import toast from "react-hot-toast"

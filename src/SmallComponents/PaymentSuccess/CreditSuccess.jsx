@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from 'react'
-import { useUserAuth } from '../context/UserAuthContext'
-import { database } from "../firebase"
+import { useUserAuth } from '../../context/UserAuthContext'
+import { database } from "../../firebase"
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ref, onValue, update } from "firebase/database"
 import toast from "react-hot-toast"
 import { useDispatch } from "react-redux";
-import { setPaymentData } from "../GlobalState/features/paymentSlice"
+
 import axios from "axios"
 
-const TranscriptSuccess = () => {
+const CreditSuccess = () => {
     const [userId, setUserId] = useState("");
     const [sessionId, setSessionId] = useState("");
     const [dataDetails, setDataDetails] = useState(({
-        cloudUrl: "",
-        transcriptUrl: "",
-        filename: "",
-        fileDuration: 0,
-        amount: 0,
-        transcriptFileName: ""
+
+        total: 0,
+        userBalance: 0,
+        balance: 0,
+        method: ""
     }));
     const [trigger, setTrigger] = useState(false);
 
@@ -33,7 +32,7 @@ const TranscriptSuccess = () => {
 
             try {
                 setUserId(user.uid);
-                const userRef = ref(database, `users/${user.uid}/transcript-payment`);
+                const userRef = ref(database, `users/${user.uid}/credit-payment`);
                 onValue(userRef, (snapshot) => {
                     const userData = snapshot.val();
 
@@ -45,20 +44,18 @@ const TranscriptSuccess = () => {
                         setSessionId(userData.transcriptionsSessionId || '');
                         setDataDetails({
 
-                            cloudUrl: userData.dataDetails.cloudUrl,
-                            transcriptUrl:  userData.dataDetails.transcriptUrl ? userData.dataDetails.transcriptUrl : "",
-                            amount: userData.dataDetails.amount,
-                            filename: userData.dataDetails.filename,
-                            fileDuration: userData.dataDetails.fileDuration, 
-                            transcriptFileName : userData.dataDetails.transcriptFileName ? userData.dataDetails.transcriptFileName : "",
 
+                            total: userData.total,
+                            userBalance: userData.userBalance,
+
+                            method: userData.method
                         })
                         setTrigger(true)
                         console.log("sessionId in success", userData.transcriptionsSessionId)
 
 
                     }
-                    return 
+                    return
                 });
             } catch (error) {
                 console.log("Error while fething details in transcription payment success page", error)
@@ -90,29 +87,16 @@ const TranscriptSuccess = () => {
 
 
                 if (data.message === "Payment successful") {
-                    const userRef = ref(database, `users/${user.uid}/transcript-payment`);
+                    const userRef = ref(database, `users/${user.uid}/credit-payment`);
                     update(userRef, {
+
                         transcriptionsSessionId: '',
-                        dataDetails: {
-                            fileUrl: dataDetails.cloudUrl,
-                            transcriptUrl: dataDetails.transcriptUrl && dataDetails.transcriptUrl,
-                            transcriptFileName: dataDetails.transcriptFileName && dataDetails.transcriptFileName,
-                            amount: dataDetails.amount,
-                            filename: dataDetails.filename,
-                            fileDuration: dataDetails.fileDuration,
-                        
-                            status: "paid"
-                        }
+                        balance: dataDetails.userBalance + dataDetails.total,
+                        method: dataDetails.method,
+                        status: "paid"
+
                     });
-                    setDataDetails({
 
-                        cloudUrl: dataDetails.cloudUrl,
-                        filename: dataDetails.filename,
-                        fileDuration: dataDetails.fileDuration,
-                        transcriptUrl: dataDetails.transcriptUrl && dataDetails.transcriptUrl,
-                        transcriptFileName: dataDetails.transcriptFileName && dataDetails.transcriptFileName
-
-                    })
                     toast.success("Purchase Completed")
                     setIsOk(true)
                 }
@@ -137,16 +121,7 @@ const TranscriptSuccess = () => {
     const handleContinueTranscription = () => {
 
         if (isOk) {
-
-           if(dataDetails.transcriptUrl === "noUrl"){
-
-            navigate("/pre-audio-transcriptions", { state: { paidCloudUrl: dataDetails.cloudUrl, paidFilename: dataDetails.filename, paidFileDuration: dataDetails.fileDuration} });
-
-           } 
-           else{
-            navigate("/resyncingAi", { state: { paidCloudUrl: dataDetails.cloudUrl, paidFilename: dataDetails.filename, paidFileDuration: dataDetails.fileDuration, transcriptUrl: dataDetails.transcriptUrl && dataDetails.transcriptUrl, transcriptFileName: dataDetails.transcriptFileName && dataDetails.transcriptFileName } });
-           }
-           
+            navigate("/user-payment-info",);
 
         }
     };
@@ -155,16 +130,16 @@ const TranscriptSuccess = () => {
 
     return (
         <div className='flex w-full min-h-screen items-center justify-center bg-bg-color flex-col'>
-            <p className='text-white text-center font-bold  text-xl md:text-3xl font-poppins'>Thank you for your purchase!</p>
+            <p className='text-white text-center font-bold  text-xl md:text-3xl font-poppins'>Purchase Completed! Credit has been added in your account</p>
             <button
                 onClick={handleContinueTranscription}
                 className={`min-w[556px] text-center  hover:bg-purple-400-400 uppercase cursor-pointer bg-bg-purple-2  text-white text-xl my-16 px-3 py-3 rounded ${!isOk ? 'pointer-events-none cursor-not-allowed bg-gray-400' : ''
                     }`}
             >
-                Continue Transcriptions
+                Check Credit
             </button>
         </div>
     )
 }
 
-export default TranscriptSuccess
+export default CreditSuccess

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { useUserAuth } from '../context/UserAuthContext'
-import { database } from "../firebase"
+import { useUserAuth } from '../../context/UserAuthContext'
+import { database } from "../../firebase"
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ref, onValue, update } from "firebase/database"
 import { useDispatch } from 'react-redux';
 import toast from "react-hot-toast"
 
 import axios from "axios"
-import { setPaymentData } from '../GlobalState/features/paymentSlice';
+
 
 const LiveTranscriptSuccess = () => {
     const [userId, setUserId] = useState("");
@@ -126,9 +126,7 @@ const LiveTranscriptSuccess = () => {
     const handleContinueTranscription = () => {
 
         if (isOk) {
-            dispatch(setPaymentData({
-                purchase: "completed"
-            }))
+          
             navigate("/home", { state: { isPurchase: "completed", minutes : dataDetails.minutes } });
 
 

@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react'
-import { useUserAuth } from '../context/UserAuthContext'
-import { database } from "../firebase"
+import { useUserAuth } from '../../context/UserAuthContext'
+import { database } from "../../firebase"
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ref, onValue, update } from "firebase/database"
 import toast from "react-hot-toast"
 import { useDispatch } from "react-redux";
-import { setPaymentData } from "../GlobalState/features/paymentSlice"
+
 import axios from "axios"
 
-const PreAudioSuccess = () => {
+const SdSucess = () => {
     const [userId, setUserId] = useState("");
     const [sessionId, setSessionId] = useState("");
     const [dataDetails, setDataDetails] = useState(({
-        cloudUrls: [],
-
-        fileNames: [],
-        fileDurations: [],
+        fileContent: "",
+        depositionType: "",
+        summaryName: "",
+        selectedValue: "",
         amount: 0,
+        fileNames : []
 
     }));
     const [trigger, setTrigger] = useState(false);
@@ -33,7 +34,7 @@ const PreAudioSuccess = () => {
 
             try {
                 setUserId(user.uid);
-                const userRef = ref(database, `users/${user.uid}/transcript-payment-preAudio`);
+                const userRef = ref(database, `users/${user.uid}/transcript-payment-sd`);
                 onValue(userRef, (snapshot) => {
                     const userData = snapshot.val();
 
@@ -45,10 +46,12 @@ const PreAudioSuccess = () => {
                         setSessionId(userData.transcriptionsSessionId || '');
                         setDataDetails({
 
-                            cloudUrls: userData.dataDetails.cloudUrls,
-                            amount: userData.dataDetails.amount,
+                            summaryName: userData.dataDetails.summaryName,
+                            depositionType: userData.dataDetails.depositionType,
+                            selectedValue: userData.dataDetails.selectedValue,
+                            fileContent: userData.dataDetails.fileContent,
                             fileNames: userData.dataDetails.fileNames,
-                            fileDurations: userData.dataDetails.fileDurations,
+                            
 
 
                         })
@@ -81,7 +84,7 @@ const PreAudioSuccess = () => {
 
             const handlePaymentSuccess = async () => {
 
-                console.log("sessionId that will go to the server to vaerify the payment completion", sessionId)
+                console.log("sessionId that will go to the server to verify the payment completion", sessionId)
 
                 const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/retrieve`, { sessionId: sessionId });
                 console.log("response from the payment recheck endpoint", response.data)
@@ -89,24 +92,28 @@ const PreAudioSuccess = () => {
 
 
                 if (data.message === "Payment successful") {
-                    const userRef = ref(database, `users/${user.uid}/transcript-payment-preAudio`);
+                    const userRef = ref(database, `users/${user.uid}/transcript-payment-sd`);
                     update(userRef, {
                         transcriptionsSessionId: '',
 
                         dataDetails: {
 
-                            cloudUrls: dataDetails.cloudUrls,
-                            amount: dataDetails.amount,
+                            summaryName: dataDetails.summaryName,
+                            depositionType: dataDetails.depositionType,
+                            selectedValue: dataDetails.selectedValue,
+                            fileContent: dataDetails.fileContent,
                             fileNames: dataDetails.fileNames,
-                            fileDurations: dataDetails.fileDurations,
                             status: "paid"
                         }
                     });
+                    
                     setDataDetails({
 
-                        cloudUrls: dataDetails.cloudUrls,
+                        summaryName: dataDetails.summaryName,
+                        depositionType: dataDetails.depositionType,
+                        selectedValue: dataDetails.selectedValue,
+                        fileContent: dataDetails.fileContent,
                         fileNames: dataDetails.fileNames,
-                        fileDurations: dataDetails.fileDurations,
 
 
                     })
@@ -118,8 +125,6 @@ const PreAudioSuccess = () => {
 
             }
 
-
-
             handlePaymentSuccess()
         }
 
@@ -127,7 +132,7 @@ const PreAudioSuccess = () => {
 
 
 
-    console.log("data in preaduio success that will go to the pre audio transcriptions page:", dataDetails.cloudUrls, dataDetails.fileDurations, dataDetails.amount, dataDetails.fileNames)
+    console.log("data in sd success that will go to the pre summary deposition page:", dataDetails.summaryName, dataDetails.depositionType, dataDetails.selectedValue, dataDetails.fileContent)
 
 
 
@@ -135,7 +140,7 @@ const PreAudioSuccess = () => {
 
         if (isOk) {
 
-            navigate("/pre-audio-transcriptions", { state: { paidCloudUrl: dataDetails.cloudUrls, paidFilename: dataDetails.fileNames, paidFileDuration: dataDetails.fileDurations } });
+            navigate("/summarization-deposition", { state: { paidFileContent: dataDetails.fileContent, paidSummaryName: dataDetails.summaryName, paidDepostionType: dataDetails.depositionType, paidDeponant: dataDetails.selectedValue, paidFileNames: dataDetails.fileNames } });
 
 
 
@@ -158,4 +163,4 @@ const PreAudioSuccess = () => {
     )
 }
 
-export default PreAudioSuccess
+export default SdSucess

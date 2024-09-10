@@ -17,7 +17,7 @@ import ForgetPassword from "./SmallComponents/ForgetPassword";
 import { EmailAuthCredential } from "firebase/auth";
 import EmailVerification from "./SmallComponents/EmailVerification";
 import Pricing from "./pages/Other/Pricing";
-import Success from "../src/SmallComponents/Success"
+import Success from "../src/SmallComponents/PaymentSuccess/Success"
 import Cancel from "../src/SmallComponents/Cancel"
 import PlanDetails from "./components/pricing/PlanDetails";
 import PreAudioTranscriptions from "./pages/Other/PreAudioTranscriptions";
@@ -27,10 +27,10 @@ import UserPaymentInfo from "./components/SideComponents/UserPaymentInfo"
 import ViewTranscriptions from "./components/PreAudio/ViewTranscriptions";
 import SyncAiPage from "./pages/Other/SyncAiPage";
 import ViewSyncFiles from "./components/SyncAI/ViewSyncFiles";
-import TranscriptSuccess from "./SmallComponents/TranscriptSuccess";
-import CreditSuccess from "./SmallComponents/CreditSuccess";
-import LiveTranscriptSuccess from "./SmallComponents/LiveTranscriptSuccess";
-import SdSucess from "./SmallComponents/SdSucess"
+import TranscriptSuccess from "./SmallComponents/PaymentSuccess/TranscriptSuccess";
+import CreditSuccess from "./SmallComponents/PaymentSuccess/CreditSuccess";
+import LiveTranscriptSuccess from "./SmallComponents/PaymentSuccess/LiveTranscriptSuccess";
+import SdSucess from "./SmallComponents/PaymentSuccess/SdSucess"
 
 
 
@@ -68,7 +68,7 @@ import TermsAndConditions from './pages/terms-condition'
 import Header from './components/layout/header/Header'
 
 import Notecase from "./pages/lawyers-advice/CaseNote";
-import PreAudioSuccess from "./SmallComponents/PreAudioSuccess";
+import PreAudioSuccess from "./SmallComponents/PaymentSuccess/PreAudioSuccess";
 import SummriazationDeposition from "./pages/SummriazationDeposition/SummriazationDeposition";
 import ViewSummaryDeposition from "./components/SummriazationDepostion/ViewSummaryDeposition";
 
