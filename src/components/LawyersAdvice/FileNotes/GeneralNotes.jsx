@@ -9,45 +9,25 @@ import toast from 'react-hot-toast';
 const GeneralNotes = ({
     transcript,
     transcriptions,
-    formattedTranscript
+    formattedTranscript,
+    setNotes,
+    isNotes,
+    notes,
+    setIsNotes
 
 }) => {
 
-    const [letterText, setLetterText] = useState("")
-    const [notes, setNotes] = useState([])
-    const [isNotes, setIsNotes] = useState(false)
+
+
 
     const { user } = useUserAuth()
 
-    const letterTextChange = (e) => {
-        setLetterText(e.target.value)
-        console.log(letterText)
-    }
+    // const letterTextChange = (e) => {
+    //     setLetterText(e.target.value)
+    //     console.log(letterText)
+    // }
+    console.log("notessss", notes)
 
-    const handleGenerateNotes = async () => {
-        toast.success("In progress, please wait for shortly")
-        const body = {
-            transcript: formattedTranscript,
-            letter: letterText,
-            email: user.email
-        }
-
-        setIsNotes(true)
-        const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/generate-notes/generate`, body, {
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-        const data = response.data.notesArray
-        console.log('notes data:', data)
-        setNotes(data)
-        toast.success("Notes generation completed")
-
-        setTimeout(() => {
-            toast.success("An email also sent with notes attached file")
-        }, 3000);
-
-    }
 
     return (
 
@@ -68,7 +48,7 @@ const GeneralNotes = ({
             </span >
 
             {
-                isNotes && notes.length > 0 && <div className='border rounded-md w-full p-2 min-h-[150px] text-sm md:text-base '>
+                isNotes && notes.length > 0 && <div className='border rounded-md w-full p-2 max-h-[550px] text-sm md:text-base overflow-y-auto '>
 
                     {
                         notes.map((note, i) => (
@@ -84,15 +64,6 @@ const GeneralNotes = ({
 
 
 
-            {
-                !isNotes &&
-                <div className=' w-full h-[300px] flex items-center justify-center'> <Letter
-                    letterText={letterText}
-                    letterTextChange={letterTextChange}
-                    handleGenerateNotes={handleGenerateNotes}
-                /></div>
-
-            }
 
 
 

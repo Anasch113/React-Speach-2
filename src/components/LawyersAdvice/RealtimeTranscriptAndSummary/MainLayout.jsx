@@ -36,7 +36,8 @@ const MainLayout = () => {
     const [isTranscriptionsReady, setIsTranscriptionsReady] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [formattedTranscript, setFormattedTranscript] = useState("")
-
+    const [notes, setNotes] = useState([])
+    const [isNotes, setIsNotes] = useState(false)
 
 
     // Refs
@@ -292,16 +293,24 @@ const MainLayout = () => {
         try {
 
             const transcript = await client.transcripts.transcribe(params);
-            await hanldeTasks(transcript)
-            console.log("summaryyyyyyyyyyyyyyyyyy", transcript.summary)
-            await sendSummaryToEmail(transcript.summary)
+
+
             setTranscriptions(transcript)
             setSpeakerLabelsText(transcript.utterances)
             setSentimentAnalysis(transcript.sentiment_analysis_results)
             const formatText = extractFormatTranscriptionText(transcript);
             setFormattedTranscript(formatText);
-            setIsTranscriptionsReady(true)
-            toast.success("Note case Transcriptions ready!")
+
+            await hanldeTasks(transcript)
+            
+            const notesArray = await handleGenerateNotes(formatText);
+
+            // Make sure notesArray is generated and call sendSummaryAndNotesToEmail
+            if (notesArray) {
+                await sendSummaryAndNotesToEmail(transcript.summary, notesArray);
+                setIsTranscriptionsReady(true);
+                toast.success("Note case Transcriptions ready!");
+            }
 
         } catch (error) {
             console.error('Error during speaker diarization:', error);
@@ -421,7 +430,7 @@ const MainLayout = () => {
             toast.success("Tasks Generated Successfully")
             const data = response.data;
             setTasksData(data.tasks)
-            console.log(" task data from server", data)
+
         } catch (error) {
             console.log("error:", error)
         }
@@ -430,12 +439,13 @@ const MainLayout = () => {
 
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>> Sending Summary to User Email >>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    const sendSummaryToEmail = async (summary) => {
+    const sendSummaryAndNotesToEmail = async (summary, notesArray) => {
 
 
         try {
             const body = {
                 summary: summary,
+                notes: notesArray,
                 email: user.email
             }
             const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/generate-notes/send-summary`, body, {
@@ -444,7 +454,6 @@ const MainLayout = () => {
                 }
             })
 
-            console.log("summary related message:", response.data.message)
 
         } catch (error) {
             console.log("error", error)
@@ -454,6 +463,40 @@ const MainLayout = () => {
     }
 
 
+    // Notes Generation Code >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    const handleGenerateNotes = async (formattedText) => {
+        toast.success("In progress, please wait for shortly");
+        
+        const body = {
+            transcript: formattedText
+        };
+    
+        setIsNotes(true);
+    
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/generate-notes/generate`, body, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+    
+            const data = response.data.notesArray;
+    
+            if (data) {
+                setNotes(data);  // Update the state
+                toast.success("Notes generation completed");
+                return data;  // Return notesArray to be used in function 1
+            } else {
+                throw new Error("No notes generated");
+            }
+    
+        } catch (error) {
+            console.error('Error generating notes:', error);
+            throw error;
+        }
+    };
+    console.log("formatted transcript", formattedTranscript)
 
     return (
         <div className='min-h-screen w-full flex items-center flex-col'>
@@ -551,6 +594,10 @@ const MainLayout = () => {
                                 transcript={transcript}
                                 transcriptions={transcriptions}
                                 formattedTranscript={formattedTranscript}
+                                setNotes={setIsNotes}
+                                isNotes={isNotes}
+                                notes={notes}
+                                setIsNotes={setIsNotes}
 
                             /> : <div></div>
                         }
