@@ -41,7 +41,7 @@ const PaymentOptions = ({
 
     return (
         <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 py-3">
-            <div className="bg-bg-navy-blue h-[550px] md:w-[500px] w-[330px] p-5 rounded-lg overflow-y-scroll overflow-x-hidden">
+            <div className="bg-bg-navy-blue h-[550px] md:w-[500px] w-[330px] p-5 rounded-lg overflow-y-auto overflow-x-hidden">
 
                 <div className='w-full  flex flex-row items-center justify-end  gap-10 px-5 py-5'>
 

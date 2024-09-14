@@ -12,7 +12,8 @@ const TranscriptSummary = ({
     wordsIndex,
     setTranscriptions,
     isEdit,
-    sentimentAnalysis
+    sentimentAnalysis,
+    isTranscriptionsReady
 
 
 
@@ -30,7 +31,7 @@ const TranscriptSummary = ({
     // for large window
     useEffect(() => {
         if (pRefLarge.current) {
-           
+
             pRefLarge.current.scrollTop = pRefLarge.current.scrollHeight;
         }
     }, [transcript])
@@ -77,7 +78,7 @@ const TranscriptSummary = ({
 
 
 
-
+console.log("sentimentAnalysis", sentimentAnalysis)
 
     return (
 
@@ -106,7 +107,7 @@ const TranscriptSummary = ({
 
                     {
 
-                        sentimentAnalysis.length > 0 ? transcriptions.sentiment_analysis_results.map((sentiment, i) => {
+                        isTranscriptionsReady ? transcriptions.sentiment_analysis_results.map((sentiment, i) => {
                             // Find the utterance that corresponds to the current sentiment
                             const utterance = transcriptions.utterances.find(u =>
                                 u.start <= sentiment.start && u.end >= sentiment.end

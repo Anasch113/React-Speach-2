@@ -15,6 +15,11 @@ import CustomAudioPlayer from '@/components/PreAudio/CustomAudioPlayer'
 import Tasks from '../OutlookTasks/Tasks'
 import GeneralSummary from './GeneralSummary'
 import { useUserAuth } from '@/context/UserAuthContext'
+import PaymentModal from './PaymentModal'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { MdOutlineTimer } from "react-icons/md";
+import { ref, update } from "firebase/database"
+import { database } from '../../../firebase'
 
 
 const MainLayout = () => {
@@ -38,6 +43,8 @@ const MainLayout = () => {
     const [formattedTranscript, setFormattedTranscript] = useState("")
     const [notes, setNotes] = useState([])
     const [isNotes, setIsNotes] = useState(false)
+    const [showPaymentModal, setShowPaymentModal] = useState(false)
+    const [cost, setCost] = useState("")
 
 
     // Refs
@@ -45,13 +52,18 @@ const MainLayout = () => {
     const recorder = useRef(null)
     const texts = useRef({});
 
+
+    const location = useLocation();
+    const navigate = useNavigate();
+
     const client = new AssemblyAI({
         apiKey: import.meta.env.VITE_ASSEMBLYAI_KEY
     })
 
-    const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dqtscpu75";
-    const CLOUD_NAME = 'dqtscpu75';
-    const UPLOAD_PRESET = 'brd5uhci';
+    const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/db9lgwk1d";
+
+    const CLOUD_NAME = 'db9lgwk1d';
+    const UPLOAD_PRESET = 'iy2lwq5b';
 
     const { user, userBalance } = useUserAuth();
 
@@ -128,7 +140,26 @@ const MainLayout = () => {
     //>>>>>>>>>>>>>>>>>>>>>>>> Live Transcriptions code >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-    const generateTranscript = async () => {
+    const generateTranscript = async (method) => {
+
+
+        if (method === "notecase-credit" && total > 0 && total > userBalance) {
+            toast.error("Insufficient credit, Please buy more credit ")
+
+            return
+        }
+
+        if (method === "notecase-credit" && total > 0) {
+
+            // Update user balance in Firebase
+            const newBalance = userBalance - total; // Assuming `cost` is the transcription cost in state
+            await update(ref(database, `users/${user.uid}/credit-payment`), {
+                balance: newBalance
+            });
+            setIsPurchase("completed")
+
+        }
+
 
         const response = await fetch(`${import.meta.env.VITE_HOST_URL}/token`);
         const data = await response.json();
@@ -250,8 +281,8 @@ const MainLayout = () => {
 
 
     // Function to end transcription and upload audio
-    const endTranscription = async (event) => {
-        event.preventDefault();
+    const endTranscription = async () => {
+
         toast.success(" Recording stopped, Note case Transcriptions are getting ready!");
 
         if (socket.current) {
@@ -270,6 +301,7 @@ const MainLayout = () => {
 
                 recorder.current = null; // Reset the recorder
             });
+            setRemainingTime()
         } else {
             console.log("Recorder is null");
         }
@@ -295,22 +327,36 @@ const MainLayout = () => {
             const transcript = await client.transcripts.transcribe(params);
 
 
-            setTranscriptions(transcript)
-            setSpeakerLabelsText(transcript.utterances)
-            setSentimentAnalysis(transcript.sentiment_analysis_results)
-            const formatText = extractFormatTranscriptionText(transcript);
-            setFormattedTranscript(formatText);
-
-            await hanldeTasks(transcript)
-            
-            const notesArray = await handleGenerateNotes(formatText);
-
-            // Make sure notesArray is generated and call sendSummaryAndNotesToEmail
-            if (notesArray) {
-                await sendSummaryAndNotesToEmail(transcript.summary, notesArray);
-                setIsTranscriptionsReady(true);
-                toast.success("Note case Transcriptions ready!");
+            if (transcript.text === "") {
+                setIsTranscriptionsReady(false)
+                toast.error("Your Transcript is very short or irrelevant")
+                return
             }
+            else {
+
+
+                setTranscriptions(transcript)
+                console.log("transcripttttttt", transcript)
+                setSpeakerLabelsText(transcript.utterances)
+                setSentimentAnalysis(transcript.sentiment_analysis_results)
+                const formatText = extractFormatTranscriptionText(transcript);
+                setFormattedTranscript(formatText);
+
+                await hanldeTasks(transcript)
+
+                const notesArray = await handleGenerateNotes(formatText);
+
+                // Make sure notesArray is generated and call sendSummaryAndNotesToEmail
+                if (notesArray) {
+                    await sendSummaryAndNotesToEmail(transcript.summary, notesArray);
+
+                    toast.success("Note case Transcriptions ready!");
+                }
+                setIsTranscriptionsReady(true)
+            }
+
+
+
 
         } catch (error) {
             console.error('Error during speaker diarization:', error);
@@ -318,7 +364,7 @@ const MainLayout = () => {
     };
 
 
-
+    console.log("istranscriptions-ready:", isTranscriptionsReady)
 
 
     // Function to extract the formatted text from transcriptions
@@ -349,6 +395,7 @@ const MainLayout = () => {
         setIsPaused(true);
         if (recorder.current) {
             recorder.current.pauseRecording();
+            clearTimeout(timerRef.current);
         }
 
 
@@ -467,22 +514,22 @@ const MainLayout = () => {
 
     const handleGenerateNotes = async (formattedText) => {
         toast.success("In progress, please wait for shortly");
-        
+
         const body = {
             transcript: formattedText
         };
-    
+
         setIsNotes(true);
-    
+
         try {
             const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/generate-notes/generate`, body, {
                 headers: {
                     "Content-Type": "application/json"
                 }
             });
-    
+
             const data = response.data.notesArray;
-    
+
             if (data) {
                 setNotes(data);  // Update the state
                 toast.success("Notes generation completed");
@@ -490,13 +537,90 @@ const MainLayout = () => {
             } else {
                 throw new Error("No notes generated");
             }
-    
+
         } catch (error) {
             console.error('Error generating notes:', error);
             throw error;
         }
     };
     console.log("formatted transcript", formattedTranscript)
+
+
+
+    // Payment Integration for notecase >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    const [minutes, setMinutes] = useState(0)
+    const [isPurchase, setIsPurchase] = useState("")
+    const [remainingTime, setRemainingTime] = useState()
+    const [isPaymentDone, setIsPaymentDone] = useState(false)
+    const [total, setTotal] = useState(0);
+    const timerRef = useRef(null);
+
+
+
+
+    const isPurchaseFromLocation = location.state?.isPurchase;
+    const minutesFromLocation = location.state?.minutes;
+
+
+    useEffect(() => {
+        if (isPurchaseFromLocation === "completed" && minutesFromLocation) {
+            setIsPurchase(isPurchaseFromLocation)
+            setMinutes(minutesFromLocation)
+
+
+        }
+        // Clear the state from the URL
+        navigate(location.pathname, { replace: true });
+    }, [isPurchaseFromLocation, minutesFromLocation])
+
+
+
+    useEffect(() => {
+        if (isPurchase === "completed") {
+            setRemainingTime(minutes * 60)
+
+            setIsPaymentDone(true);
+
+            if (total === 0) {
+                generateTranscript()
+            }
+
+
+            // Cleanup function to clear the timer if the component unmounts or the effect runs again
+            return () => {
+                clearTimeout(timerRef.current);
+
+            };
+        }
+    }, [isPurchase]);
+
+
+    useEffect(() => {
+        if (!isPaused && remainingTime > 0) {
+            timerRef.current = setInterval(() => {
+                setRemainingTime(prevTime => prevTime - 1);
+            }, 1000);
+
+            return () => clearInterval(timerRef.current);
+        } else if (remainingTime == 0) {
+            endTranscription();
+            toast.success("Your time for note case live meeting has been ended");
+        }
+    }, [isPaused, remainingTime]);
+
+
+    console.log("remaining time", remainingTime)
+
+
+
+
+    const formatTime = (timeInSeconds) => {
+        const minutes = Math.floor(timeInSeconds / 60);
+        const seconds = timeInSeconds % 60;
+        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    };
+
+    console.log("total", total)
 
     return (
         <div className='min-h-screen w-full flex items-center flex-col'>
@@ -514,7 +638,15 @@ const MainLayout = () => {
 
                                 :
 
-                                <Button onClick={generateTranscript} className="mx-2" variant={"customPurple"}>Start Recording <FaPlay className='mx-2' /></Button>
+                                <PaymentModal
+                                    total={total}
+                                    setTotal={setTotal}
+                                    generateTranscript={generateTranscript}
+                                    initialMinutes={minutes}
+                                    setInitialMinutes={setMinutes}
+                                />
+
+
                         }
 
                         {
@@ -525,7 +657,11 @@ const MainLayout = () => {
                             !isPaused && isRecording && <Button onClick={pauseTranscriptions} className="mx-2" variant={"customBlue"}>Pause Recording  <FaPause className='mx-2' /></Button>
                         }
 
-
+                        {remainingTime > 0 && (
+                            <div className="font-semibold gap-2 font-poppins text-white-500 flex items-center">
+                                <MdOutlineTimer size={20} /> <p>{formatTime(remainingTime)}</p>
+                            </div>
+                        )}
 
                         {/* 
                         <Button className="mx-2" variant={"customPurple"}>Generate Notes</Button> */}
@@ -543,6 +679,7 @@ const MainLayout = () => {
                             setTranscriptions={setTranscriptions}
                             isEdit={isEdit}
                             sentimentAnalysis={sentimentAnalysis}
+                            isTranscriptionsReady={isTranscriptionsReady}
 
                         />
                     </div>
@@ -631,6 +768,8 @@ const MainLayout = () => {
                     transcriptions={transcriptions}
                 />
             </div>
+
+
 
         </div>
     )

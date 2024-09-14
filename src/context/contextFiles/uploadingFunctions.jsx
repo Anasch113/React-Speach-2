@@ -23,9 +23,10 @@ export function uploadingFunctions() {
     const [fileDuration, setFileDuration] = useState(0);
     const [isPaymentInProgress, setIsPaymentInProgress] = useState(false)
 
-    const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dqtscpu75";
-    const CLOUD_NAME = 'dqtscpu75';
-    const UPLOAD_PRESET = 'brd5uhci';
+    const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/db9lgwk1d";
+
+    const CLOUD_NAME = 'db9lgwk1d';
+    const UPLOAD_PRESET = 'iy2lwq5b';
 
 
 
@@ -86,8 +87,8 @@ export function uploadingFunctions() {
 
                 const formData = new FormData();
                 formData.append("file", file);
-                formData.append("upload_preset", "brd5uhci");
-                formData.append("cloud_name", "dqtscpu75");
+                formData.append("upload_preset", UPLOAD_PRESET);
+                formData.append("cloud_name", CLOUD_NAME);
                 formData.append("folder", "Audio");
                 formData.append("quality", "auto:good"); // Set the desired quality level
 

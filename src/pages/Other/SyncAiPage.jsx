@@ -87,10 +87,10 @@ const SyncAiPage = () => {
     const [cost, setCost] = useState(0);
 
 
-    const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/dqtscpu75";
+    const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/db9lgwk1d";
 
-    const CLOUD_NAME = 'dqtscpu75';
-    const UPLOAD_PRESET = 'brd5uhci';
+    const CLOUD_NAME = 'db9lgwk1d';
+    const UPLOAD_PRESET = 'iy2lwq5b';
 
 
 
@@ -126,7 +126,7 @@ const SyncAiPage = () => {
 
             setFileDuration(paidFileDuration)
 
-
+ 
 
             setIsCreditMethodDone(true)
 
@@ -299,8 +299,8 @@ const SyncAiPage = () => {
                 // Use regular upload for smaller files
                 const formData = new FormData();
                 formData.append("file", selectedFile);
-                formData.append("upload_preset", "brd5uhci");
-                formData.append("cloud_name", "dqtscpu75");
+                formData.append("upload_preset", UPLOAD_PRESET );
+                formData.append("cloud_name", CLOUD_NAME);
                 formData.append("folder", "Audio");
                 formData.append("quality", "auto:good");
 

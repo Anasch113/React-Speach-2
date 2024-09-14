@@ -4,28 +4,45 @@ import { MdClose } from "react-icons/md";
 import { MdPayment } from "react-icons/md";
 import { useState } from 'react';
 import axios from 'axios'
-import { useUserAuth } from '../../context/UserAuthContext';
+import { useUserAuth } from '../../../context/UserAuthContext';
 import { useAsyncValue } from 'react-router-dom';
-const PaymentModal = ({
-    fileName,
-    duration,
-    cost,
+import { FaPlay } from "react-icons/fa";
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose
 
-    setShowPaymentModal,
-    setCost,
-    currentBalance,
-    handleTranscriptions
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+
+
+const PaymentModal = ({
+
+    total,
+    setTotal,
+    generateTranscript,
+    initialMinutes ,
+    setInitialMinutes 
+
 }) => {
 
 
-    const [minutes, setMinutes] = useState('');
-    const [total, setTotal] = useState(0);
+   
+
     const { user } = useUserAuth()
 
     const handleMinutesChange = (e) => {
         const value = e.target.value;
-        setMinutes(value);
-        setTotal(value * 1);
+        setInitialMinutes(value);
+        setTotal(value * 1 + 20);
     };
 
 
@@ -33,9 +50,14 @@ const PaymentModal = ({
     // Function to create Stripe session
     const createStripeSession = async () => {
         const userId = user.uid
+        const body = {
+            total: total,
+            userId: userId, 
+            minutes: initialMinutes
+        }
         try {
 
-            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/live-transcript-payment`, { total, userId, minutes });
+            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/live-transcript-payment-casenote`, body);
 
 
             return response.data;
@@ -71,66 +93,98 @@ const PaymentModal = ({
 
 
     return (
-        <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 py-3">
-            <div className="bg-bg-navy-blue h-[500px] w-[500px] p-5 rounded-lg overflow-y-scroll overflow-x-hidden">
-
-                <div className='w-full  flex flex-row items-center justify-end  gap-10 px-5 py-5'>
-
-                    <span className='flex flex-1  flex-row items-center gap-2'>
-                        {/* <MdOutlinePaid className='text-2xl' /> */}
-                        <h1 className='text-2xl font-semibold font-poppins '> Billing </h1>
-                    </span>
-
-                    <MdClose onClick={() => setShowPaymentModal(false)} className='text-end w-10 h-10 cursor-pointer hover:bg-gray-800 p-2 rounded-full ' size={25} />
-
-                </div>
+        <>
 
 
+            <Dialog>
+                <DialogTrigger asChild>
 
-                {/* Direct Payment Method */}
-                <div className='flex flex-col my-2 gap-2 p-2  border-b'>
+                    <Button className="mx-2" variant={"customPurple"}>Start Recording <FaPlay className='mx-2' /></Button>
 
-                    <p className='text-xl mb-2 font-semibold font-poppins '>Choose Duration</p>
+                </DialogTrigger>
+                <DialogContent className="md:max-w-[600px]  md:min-h-[400px] max-w-[300px] max-h-[500px] overflow-y-auto">
+                    <DialogHeader >
+                        <DialogTitle className="mb-8">Billing</DialogTitle>
+                        <DialogDescription>
+                            <div className="my-5">
 
+                            </div>
+                            <div className='flex flex-col my-2 gap-2 p-2  border-b'>
 
-                    <span className='flex justify-between '>
-
-                        <p className=' text-center font-medium  font-poppins'> Charge per minute</p>
-                        <p className=' text-center font-medium  font-poppins'>1$ </p>
-                    </span>
-                    <span className='flex justify-between '>
-
-                        <p className=' text-center font-medium  font-poppins'> Total</p>
-                        <p className=' text-center font-medium  font-poppins'>{total} $ </p>
-                    </span>
-                    {/* Live Transcript Amount Inputs  */}
-                    <span className='flex flex-row gap-2 my-1'>
+                                <p className='text-xl mb-2  text-white font-semibold font-poppins '>Choose Duration for Meeting</p>
 
 
-                        <span className='flex flex-col justify-between items-start gap-1'>
-                            <label className='text-center font-medium  font-poppins'>Amount of Minutes* </label>
-                            <input type='number' value={minutes}
-                                onChange={handleMinutesChange} className=' bg-bg-navy-blue  sfont-medium  font-poppins p-2 border border-white rounded-sm'></input>
+                                <span className='flex justify-between '>
 
-                        </span>
+                                    <p className=' text-center font-medium  font-poppins'> Charge per minute</p>
+                                    <p className=' text-center font-medium  font-poppins'>1$ </p>
+                                </span>
+                                <span className='flex justify-between '>
 
-                        <span className='flex flex-col justify-between items-start gap-1'>
+                                    <p className=' text-center font-medium  font-poppins'>Your selected initialMinutes</p>
+                                    <p className=' text-center font-medium  font-poppins'>{initialMinutes} </p>
+                                </span>
 
-                            <label className=' text-center font-medium  font-poppins'>Total* </label>
-                            <input type='text' value={`${total}$`}
-                                readOnly placeholder='20$' className='bg-bg-navy-blue  font-medium  font-poppins p-2 border border-white rounded-sm text-center' ></input>
-                        </span>
+                                <span className='flex justify-between '>
 
-                    </span>
+                                    <p className=' text-center font-medium  font-poppins'> Case Note</p>
+                                    <p className=' text-center font-medium  font-poppins'>20$ </p>
+                                </span>
 
-                    <button onClick={handlePaymentOptions} className='text-center px-5 py-3 w-full h-14
+                                <span className='flex justify-between '>
+
+                                    <p className=' text-center font-medium  font-poppins'> Total</p>
+                                    <p className=' text-center font-medium  font-poppins'>{total} $ </p>
+                                </span>
+                                {/* Live Transcript Amount Inputs  */}
+                                <span className='flex flex-row gap-2 my-1'>
+
+
+                                    <span className='flex flex-col justify-between items-start gap-1'>
+                                        <label className='text-center font-medium  font-poppins'>Amount of Minutes* </label>
+                                        <input type='number' value={initialMinutes}
+                                            onChange={handleMinutesChange} className=' bg-bg-navy-blue  sfont-medium  font-poppins p-2 border border-white rounded-sm'></input>
+
+                                    </span>
+
+                                    <span className='flex flex-col justify-between items-start gap-1'>
+
+                                        <label className=' text-center font-medium  font-poppins'>Total* </label>
+                                        <input type='text' value={`${total}$`}
+                                            readOnly placeholder='20$' className='bg-bg-navy-blue  font-medium  font-poppins p-2 border border-white rounded-sm text-center' ></input>
+                                    </span>
+
+                                </span>
+
+                            </div>
+
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <DialogFooter >
+                        <DialogClose asChild>
+                            <button onClick={()=>{
+                                generateTranscript("notecase-credit")
+                            }} className='text-center px-5 py-3 w-full  h-14
 rounded-md bg-bg-purple-2 text-white text-xl font-medium font-roboto hover:bg-bg-purple mb-2 '><span className='flex items-center text-center justify-center gap-2'>
-                            <MdPayment size={25} /> <p>Pay Now </p>
-                        </span></button>
+                                    <MdPayment size={25} /> <p>Pay with Credit </p>
+                                </span></button>
 
-                </div>
-            </div>
-        </div>
+                        </DialogClose>
+                        <DialogClose asChild>
+                            <button onClick={handlePaymentOptions} className='text-center px-5 py-3 w-full  h-14
+rounded-md bg-bg-purple-2 text-white text-xl font-medium font-roboto hover:bg-bg-purple mb-2 '><span className='flex items-center text-center justify-center gap-2'>
+                                    <MdPayment size={25} /> <p>Direct Pay </p>
+                                </span></button>
+
+                        </DialogClose>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+
+
+        </>
     )
 }
 
