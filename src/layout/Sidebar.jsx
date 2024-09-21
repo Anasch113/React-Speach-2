@@ -213,7 +213,7 @@ function Sidebar({ isPurchase, minutes }) {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
 
-        setShowPaymentModal(true)
+      navigate("/virtual-transcript")
 
       } else if (result.isDenied) {
       

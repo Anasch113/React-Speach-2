@@ -72,6 +72,7 @@ import Notecase from "./pages/lawyers-advice/CaseNote";
 import PreAudioSuccess from "./SmallComponents/PaymentSuccess/PreAudioSuccess";
 import SummriazationDeposition from "./pages/SummriazationDeposition/SummriazationDeposition";
 import ViewSummaryDeposition from "./components/SummriazationDepostion/ViewSummaryDeposition";
+import VirtualTranscript from "./components/RealTimeTranscript/virtualTranscript/VirtualTranscript";
 
 
 function App() {
@@ -228,6 +229,14 @@ function App() {
 
               <ProtectedRoute>
                 <RealTimeTranscriptions />
+              </ProtectedRoute>
+            }
+
+            />
+            <Route exact path="/virtual-transcript" element={
+
+              <ProtectedRoute>
+                <VirtualTranscript />
               </ProtectedRoute>
             }
 

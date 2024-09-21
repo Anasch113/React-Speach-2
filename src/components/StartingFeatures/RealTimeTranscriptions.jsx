@@ -163,7 +163,7 @@ function RealTimeTranscriptions() {
 
   useEffect(() => {
 
-    setIsRecordingAuto(true) 
+    setIsRecordingAuto(true)
 
     const handleMessage = (event) => {
 
@@ -414,24 +414,27 @@ function RealTimeTranscriptions() {
         {isSettingsModalOpen && (
           <EditControlsModal
             settingsRef={settingsRef}
+            lineSpacing={lineSpacing}
             showLineNumbers={showLineNumbers}
             setShowLineNumbers={setShowLineNumbers}
-            fontFamily={fontFamily}
-
-            handleFontFamilyChange={handleFontFamilyChange}
-            fontSize={fontSize}
-
-            handleFontSizeChange={handleFontSizeChange}
-            handleLineSpacingChange={handleLineSpacingChange}
-            lineSpacing={lineSpacing}
-            textColor={textColor}
-            handleTextColorChange={handleTextColorChange}
-            bgColor={bgColor}
-            handleBgColorChange={handleBgColorChange}
             handleCheckboxChange={handleCheckboxChange}
             handleSettingsClick={handleSettingsClick}
+            handleLineSpacingChange={handleLineSpacingChange}
+
+            fontSize={fontSize}
+            textColor={textColor}
+            fontFamily={fontFamily}
+            bgColor={bgColor}
+            handleFontSizeChange={handleFontSizeChange}
+            handleTextColorChange={handleTextColorChange}
+            handleFontFamilyChange={handleFontFamilyChange}
+            handleBgColorChange={handleBgColorChange}
+
+
+
             fontFamilies={fontFamilies}
             fontSizes={fontSizes}
+            
             fontFamily2={fontFamily2}
             fontSize2={fontSize2}
             textColor2={textColor2}
