@@ -13,7 +13,7 @@ import { PiNewspaperClippingBold } from "react-icons/pi";
 import { FaRegFilePdf } from "react-icons/fa6";
 import { MdOndemandVideo } from "react-icons/md";
 import { IoVideocamOffSharp } from "react-icons/io5";
-
+import { useLiveTranscript } from "../GlobalState/customHooks/useLiveTranscript"
 
 function MainContent() {
 
@@ -27,11 +27,18 @@ function MainContent() {
   const myAudioFiles = useSelector((state) => state.audio.audioFiles);
   const transcriptionFiles = useSelector((state) => state.audio.typesTranscriptionFiles);
 
+  const {
+    smallFontSettings,
+    handleSmallFontSizeChange,
+    
+  } = useLiveTranscript();
 
+  let bgColor2 = smallFontSettings.bgColor
+  let textColor2 = smallFontSettings.textColor
 
+  const { liveTranscript, finalTranscript, transcriptType, meetingStatus, meetingError } = useSelector((state) => state.liveTranscript.virtualTranscript)
 
-
-
+  console.log("livetranscript", liveTranscript)
 
   const pdfContainer = useRef(null);
 
@@ -180,8 +187,44 @@ function MainContent() {
 
 
       {/* live transcription */}
+      <div className="p-5">
+        <p className="my-4">Live Transcriptions</p>
+        <div
+          id="container-id"
+          className="border  shadow-sm h-[300px] w-full flex font-sans px-2 my-2 relative"
 
-      <div className=" flex   flex-col gap-7 mx-4 my-4 p-5 px-7   bg-bg-navy-blue  rounded-md">
+        >
+          <div className="w-full overflow-y-auto">
+            {transcriptType === "final-transcript" ? (
+              finalTranscript.map((data, i) => (
+                <div className="p-5 w-full gap-5" key={i}>
+                  <p>{data.speaker}</p>
+                  <div className="flex flex-wrap">
+                    {data.words.map((word, j) => (
+                      <p key={j} className="mr-2">
+                        {word.text}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              ))
+            ) : (
+              transcriptType === "realtime" &&
+              <div className="flex flex-wrap">
+                {liveTranscript.words.map((word, i) => (
+                  <p key={i} className="mr-2">
+                    {word.text}
+                  </p>
+                ))}
+              </div>
+            )}
+          </div>
+
+        </div>
+      </div>
+
+
+      <div className="  flex   flex-col gap-7 mx-4 my-4 p-5 px-7   bg-bg-navy-blue  rounded-md">
         <div className="flex flex-col gap-2">
           {myAudioFiles.length > 0 ? (
             myAudioFiles.map((audio, i) => (

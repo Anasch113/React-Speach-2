@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import {
   setSmallFontSize,
   setSmallFontFamily,
@@ -8,16 +9,21 @@ import {
   setLargeFontFamily,
   setLargeTextColor,
   setLargeBgColor,
+  setLiveTranscript,
+  setFinalTranscript,
+  setTranscriptType,
+  setMeetingStatus,
+  setMeetingError,
 } from "../features/liveTranscriptUISlice";
 
 export const useLiveTranscript = () => {
   const dispatch = useDispatch();
-  
-  // // Access the relevant parts of the Redux state
+
+  //  Access the relevant parts of the Redux state
   const smallFontSettings = useSelector((state) => state.liveTranscript.smallWindow);
   const largeFontSettings = useSelector((state) => state.liveTranscript.largeWindow);
 
-  
+
   // Small window settings
   const handleSmallFontSizeChange = (e) => {
     dispatch(setSmallFontSize(Number(e.target.value)));
@@ -51,6 +57,47 @@ export const useLiveTranscript = () => {
   const handleLargeBgColorChange = (e) => {
     dispatch(setLargeBgColor(e.target.value));
   };
+
+
+  // listen for transcript being sent from the server
+
+  useEffect(() => {
+    const eventSource = new EventSource(
+      `${import.meta.env.VITE_HOST_URL}/virtual-transcript/events`
+    );
+
+    eventSource.onmessage = (event) => {
+      const meetingData = JSON.parse(event.data);
+      console.log("meeting data", meetingData);
+
+      if (meetingData.type === "final-transcript") {
+        dispatch(setFinalTranscript(meetingData.transcript));
+        dispatch(setTranscriptType(meetingData.type));
+        dispatch(setMeetingStatus("completed"));
+      }
+
+      if (meetingData.type === "realtime") {
+        dispatch(setLiveTranscript(meetingData.liveData));
+        dispatch(setTranscriptType(meetingData.type));
+        dispatch(setMeetingStatus("realtime"));
+      }
+
+      if (meetingData.error) {
+        dispatch(setMeetingError(meetingData.error));
+        eventSource.close();
+      }
+    };
+
+    eventSource.onerror = () => {
+      dispatch(setMeetingError("Error receiving SSE"));
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [dispatch]);
+
+
 
   return {
     // Expose small window state and handlers

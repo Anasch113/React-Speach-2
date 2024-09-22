@@ -29,11 +29,11 @@ const VirtualTranscript = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [meetingUrl, setMeetingUrl] = useState("")
   const [isMeetingStart, setIsMeetingStart] = useState(false)
-  const [meetingError, setMeetingError] = useState("")
-  const [finalTranscript, setFinalTranscript] = useState([])
-  const [liveTranscript, setLiveTranscript] = useState("")
-  const [meetingStatus, setMeetingStatus] = useState("")
-  const [transcriptType, setTranscriptType] = useState("")
+  // const [meetingError, setMeetingError] = useState("")
+  // const [finalTranscript, setFinalTranscript] = useState([])
+  // const [liveTranscript, setLiveTranscript] = useState("")
+  // const [meetingStatus, setMeetingStatus] = useState("")
+  // const [transcriptType, setTranscriptType] = useState("")
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [lineSpacing, setLineSpacing] = useState('normal');
   const [showLineNumbers, setShowLineNumbers] = useState(false);
@@ -62,6 +62,7 @@ const VirtualTranscript = () => {
     handleLargeBgColorChange
   } = useLiveTranscript();
 
+  const { liveTranscript, finalTranscript, transcriptType, meetingStatus, meetingError } = useSelector((state) => state.liveTranscript.virtualTranscript)
 
   // Pause functions
   const pauseTranscriptions = () => {
@@ -101,50 +102,52 @@ const VirtualTranscript = () => {
 
 
   // listen for transcript being sent from the server
-  useEffect(() => {
-    const eventSource = new EventSource(
-      `${import.meta.env.VITE_HOST_URL}/virtual-transcript/events`
-    );
+  // useEffect(() => {
+  //   const eventSource = new EventSource(
+  //     `${import.meta.env.VITE_HOST_URL}/virtual-transcript/events`
+  //   );
 
-    eventSource.onmessage = (event) => {
-      const meetingData = JSON.parse(event.data);
-      console.log("meeting data", meetingData)
+  //   eventSource.onmessage = (event) => {
+  //     const meetingData = JSON.parse(event.data);
+  //     console.log("meeting data", meetingData)
 
-      if (meetingData.type === "final-transcript") {
+  //     if (meetingData.type === "final-transcript") {
 
-        const transcript = meetingData.transcript
-        setFinalTranscript(transcript)
-        setTranscriptType(meetingData.type)
-        setMeetingStatus("completed")
-      }
+  //       const transcript = meetingData.transcript
+  //       setFinalTranscript(transcript)
+  //       setTranscriptType(meetingData.type)
+  //       setMeetingStatus("completed")
+  //     }
 
-      if (meetingData.type === "realtime") {
-        const transcript = meetingData.liveData
-        setLiveTranscript(transcript)
-        setTranscriptType(meetingData.type)
-        setMeetingStatus("realtime")
-      }
+  //     if (meetingData.type === "realtime") {
+  //       const transcript = meetingData.liveData
+  //       setLiveTranscript(transcript)
+  //       setTranscriptType(meetingData.type)
+  //       setMeetingStatus("realtime")
+  //     }
 
 
-      if (meetingData.error) {
-        setMeetingError(meetingData.error);
+  //     if (meetingData.error) {
+  //       setMeetingError(meetingData.error);
 
-      } else {
-        setActionItems(meetingData);
+  //     } else {
+  //       setActionItems(meetingData);
 
-        eventSource.close();
-      }
-    };
+  //       eventSource.close();
+  //     }
+  //   };
 
-    eventSource.onerror = () => {
-      setMeetingError("Error receiving SSE");
+  //   eventSource.onerror = () => {
+  //     setMeetingError("Error receiving SSE");
 
-    };
+  //   };
 
-    return () => {
-      eventSource.close();
-    };
-  }, []);
+  //   return () => {
+  //     eventSource.close();
+  //   };
+  // }, []);
+
+
 
   //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ui logics
 
@@ -384,6 +387,7 @@ const VirtualTranscript = () => {
                     </div>
                   </div>
                 </div>
+
               </div>
 
 
