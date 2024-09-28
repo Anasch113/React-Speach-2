@@ -30,7 +30,7 @@ function MainContent() {
   const {
     smallFontSettings,
     handleSmallFontSizeChange,
-    
+
   } = useLiveTranscript();
 
   let bgColor2 = smallFontSettings.bgColor
@@ -187,43 +187,46 @@ function MainContent() {
 
 
       {/* live transcription */}
-      <div className="p-5">
-        <p className="my-4">Live Transcriptions</p>
-        <div
-          id="container-id"
-          className="border  shadow-sm h-[300px] w-full flex font-sans px-2 my-2 relative"
+      {
+        !transcriptType === null &&
 
-        >
-          <div className="w-full overflow-y-auto">
-            {transcriptType === "final-transcript" ? (
-              finalTranscript.map((data, i) => (
-                <div className="p-5 w-full gap-5" key={i}>
-                  <p>{data.speaker}</p>
-                  <div className="flex flex-wrap">
-                    {data.words.map((word, j) => (
-                      <p key={j} className="mr-2">
-                        {word.text}
-                      </p>
-                    ))}
+        <div className="p-5">
+          <p className="my-4 font-poppins text-xl font-semibold">Live Transcriptions</p>
+          <div
+            id="container-id"
+            className="border-t  shadow-sm h-[300px] w-full flex font-sans px-2 my-2 relative"
+
+          >
+            <div className="w-full overflow-y-auto">
+              {transcriptType === "final-transcript" ? (
+                finalTranscript.map((data, i) => (
+                  <div className="p-5 w-full gap-5" key={i}>
+                    <p>{data.speaker}</p>
+                    <div className="flex flex-wrap">
+                      {data.words.map((word, j) => (
+                        <p key={j} className="mr-2">
+                          {word.text}
+                        </p>
+                      ))}
+                    </div>
                   </div>
+                ))
+              ) : (
+                transcriptType === "realtime" &&
+                <div className="flex flex-wrap">
+                  {liveTranscript.words.map((word, i) => (
+                    <p key={i} className="mr-2">
+                      {word.text}
+                    </p>
+                  ))}
                 </div>
-              ))
-            ) : (
-              transcriptType === "realtime" &&
-              <div className="flex flex-wrap">
-                {liveTranscript.words.map((word, i) => (
-                  <p key={i} className="mr-2">
-                    {word.text}
-                  </p>
-                ))}
-              </div>
-            )}
+              )}
+            </div>
+
           </div>
-
         </div>
-      </div>
 
-
+      }
       <div className="  flex   flex-col gap-7 mx-4 my-4 p-5 px-7   bg-bg-navy-blue  rounded-md">
         <div className="flex flex-col gap-2">
           {myAudioFiles.length > 0 ? (

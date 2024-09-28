@@ -18,31 +18,41 @@ import { GrClearOption } from "react-icons/gr";
 import { MdOutlineRestartAlt } from "react-icons/md";
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { Client } from "@gradio/client";
+
+import { useNavigate, useLocation } from 'react-router-dom';
 
 
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import EditControlsModal from '../EditControlsModal';
 import { useLiveTranscript } from "../../../GlobalState/customHooks/useLiveTranscript"
+import {
+
+
+  setTranscriptType,
+
+} from "../../../GlobalState/features/liveTranscriptUISlice";
 const VirtualTranscript = () => {
 
   const [headerVanish, setHeaderVanish] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [meetingUrl, setMeetingUrl] = useState("")
   const [isMeetingStart, setIsMeetingStart] = useState(false)
-  // const [meetingError, setMeetingError] = useState("")
-  // const [finalTranscript, setFinalTranscript] = useState([])
-  // const [liveTranscript, setLiveTranscript] = useState("")
-  // const [meetingStatus, setMeetingStatus] = useState("")
-  // const [transcriptType, setTranscriptType] = useState("")
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [lineSpacing, setLineSpacing] = useState('normal');
+  const [zoomAccessToken, setZoomAccessToken] = useState("");
   const [showLineNumbers, setShowLineNumbers] = useState(false);
+  const [isToken, setIsToken] = useState(false);
   const [dynamicHeight, setDynamicHeight] = useState(80)
   const colorPickerRef = useRef(null);
   const bgColorPicker = useRef(null);
   const settingsRef = useRef(null);
   const texts = useRef({});
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const fontFamilies = [" Open Sans ", "Open Dyslexic", "Arial", "Arial Black", "Calibri", "Courier New"]
   const startSize = 12;
@@ -93,6 +103,7 @@ const VirtualTranscript = () => {
         meetingUrl: meetingUrl,
       });
       setIsMeetingStart(true)
+      dispatch(setTranscriptType("start"));
       toast.success("Bot joining the meeting")
     } catch (error) {
 
@@ -101,51 +112,6 @@ const VirtualTranscript = () => {
   };
 
 
-  // listen for transcript being sent from the server
-  // useEffect(() => {
-  //   const eventSource = new EventSource(
-  //     `${import.meta.env.VITE_HOST_URL}/virtual-transcript/events`
-  //   );
-
-  //   eventSource.onmessage = (event) => {
-  //     const meetingData = JSON.parse(event.data);
-  //     console.log("meeting data", meetingData)
-
-  //     if (meetingData.type === "final-transcript") {
-
-  //       const transcript = meetingData.transcript
-  //       setFinalTranscript(transcript)
-  //       setTranscriptType(meetingData.type)
-  //       setMeetingStatus("completed")
-  //     }
-
-  //     if (meetingData.type === "realtime") {
-  //       const transcript = meetingData.liveData
-  //       setLiveTranscript(transcript)
-  //       setTranscriptType(meetingData.type)
-  //       setMeetingStatus("realtime")
-  //     }
-
-
-  //     if (meetingData.error) {
-  //       setMeetingError(meetingData.error);
-
-  //     } else {
-  //       setActionItems(meetingData);
-
-  //       eventSource.close();
-  //     }
-  //   };
-
-  //   eventSource.onerror = () => {
-  //     setMeetingError("Error receiving SSE");
-
-  //   };
-
-  //   return () => {
-  //     eventSource.close();
-  //   };
-  // }, []);
 
 
 
@@ -159,7 +125,7 @@ const VirtualTranscript = () => {
 
 
   const clearText = () => {
-    setLiveTranscript('');
+
     texts.current = {};
   };
 
@@ -202,6 +168,30 @@ const VirtualTranscript = () => {
 
   }, [fontSize2])
 
+  const handleZoomAuthorization = () => {
+    window.location.href = `${import.meta.env.VITE_HOST_URL}/virtual-transcript/zoom-login`;
+  }
+
+
+  // useEffect to get the access token after zoom authorization 
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const token = searchParams.get('token');
+
+    console.log("token", token)
+
+    if (token) {
+      // Store the token in localStorage or any state management system
+      localStorage.setItem('zoomAccessToken', token);
+      setZoomAccessToken(token)
+      setIsToken(true)
+      // Redirect to the actual dashboard after storing the token
+      toast.success("Zoom Connected")
+    }
+  }, [location, navigate]);
+
+
 
   return (
     <div className="w-full flex flex-col items-center gap-3 justify-center  min-h-screen ">
@@ -209,51 +199,80 @@ const VirtualTranscript = () => {
 
 
       {
-        isMeetingStart === false ?
+        isMeetingStart === false && transcriptType === null ?
           //  first part >>>>>>>>>>>>>>>>>>>>>>>.
           <div
-            className=' flex items-center justify-center flex-col w-2/3 h-full p-5 gap-5'
+            className='border flex items-center justify-center flex-col w-2/3 h-full p-5 gap-5'
           >
 
             <span className=' w-full '>
-              <p className=' font-poppins text-2xl font-semibold '>Enter your meeting link here</p>
+              {
+                zoomAccessToken === "" ? <p className=' font-poppins text-2xl font-semibold '>Please connect Zoom with captify First</p> : <p className=' font-poppins text-2xl font-semibold '>Enter your meeting link here</p>
+              }
+
             </span>
 
 
 
-            <div className='flex gap-5 w-full'>
 
+            <div className='flex flex-col gap-5 w-full  h-full p-2'>
 
-              <input
-                type="text"
-                value={meetingUrl}
-                onChange={(e) => setMeetingUrl(e.target.value)}
-                style={{
+              {
+                isToken === true &&
 
-                  padding: "0.5em",
-                  fontSize: "1em",
-                  borderRadius: "4px",
-                  border: "1px solid #ccc",
-                }}
-                placeholder="Enter meeting URL"
-                className='w-2/4 text-black'
-              />
+                <div className='flex gap-5 w-full '>
+                  <input
+                    type="text"
+                    value={meetingUrl}
+                    onChange={(e) => setMeetingUrl(e.target.value)}
+                    style={{
+
+                      padding: "15px 5px",
+                      fontSize: "1em",
+                      borderRadius: "4px",
+                      border: "1px solid #ccc",
+                    }}
+                    placeholder="Enter meeting URL"
+                    className='w-2/4 text-black'
+                  />
+
+                  <button
+
+                    style={{
+                      padding: "15px 10px",
+                      fontSize: "1em",
+                      cursor: "pointer",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                    }}
+                    className='bg-bg-purple-2'
+                    onClick={sendMeetingUrl}
+                  >
+                    Add Bot to Meeting
+                  </button>
+                </div>
+              }
 
               <button
 
                 style={{
-                  padding: "0.5em 1em",
+                  padding: "15px 5px",
                   fontSize: "1em",
                   cursor: "pointer",
                   color: "white",
                   border: "none",
                   borderRadius: "4px",
                 }}
-                className='bg-bg-purple-2'
-                onClick={sendMeetingUrl}
+                className={` w-52 ${zoomAccessToken === "" ? "bg-bg-purple-2" : "bg-green-600"}`}
+                onClick={handleZoomAuthorization}
               >
-                Add Bot to Meeting
+                {zoomAccessToken === "" ? "Connect Zoom" : "Zoom Connected"}
               </button>
+
+              <button onClick={()=>{
+                navigate("/user-guide-to-add/remove-app-from-zoom-account")
+              }} className='underline text-gray-300 hover:text-gray-300/50'> You can also visit our documentation here</button>
             </div>
           </div> :
 

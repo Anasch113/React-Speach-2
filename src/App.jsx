@@ -73,6 +73,7 @@ import PreAudioSuccess from "./SmallComponents/PaymentSuccess/PreAudioSuccess";
 import SummriazationDeposition from "./pages/SummriazationDeposition/SummriazationDeposition";
 import ViewSummaryDeposition from "./components/SummriazationDepostion/ViewSummaryDeposition";
 import VirtualTranscript from "./components/RealTimeTranscript/virtualTranscript/VirtualTranscript";
+import ZoomDocumentation from "./pages/documentation/ZoomDocumentation";
 
 
 function App() {
@@ -360,6 +361,8 @@ function App() {
             <Route exact path="/transcript-payment-success-sd" element={<SdSucess />} />
             <Route exact path="/live-transcript-payment-success-casenote" element={<CaseNoteSuccess />} />
             <Route exact path="/cancel" element={<Cancel />} />
+            <Route exact path="/user-guide-to-add/remove-app-from-zoom-account" element={<ZoomDocumentation />} />
+            
 
           </Routes>
         </BrowserRouter>
