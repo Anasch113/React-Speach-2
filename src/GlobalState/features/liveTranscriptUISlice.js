@@ -17,9 +17,12 @@ const initialState = {
     virtualTranscript: {
         liveTranscript: {},
         finalTranscript: [],
+        url: "",
         transcriptType: null,
         meetingStatus: "",
         meetingError: null,
+        zoomAccessToken: "",
+        isToken: false
     }
 };
 
@@ -72,6 +75,15 @@ const liveTranscriptUISlice = createSlice({
         setMeetingError: (state, action) => {
             state.virtualTranscript.meetingError = action.payload;
         },
+        setZoomAccessToken: (state, action) => {
+            state.virtualTranscript.zoomAccessToken = action.payload
+        },
+        setIsToken: (state, action) => {
+            state.virtualTranscript.isToken = action.payload
+        },
+        setUrl: (state, action) => {
+            state.virtualTranscript.url = action.payload
+        }
     },
 });
 
@@ -91,6 +103,9 @@ export const {
     setTranscriptType,
     setMeetingStatus,
     setMeetingError,
+    setZoomAccessToken,
+    setIsToken,
+    setUrl
 } = liveTranscriptUISlice.actions;
 
 // Exporting the reducer

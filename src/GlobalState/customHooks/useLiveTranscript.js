@@ -14,6 +14,7 @@ import {
   setTranscriptType,
   setMeetingStatus,
   setMeetingError,
+  setUrl
 } from "../features/liveTranscriptUISlice";
 
 export const useLiveTranscript = () => {
@@ -74,6 +75,7 @@ export const useLiveTranscript = () => {
         dispatch(setFinalTranscript(meetingData.transcript));
         dispatch(setTranscriptType(meetingData.type));
         dispatch(setMeetingStatus("completed"));
+        dispatch(setUrl(meetingData.url))
       }
 
       if (meetingData.type === "realtime") {

@@ -32,6 +32,7 @@ import {
   setTranscriptType,
 
 } from "../../../GlobalState/features/liveTranscriptUISlice";
+import ZoomAuthorization from './ZoomAuthorization';
 const VirtualTranscript = () => {
 
   const [headerVanish, setHeaderVanish] = useState(false);
@@ -40,9 +41,9 @@ const VirtualTranscript = () => {
   const [isMeetingStart, setIsMeetingStart] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [lineSpacing, setLineSpacing] = useState('normal');
-  const [zoomAccessToken, setZoomAccessToken] = useState("");
+
   const [showLineNumbers, setShowLineNumbers] = useState(false);
-  const [isToken, setIsToken] = useState(false);
+
   const [dynamicHeight, setDynamicHeight] = useState(80)
   const colorPickerRef = useRef(null);
   const bgColorPicker = useRef(null);
@@ -72,7 +73,7 @@ const VirtualTranscript = () => {
     handleLargeBgColorChange
   } = useLiveTranscript();
 
-  const { liveTranscript, finalTranscript, transcriptType, meetingStatus, meetingError } = useSelector((state) => state.liveTranscript.virtualTranscript)
+  const { liveTranscript, finalTranscript, transcriptType, meetingStatus, meetingError, zoomAccessToken, isToken } = useSelector((state) => state.liveTranscript.virtualTranscript)
 
   // Pause functions
   const pauseTranscriptions = () => {
@@ -173,22 +174,18 @@ const VirtualTranscript = () => {
   }
 
 
-  // useEffect to get the access token after zoom authorization 
-
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const token = searchParams.get('token');
 
+    if (token) {
+      localStorage.removeItem('navigateUrl');
+    }
+
+
     console.log("token", token)
 
-    if (token) {
-      // Store the token in localStorage or any state management system
-      localStorage.setItem('zoomAccessToken', token);
-      setZoomAccessToken(token)
-      setIsToken(true)
-      // Redirect to the actual dashboard after storing the token
-      toast.success("Zoom Connected")
-    }
+
   }, [location, navigate]);
 
 
@@ -254,7 +251,7 @@ const VirtualTranscript = () => {
                 </div>
               }
 
-              <button
+              {/* <button
 
                 style={{
                   padding: "15px 5px",
@@ -264,16 +261,29 @@ const VirtualTranscript = () => {
                   border: "none",
                   borderRadius: "4px",
                 }}
+
                 className={` w-52 ${zoomAccessToken === "" ? "bg-bg-purple-2" : "bg-green-600"}`}
                 onClick={handleZoomAuthorization}
               >
                 {zoomAccessToken === "" ? "Connect Zoom" : "Zoom Connected"}
-              </button>
+              </button> */}
+              <ZoomAuthorization
 
-              <button onClick={()=>{
+                buttonName={zoomAccessToken === "" ? "Connect Zoom" : "Zoom Connected"}
+
+                handleZoomAuthorization={handleZoomAuthorization}
+
+                navigateUrl="virtual-transcript"
+
+
+
+              />
+
+              <button onClick={() => {
                 navigate("/user-guide-to-add/remove-app-from-zoom-account")
               }} className='underline text-gray-300 hover:text-gray-300/50'> You can also visit our documentation here</button>
             </div>
+           
           </div> :
 
           // second part >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

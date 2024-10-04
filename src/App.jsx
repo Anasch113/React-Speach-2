@@ -74,6 +74,8 @@ import SummriazationDeposition from "./pages/SummriazationDeposition/Summriazati
 import ViewSummaryDeposition from "./components/SummriazationDepostion/ViewSummaryDeposition";
 import VirtualTranscript from "./components/RealTimeTranscript/virtualTranscript/VirtualTranscript";
 import ZoomDocumentation from "./pages/documentation/ZoomDocumentation";
+import ZoomAuthorization from "./components/RealTimeTranscript/virtualTranscript/ZoomAuthorization";
+import MainLayout from "./components/LawyersAdvice/RealtimeTranscriptAndSummary/MainLayout";
 
 
 function App() {
@@ -324,7 +326,7 @@ function App() {
             <Route exact path="/note-case" element={
 
               <ProtectedRoute>
-                <Notecase />
+                <MainLayout />
               </ProtectedRoute>}
 
             />
@@ -340,6 +342,14 @@ function App() {
 
               <ProtectedRoute>
                 <ViewSummaryDeposition />
+              </ProtectedRoute>}
+
+            />
+
+            <Route exact path="/zoom-authorization" element={
+
+              <ProtectedRoute>
+                <ZoomAuthorization />
               </ProtectedRoute>}
 
             />
@@ -362,7 +372,7 @@ function App() {
             <Route exact path="/live-transcript-payment-success-casenote" element={<CaseNoteSuccess />} />
             <Route exact path="/cancel" element={<Cancel />} />
             <Route exact path="/user-guide-to-add/remove-app-from-zoom-account" element={<ZoomDocumentation />} />
-            
+
 
           </Routes>
         </BrowserRouter>

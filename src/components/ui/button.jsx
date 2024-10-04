@@ -24,8 +24,10 @@ const buttonVariants = cva(
           "bg-green-600 text-destructive-foreground hover:bg-green-500/90 rounded-md",
         customBlue:
           "bg-blue-600 text-destructive-foreground hover:bg-blue-500/90 rounded-md",
-
-
+        purpleMeetingBtn:
+          "bg-[#a100ff] text-destructive-foreground hover:bg-[#a100ff]/90 rounded-md",
+        lightPurpleMeetingBtn:
+          "bg-[#655CC9] text-destructive-foreground hover:bg-[#655CC9]/90 rounded-md",
       },
       size: {
         default: "h-10 px-4 py-2",
