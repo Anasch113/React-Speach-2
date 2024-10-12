@@ -10,6 +10,7 @@ const ContactForm = () => {
     message: ""
   });
 
+  const [messageResponse, setMessageResponse] = useState("")
   // Event handler for input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,7 +43,7 @@ const ContactForm = () => {
       },
       import.meta.env.VITE_EMAILJS_PUBLIC_KEY
     )
-    toast.success("Your message has been delivered. We will contact you shortly")
+    setMessageResponse("Thank you for contacting us. Our team will contact you shortly within 24 business hours")
 
 
 
@@ -52,18 +53,54 @@ const ContactForm = () => {
   return (
     <>
       <div className="min-h-screen bg-black flex items-center justify-center p-4">
-        <div className="hidden lg:block bg-black text-white md:p-8 rounded-lg shadow-lg ml-4 -mt-20">
+
+
+        <div className="hidden border lg:block bg-black w-2/4 text-white md:p-8 rounded-lg shadow-lg ml-4 -mt-20">
+
+          <p className="my-5 text-gray-300">We are committed to providing timely and efficient support to ensure that all users have the best experience with Captify. Below, you'll find the details on how to reach our support team, expected response times, and additional resources to assist you. </p>
+
+          <span className="my-5 flex flex-col gap-2 ">
+            <p className="text-lg font-semibold">Support Team Hours of Operation:</p>
+            <span className="flex flex-col  gap-2 text-gray-300">
+              <p> Monday to Friday: 9:00 AM – 6:00 PM (EST)</p>
+              <p>Saturday and Sunday: Closed</p>
+              <p>National Holidays: Closed</p>
+
+            </span>
+            <span className="flex flex-col  gap-2 my-3 text-gray-300" >
+              <p className="text-lg font-semibold text-white" > First Response SLA:</p>
+              We aim to respond to all support requests within 24 hours during our business hours.
+            </span>
+
+
+          </span>
           <h3 className="text-3xl font-bold mb-4">Contact Information</h3>
-          <p className="mb-4">
-            <strong>Email:</strong> cOdulanahammed@captify.live
+          <span className="flex flex-col gap-2">
+            <p className="text-lg font-semibold">Email Support:</p>
+            <a href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#sent?compose=LRmDGdhFXXZwXqkjKXmsSqjGSStQJpJzTtznvQqjKhMlPTlJNnDgpXxxjFlJTLmhXRHBrXDRTkjmBWvTQjJvMlNpgJGpCGrmjkqpBrqhDZdlPgJhpgpVcsgvrFWVHckTXJNpvxCJvkSfdCrKpchzMxjjCSXNGV" target="_main" className="mb-4 text-gray-300">
+               Odulanahammed@captify.live
+            </a>
+          </span>
+          <span className="flex flex-col gap-2">
+            <p className="text-lg font-semibold">Phone:</p>
+            <p className="mb-4">
+             (+234) 7062904396
           </p>
-          <p className="mb-4">
-            <strong>Phone:</strong> (+234) 7062904396
+          </span>
+
+          <span className="flex flex-col gap-2">
+            <p className="text-lg font-semibold">Address:</p>
+            <p>
+             Ile-ife, Osun state, Nigeria
           </p>
-          <p>
-            <strong>Address:</strong> Ile-ife, Osun state, Nigeria
-          </p>
+          </span>
+
+          
+         
+
         </div>
+
+
         <div className="bg-[#242323] text-white p-8 rounded-lg shadow-lg w-full md:w-1/2 lg:w-1/3 md:ml-20">
           <h2 className="text-2xl font-bold mb-6 text-center">Contact Us</h2>
           <form onSubmit={handleSubmit}>
@@ -124,7 +161,10 @@ const ContactForm = () => {
               </button>
             </div>
           </form>
+          <p className="font-poppins my-5  text-lg ">{messageResponse}</p>
         </div>
+
+
       </div>
       <Footer />
 

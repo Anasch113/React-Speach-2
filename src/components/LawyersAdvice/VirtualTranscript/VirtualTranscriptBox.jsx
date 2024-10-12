@@ -158,6 +158,7 @@ const VirtualTranscriptBox = ({
                                                     {word.text}
                                                 </p>
                                             ))}
+                                            <p>in progress</p>
                                         </div>
                                     )}
                                 </div>

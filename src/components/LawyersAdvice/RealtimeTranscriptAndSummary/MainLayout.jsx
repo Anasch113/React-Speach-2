@@ -22,12 +22,15 @@ import { ref, update } from "firebase/database"
 import { database } from '../../../firebase'
 import { useSelector, useDispatch } from 'react-redux';
 import { useLiveTranscript } from "../../../GlobalState/customHooks/useLiveTranscript"
-import {
-    setTranscriptType,
-} from "../../../GlobalState/features/liveTranscriptUISlice";
+
 import VirtualTranscriptBox from '../VirtualTranscript/VirtualTranscriptBox'
 import ZoomAuthorization from '@/components/RealTimeTranscript/virtualTranscript/ZoomAuthorization'
 import CaseNoteVirtualMeetingLink from '../VirtualTranscript/CaseNoteVirtualMeetingLink'
+import ProcessIndication from '../Enhance Usability/ProcessIndication'
+import InPersonStreamControl from '../Enhance Usability/InPersonStreamControl'
+import VirtualStreamControl from '../Enhance Usability/VirtualStreamControl'
+import { setIsVtRecording, setIsProcessing } from "../../../GlobalState/features/liveTranscriptUISlice"
+import DownloadCaseNote from '../Enhance Usability/DownloadCaseNote'
 
 
 const MainLayout = () => {
@@ -56,6 +59,8 @@ const MainLayout = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [isMeetingStart, setIsMeetingStart] = useState(false)
 
+    const [wholeProcessing, setIsWholeProcessing] = useState(false)
+
 
     // Refs
     const socket = useRef(null)
@@ -78,13 +83,15 @@ const MainLayout = () => {
     const { user, userBalance } = useUserAuth();
 
     const dispatch = useDispatch();
-    const { zoomAccessToken, liveTranscript, finalTranscript, transcriptType, meetingStatus, meetingError, url } = useSelector((state) => state.liveTranscript.virtualTranscript)
+    const { zoomAccessToken, liveTranscript, finalTranscript, transcriptType, meetingStatus, meetingError, url, botId, isVtRecording, isProcessing } = useSelector((state) => state.liveTranscript.virtualTranscript)
+
+    const { stopVirtualTranscriptions } = useLiveTranscript();
 
     const assemblyAiHeaders = {
         authorization: "ce2c1d53c1af4f02a15b539ffd7bc68c",
         "Content-Type": "application/json",
     };
-
+    console.log("botid in mainlayot", botId)
 
     const handleSwitchChange = (identifier) => {
 
@@ -297,6 +304,7 @@ const MainLayout = () => {
     const endTranscription = async () => {
 
         toast.success(" Recording stopped, Note case Transcriptions are getting ready!");
+        dispatch(setIsProcessing(true))
 
         if (socket.current) {
             socket.current.send(JSON.stringify({ terminate_session: true }));
@@ -342,6 +350,7 @@ const MainLayout = () => {
 
             if (transcript.text === "") {
                 setIsTranscriptionsReady(false)
+                dispatch(setIsProcessing(false))
                 toast.error("Your Transcript is very short or irrelevant")
                 return
             }
@@ -366,6 +375,7 @@ const MainLayout = () => {
                     toast.success("Note case Transcriptions ready!");
                 }
                 setIsTranscriptionsReady(true)
+                dispatch(setIsProcessing(false))
             }
 
 
@@ -425,7 +435,21 @@ const MainLayout = () => {
         }
     }
 
+    // // Stop function
+    // const stopVirtualTranscriptionsCaseNote = async () => {
+    //     try {
+    //         toast.success(" Transcription stopped")
 
+
+    //         const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/virtual-transcript/stop-virtual-transcription`, {
+    //             botId: botId,
+    //         });
+    //         console.log("stop response:", response.data)
+    //         dispatch(setIsVtRecording(false))
+    //     } catch (error) {
+    //         console.log("error while stopping virtual transcriptions", error)
+    //     }
+    // }
 
 
 
@@ -737,6 +761,9 @@ const MainLayout = () => {
 
 
                             }
+                            {
+                                isVtRecording && <Button onClick={stopVirtualTranscriptions} className="mx-2" variant={"destructive"}><FaStop className='mx-2' /> Virtual Transcript</Button>
+                            }
 
                             <CaseNoteVirtualMeetingLink
                                 isOpen={isOpen}
@@ -746,19 +773,17 @@ const MainLayout = () => {
                             />
 
 
-                            {
-                                isPaused && isRecording && <Button onClick={resumeTranscriptions} className="mx-2" variant={"customGreen"}>Resume Recording <FaPlay className='mx-2' /></Button>
-                            }
+                            <InPersonStreamControl
+                                isPaused={isPaused}
+                                resumeTranscriptions={resumeTranscriptions}
+                                isRecording={isRecording}
+                                pauseTranscriptions={pauseTranscriptions}
+                                remainingTime={remainingTime}
+                                formatTime={formatTime}
+                            />
+                            <VirtualStreamControl
 
-                            {
-                                !isPaused && isRecording && <Button onClick={pauseTranscriptions} className="mx-2" variant={"customBlue"}>Pause Recording  <FaPause className='mx-2' /></Button>
-                            }
-
-                            {remainingTime > 0 && (
-                                <div className="font-semibold gap-2 font-poppins text-white-500 flex items-center">
-                                    <MdOutlineTimer size={20} /> <p>{formatTime(remainingTime)}</p>
-                                </div>
-                            )}
+                            />
 
                             {/* 
                         <Button className="mx-2" variant={"customPurple"}>Generate Notes</Button> */}
@@ -824,6 +849,33 @@ const MainLayout = () => {
                             <Button className="mx-2" variant={"customPurple"}>New Client</Button>
                         </span>
 
+
+                        {/* Section for updating user about process proress */}
+                        <div className='w-full'>
+
+                            {
+                                isProcessing && <ProcessIndication
+
+                                />
+                            }
+
+                        </div>
+
+                        <div>
+                            {
+                                isTranscriptionsReady && <DownloadCaseNote
+                                    transcriptions={transcriptions}
+                                    audioUrl={transcriptions.audio_url}
+                                    tasks={tasksData}
+                                    notes={notes}
+
+
+
+                                />
+                            }
+                        </div>
+
+                        {/* Section for showing the general summary */}
                         <div className='w-full'>
 
                             {
@@ -837,6 +889,7 @@ const MainLayout = () => {
 
                         </div>
 
+                        {/* Section for displaying the general notes */}
                         <div className='w-full'>
                             {
                                 showNotes ? <GeneralNotes
@@ -853,6 +906,8 @@ const MainLayout = () => {
                             }
                         </div>
 
+                        {/* Section for displaying the tasks */}
+
                         <div className='w-full'>
 
                             {
@@ -866,14 +921,10 @@ const MainLayout = () => {
                             }
 
                         </div>
-
-
-
-
                     </div>
                 </div>
 
-
+                {/* Section for audio playback */}
                 <div className={`fixed-bottom ${!isVisible ? 'hidden-audio-box' : 'px-5 py-5 border flex items-center justify-center bg-bg-navy-blue'}`}>
                     <CustomAudioPlayer
                         calculateHighlightedIndex={calculateHighlightedIndex}

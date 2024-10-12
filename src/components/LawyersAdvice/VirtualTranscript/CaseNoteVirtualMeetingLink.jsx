@@ -77,7 +77,7 @@ const CaseNoteVirtualMeetingLink = ({
                         <DialogTitle className="mb-8">Virtual Transcript Meeting</DialogTitle>
                         <DialogDescription>
                             <div className="my-5">
-                                Your Case Note Virtual Transcript is just few steps far. Complete these steps to record your virtaul meeting with Captify - Copilot
+                                Your Case Note Virtual Transcript is just few steps away. Complete these steps to record your virtaul meeting with Captify - Copilot
                             </div>
                             {
                                 zoomAccessToken && <span className='flex gap-3 items-center my-5 p-2'>

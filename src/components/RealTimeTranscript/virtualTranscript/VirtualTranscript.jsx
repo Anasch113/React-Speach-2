@@ -190,6 +190,10 @@ const VirtualTranscript = () => {
 
 
 
+  console.log("live virtual transcripttt:", liveTranscript)
+
+
+
   return (
     <div className="w-full flex flex-col items-center gap-3 justify-center  min-h-screen ">
 
