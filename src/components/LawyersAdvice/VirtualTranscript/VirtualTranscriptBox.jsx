@@ -98,6 +98,8 @@ const VirtualTranscriptBox = ({
     };
 
 
+    console.log("virtual live transcript:", liveTranscript)
+
 
     return (
 
@@ -153,12 +155,16 @@ const VirtualTranscriptBox = ({
                                     ) : (
                                         transcriptType === "realtime" &&
                                         <div className="flex flex-wrap">
+                                            {liveTranscript.fullTranscript.map((word, i) => (
+                                                <p key={i} className="mr-2">
+                                                    {word.text}
+                                                </p>
+                                            ))}
                                             {liveTranscript.words.map((word, i) => (
                                                 <p key={i} className="mr-2">
                                                     {word.text}
                                                 </p>
                                             ))}
-                                            <p>in progress</p>
                                         </div>
                                     )}
                                 </div>

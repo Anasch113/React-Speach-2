@@ -287,7 +287,7 @@ const VirtualTranscript = () => {
                 navigate("/user-guide-to-add/remove-app-from-zoom-account")
               }} className='underline text-gray-300 hover:text-gray-300/50'> You can also visit our documentation here</button>
             </div>
-           
+
           </div> :
 
           // second part >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -410,6 +410,11 @@ const VirtualTranscript = () => {
                       {transcriptType === "realtime" && (
                         <div className="flex w-full border flex-wrap">
                           {/* Use flex-wrap to allow words to flow in the same line */}
+                          {liveTranscript.fullTranscript.map((word, i) => (
+                            <p key={i} className="mr-2">
+                              {word.text}
+                            </p>
+                          ))}
                           {liveTranscript.words.map((word, i) => (
                             <p key={i} className="mr-2">
                               {word.text}
@@ -457,6 +462,11 @@ const VirtualTranscript = () => {
                     ) : (
                       transcriptType === "realtime" &&
                       <div className="flex flex-wrap">
+                        {liveTranscript.fullTranscript.map((word, i) => (
+                          <p key={i} className="mr-2">
+                            {word.text}
+                          </p>
+                        ))}
                         {liveTranscript.words.map((word, i) => (
                           <p key={i} className="mr-2">
                             {word.text}

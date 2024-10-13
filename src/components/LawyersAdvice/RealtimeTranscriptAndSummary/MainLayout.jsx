@@ -681,8 +681,8 @@ const MainLayout = () => {
 
 
 
-    console.log("isMeetingStart and transcription type:", isMeetingStart, transcriptType)
-    console.log("virtual live transcript in main layput", liveTranscript)
+    
+   
 
 
 

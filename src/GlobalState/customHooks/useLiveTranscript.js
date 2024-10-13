@@ -89,8 +89,8 @@ export const useLiveTranscript = () => {
 
 
   const updateLiveTranscript = (newWords, isFinal) => (dispatch, getState) => {
-    const currentTranscript = getState().liveTranscript || { words: [], fullTranscript: [] };
-  
+    const currentTranscript = getState().liveTranscript?.virtualTranscript?.liveTranscript || { words: [], fullTranscript: [] };
+
     if (!isFinal) {
       // Real-time updates; just append words to display on the UI
       const updatedTranscript = {
@@ -99,16 +99,22 @@ export const useLiveTranscript = () => {
       };
       dispatch(setLiveTranscript(updatedTranscript));
     } else {
-      // When is_final becomes true, we save the words into fullTranscript
+      // When is_final becomes true, save the current words to fullTranscript
+    toast.success("sentence completed")
       const updatedTranscript = {
         ...currentTranscript,
-        fullTranscript: [...currentTranscript.fullTranscript, ...currentTranscript.words],  // Save finalized sentence
-        words: [],  // Reset words for next sentence
+        fullTranscript: [...(currentTranscript.fullTranscript || []), ...currentTranscript.words],  // Save finalized sentence
+        words: [], // Clear words for the next sentence
       };
+
+      // Log to check if fullTranscript is updated properly
+      console.log('Updated fullTranscript:', updatedTranscript.fullTranscript);
+
+      // Dispatch the update
       dispatch(setLiveTranscript(updatedTranscript));
     }
   };
-  
+
 
 
   // listen for transcript being sent from the server
@@ -130,15 +136,16 @@ export const useLiveTranscript = () => {
       }
       if (meetingData.type === "meeting-start") {
         dispatch(setBotId(meetingData.botId))
+        
         dispatch(setIsVtRecording(true))
       }
 
       if (meetingData.type === 'realtime') {
         const { words, is_final } = meetingData.liveData;
-      
+
         // Dispatch update to Redux store
         dispatch(updateLiveTranscript(words, is_final));
-      
+
         dispatch(setTranscriptType(meetingData.type));
         dispatch(setMeetingStatus('realtime'));
       }
