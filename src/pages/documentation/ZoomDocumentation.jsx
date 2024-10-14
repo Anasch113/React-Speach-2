@@ -47,7 +47,16 @@ const ZoomDocumentation = () => {
     return (
         <div className='w-full min-h-screen p-10 '>
 
-            <h1 className='text-3xl font-sans font-bold my-5'>User Guide to use / add / remove the app from Zoom account</h1>
+           
+
+            <div className='flex flex-col ml-5 text-purple-300   p-2 mb-10 gap-4'>
+            <h1 className='text-3xl font-sans font-bold text-purple-300  '>Disclaimer: This documentation is related to the virtual transcript feature that is currently not available publicly. </h1>
+                <h1 className='text-xl font-sans   '>Captify virtual transcript feature is not released yet publicly. This feature is completed but upcomming so users are not able to use it currently. With captify virtual transctipt feature, users will be able to records their Zoom meetings in real time by sending our Captify- Copilot (Bot) to thier Zoom Meetings. Our Bot will join the meeting and then transcribe Zoom meetings and users will be able to see the realtime transcription of their ongoing meetings on Captify Virtual Transcription page. Users can also perform many functions like controling the stream, editing transcript, speaker lables and full transcript at the end of meeting.</h1>
+                <p>Before using the virtual transcript users must have to connect their Zoom accounts with Captify with the help of Zoom Integration. You can find the guide below for Zoom Integration with Captify:</p>
+
+               
+            </div>
+            <h1 className='text-3xl font-sans font-bold my-5'>User Guide to use  add / remove the app from Zoom account</h1>
 
             <div className='flex flex-col ml-5 my-5 border p-5'>
                 <h1 className='text-xl font-sans font-bold my-5 '>How to add the Captify with Zoom Account?</h1>

@@ -71,14 +71,14 @@ const VirtualTranscript = () => {
     handleLargeFontFamilyChange,
     handleLargeTextColorChange,
     handleLargeBgColorChange,
-    pauseVirtualTranscriptions, 
-    resumeVirtualTranscriptions, 
+    pauseVirtualTranscriptions,
+    resumeVirtualTranscriptions,
     stopVirtualTranscriptions
   } = useLiveTranscript();
 
   const { liveTranscript, finalTranscript, transcriptType, meetingStatus, meetingError, zoomAccessToken, isToken, isVtPaused, isVtRecording, vtRemainingTime, } = useSelector((state) => state.liveTranscript.virtualTranscript)
 
-  
+
 
 
 
@@ -189,7 +189,14 @@ const VirtualTranscript = () => {
 
   return (
     <div className="w-full flex flex-col items-center gap-3 justify-center  min-h-screen ">
+      <span className='flex items-center my-10 gap-1'>
 
+        <p className='text-2xl'>Disclaimer: This feature is not currently available publicly. </p>
+      <button onClick={() => {
+        navigate("/user-guide-to-add/remove-app-from-zoom-account")
+      }} className='underline text-gray-300 text-2xl hover:text-gray-300/50'> Read more</button>
+      </span>
+     
 
 
       {
@@ -276,9 +283,7 @@ const VirtualTranscript = () => {
 
               />
 
-              <button onClick={() => {
-                navigate("/user-guide-to-add/remove-app-from-zoom-account")
-              }} className='underline text-gray-300 hover:text-gray-300/50'> You can also visit our documentation here</button>
+
             </div>
 
           </div> :
@@ -301,7 +306,7 @@ const VirtualTranscript = () => {
 
                       <button className='cursor-pointer hover:text-white' title='pause' onClick={() => {
                         pauseVirtualTranscriptions();
-                      
+
                       }
                       } ><FaPause size={20} /></button>
 
@@ -309,7 +314,7 @@ const VirtualTranscript = () => {
                       (
                         <button className='cursor-pointer hover:text-white' title='resume' onClick={() => {
                           resumeVirtualTranscriptions();
-                         
+
                         }
                         }
                         ><FaPlay size={20} /></button>
@@ -320,7 +325,7 @@ const VirtualTranscript = () => {
 
                   <button className='cursor-pointer hover:text-white' title='stop' onClick={stopVirtualTranscriptions} ><FaStop size={20} /></button>
                   <button className='cursor-pointer hover:text-white' title='restart' ><MdOutlineRestartAlt /></button>
-                  <button  className='cursor-pointer hover:text-white' title='clear text' ><GrClearOption size={22} /></button>
+                  <button className='cursor-pointer hover:text-white' title='clear text' ><GrClearOption size={22} /></button>
 
                   <button className='cursor-pointer hover:text-white' title='settings' onClick={handleSettingsClick}><IoIosSettings /></button>
 
