@@ -89,8 +89,13 @@ export const useLiveTranscript = () => {
 
 
   const updateLiveTranscript = (newWords, isFinal) => (dispatch, getState) => {
-    const currentTranscript = getState().liveTranscript?.virtualTranscript?.liveTranscript || { words: [], fullTranscript: [] };
-
+    const liveTranscriptState = getState().liveTranscript?.virtualTranscript?.liveTranscript || { words: [], fullTranscript: [] };
+  
+    const currentTranscript = {
+      words: liveTranscriptState.words || [],
+      fullTranscript: liveTranscriptState.fullTranscript || [],  // Ensure fullTranscript is initialized
+    };
+  
     if (!isFinal) {
       // Real-time updates; just append words to display on the UI
       const updatedTranscript = {
@@ -100,20 +105,22 @@ export const useLiveTranscript = () => {
       dispatch(setLiveTranscript(updatedTranscript));
     } else {
       // When is_final becomes true, save the current words to fullTranscript
-    toast.success("sentence completed")
+     
+  
       const updatedTranscript = {
         ...currentTranscript,
-        fullTranscript: [...(currentTranscript.fullTranscript || []), ...currentTranscript.words],  // Save finalized sentence
+        fullTranscript: [...currentTranscript.fullTranscript, ...currentTranscript.words],  // Save finalized sentence
         words: [], // Clear words for the next sentence
       };
-
+  
       // Log to check if fullTranscript is updated properly
       console.log('Updated fullTranscript:', updatedTranscript.fullTranscript);
-
+  
       // Dispatch the update
       dispatch(setLiveTranscript(updatedTranscript));
     }
   };
+  
 
 
 

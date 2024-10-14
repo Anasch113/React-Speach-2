@@ -70,22 +70,15 @@ const VirtualTranscript = () => {
     handleLargeFontSizeChange,
     handleLargeFontFamilyChange,
     handleLargeTextColorChange,
-    handleLargeBgColorChange
+    handleLargeBgColorChange,
+    pauseVirtualTranscriptions, 
+    resumeVirtualTranscriptions, 
+    stopVirtualTranscriptions
   } = useLiveTranscript();
 
-  const { liveTranscript, finalTranscript, transcriptType, meetingStatus, meetingError, zoomAccessToken, isToken } = useSelector((state) => state.liveTranscript.virtualTranscript)
+  const { liveTranscript, finalTranscript, transcriptType, meetingStatus, meetingError, zoomAccessToken, isToken, isVtPaused, isVtRecording, vtRemainingTime, } = useSelector((state) => state.liveTranscript.virtualTranscript)
 
-  // Pause functions
-  const pauseTranscriptions = () => {
-
-  }
-
-  // Resume function
-  const resumeTranscriptions = () => {
-
-
-  }
-
+  
 
 
 
@@ -304,19 +297,19 @@ const VirtualTranscript = () => {
 
                 <div className='flex flex-row gap-6 items-center justify-center text-gray-500 list-none text-3xl '>
                   {
-                    !isPaused ? (
+                    !isVtPaused ? (
 
                       <button className='cursor-pointer hover:text-white' title='pause' onClick={() => {
-                        pauseTranscriptions();
-                        window.opener.postMessage({ type: 'PAUSE' }, '*')
+                        pauseVirtualTranscriptions();
+                      
                       }
                       } ><FaPause size={20} /></button>
 
                     ) :
                       (
                         <button className='cursor-pointer hover:text-white' title='resume' onClick={() => {
-                          resumeTranscriptions();
-                          window.opener.postMessage({ type: 'RESUME' }, '*')
+                          resumeVirtualTranscriptions();
+                         
                         }
                         }
                         ><FaPlay size={20} /></button>
@@ -325,9 +318,9 @@ const VirtualTranscript = () => {
                   }
 
 
-                  <button className='cursor-pointer hover:text-white' title='stop' onClick={() => window.opener.postMessage({ type: 'STOP' }, '*')} ><FaStop size={20} /></button>
-                  <button className='cursor-pointer hover:text-white' title='restart' onClick={() => window.opener.postMessage({ type: 'RESTART' }, '*')} ><MdOutlineRestartAlt /></button>
-                  <button onClick={clearText} className='cursor-pointer hover:text-white' title='clear text' ><GrClearOption size={22} /></button>
+                  <button className='cursor-pointer hover:text-white' title='stop' onClick={stopVirtualTranscriptions} ><FaStop size={20} /></button>
+                  <button className='cursor-pointer hover:text-white' title='restart' ><MdOutlineRestartAlt /></button>
+                  <button  className='cursor-pointer hover:text-white' title='clear text' ><GrClearOption size={22} /></button>
 
                   <button className='cursor-pointer hover:text-white' title='settings' onClick={handleSettingsClick}><IoIosSettings /></button>
 
@@ -408,7 +401,7 @@ const VirtualTranscript = () => {
                   >
                     <div>
                       {transcriptType === "realtime" && (
-                        <div className="flex w-full border flex-wrap">
+                        <div className="flex w-full px-2  flex-wrap">
                           {/* Use flex-wrap to allow words to flow in the same line */}
                           {liveTranscript.fullTranscript.map((word, i) => (
                             <p key={i} className="mr-2">
