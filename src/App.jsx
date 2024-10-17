@@ -78,6 +78,22 @@ import ZoomAuthorization from "./components/RealTimeTranscript/virtualTranscript
 import MainLayout from "./components/LawyersAdvice/RealtimeTranscriptAndSummary/MainLayout";
 
 
+
+
+// new frontend imports
+import LegalVideography from "./pages/legal-videography";
+import StenographicCourtReporting from "./pages/court-reporting";
+import NewTranscriptSummarization from "./pages/transcript-summarization";
+import FileNote from "./pages/file-note";
+import AudioTranscription from "./pages/audio-transcription";
+import CARTPage from "./pages/human-live-stenocaptioning";
+import AILiveCaptioning from "./pages/ai-live-captioning";
+import CorporateAudioTranscription from "./pages/corporate-audio-transcription";
+import ResyncAI from "./pages/resync-ai";
+import MeetingNote from "./pages/meeting-note";
+import CorporateTranscriptSummarization from "./pages/corporate-transcript-summarization";
+
+
 function App() {
 
 
@@ -90,17 +106,58 @@ function App() {
           <Routes>
             {/* New Frontend pages >>>>>>>>>>>>>>>>>>>>>>>>>> */}
             <Route path="/" element={<Main />} />
-
-            <Route
+             <Route
               path="/what-we-think"
               element={<Think />}
             />
+            <Route path='/legal-videography' element={<LegalVideography />} />
 
-            <Route
+          <Route
               path="/transcript-summarisation-analysis"
               element={<TranscriptSummarization />}
             />
-            <Route
+
+          <Route
+              path="/court-reporting"
+              element={<StenographicCourtReporting />}
+            />
+          <Route
+              path="/transcript-summarization"
+              element={<NewTranscriptSummarization />}
+            />
+          <Route
+              path="/file-note"
+              element={<FileNote/>}
+            />
+          <Route
+              path="/audio-transcription"
+              element={<AudioTranscription/>}
+            />
+          <Route
+              path="/human-live-stenocaptioning"
+              element={<CARTPage/>}
+            />
+          <Route
+              path="/ai-live-captioning"
+              element={<AILiveCaptioning/>}
+            />
+          <Route
+              path="/corporate-audio-transcription"
+              element={< CorporateAudioTranscription/>}
+            />
+          <Route 
+              path="/resync-ai"
+              element={< ResyncAI/>}
+            />
+          <Route
+              path="/meeting-note"
+              element={< MeetingNote/>}
+            />
+          <Route
+              path="/corporate-transcript-summarization"
+              element={<CorporateTranscriptSummarization/>}
+            />
+             {/* <Route
               path="/real-time-transcript"
               element={<RealTranscript />}
             />
@@ -188,7 +245,7 @@ function App() {
             <Route
               path="/contract-analysis-management"
               element={<ContractAnalysisManagementPage />}
-            />
+            /> */}
             <Route
               path="/about-us"
               element={<Aboutus />}

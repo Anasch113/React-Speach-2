@@ -52,99 +52,71 @@ const Header = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+    const legalServices = [
+        { label: 'Legal Videography', link: '/Legal-videography' },
+        { label: 'Court Reporting', link: '/court-reporting' },
+        { label: 'Transcript Summarization', link: '/transcript-summarization' },
+        { label: 'File Note', link: '/file-note' },
+        { label: 'Audio Transcription', link: '/audio-transcription' },
+
+    ];
+
+    const corporateGovernmentServices = [
+        { label: 'Human Live Stenocaptioning (CART)', link: '/human-live-stenocaptioning' },
+        { label: 'AI Live Captioning', link: '/ai-live-captioning' },
+        { label: 'Audio Transcription', link: '/corporate-audio-transcription' },
+        { label: 'Resync AI', link: '/resync-ai' },
+        { label: 'Meeting Note', link: '/meeting-note' },
+        { label: 'Transcript Summarization', link: '/corporate-transcript-summarization' },
+        // Add more corporate & government services here...
+    ];
+
     const whatWeDo = [
         {
-            label: 'Transcript Summarisation and Analysis',
-            link: '/transcript-summarisation-analysis'
+            label: 'Legal Videography',
+            link: '/Legal-videography'
         },
         {
-            label: 'Real-Time Transcripts',
-            link: '/real-time-transcript'
+            label: 'Court Reporting',
+            link: '/court-reporting'
         },
         {
-            label: 'Transcript Synchronisation with Video',
-            link: '/transcript-synchronization-with-video'
+            label: 'Transcript Summarization',
+            link: '/Transcript-summarization'
         },
         {
-            label: 'Predictive Case Analytics',
-            link: '/predictive-case-analytics'
+            label: 'File Note',
+            link: '/file-note'
         },
         {
-            label: 'Automated Legal Research',
-            link: '/automated-legal-research'
+            label: 'Audio Transcription',
+            link: '/audio-transcription'
         },
         {
-            label: 'Document Review and Analysis',
-            link: '/document-review-analysis'
+            label: 'Human Live Stenocaptioning (CART)',
+            link: '/human-live-stenocaptioning'
         },
         {
-            label: 'E-Discovery Solutions',
-            link: '/e-discovery-solutions'
+            label: 'AI Live Captioning',
+            link: '/ai-live-captioning'
         },
         {
-            label: 'Contract Analysis and Management',
-            link: '/contract-analysis-management'
+            label: 'Audio Transcription',
+            link: '/audio-transcription'
         },
         {
-            label: 'Legal Risk Assessment',
-            link: '/legal-risk-assessment'
+            label: 'Resync AI',
+            link: '/resync-ai'
         },
         {
-            label: 'Virtual Legal Assistants',
-            link: '/virtual-legal-assessment'
+            label: 'Meeting Note',
+            link: '/meeting-note'
         },
         {
-            label: 'Sentiment Analysis for Jury Selection',
-            link: '/sentiment-analysis-for-jury-selection'
+            label: 'Transript Summarization',
+            link: '/corporate-transcript-summarization'
         },
-        {
-            label: 'Fraud Detection and Prevention',
-            link: '/fraud-detection-prevention'
-        },
-        {
-            label: 'Intellectual Property Monitoring',
-            link: '/intellectual-property-monitoring'
-        },
-        {
-            label: 'Compliance Automation',
-            link: '/compliance-automation'
-        },
-        {
-            label: 'Legal Process Automation',
-            link: '/legal-process-automation'
-        },
-        {
-            label: 'Litigation Strategy Optimization',
-            link: '/litigation-strategy-optimization'
-        },
-        {
-            label: 'Data-Driven Legal Insights',
-            link: '/data-driven-legal-insights'
-        },
-        {
-            label: 'Expert Witness Matching',
-            link: '/expert-witness-matching'
-        },
-        {
-            label: 'Predictive Modeling for Case Outcomes',
-            link: '/predictive-modeling-for-case-outcomes'
-        },
-        {
-            label: 'AI-Powered Brief and Memo Writing',
-            link: '/ai-powered-brief-memo-writing'
-        },
-        {
-            label: 'Client Communication Automation',
-            link: '/client-communication-automation'
-        },
-        {
-            label: 'Litigation Cost Management',
-            link: '/litigation-cost-management'
-        },
-        {
-            label: 'AI-Based Settlement Analysis',
-            link: '/ai-based-settlement-analysis'
-        },
+
 
     ];
     const whatWeAre = [
@@ -235,7 +207,7 @@ const Header = () => {
 
 
                     {isWhatWeDoOpen && (
-                        <ul ref={whatWeDoRef} className="absolute z-[999] w-full ease-in duration-200 transition-all  bg-[#202020] text-white   translate-y-[19.8rem] space-y-2 shadow-lg">
+                        <ul ref={whatWeDoRef} className="absolute z-[999] w-full ease-in duration-200 transition-all  bg-[#202020] text-white   translate-y-[16.8rem] space-y-2 shadow-lg">
                             <div className='max-w-screen-2xl px-20 py-10'>
                                 <div>
 
@@ -248,16 +220,34 @@ const Header = () => {
 
 
                                     <p className='mb-7 text-[#777]'>Services</p>
-                                    <div className='grid grid-cols-3'>
-                                        {
-                                            whatWeDo.map((e) => (
-                                                <div key={e} className='p-2'>
-                                                    <a href={e.link} className='hover-underline-animation font-normal '>{e.label}</a>
-                                                </div>
-                                            ))
+                                    <div className="grid grid-cols-2 gap-10">
+                                        {/* Legal Column */}
+                                        <div>
+                                            <h2 className="text-2xl font-bold mb-4">Legal</h2>
+                                            <div className='grid grid-cols-1'>
+                                                {legalServices.map((service) => (
+                                                    <div key={service.label} className='p-2'>
+                                                        <a href={service.link} className='hover-underline-animation font-normal'>
+                                                            {service.label}
+                                                        </a>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
 
-                                        }
-
+                                        {/* Corporate & Government Column */}
+                                        <div>
+                                            <h2 className="text-2xl font-bold mb-4">Corporate & Government</h2>
+                                            <div className='grid grid-cols-1'>
+                                                {corporateGovernmentServices.map((service) => (
+                                                    <div key={service.label} className='p-2'>
+                                                        <a href={service.link} className='hover-underline-animation font-normal'>
+                                                            {service.label}
+                                                        </a>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -274,7 +264,7 @@ const Header = () => {
                     {
                         !user && <li className="relative cursor-pointer flex items-center gap-x-2 hover:text-[#777]" onClick={toggleWhatWeAreDropdown}>
                             <span className=''>
-                                What are we
+                            Who we are
                             </span>
                             <span className=''>
                                 <IoIosArrowDown />
@@ -292,15 +282,15 @@ const Header = () => {
                         </a>
                     }
                     {isWhatWeAreOpen && (
-                        <ul ref={whatWeAreRef} className="absolute w-full max-w-[1980px] z-[999]  bg-[#202020] text-white   translate-y-[14.8rem] space-y-2 shadow-lg">
+                        <ul ref={whatWeAreRef} className="absolute w-full max-w-[1980px] z-[999]  bg-[#202020] text-white   translate-y-[12rem] space-y-2 shadow-lg">
                             <div className='max-w-screen-2xl px-20 py-10'>
                                 <div>
                                     <h1 className='flex items-center gap-5 cursor-pointer    '>
                                         <span className='hover-underline-animation cursor-pointer'>
-                                            About Bradley Reporting
+                                        About Captify.live
                                         </span>
                                         <IoIosArrowForward size={20} className='bg-purple-600 w-8 h-5 p-[2px]' /></h1>
-                                    <p className='mb-7 text-[#777]'>Under Leaders</p>
+                                    {/* <p className='mb-7 text-[#777]'>Under Leaders</p> */}
                                     <div className='grid grid-cols-1'>
                                         {
                                             whatWeAre.map((e) => (
@@ -373,14 +363,35 @@ const Header = () => {
                         </li>
                         {isWhatWeDoOpen && (
                             <ul ref={whatWeDoRef} className="bg-black  z-[999] w-full text-white  py-2 shadow-lg">
-                                <p className=' text-[#777] px-4'>Services</p>
-                                {whatWeDo.map((e) => (
-                                    <li key={e} className="px-1 hover-underline-animation py-[2px]">
-                                        <a href={e.link}
+                                <div className="grid grid-cols-1 gap-10 px-4">
+                                    {/* Legal Column */}
+                                    <div>
+                                        <h2 className="text-xl font-semibold mb-4">Legal</h2>
+                                        <div className='grid grid-cols-1'>
+                                            {legalServices.map((service) => (
+                                                <div key={service.label} className='p-2'>
+                                                    <a href={service.link} className='hover-underline-animation font-normal'>
+                                                        {service.label}
+                                                    </a>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
 
-                                        >{e.label}</a>
-                                    </li>
-                                ))}
+                                    {/* Corporate & Government Column */}
+                                    <div>
+                                        <h2 className="text-xl font-semibold mb-4">Corporate & Government</h2>
+                                        <div className='grid grid-cols-1'>
+                                            {corporateGovernmentServices.map((service) => (
+                                                <div key={service.label} className='p-2'>
+                                                    <a href={service.link} className='hover-underline-animation font-normal'>
+                                                        {service.label}
+                                                    </a>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
                             </ul>
                         )}
                         <a href={'/what-we-think'} className="hover:text-[#777] z-[999] cursor-pointer px-4">
@@ -388,13 +399,13 @@ const Header = () => {
                         </a>
 
                         <li className="cursor-pointer flex items-center justify-between px-4 w-full gap-2" onClick={toggleWhatWeAreDropdown}>
-                            <span>What are we</span>
+                            <span>Who we are</span>
                             <IoIosArrowForward />
 
                         </li>
                         {isWhatWeAreOpen && (
                             <ul ref={whatWeAreRef} className="bg-black z-[999] text-white py-2 w-full shadow-lg">
-                                <p className=' text-[#777] px-4'>Under Leaders</p>
+                                {/* <p className=' text-[#777] px-4'>Under Leaders</p> */}
                                 {whatWeAre.map(({ label, link }) => (
                                     <li key={label} className="px-1 py-[2px]">
                                         <a href={link} className="hover-underline-animation text-sm font-[385]">{label}</a>

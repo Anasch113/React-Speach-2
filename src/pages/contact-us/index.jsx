@@ -55,7 +55,7 @@ const ContactForm = () => {
       <div className="min-h-screen bg-black flex items-center justify-center p-4">
 
 
-        <div className="hidden border lg:block bg-black w-2/4 text-white md:p-8 rounded-lg shadow-lg ml-4 -mt-20">
+        <div className="hidden  lg:block bg-black w-2/4 text-white md:p-8 rounded-lg shadow-lg ml-4 -mt-20">
 
           <p className="my-5 text-gray-300">We are committed to providing timely and efficient support to ensure that all users have the best experience with Captify. Below, you'll find the details on how to reach our support team, expected response times, and additional resources to assist you. </p>
 
@@ -166,6 +166,48 @@ const ContactForm = () => {
 
 
       </div>
+      <div className="mb-10 max-w-screen-xl mx-auto">
+          <h2 className="text-3xl font-bold mb-6 text-center">Meet Our Team</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <div>
+              <h3 className="text-2xl font-bold mb-2">Jason Bradley – Founding Director</h3>
+              <p>
+                Since its founding in 2004, Captify.live – by Bradley Reporting has brought 
+                high-quality speech-to-text, human live captioning, and text capture services 
+                to Australian and U.S. clients in the legal, corporate, and government sectors. 
+                Jason Bradley is also responsible for positioning Captify.live as a leading 
+                global provider of AI-based products and services.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold mb-2">Helen Lubke – Team Leader, Human Speech to Text Services</h3>
+              <p>
+                With an extensive background in the provision of human stenocaptioning and 
+                court reporting services, Helen manages a team of professionals across the 
+                U.S. and Australia, delivering thousands of hours annually for government, 
+                private sector, and legal clientele.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold mb-2">Samuel Bradley – Team Leader, Legal Videography Services Manager</h3>
+              <p>
+                Since 2017, Samuel Bradley has led our team of highly mobile legal video specialists, 
+                delivering assignments across the Asia Pacific for legal clients in the U.S. and Australia.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold mb-2">Sharny Leung – Team Leader, Captioned Video Services</h3>
+              <p>
+                Sharny Leung oversees our captioned video team, responsible for producing thousands 
+                of hours of captioned video for corporate and government clients annually. 
+                She ensures timely and accurate delivery of caption files and transcripts.
+              </p>
+            </div>
+          </div>
+        </div>
       <Footer />
 
     </>

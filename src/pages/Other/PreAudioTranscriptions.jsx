@@ -43,20 +43,12 @@ const PreAudioTranscriptions = () => {
     const [processing, setProcessing] = useState(false);
     const [transcribeText, setTranscribeText] = useState("");
     const [transcriptions, setTranscriptions] = useState("");
-
-
-
+    const [language, setLanguage] = useState("")
 
 
     const [isTranscriptions, setIsTranscriptions] = useState(false);
     const [dbData, setDbData] = useState("")
     const [subtitle, setSubtitle] = useState([]); // New state variable
-
-
-
-
-
-
 
     const [isPaymentDone, setIsPaymentDone] = useState(false)
 
@@ -225,6 +217,8 @@ const PreAudioTranscriptions = () => {
                     audio: url,
                     speaker_labels: true,
                     sentiment_analysis: true,
+                    language_code: language
+
                 };
                 const transcribe = await client.transcripts.transcribe(params);
                 const subtitle = await getSubtitleFile(transcribe.id, 'srt');
@@ -279,6 +273,7 @@ const PreAudioTranscriptions = () => {
 
         } catch (error) {
             console.log("Error in Transcription", error);
+            toast.error("Something went wrong. Please try later")
             throw new Error("Error while transcribing the audio file");
         }
 
@@ -339,8 +334,7 @@ const PreAudioTranscriptions = () => {
 
     }, [user, runUseEffect])
 
-    console.log("dbData", dbData)
-    console.log("isTranscriptions", isTranscriptions)
+    console.log("selected lanuage:", language)
 
     return (
         <div className='w-full min-h-screen'>
@@ -412,8 +406,8 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
 
             </div>
             {showFormModal && (
-                <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 ">
-                    <div className="bg-bg-navy-blue md:h-[550px] p-5 rounded-lg overflow-y-scroll ">
+                <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-30  ">
+                    <div className="bg-bg-navy-blue md:min-h-[550px]  p-5 rounded-xl overflow-y-auto ">
 
                         <div className='w-full  flex flex-row items-center justify-end  gap-10 px-5 py-5'>
 
@@ -502,16 +496,21 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                             </div>
 
                         </form>
+
                         <span className="flex flex-col gap-2 p-3 my-2">
                             <label className="text-sm "> Audio Language</label>
-                            <select className=" bg-bg-gray-new  py-3 px-4 text-sm rounded-md outline-none" name="language" id="language">
+                            <select className=" bg-bg-gray-new  py-3 px-4 text-sm rounded-md outline-none" name="language" id="language" onChange={(e) => setLanguage(e.target.value)}>
                                 <option disabled>Select Language</option>
-                                <option value="english">English</option>
-                                <option value="spanish">Spanish</option>
-                                <option value="arabic">Arabic</option>
+                                <option value="en">Global English</option>
+                                <option value="en_au">Australian English</option>
+                                <option value="en_uk">British English</option>
+                                <option value="en_us">US English</option>
+                                <option value="es">Spanish</option>
+                                <option value="de">German</option>
                             </select>
 
                         </span>
+
                         <button disabled={!isPaymentDone} onClick={handleTranscriptions} className='text-center px-5 py-4 w-full h-16
 rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
                                 <FaCloudUploadAlt size={25} /> <p>Transcribe </p>
@@ -520,7 +519,7 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                 </div>
             )}
 
-            
+
             {showPaymentModal && (
                 <PaymentOptions
                     fileNames={fileNames}

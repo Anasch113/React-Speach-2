@@ -1,11 +1,11 @@
-import img1 from "../src/assets/img1.jpeg";
-import img2 from "../src/assets/img2.jpeg";
-import img3 from "../src/assets/img3.jpeg";
-import img4 from "../src/assets/img4.jpeg";
-import img5 from "../src/assets/img5.jpeg";
-import img6 from "../src/assets/img6.jpeg";
-import img7 from "../src/assets/img8.jpeg";
-import img8 from "../src/assets/img7.jpeg";
+import img1 from "../src/assets/cardimg1.jpg";
+import img2 from "../src/assets/cardimg2.jpg";
+import img3 from "../src/assets/cardimg3.jpg";
+import img4 from "../src/assets/cardimg4.jpg";
+import img5 from "../src/assets/cardimg5.jpg";
+import img6 from "../src/assets/card6.jpeg";
+import img7 from "../src/assets/card7.jpeg";
+import img8 from "../src/assets/card8.jpeg";
 export const cardsData = [
   {
     id: 1,
