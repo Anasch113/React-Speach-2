@@ -43,7 +43,7 @@ const PreAudioTranscriptions = () => {
     const [processing, setProcessing] = useState(false);
     const [transcribeText, setTranscribeText] = useState("");
     const [transcriptions, setTranscriptions] = useState("");
-    const [language, setLanguage] = useState("")
+    const [language, setLanguage] = useState("en_us")
 
 
     const [isTranscriptions, setIsTranscriptions] = useState(false);
@@ -501,12 +501,10 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                             <label className="text-sm "> Audio Language</label>
                             <select className=" bg-bg-gray-new  py-3 px-4 text-sm rounded-md outline-none" name="language" id="language" onChange={(e) => setLanguage(e.target.value)}>
                                 <option disabled>Select Language</option>
-                                <option value="en">Global English</option>
+                                <option value="en_us">American English</option>
                                 <option value="en_au">Australian English</option>
-                                <option value="en_uk">British English</option>
-                                <option value="en_us">US English</option>
-                                <option value="es">Spanish</option>
-                                <option value="de">German</option>
+                               
+                               
                             </select>
 
                         </span>
