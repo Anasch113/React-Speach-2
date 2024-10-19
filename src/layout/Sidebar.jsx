@@ -456,7 +456,7 @@ function Sidebar({ isPurchase, minutes }) {
                 </button>
                 {openContact && (
                   <div className="ml-4">
-                    <Link to={"/support/contact"}>
+                    <Link to={"/contact-us"}>
                       <div className="p-2  flex rounded-md hover:bg-white hover:text-black">
                         <span>Email Contact Info</span>
                       </div>

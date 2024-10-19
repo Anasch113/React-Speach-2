@@ -58,7 +58,7 @@ const MainLayout = () => {
     const [cost, setCost] = useState("")
     const [isOpen, setIsOpen] = useState(false)
     const [isMeetingStart, setIsMeetingStart] = useState(false)
-
+    const [language, setLanguage] = useState("en_us")
     const [wholeProcessing, setIsWholeProcessing] = useState(false)
 
 
@@ -340,7 +340,8 @@ const MainLayout = () => {
             sentiment_analysis: true,
             summarization: true,
             summary_model: "informative",
-            summary_type: "bullets"
+            summary_type: "bullets",
+            language_code: language
         };
 
         try {
@@ -681,8 +682,8 @@ const MainLayout = () => {
 
 
 
-    
-   
+
+
 
 
 
@@ -700,6 +701,8 @@ const MainLayout = () => {
 
         }
     }, [url, finalTranscript])
+
+    console.log("selected language of case note:", language)
 
     return (
         <div className='min-h-screen w-full flex  '>
@@ -725,6 +728,8 @@ const MainLayout = () => {
                                         generateTranscript={generateTranscript}
                                         initialMinutes={minutes}
                                         setInitialMinutes={setMinutes}
+                                        setLanguage = {setLanguage}
+                                        language = {language}
                                     />
 
 

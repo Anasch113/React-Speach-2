@@ -20,8 +20,14 @@ import {
 
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
 
 
 const PaymentModal = ({
@@ -29,13 +35,15 @@ const PaymentModal = ({
     total,
     setTotal,
     generateTranscript,
-    initialMinutes ,
-    setInitialMinutes 
+    initialMinutes,
+    setInitialMinutes,
+    setLanguage,
+    language
 
 }) => {
 
 
-   
+
 
     const { user } = useUserAuth()
 
@@ -52,7 +60,7 @@ const PaymentModal = ({
         const userId = user.uid
         const body = {
             total: total,
-            userId: userId, 
+            userId: userId,
             minutes: initialMinutes
         }
         try {
@@ -89,7 +97,9 @@ const PaymentModal = ({
     }
 
 
-
+    const handleValueChange = (value) => {
+        setLanguage(value)
+    }
 
 
     return (
@@ -102,7 +112,7 @@ const PaymentModal = ({
                     <Button className="mx-2" variant={"purpleMeetingBtn"}>In-Person Meeting <FaPlay className='mx-2' /></Button>
 
                 </DialogTrigger>
-                <DialogContent className="md:max-w-[600px]  md:min-h-[400px] max-w-[300px] max-h-[500px] overflow-y-auto">
+                <DialogContent className="md:max-w-[600px]  md:min-h-[400px] max-w-[300px]  overflow-y-auto  rounded-xl ">
                     <DialogHeader >
                         <DialogTitle className="mb-8">Billing</DialogTitle>
                         <DialogDescription>
@@ -155,6 +165,15 @@ const PaymentModal = ({
                                     </span>
 
                                 </span>
+                                <Select  value={language} onValueChange={handleValueChange}>
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue className="text-white" placeholder="Select Language" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="en_us">American English</SelectItem>
+                                        <SelectItem value="en_au">Australian English</SelectItem>
+                                    </SelectContent>
+                                </Select>
 
                             </div>
 
@@ -163,7 +182,7 @@ const PaymentModal = ({
 
                     <DialogFooter >
                         <DialogClose asChild>
-                            <button onClick={()=>{
+                            <button onClick={() => {
                                 generateTranscript("notecase-credit")
                             }} className='text-center px-5 py-3 w-full  h-14
 rounded-md bg-bg-purple-2 text-white text-xl font-medium font-roboto hover:bg-bg-purple mb-2 '><span className='flex items-center text-center justify-center gap-2'>
