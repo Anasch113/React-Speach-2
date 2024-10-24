@@ -598,12 +598,16 @@ const MainLayout = () => {
 
     const isPurchaseFromLocation = location.state?.isPurchase;
     const minutesFromLocation = location.state?.minutes;
+    const languageFromLocation = location.state?.language;
+
+    console.log("language from locationnnnn", languageFromLocation)
 
 
     useEffect(() => {
         if (isPurchaseFromLocation === "completed" && minutesFromLocation) {
             setIsPurchase(isPurchaseFromLocation)
             setMinutes(minutesFromLocation)
+            setLanguage(languageFromLocation)
 
 
         }

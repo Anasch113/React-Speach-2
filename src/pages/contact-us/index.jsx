@@ -77,21 +77,16 @@ const ContactForm = () => {
           <h3 className="text-3xl font-bold mb-4">Contact Information</h3>
           <span className="flex flex-col gap-2">
             <p className="text-lg font-semibold">Email Support:</p>
-            <a href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#sent?compose=LRmDGdhFXXZwXqkjKXmsSqjGSStQJpJzTtznvQqjKhMlPTlJNnDgpXxxjFlJTLmhXRHBrXDRTkjmBWvTQjJvMlNpgJGpCGrmjkqpBrqhDZdlPgJhpgpVcsgvrFWVHckTXJNpvxCJvkSfdCrKpchzMxjjCSXNGV" target="_main" className="mb-4 text-gray-300">
+            <a href="mailto:Odulanahammed@captify.live" target="_main" className="mb-4 text-gray-300">
                Odulanahammed@captify.live
             </a>
           </span>
-          <span className="flex flex-col gap-2">
-            <p className="text-lg font-semibold">Phone:</p>
-            <p className="mb-4">
-             (+234) 7062904396
-          </p>
-          </span>
+        
 
           <span className="flex flex-col gap-2">
             <p className="text-lg font-semibold">Address:</p>
             <p>
-             Ile-ife, Osun state, Nigeria
+            Suite 21, 120 Bloomfield Street, Brisbane, Queensland, Australia 4163
           </p>
           </span>
 

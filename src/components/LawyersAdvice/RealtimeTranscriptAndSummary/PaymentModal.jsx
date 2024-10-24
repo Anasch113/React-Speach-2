@@ -61,7 +61,8 @@ const PaymentModal = ({
         const body = {
             total: total,
             userId: userId,
-            minutes: initialMinutes
+            minutes: initialMinutes,
+            language: language
         }
         try {
 

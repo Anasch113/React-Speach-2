@@ -15,7 +15,9 @@ const CaseNoteSuccess = () => {
     const [dataDetails, setDataDetails] = useState(({
         minutes: 0,
         price: 0,
-        method: ""
+        method: "",
+        language: ""
+
     }));
     const [trigger, setTrigger] = useState(false);
 
@@ -46,6 +48,7 @@ const CaseNoteSuccess = () => {
                             price: userData.price,
                             minutes: userData.minutes,
                             method: userData.method,
+                            language: userData.language
 
 
                         })
@@ -93,6 +96,7 @@ const CaseNoteSuccess = () => {
                         price: dataDetails.price,
                         minutes: dataDetails.minutes,
                         method: dataDetails.method,
+                        language: dataDetails.language,
                         status: "paid"
 
                     });
@@ -100,6 +104,7 @@ const CaseNoteSuccess = () => {
                         price: dataDetails.price,
                         minutes: dataDetails.minutes,
                         method: dataDetails.method,
+                        language: dataDetails.language
 
 
                     })
@@ -126,8 +131,8 @@ const CaseNoteSuccess = () => {
     const handleContinueTranscription = () => {
 
         if (isOk) {
-          
-            navigate("/note-case", { state: { isPurchase: "completed", minutes : dataDetails.minutes } });
+
+            navigate("/note-case", { state: { isPurchase: "completed", minutes: dataDetails.minutes, language: dataDetails.language } });
 
 
 
