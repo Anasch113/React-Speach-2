@@ -227,6 +227,7 @@ function Sidebar({ isPurchase, minutes }) {
       } else if (result.isDenied) {
 
         setShowPaymentModal(true)
+        
 
       }
     });

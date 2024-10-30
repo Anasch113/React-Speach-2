@@ -68,3 +68,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .normal-title {
+    @apply font-poppins text-2xl font-semibold
+  }
+  .large-title {
+    @apply font-poppins text-3xl font-semibold
+  }
+  .small-title {
+    @apply font-poppins text-xl 
+  }
+}

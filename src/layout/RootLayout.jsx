@@ -7,6 +7,7 @@ import MainContent from "./MainContent";
 import Navbar from "./Navbar";
 import RightSidebar from "./RightSidebar";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import "../App.css"
 
@@ -19,7 +20,7 @@ function RootLayout() {
   const location = useLocation();
   const navigate = useNavigate();
 
-
+ 
 
   const isPurchaseFromLocation = location.state?.isPurchase;
   const minutesFromLocation = location.state?.minutes;
@@ -54,7 +55,7 @@ function RootLayout() {
           <Navbar isPurchase={isPurchase} minutes={minutes} />
 
           <div className="flex w-full md:flex-row flex-col">
-            <MainContent />
+            <MainContent  />
             <RightSidebar />
           </div>
         </div>

@@ -14,6 +14,13 @@ import { FaRegFilePdf } from "react-icons/fa6";
 import { MdOndemandVideo } from "react-icons/md";
 import { IoVideocamOffSharp } from "react-icons/io5";
 import { useLiveTranscript } from "../GlobalState/customHooks/useLiveTranscript"
+import {
+  setInPersonMeetingTranscript,
+  setIsMeetingEnd
+} from "../GlobalState/features/liveTranscriptUISlice"
+import jsPDF from 'jspdf';
+import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 
 function MainContent() {
 
@@ -21,6 +28,8 @@ function MainContent() {
   const [isDownloading, setIsDownloading] = useState(false); // New state variable
   const [isDownloadingtr, setIsDownloadingtr] = useState(false); // New state variable
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const [transcript, setTranscript] = useState("")
+  const [isInPersonMeetingStop, setIsInPersonMeetingStop] = useState(false)
 
 
 
@@ -30,17 +39,20 @@ function MainContent() {
   const {
     smallFontSettings,
     handleSmallFontSizeChange,
+    inPersonMeetingStates
 
   } = useLiveTranscript();
 
   let bgColor2 = smallFontSettings.bgColor
   let textColor2 = smallFontSettings.textColor
 
+
   const { liveTranscript, finalTranscript, transcriptType, meetingStatus, meetingError } = useSelector((state) => state.liveTranscript.virtualTranscript)
 
-  console.log("livetranscript", liveTranscript)
+
 
   const pdfContainer = useRef(null);
+
 
   const downloadPdf = async () => {
     setIsDownloadingtr(true);
@@ -124,12 +136,61 @@ function MainContent() {
     return date.toLocaleString('en-US', options);
   };
 
-  const formatTime = (date) => {
-    const options = { hour: 'numeric', minute: 'numeric', hour12: true };
-    return date.toLocaleString('en-US', options);
+
+
+
+  // Downloading Summary PDF
+  const downloadLiveTranscript = () => {
+    const doc = new jsPDF();
+    const fontSize = 12;
+    doc.setFontSize(fontSize);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const maxWidth = pageWidth - 20;
+    const textLines = doc.splitTextToSize(transcript, maxWidth);
+    doc.text(textLines, 10, 10);
+    doc.save(`liveTranscript.pdf`);
   };
 
 
+
+
+
+
+  useEffect(() => {
+
+
+
+
+    const handleMessage = (event) => {
+      if (event.origin !== window.location.origin) {
+        // Ignore messages from unknown origins for security
+        return;
+      }
+
+      console.log("event data", event.data);
+
+
+
+      if (event.data.type === 'STOP') {
+
+        toast.success("Live Transcriptions End");
+        setIsInPersonMeetingStop(true)
+        const transcript = event.data.transcript
+        console.log("transcript in postMessage:", transcript)
+        setTranscript(transcript)
+      }
+
+    };
+
+    window.addEventListener('message', handleMessage);
+
+    // Cleanup function to clear the timer if the component unmounts or the effect runs again
+    return () => {
+
+      window.removeEventListener('message', handleMessage);
+    };
+
+  }, []);
   return (
     <main className="flex-1 overflow-x-hidden overflow-y-scroll bg-bg-color-light min-h-screen " style={{
       scrollbarWidth: "thin",
@@ -250,8 +311,11 @@ function MainContent() {
         </div>
 
         {/* list of audio files */}
+        {
+          isInPersonMeetingStop &&    <Button className="w-52"  onClick={downloadLiveTranscript} variant = {"customPurple"}>Download Transcript</Button>
+        }
 
-
+     
 
 
         {/* <RecordingAudio /> */}

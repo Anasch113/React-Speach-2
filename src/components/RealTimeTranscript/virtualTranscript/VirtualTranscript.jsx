@@ -182,7 +182,32 @@ const VirtualTranscript = () => {
   }, [location, navigate]);
 
 
+  const downloadVirtualTranscript = () => {
 
+    const doc = new jsPDF();
+    const fontSize = 12;
+    doc.setFontSize(fontSize);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const maxWidth = pageWidth - 20;
+    let yPosition = 10; // Initial vertical position on the page
+
+    finalTranscript.forEach((data, i) => {
+
+      doc.text(`Speaker ${i + 1}: ${data.speaker}`, 10, yPosition)
+      yPosition += 8
+
+      const wordText = data.words.map(word => word.text).join(' ')
+      const textLines = doc.splitTextToSize(wordText, maxWidth)
+
+      textLines.forEach(line => {
+        doc.text(line, 10, yPosition)
+        yPosition += 8
+      })
+
+      yPosition += 8
+    })
+    doc.save(`virtualTranscript.pdf`)
+  }
   console.log("live virtual transcripttt:", liveTranscript)
 
 
@@ -192,11 +217,11 @@ const VirtualTranscript = () => {
       <span className='flex items-center my-10 gap-1'>
 
         <p className='text-2xl'>Disclaimer: This feature is not currently available publicly. </p>
-      <button onClick={() => {
-        navigate("/user-guide-to-add/remove-app-from-zoom-account")
-      }} className='underline text-gray-300 text-2xl hover:text-gray-300/50'> Read more</button>
+        <button onClick={() => {
+          navigate("/user-guide-to-add/remove-app-from-zoom-account")
+        }} className='underline text-gray-300 text-2xl hover:text-gray-300/50'> Read more</button>
       </span>
-     
+
 
 
       {
@@ -522,6 +547,10 @@ const VirtualTranscript = () => {
 
 
                   </div>
+
+                  {
+                    transcriptType === "final-transcript" && <Button className="w-52" onClick={downloadVirtualTranscript} variant={"customPurple"}>Download Transcript</Button>
+                  }
 
                 </div>
 

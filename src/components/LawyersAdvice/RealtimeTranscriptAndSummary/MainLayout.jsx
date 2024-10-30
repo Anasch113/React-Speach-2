@@ -32,6 +32,18 @@ import VirtualStreamControl from '../Enhance Usability/VirtualStreamControl'
 import { setIsVtRecording, setIsProcessing } from "../../../GlobalState/features/liveTranscriptUISlice"
 import DownloadCaseNote from '../Enhance Usability/DownloadCaseNote'
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 
 const MainLayout = () => {
 
@@ -708,6 +720,12 @@ const MainLayout = () => {
 
     console.log("selected language of case note:", language)
 
+
+    const exitCaseNote = () => {
+
+        window.location.reload()
+    }
+
     return (
         <div className='min-h-screen w-full flex  '>
 
@@ -732,8 +750,8 @@ const MainLayout = () => {
                                         generateTranscript={generateTranscript}
                                         initialMinutes={minutes}
                                         setInitialMinutes={setMinutes}
-                                        setLanguage = {setLanguage}
-                                        language = {language}
+                                        setLanguage={setLanguage}
+                                        language={language}
                                     />
 
 
@@ -854,8 +872,29 @@ const MainLayout = () => {
                     <div className='md:w-2/4 w-full h-full  flex flex-col items-center p-5 gap-5 '>
 
                         <span className='flex-row flex my-5 md:my-0'>
-                            <Button className="mx-2" variant={"customPurple"}>Copy All Text</Button>
-                            <Button className="mx-2" variant={"customPurple"}>New Client</Button>
+                            {/* <Button className="mx-2" variant={"customPurple"}>Copy All Text</Button>
+                            <Button className="mx-2" variant={"customPurple"}>New Client</Button> */}
+
+                            {
+                                isRecording && <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button variant="destructive">Exit Case Note</Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Your meeting and Case Note further processing will be stopped after exit!
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction onClick={exitCaseNote}>Continue</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            }
+
                         </span>
 
 

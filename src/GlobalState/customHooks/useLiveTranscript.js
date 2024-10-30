@@ -19,10 +19,14 @@ import {
   setIsVtRecording,
   setVtRemainingTime,
   setBotId,
-  setIsProcessing
+  setIsProcessing,
+  setInPersonMeetingTranscript,
+  setIsMeetingEnd
+
 } from "../features/liveTranscriptUISlice";
 import axios from "axios";
 import toast from "react-hot-toast";
+
 
 
 export const useLiveTranscript = () => {
@@ -31,7 +35,10 @@ export const useLiveTranscript = () => {
   //  Access the relevant parts of the Redux state
   const smallFontSettings = useSelector((state) => state.liveTranscript.smallWindow);
   const largeFontSettings = useSelector((state) => state.liveTranscript.largeWindow);
+
   const { botId } = useSelector((state) => state.liveTranscript.virtualTranscript)
+ 
+
 
 
   // Small window settings
@@ -90,12 +97,12 @@ export const useLiveTranscript = () => {
 
   const updateLiveTranscript = (newWords, isFinal) => (dispatch, getState) => {
     const liveTranscriptState = getState().liveTranscript?.virtualTranscript?.liveTranscript || { words: [], fullTranscript: [] };
-  
+
     const currentTranscript = {
       words: liveTranscriptState.words || [],
       fullTranscript: liveTranscriptState.fullTranscript || [],  // Ensure fullTranscript is initialized
     };
-  
+
     if (!isFinal) {
       // Real-time updates; just append words to display on the UI
       const updatedTranscript = {
@@ -105,22 +112,22 @@ export const useLiveTranscript = () => {
       dispatch(setLiveTranscript(updatedTranscript));
     } else {
       // When is_final becomes true, save the current words to fullTranscript
-     
-  
+
+
       const updatedTranscript = {
         ...currentTranscript,
         fullTranscript: [...currentTranscript.fullTranscript, ...currentTranscript.words],  // Save finalized sentence
         words: [], // Clear words for the next sentence
       };
-  
+
       // Log to check if fullTranscript is updated properly
       console.log('Updated fullTranscript:', updatedTranscript.fullTranscript);
-  
+
       // Dispatch the update
       dispatch(setLiveTranscript(updatedTranscript));
     }
   };
-  
+
 
 
 
@@ -143,7 +150,7 @@ export const useLiveTranscript = () => {
       }
       if (meetingData.type === "meeting-start") {
         dispatch(setBotId(meetingData.botId))
-        
+
         dispatch(setIsVtRecording(true))
       }
 
@@ -232,6 +239,15 @@ export const useLiveTranscript = () => {
 
 
 
+  const handlePersonMeetingSetup = (transcript, state) => {
+
+    // console.log("transcript, state", transcript, state)
+    // toast.success("hit")
+
+    // dispatch(setInPersonMeetingTranscript(transcript))
+    // dispatch(setIsMeetingEnd(state))
+
+  }
 
 
   return {
@@ -250,6 +266,9 @@ export const useLiveTranscript = () => {
     handleLargeBgColorChange,
     pauseVirtualTranscriptions,
     resumeVirtualTranscriptions,
-    stopVirtualTranscriptions
+    stopVirtualTranscriptions,
+
+    
+    handlePersonMeetingSetup
   };
 };

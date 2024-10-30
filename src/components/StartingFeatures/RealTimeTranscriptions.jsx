@@ -17,8 +17,13 @@ import { GrClearOption } from "react-icons/gr";
 import { MdOutlineRestartAlt } from "react-icons/md";
 
 
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import EditControlsModal from '../RealTimeTranscript/EditControlsModal';
+import {
+  setInPersonMeetingTranscript,
+  setIsMeetingEnd
+} from "../../GlobalState/features/liveTranscriptUISlice"
+import { useLiveTranscript } from '@/GlobalState/customHooks/useLiveTranscript';
 
 function RealTimeTranscriptions() {
   const socket = useRef(null)
@@ -55,8 +60,10 @@ function RealTimeTranscriptions() {
   const [isPasue, setIsPause] = useState(false)
   const [isPaused, setIsPaused] = useState(false);
 
+  const dispatch = useDispatch()
 
   const recordingStatus = useSelector((state) => state.audio.isRecording);
+
   console.log("recording status in RTT", recordingStatus)
 
   const handleSettingsClick = () => {
@@ -64,9 +71,11 @@ function RealTimeTranscriptions() {
   };
 
 
+  const { handlePersonMeetingSetup } = useLiveTranscript();
 
+  const { inPersonTranscript, isMeetingEnd } = useSelector((state) => state.liveTranscript.inPersonMeeting)
 
-
+  console.log("meeting end , inpersontranscript", isMeetingEnd, inPersonTranscript)
 
 
 
@@ -235,6 +244,7 @@ function RealTimeTranscriptions() {
       }
 
       setTranscript(msg)
+     
     };
 
     socket.current.onerror = (event) => {
@@ -290,6 +300,10 @@ function RealTimeTranscriptions() {
 
     recorder.current.pauseRecording();
     recorder.current = null;
+    handlePersonMeetingSetup(transcript)
+
+
+
   }
 
 
@@ -389,8 +403,10 @@ function RealTimeTranscriptions() {
             }
 
 
-            <button className='cursor-pointer hover:text-white' title='stop' onClick={() => window.opener.postMessage({ type: 'STOP' }, '*')} ><FaStop size={20} /></button>
+            <button className='cursor-pointer hover:text-white' title='stop' onClick={() => window.opener.postMessage({ type: 'STOP', transcript: transcript }, '*')} ><FaStop size={20} /></button>
+
             <button className='cursor-pointer hover:text-white' title='restart' onClick={() => window.opener.postMessage({ type: 'RESTART' }, '*')} ><MdOutlineRestartAlt /></button>
+
             <button onClick={clearText} className='cursor-pointer hover:text-white' title='clear text' ><GrClearOption size={22} /></button>
 
             <button className='cursor-pointer hover:text-white' title='settings' onClick={handleSettingsClick}><IoIosSettings /></button>
@@ -434,7 +450,7 @@ function RealTimeTranscriptions() {
 
             fontFamilies={fontFamilies}
             fontSizes={fontSizes}
-            
+
             fontFamily2={fontFamily2}
             fontSize2={fontSize2}
             textColor2={textColor2}

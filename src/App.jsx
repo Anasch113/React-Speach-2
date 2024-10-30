@@ -92,6 +92,7 @@ import CorporateAudioTranscription from "./pages/corporate-audio-transcription";
 import ResyncAI from "./pages/resync-ai";
 import MeetingNote from "./pages/meeting-note";
 import CorporateTranscriptSummarization from "./pages/corporate-transcript-summarization";
+import Documentation from "./pages/documentation/Documentation";
 
 
 function App() {
@@ -429,6 +430,7 @@ function App() {
             <Route exact path="/live-transcript-payment-success-casenote" element={<CaseNoteSuccess />} />
             <Route exact path="/cancel" element={<Cancel />} />
             <Route exact path="/user-guide-to-add/remove-app-from-zoom-account" element={<ZoomDocumentation />} />
+            <Route exact path="/docs" element={<Documentation />} />
 
 
           </Routes>
