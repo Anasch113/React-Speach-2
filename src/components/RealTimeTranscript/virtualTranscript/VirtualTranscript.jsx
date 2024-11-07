@@ -29,7 +29,9 @@ import { useLiveTranscript } from "../../../GlobalState/customHooks/useLiveTrans
 import {
 
 
+  setIsToken,
   setTranscriptType,
+  setZoomAccessToken,
 
 } from "../../../GlobalState/features/liveTranscriptUISlice";
 import ZoomAuthorization from './ZoomAuthorization';
@@ -169,14 +171,17 @@ const VirtualTranscript = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const token = searchParams.get('token');
+    const status = searchParams.get('status');
 
-    if (token) {
+    if (status === "zoom-connected") {
+      dispatch(setZoomAccessToken(status))
+      dispatch(setIsToken(true))
       localStorage.removeItem('navigateUrl');
+      
     }
 
 
-    console.log("token", token)
+    console.log("status", status)
 
 
   }, [location, navigate]);

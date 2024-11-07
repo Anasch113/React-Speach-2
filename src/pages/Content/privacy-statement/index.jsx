@@ -1,4 +1,4 @@
-import Footer from "../../components/layout/footer/Footer";
+import Footer from "../../../components/layout/footer/Footer";
 
 
 const PrivacyStatement = () => {

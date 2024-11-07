@@ -74,15 +74,14 @@ const ZoomAuthorization = ({
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
-        const token = searchParams.get('token');
+        const status = searchParams.get('status');
 
-        console.log("token", token)
+        console.log("status", status)
 
-        if (token) {
+        if (status === "zoom-connected") {
             // Store the token in localStorage or any state management system
-            localStorage.setItem('zoomAccessToken', token);
-            dispatch(setZoomAccessToken(token))
-            dispatch(setIsToken(true))
+
+
             // Redirect to the actual dashboard after storing the token
             toast.success("Zoom Connected")
             const storedUrl = localStorage.getItem('navigateUrl');
@@ -91,16 +90,16 @@ const ZoomAuthorization = ({
             const userRef = ref(database, `users/${user.uid}/zoom-oAuth`);
             update(userRef, {
                 feature: storedUrl,
-                token: token
+                zoomStatus: status
 
 
             });
 
             if (storedUrl === "virtual-transcript") {
-                navigate(`/virtual-transcript?token=${token}`)
+                navigate(`/virtual-transcript?status=${status}`)
             }
             if (storedUrl === "case-note") {
-                navigate(`/note-case?token=${token}`)
+                navigate(`/note-case?status=${status}`)
             }
         }
 
@@ -142,7 +141,7 @@ const ZoomAuthorization = ({
                                     {zoomAccessToken === "" ? "Connect Zoom" : "Zoom Connected"}
                                 </button>
 
-                                
+
 
                                 <button onClick={() => {
                                     navigate("/user-guide-to-add/remove-app-from-zoom-account")

@@ -1,5 +1,5 @@
-import Wrapper from '../../components/layout/wrapper/Wrapper'
-import Footer from '../../components/layout/footer/Footer'
+import Wrapper from '../../../components/layout/wrapper/Wrapper'
+import Footer from '../../../components/layout/footer/Footer'
 
 const Aboutus = () => {
     return (

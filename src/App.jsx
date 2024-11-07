@@ -39,33 +39,33 @@ import CaseNoteSuccess from "./SmallComponents/PaymentSuccess//CaseNoteSuccess"
 import Main from './pages/main/Main'
 import Think from './pages/what-we-think'
 import TranscriptSummarization from './pages/transcript-summarisation-analysis'
-import RealTranscript from './pages/real-time-transcript'
-import TranscriptSyncVideo from './pages/transcript-sync-video'
-import PredictiveCase from './pages/predictive-case-analytics'
-import AutomatedLegalResearch from './pages/automated-legal-reasearch'
-import DocumentReviewPage from './pages/document-review-analysis'
-import EDiscoveryPage from './pages/e-discovery-solutions'
-import LegalRiskAssessmentPage from './pages/legal-risk-assesment'
-import VirtualLegalAssistancePage from './pages/virtual-legal-assesment'
-import JurySelectionSentimentAnalysisPage from './pages/sentiment-analysis-for-jury-selection'
-import FraudDetectionPage from './pages/fraud-detection-prevention'
-import IntellectualPropertyMonitoringPage from './pages/intellectual-property-monitoring'
-import ComplianceAutomationPage from './pages/compliance-automation'
-import LegalProcessAutomationPage from './pages/legal-process-automation'
-import LitigationStrategyOptimizationPage from './pages/litigation-strategy-optimization'
-import DataDrivenLegalInsightsPage from './pages/data-driven-legal-insights'
-import ExpertWitnessMatchingPage from './pages/expert-witness-matching'
-import PredictiveModelingPage from './pages/predictive-modeling-for-case-outcomes'
-import AIPoweredWritingPage from './pages/ai-powered-brief-memo-writing'
-import ClientCommunicationAutomationPage from './pages/client-communication-automation'
-import LitigationCostManagementPage from './pages/litigation-cost-management'
-import AiBasedSettlementAnalysisPage from './pages/ai-based-settlement-analysis'
-import ContractAnalysisManagementPage from './pages/contract-analysis-management'
-import Aboutus from './pages/about-us'
-import ContactForm from './pages/contact-us'
-import PreferenceCenter from './pages/prefrence/Preference'
-import PrivacyStatement from './pages/privacy-statement'
-import TermsAndConditions from './pages/terms-condition'
+// import RealTranscript from './pages/real-time-transcript'
+// import TranscriptSyncVideo from './pages/transcript-sync-video'
+// import PredictiveCase from './pages/predictive-case-analytics'
+// import AutomatedLegalResearch from './pages/automated-legal-reasearch'
+// import DocumentReviewPage from './pages/document-review-analysis'
+// import EDiscoveryPage from './pages/e-discovery-solutions'
+// import LegalRiskAssessmentPage from './pages/legal-risk-assesment'
+// import VirtualLegalAssistancePage from './pages/virtual-legal-assesment'
+// import JurySelectionSentimentAnalysisPage from './pages/sentiment-analysis-for-jury-selection'
+// import FraudDetectionPage from './pages/fraud-detection-prevention'
+// import IntellectualPropertyMonitoringPage from './pages/intellectual-property-monitoring'
+// import ComplianceAutomationPage from './pages/compliance-automation'
+// import LegalProcessAutomationPage from './pages/legal-process-automation'
+// import LitigationStrategyOptimizationPage from './pages/litigation-strategy-optimization'
+// import DataDrivenLegalInsightsPage from './pages/data-driven-legal-insights'
+// import ExpertWitnessMatchingPage from './pages/expert-witness-matching'
+// import PredictiveModelingPage from './pages/predictive-modeling-for-case-outcomes'
+// import AIPoweredWritingPage from './pages/ai-powered-brief-memo-writing'
+// import ClientCommunicationAutomationPage from './pages/client-communication-automation'
+// import LitigationCostManagementPage from './pages/litigation-cost-management'
+// import AiBasedSettlementAnalysisPage from './pages/ai-based-settlement-analysis'
+// import ContractAnalysisManagementPage from './pages/contract-analysis-management'
+import Aboutus from './pages/Content/about-us'
+import ContactForm from './pages/Content/contact-us'
+import PreferenceCenter from './pages/Content/prefrence/Preference'
+import PrivacyStatement from './pages/Content/privacy-statement/index'
+import TermsAndConditions from './pages/Content/terms-condition/index'
 import Header from './components/layout/header/Header'
 
 import Notecase from "./pages/lawyers-advice/CaseNote";
@@ -73,7 +73,7 @@ import PreAudioSuccess from "./SmallComponents/PaymentSuccess/PreAudioSuccess";
 import SummriazationDeposition from "./pages/SummriazationDeposition/SummriazationDeposition";
 import ViewSummaryDeposition from "./components/SummriazationDepostion/ViewSummaryDeposition";
 import VirtualTranscript from "./components/RealTimeTranscript/virtualTranscript/VirtualTranscript";
-import ZoomDocumentation from "./pages/documentation/ZoomDocumentation";
+import ZoomDocumentation from "./pages/Content/documentation/ZoomDocumentation";
 import ZoomAuthorization from "./components/RealTimeTranscript/virtualTranscript/ZoomAuthorization";
 import MainLayout from "./components/LawyersAdvice/RealtimeTranscriptAndSummary/MainLayout";
 
@@ -92,7 +92,7 @@ import CorporateAudioTranscription from "./pages/corporate-audio-transcription";
 import ResyncAI from "./pages/resync-ai";
 import MeetingNote from "./pages/meeting-note";
 import CorporateTranscriptSummarization from "./pages/corporate-transcript-summarization";
-import Documentation from "./pages/documentation/Documentation";
+import Documentation from "./pages/Content/documentation/Documentation";
 
 
 function App() {

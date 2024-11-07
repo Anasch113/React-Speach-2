@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Footer from "../../components/layout/footer/Footer";
+import Footer from "../../../components/layout/footer/Footer";
 import emailjs from "@emailjs/browser";
 import toast from "react-hot-toast";
 const ContactForm = () => {
