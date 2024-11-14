@@ -219,13 +219,13 @@ const VirtualTranscript = () => {
 
   return (
     <div className="w-full flex flex-col items-center gap-3 justify-center  min-h-screen ">
-      <span className='flex items-center my-10 gap-1'>
+      {/* <span className='flex items-center my-10 gap-1'>
 
         <p className='text-2xl'>Disclaimer: This feature is not currently available publicly. </p>
         <button onClick={() => {
           navigate("/user-guide-to-add/remove-app-from-zoom-account")
         }} className='underline text-gray-300 text-2xl hover:text-gray-300/50'> Read more</button>
-      </span>
+      </span> */}
 
 
 

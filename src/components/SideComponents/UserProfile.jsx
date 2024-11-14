@@ -18,6 +18,7 @@ const UserProfile = () => {
       [key]: e.target.value
     })
   }
+
   const hanldeUpdate = async () => {
 
     try {
