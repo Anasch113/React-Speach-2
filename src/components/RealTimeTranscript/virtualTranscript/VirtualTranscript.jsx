@@ -35,6 +35,7 @@ import {
 
 } from "../../../GlobalState/features/liveTranscriptUISlice";
 import ZoomAuthorization from './ZoomAuthorization';
+import { Button } from '@/components/ui/button';
 const VirtualTranscript = () => {
 
   const [headerVanish, setHeaderVanish] = useState(false);

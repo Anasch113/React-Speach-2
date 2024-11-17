@@ -93,6 +93,8 @@ import ResyncAI from "./pages/resync-ai";
 import MeetingNote from "./pages/meeting-note";
 import CorporateTranscriptSummarization from "./pages/corporate-transcript-summarization";
 import Documentation from "./pages/Content/documentation/Documentation";
+import Blog from "./pages/Content/Blog/Blog";
+import Singleblog from "./pages/Content/Blog/Singleblog";
 
 
 function App() {
@@ -107,58 +109,58 @@ function App() {
           <Routes>
             {/* New Frontend pages >>>>>>>>>>>>>>>>>>>>>>>>>> */}
             <Route path="/" element={<Main />} />
-             <Route
+            <Route
               path="/what-we-think"
               element={<Think />}
             />
             <Route path='/legal-videography' element={<LegalVideography />} />
 
-          <Route
+            <Route
               path="/transcript-summarisation-analysis"
               element={<TranscriptSummarization />}
             />
 
-          <Route
+            <Route
               path="/court-reporting"
               element={<StenographicCourtReporting />}
             />
-          <Route
+            <Route
               path="/transcript-summarization"
               element={<NewTranscriptSummarization />}
             />
-          <Route
+            <Route
               path="/file-note"
-              element={<FileNote/>}
+              element={<FileNote />}
             />
-          <Route
+            <Route
               path="/audio-transcription"
-              element={<AudioTranscription/>}
+              element={<AudioTranscription />}
             />
-          <Route
+            <Route
               path="/human-live-stenocaptioning"
-              element={<CARTPage/>}
+              element={<CARTPage />}
             />
-          <Route
+            <Route
               path="/ai-live-captioning"
-              element={<AILiveCaptioning/>}
+              element={<AILiveCaptioning />}
             />
-          <Route
+            <Route
               path="/corporate-audio-transcription"
-              element={< CorporateAudioTranscription/>}
+              element={< CorporateAudioTranscription />}
             />
-          <Route 
+            <Route
               path="/resync-ai"
-              element={< ResyncAI/>}
+              element={< ResyncAI />}
             />
-          <Route
+            <Route
               path="/meeting-note"
-              element={< MeetingNote/>}
+              element={< MeetingNote />}
             />
-          <Route
+            <Route
               path="/corporate-transcript-summarization"
-              element={<CorporateTranscriptSummarization/>}
+              element={<CorporateTranscriptSummarization />}
             />
-             {/* <Route
+            {/* <Route
               path="/real-time-transcript"
               element={<RealTranscript />}
             />
@@ -431,7 +433,13 @@ function App() {
             <Route exact path="/cancel" element={<Cancel />} />
             <Route exact path="/user-guide-to-add/remove-app-from-zoom-account" element={<ZoomDocumentation />} />
             <Route exact path="/docs" element={<Documentation />} />
+            <Route exact path="/blogs" element={<Blog />} />
+            <Route exact path="/blog/:id" element={
+                <Singleblog />
+             
+              }
 
+            />
 
           </Routes>
         </BrowserRouter>
