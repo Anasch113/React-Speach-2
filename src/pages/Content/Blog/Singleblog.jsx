@@ -41,15 +41,25 @@ const Singleblog = () => {
 
     return (
         <div className='min-h-screen w-full p-5 flex flex-col gap-5 items-center'>
-            <h1 className='large-title' >
-                {data.title}
 
-            </h1>
-            <p className='small-title'>By: {data.author}</p>
+            <span className='bg-bg-navy-blue rounded-xl w-full flex md:flex-row flex-col justify-between p-4 items-center'>
+                <span className='flex flex-col gap-4 items-center'>
+                <h1 className='md:text-4xl text-2xl font-poppins font-bold' >
+                    {data.title}
+
+                </h1>
+              
+                </span>
+                
+                <span className='rounded-md my-4 '>
+                    <img className=' w-full md:h-60 h-40' src={data.titleImageUrl} alt="titleImage" />
+                </span>
+            </span>
+
 
             <div
                 dangerouslySetInnerHTML={{ __html: data.content }}
-                className="p-5 bg-bg-navy-blue min-h-[500px] w-full rounded-xl flex flex-col "
+                className="p-5  border-b min-h-[500px] w-full rounded-xl flex flex-col "
             />
             <BlogComments
                 blogId={id}

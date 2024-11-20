@@ -29,7 +29,9 @@ import { IoCheckmarkDone } from "react-icons/io5";
 import NotificationPage from './HumanTranscription/NotificationPage';
 import { ref, onValue, update } from "firebase/database"
 import { database } from '../../firebase'
-
+import jsPDF from 'jspdf';
+import { Document, Packer, Paragraph, TextRun } from "docx";
+import { saveAs } from "file-saver";
 const ViewTranscriptions = ({ filename }) => {
   // const location = useLocation();
   // const transcriptionsState = location.state?.transcriptions;
@@ -106,23 +108,50 @@ const ViewTranscriptions = ({ filename }) => {
 
 
   const downloadPdf = async () => {
-    setShowSRT(false)
-
-
-    const pdfOptions = {
-      margin: 5,
-
-      filename: `${transcriptions.filename}.pdf`,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-
-    };
-    try {
-      await html2pdf(contentRef.current, pdfOptions);
-    } catch (error) {
-      console.log(error)
+    if (!transcriptions || !transcriptions.sentimentAnalysisResults) {
+      alert("No data available to download!");
+      return;
     }
+
+    const doc = new jsPDF();
+    const fontSize = 12;
+    doc.setFontSize(fontSize);
+
+    // Add a title
+    doc.text("Transcription Sentiment Analysis", 10, 10);
+    doc.setFont("Helvetica", "normal");
+    doc.setFontSize(10);
+
+    let y = 20; // Vertical position for text
+    const pageHeight = doc.internal.pageSize.height - 10; // Leave some margin
+
+    transcriptions.sentimentAnalysisResults.forEach((sentiment, i) => {
+   
+      const sentimentText = sentiment.text;
+
+      // Add speaker text
+      doc.setFont("Helvetica", "bold");
+     
+
+      y += 4; // Increment vertical position
+
+      // Add sentiment text
+      doc.setFont("Helvetica", "normal");
+      const textLines = doc.splitTextToSize(sentimentText, 180); // Wrap text to fit the page width
+      textLines.forEach((line) => {
+        if (y > pageHeight) {
+          doc.addPage();
+          y = 10; // Reset vertical position for new page
+        }
+        doc.text(line, 10, y);
+        y += 7;
+      });
+
+      y += 2; // Add extra spacing between entries
+    });
+
+    // Save the PDF with a dynamic filename
+    doc.save(`${transcriptions.filename || "transcriptions"}_sentiment_analysis.pdf`);
 
 
 
@@ -204,6 +233,76 @@ const ViewTranscriptions = ({ filename }) => {
 
   }
 
+  const downloadTranscriptionsDOCX = () => {
+    if (!transcriptions || !transcriptions.sentimentAnalysisResults) {
+      alert("No data available to download!");
+      return;
+    }
+  
+    // Create a title paragraph
+    const title = new Paragraph({
+      children: [
+        new TextRun({
+          text: "Transcription Sentiment Analysis",
+          bold: true,
+          size: 28, // Font size (14pt)
+        }),
+      ],
+      spacing: { after: 300 }, // Space after the title
+    });
+  
+    // Map transcription results into paragraphs
+    const content = transcriptions.sentimentAnalysisResults.map((sentiment, i) => {
+      // Speaker label
+      // const speaker = new Paragraph({
+      //   children: [
+      //     new TextRun({
+      //       text: `Speaker ${i + 1}:`,
+      //       bold: true,
+      //       size: 24,
+      //     }),
+      //   ],
+      //   spacing: { after: 200 }, // Space after the speaker
+      // });
+  
+      // Sentiment text
+      const text = new Paragraph({
+        children: [
+          new TextRun({
+            text: sentiment.text,
+            size: 22,
+          }),
+        ],
+        spacing: { after: 300 }, // Space after the sentiment
+      });
+  
+      return [ text];
+    });
+  
+    // Flatten the array of paragraphs
+    const paragraphs = [title, ...content.flat()];
+  
+    // Create a document with the correctly structured sections
+    const doc = new Document({
+      creator: "YourAppName", // Optional metadata
+      title: "Transcription Sentiment Analysis",
+      description: "Generated transcription with sentiment analysis results",
+      sections: [
+        {
+          properties: {}, // Section properties (e.g., margins) can be defined here
+          children: paragraphs, // Add paragraphs to this section
+        },
+      ],
+    });
+  
+    // Generate the DOCX file and trigger the download
+    Packer.toBlob(doc).then((blob) => {
+      saveAs(
+        blob,
+        `${transcriptions.filename || "transcriptions"}_sentiment_analysis.docx`
+      );
+    });
+  };
 
   const calculateHighlightedIndex = (currentTime) => {
     currentTime *= 1000;
@@ -507,10 +606,7 @@ const ViewTranscriptions = ({ filename }) => {
 
                       {
                         transcriptions && transcriptions.sentimentAnalysisResults.map((sentiment, i) => {
-                          // Find the utterance that corresponds to the current sentiment
-                          const utterance = transcriptions.utterances.find(u =>
-                            u.start <= sentiment.start && u.end >= sentiment.end
-                          );
+
 
                           // Render the sentiment along with the speaker label if found
                           return (
@@ -576,7 +672,7 @@ const ViewTranscriptions = ({ filename }) => {
                       </span>
 
                     </button>
-                    <button className=' hover:bg-bg-hover-color hover:text-black rounded-md p-4'>
+                    <button onClick={downloadTranscriptionsDOCX} className=' hover:bg-bg-hover-color hover:text-black rounded-md p-4'>
                       <span className='flex items-center   gap-2 '>
                         <BsFiletypeDocx size={25} />
                         Download DOCX

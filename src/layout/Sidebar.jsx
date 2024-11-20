@@ -33,6 +33,7 @@ import { MdClose } from "react-icons/md";
 import { MdOutlineCases } from "react-icons/md";
 import { MdOutlineSummarize } from "react-icons/md";
 import { AiOutlineDown, AiOutlineUp } from 'react-icons/ai';
+import Blog from "@/pages/Content/Blog/Blog";
 function Sidebar({ isPurchase, minutes }) {
   const [openLegal, setOpenLegal] = useState(true);
   const [openCorporate, setOpenCorporate] = useState(true);
@@ -227,7 +228,7 @@ function Sidebar({ isPurchase, minutes }) {
       } else if (result.isDenied) {
 
         setShowPaymentModal(true)
-        
+
 
       }
     });
@@ -413,7 +414,7 @@ function Sidebar({ isPurchase, minutes }) {
                 </div>
               </Link>
 
-              
+
               <Link to={"/resyncingAi"}>
                 <div className={`p-2 flex rounded-md ${isActive("/resyncingAi") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
                   <span>Resync AI</span>
@@ -506,11 +507,17 @@ function Sidebar({ isPurchase, minutes }) {
 
                   </div>
                 )}
+
               </div>
+
             </div>
           )}
 
-
+          <Link to={"/blogs"}>
+            <div className={`ml-5 p-2 flex rounded-md ${isActive("/corporate-transcript-summarization") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
+              <span>Blogs</span>
+            </div>
+          </Link>
 
 
           {/* Logout Button */}

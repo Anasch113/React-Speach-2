@@ -80,3 +80,10 @@
     @apply font-poppins text-xl 
   }
 }
+
+.blog-bg {
+
+background: rgb(10,13,29);
+background: linear-gradient(0deg, rgba(10,13,29,1) 0%, rgba(17,24,39,1) 80%);
+
+}

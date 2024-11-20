@@ -45,21 +45,21 @@ const BlogComments = ({ blogId }) => {
     };
 
     return (
-        <div className="comments-section">
-            <h3 className="text-xl font-bold">Comments</h3>
+        <div className="flex flex-col gap-4 p-4">
+            <h3 className="text-xl font-bold font-poppins">Comments</h3>
 
             {/* Show input box if user is logged in */}
             {user ? (
                 <div className="add-comment">
                     <textarea
-                        className="w-full p-2 border rounded text-gray-950"
+                        className="w-full p-2 bg-bg-navy-blue rounded-xl min-h-[150px] outline-none"
                         rows="3"
                         placeholder="Write a comment..."
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
                     ></textarea>
                     <button
-                        className="mt-2 p-2 bg-bg-navy-blue text-white rounded"
+                        className="mt-2 p-2 bg-bg-purple-2 text-white rounded-lg"
                         onClick={handleAddComment}
                     >
                         Add Comment
