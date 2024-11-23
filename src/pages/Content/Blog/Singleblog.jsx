@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from "axios"
 import BlogComments from '@/components/content/BlogComments'
+import BlogShare from '@/components/content/BlogShare'
 
 const Singleblog = () => {
 
@@ -43,14 +44,14 @@ const Singleblog = () => {
         <div className='min-h-screen w-full p-5 flex flex-col gap-5 items-center'>
 
             <span className='bg-bg-navy-blue rounded-xl w-full flex md:flex-row flex-col justify-between p-4 items-center'>
-                <span className='flex flex-col gap-4 items-center'>
-                <h1 className='md:text-4xl text-2xl font-poppins font-bold' >
-                    {data.title}
+                <span className='flex flex-col gap-4'>
+                    <h1 className='md:text-4xl text-2xl font-poppins font-bold text-center' >
+                        {data.title}
 
-                </h1>
-              
+                    </h1>
+
                 </span>
-                
+
                 <span className='rounded-md my-4 '>
                     <img className=' w-full md:h-60 h-40' src={data.titleImageUrl} alt="titleImage" />
                 </span>
@@ -61,9 +62,18 @@ const Singleblog = () => {
                 dangerouslySetInnerHTML={{ __html: data.content }}
                 className="p-5  border-b min-h-[500px] w-full rounded-xl flex flex-col "
             />
-            <BlogComments
-                blogId={id}
-            />
+            <div className=' w-full flex md:flex-row flex-col justify-around'>
+
+                <BlogShare
+                    id={id}
+                />
+                <BlogComments
+                    blogId={id}
+                />
+
+
+            </div>
+
 
 
         </div>
