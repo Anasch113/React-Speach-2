@@ -19,55 +19,53 @@ const Login = () => {
 
 
 
-
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
+      const loginResult = await logIn(email, password);
 
-      await logIn(email, password);
+      if (!loginResult) return; // Stop if email is not verified
 
-
-
-      navigate("/home")
-
-
-
-
-    } catch (err) {
-
-      console.log("Error in signUp", err)
-
-      if (err.code === "auth/invalid-credential") {
-        toast.error("Invalid Crdentials, Please Try Again");
-      } else {
-        toast.error("Login falied, Please try later",);
+      if (loginResult.requiresMfa) {
+        navigate(`/mfa?method=${loginResult.method}`);
+        return;
       }
 
+      navigate("/home");
+      setEmail("");
+      setPassword("");
+    } catch (err) {
+      console.error("Error in handleLogin:", err);
+
+      if (err.code === "auth/invalid-credential") {
+        toast.error("Invalid Credentials, Please Try Again");
+      } else {
+        toast.error("Login failed, Please try later");
+      }
     }
+  };
 
-    setEmail("");
-    setPassword("")
-
-
-
-  }
 
 
   const handleSignInWithGoogle = async () => {
-
     try {
-      await signUpWithGoogle()
-      toast.success("Login Successfully")
+      const loginResult = await signUpWithGoogle();
+
+      if (loginResult.requiresMfa) {
+        // Redirect to MFA verification page
+        navigate(`/mfa?method=${loginResult.method}`);
+        return;
+      }
+
+      // If MFA is not required, proceed to home
+      toast.success("Login Successfully");
       navigate("/home");
-
     } catch (error) {
-      console.log("Error while google signUp", error)
-      toast.error("")
+      console.error("Error during Google Sign-In:", error.message);
+      toast.error("Failed to sign in with Google, please try again.");
     }
-
-  }
-
+  };
 
   const handleSignInWithFaceBook = async () => {
 

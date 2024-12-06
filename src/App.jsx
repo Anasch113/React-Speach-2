@@ -95,6 +95,7 @@ import CorporateTranscriptSummarization from "./pages/corporate-transcript-summa
 import Documentation from "./pages/Content/documentation/Documentation";
 import Blog from "./pages/Content/Blog/Blog";
 import Singleblog from "./pages/Content/Blog/Singleblog";
+import MFA from "./pages/login/MFA";
 
 
 function App() {
@@ -414,6 +415,14 @@ function App() {
 
             />
 
+            <Route exact path="/mfa" element={
+
+
+              <MFA />
+            }
+
+            />
+
 
 
 
@@ -435,9 +444,9 @@ function App() {
             <Route exact path="/docs" element={<Documentation />} />
             <Route exact path="/blogs" element={<Blog />} />
             <Route exact path="/blog/:id" element={
-                <Singleblog />
-             
-              }
+              <Singleblog />
+
+            }
 
             />
 

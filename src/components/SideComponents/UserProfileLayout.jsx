@@ -1,13 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { NavLink, useLocation } from "react-router-dom";
 import Headers from '../DesignLayouts/Headers';
-
+import { useAuthHook } from '@/GlobalState/customHooks/useAuthHook';
+import { useUserAuth } from '@/context/UserAuthContext';
 const UserProfileLayout = ({ children }) => {
 
   const location = useLocation();
   const isAccountActive = location.pathname === "/user-profile"
   const isSecurity = location.pathname === "/user-security-setting"
   const isPayment = location.pathname === "/user-payment-info"
+
+  const { user } = useUserAuth()
+
+  const { checkMfaActive } = useAuthHook()
+
+  useEffect(() => {
+    checkMfaActive()
+  }, [user])
+
   return (
 
     <>

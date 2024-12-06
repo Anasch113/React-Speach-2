@@ -15,12 +15,12 @@ import {
 
 } from "firebase/auth";
 import { auth } from "../firebase";
-import { getDatabase, ref, get, set, onValue } from "firebase/database";
+import { getDatabase, ref, get, set, onValue, update } from "firebase/database";
 import { database } from "../firebase";
 import axios from "axios"
 import toast from "react-hot-toast";
 import { uploadingFunctions } from "./contextFiles/uploadingFunctions";
-
+import { useAuthHook } from "../GlobalState/customHooks/useAuthHook"
 
 const userAuthContext = createContext();
 
@@ -30,7 +30,8 @@ export function UserAuthContextProvider({ children }) {
   const [paymentInfo, setPaymentInfo] = useState([]);
   const [message, setMessage] = useState("");
 
-  const { file, setFile, filename, setFileName, cloudUrl, setCloudUrl, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, fileDurations, setFileDurations, cost, setCost, showFormModal, setShowFormModal, showPaymentModal, setShowPaymentModal, uploadingfileNames, setUploadingFileNames, fileNames, setFileNames, chunksLoading, setChunksLOading, handleFileChange, fileDuration, isPaymentInProgress, setIsPaymentInProgress , handleTextFileChange, fileContent, setFileContent} = uploadingFunctions()
+  const { file, setFile, filename, setFileName, cloudUrl, setCloudUrl, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, fileDurations, setFileDurations, cost, setCost, showFormModal, setShowFormModal, showPaymentModal, setShowPaymentModal, uploadingfileNames, setUploadingFileNames, fileNames, setFileNames, chunksLoading, setChunksLOading, handleFileChange, fileDuration, isPaymentInProgress, setIsPaymentInProgress, handleTextFileChange, fileContent, setFileContent } = uploadingFunctions()
+
 
 
   async function logIn(email, password) {
@@ -46,18 +47,29 @@ export function UserAuthContextProvider({ children }) {
     }
 
     else if (response.data.message === "Email verified") {
+
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user
+
+      const dataBaseRef = ref(database, `users/${user.uid}/mfa`);
+      const snapshot = await get(dataBaseRef);
+      const mfaData = snapshot.val();
+
+      if (mfaData?.isMfaActive) {
+
+        return { user, requiresMfa: true, method: mfaData.method };
+      }
+
+
       toast.success("Login successfully")
       setMessage("Verified Email")
       console.log("userCredentials in context", userCredential)
 
-      return userCredential;
+
+      return { userCredential, requiresMfa: false };
+
+
     }
-
-
-
-
-
 
   }
 
@@ -89,43 +101,45 @@ export function UserAuthContextProvider({ children }) {
   // SignUp with google
 
   const signUpWithGoogle = async () => {
-    const provider = new GoogleAuthProvider()
+    const provider = new GoogleAuthProvider();
 
     try {
-
       const userCredentials = await signInWithPopup(auth, provider);
-
-
       const userData = userCredentials.user;
 
-      const userRef = ref(database, `users/${userData.uid}`)
+      const userRef = ref(database, `users/${userData.uid}`);
+      const snapshot = await get(userRef); // Use `get` instead of `onValue` for one-time retrieval
+      const userDetails = snapshot.val();
 
-      onValue(userRef, (snapshot) => {
-        const userDetails = snapshot.val();
-        if (userDetails) {
-          console.log("user already have account in realtime database userdetails:", userDetails)
+      if (userDetails) {
+        console.log("User already exists in Realtime Database:", userDetails);
+
+        // Check MFA status
 
 
-
-          return
+        const mfaData = userDetails.mfa || {};
+        console.log("mfa data in console", mfaData)
+        if (mfaData.isMfaActive) {
+          return { user: userData, requiresMfa: true, method: mfaData.method };
         }
-        else {
-          createUserInDatabase(userData.uid, { email: userData.email, name: userData.displayName });
-          console.log("User signed up with Google and data stored in database.");
-        }
 
-      })
+        return { user: userData, requiresMfa: false };
 
+      } else {
+        // Create new user in the database
+        await createUserInDatabase(userData.uid, {
+          email: userData.email,
+          name: userData.displayName,
 
-
-
-
+        });
+        console.log("User signed up with Google and data stored in database.");
+        return { user: userData, requiresMfa: false };
+      }
     } catch (error) {
       console.error("Error signing up with Google:", error.message);
+      throw error;
     }
-
-  }
-
+  };
 
   // SignUp with Facebook
 
@@ -157,7 +171,13 @@ export function UserAuthContextProvider({ children }) {
     }
   };
 
-  function logOut() {
+  async function logOut() {
+
+    const userRef = ref(database, `users/${user.uid}/mfa`);
+    await update(userRef, {
+      loginAccess: false
+    });
+
     return signOut(auth)
   }
 
@@ -220,6 +240,22 @@ export function UserAuthContextProvider({ children }) {
   }, [user]);
 
 
+  const [mfaData, setMfaData] = useState(null);
+
+  // useEffect(() => {
+  //   const fetchMfaData = async () => {
+  //     if (user) {
+  //       const dataBaseRef = ref(database, `users/${user.uid}/mfa`);
+  //       const snapshot = await get(dataBaseRef);
+  //       const mfaData = snapshot.val()
+       
+  //       setMfaData(snapshot.val());
+
+  //     }
+  //   };
+
+  //   fetchMfaData();
+  // }, [user]);
 
 
 
@@ -241,7 +277,7 @@ export function UserAuthContextProvider({ children }) {
 
   return (
     <userAuthContext.Provider
-      value={{ user, signUp, logIn, logOut, paymentInfo, userBalance, signUpWithGoogle, signUpWithFaceBook, message, file, setFile, filename, setFileName, cloudUrl, setCloudUrl, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, fileDurations, setFileDurations, cost, setCost, showFormModal, setShowFormModal, showPaymentModal, setShowPaymentModal, uploadingfileNames, setUploadingFileNames, fileNames, setFileNames, chunksLoading, setChunksLOading, handleFileChange, fileDuration, isPaymentInProgress, setIsPaymentInProgress, handleTextFileChange, fileContent, setFileContent }}
+      value={{ user, signUp, logIn, logOut, paymentInfo, userBalance, signUpWithGoogle, signUpWithFaceBook, message, file, setFile, filename, setFileName, cloudUrl, setCloudUrl, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, fileDurations, setFileDurations, cost, setCost, showFormModal, setShowFormModal, showPaymentModal, setShowPaymentModal, uploadingfileNames, setUploadingFileNames, fileNames, setFileNames, chunksLoading, setChunksLOading, handleFileChange, fileDuration, isPaymentInProgress, setIsPaymentInProgress, handleTextFileChange, fileContent, setFileContent, mfaData }}
 
     >
       {children}
