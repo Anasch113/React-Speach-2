@@ -68,6 +68,9 @@ const ViewSyncFiles = () => {
   }, [id])
   console.log("dbTranscript", dbTranscript)
 
+
+
+
   // Function to download the SRT file
   const downloadSrtFile = () => {
     const element = document.createElement("a");
@@ -89,91 +92,80 @@ const ViewSyncFiles = () => {
     return `${pad(hours, 2)}:${pad(minutes, 2)}:${pad(secs, 2)},${pad(milliseconds, 3)}`;
   };
 
-
-
-// Function to generate SRT content
-const generateSrtContent = () => {
-  let srtContent = '';   // Stores the final SRT content
-  let segmentIndex = 1;   // SRT segment index
-  let wordCount = 0;      // Count words per segment (group of 6)
-  let paragraphContent = ''; // Content of the current segment
-  let startTs = null;     // Start timestamp of the current group
-  let endTs = null;       // End timestamp of the current group
-  let previousPunctuation = ''; // Store punctuation that needs to stick to the previous block
-  let lastWordEndTs = null;    // End timestamp of the last word
-
-  // Iterate over transcript data
-  dbTranscript.syncData.forEach((data) => {
-    data.elements.forEach((word, index) => {
-      // Ignore spaces (value: ' ') from the data
-      if (word.value === ' ' && word.type === 'punct') return;
-
-      // Set start timestamp for the first word in the group
-      if (word.ts !== undefined && wordCount === 0) {
-        startTs = word.ts;
-      }
-
-      // Handle punctuation
-      if (word.type === 'punct') {
-        // Attach punctuation directly to the last word, no space before punctuation
-        if (paragraphContent.length > 0) {
-          paragraphContent = paragraphContent.trim(); // Remove trailing space
+  const generateSrtContent = () => {
+    let srtContent = '';   // Stores the final SRT content
+    let segmentIndex = 1;   // SRT segment index
+    let wordCount = 0;      // Count words per segment (group of 6)
+    let paragraphContent = ''; // Content of the current segment
+    let startTs = null;     // Start timestamp of the current group
+    let endTs = null;       // End timestamp of the current group
+    let lastValidEndTs = null; // Last valid end timestamp
+  
+    dbTranscript.syncData.forEach((data) => {
+      data.elements.forEach((word, index) => {
+        // Ignore spaces (value: ' ') from the data
+        if (word.value === ' ' && word.type === 'punct') return;
+  
+        // Use the last valid timestamp if no start timestamp is provided
+        if (word.ts !== undefined) {
+          startTs = word.ts;
+        } else if (!startTs) {
+          startTs = lastValidEndTs; // Fallback to the last valid timestamp
         }
-        paragraphContent += word.value;
-        previousPunctuation = ''; // Clear previous punctuation after handling it
-      } else {
-        // If the paragraph starts with punctuation (stored in `previousPunctuation`), attach it here
-        if (previousPunctuation) {
-          paragraphContent = paragraphContent.trimEnd() + previousPunctuation;
-          previousPunctuation = '';
+  
+        // Handle punctuation
+        if (word.type === 'punct') {
+          if (paragraphContent.length > 0) {
+            paragraphContent = paragraphContent.trim(); // Remove trailing space
+          }
+          paragraphContent += word.value;
+        } else {
+          if (paragraphContent.length > 0 && !paragraphContent.endsWith(' ')) {
+            paragraphContent += ' ';
+          }
+          paragraphContent += word.value;
         }
-        // Add space only between words, but not before punctuation
-        if (paragraphContent.length > 0 && !paragraphContent.endsWith(' ')) {
-          paragraphContent += ' ';
+  
+        // Increment the word count
+        wordCount++;
+  
+        // Update the end timestamp if available
+        if (word.end_ts !== undefined) {
+          endTs = word.end_ts;
+          lastValidEndTs = endTs; // Update the last valid timestamp
         }
-        paragraphContent += word.value;  // Add the word
-      }
-
-      // Increment the word count
-      wordCount++;
-
-      // Update end timestamp for the last word in the group
-      if (word.end_ts !== undefined) {
-        endTs = word.end_ts;
-        lastWordEndTs = endTs;
-      }
-
-      // Every group of 6 words or last word in the array
-      if (wordCount === 6 || index === data.elements.length - 1) {
-        const startTime = convertToSrtTime(startTs);
-        const endTime = convertToSrtTime(endTs);
-
-        // Ensure no punctuation is at the start of the line
-        let paragraphWithCorrectedPunctuation = paragraphContent.trimStart();
-
-        // If the paragraph starts with punctuation, store it for the next block
-        if (/[.,!?]/.test(paragraphWithCorrectedPunctuation.charAt(0))) {
-          previousPunctuation = paragraphWithCorrectedPunctuation.charAt(0);
-          paragraphWithCorrectedPunctuation = paragraphWithCorrectedPunctuation.slice(1).trimStart();
+  
+        // Every group of 6 words or last word in the array
+        if (wordCount === 6 || index === data.elements.length - 1) {
+          // Ensure startTs and endTs are valid before adding the segment
+          if (startTs && endTs) {
+            const startTime = convertToSrtTime(startTs);
+            const endTime = convertToSrtTime(endTs);
+  
+            // Add this segment to the SRT content
+            srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
+  
+            // Reset for the next segment
+            paragraphContent = '';
+            wordCount = 0;
+            segmentIndex++;
+            startTs = null;
+          } else {
+            // Append text to the current paragraph if timestamps are missing
+            paragraphContent += ' ';
+          }
         }
-
-        // Add this segment to the SRT content
-        srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphWithCorrectedPunctuation.trim()}\n\n`;
-
-        // Reset for the next segment
-        paragraphContent = '';
-        wordCount = 0;
-        segmentIndex++;
-        startTs = null;
-      }
+      });
+  
+      // Ensure two newlines between blocks
+      srtContent = srtContent.trimEnd() + '\n\n';
     });
+  
+    return srtContent;
+  };
+  
+  
 
-    // After each loop (block), ensure two newlines between blocks
-    srtContent = srtContent.trimEnd() + '\n\n';
-  });
-
-  return srtContent;
-};
 
   // const handleToggleSRT = () => {
   //   console.log("Before toggle:", showSRT); // Log current state before toggle
@@ -270,6 +262,8 @@ const generateSrtContent = () => {
                         <div className="w-full py-2" key={i}>
                           <div className="flex flex-wrap gap-1">
                             {data.elements.map((word, j, wordsArray) => {
+
+                              
                               const isTimestamped = word.ts !== undefined && word.end_ts !== undefined;
 
                               // Only count words with valid timestamps for grouping
