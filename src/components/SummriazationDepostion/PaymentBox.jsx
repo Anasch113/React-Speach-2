@@ -6,11 +6,15 @@ import { useState } from 'react';
 import axios from 'axios'
 
 import { useAsyncValue } from 'react-router-dom';
+import PaymentAdditionalInfo from '../SideComponents/PaymentAdditionalInfo';
 const PaymentBox = ({
     handleCardPayment,
     summaryName,
     setShowPaymentModal,
-    handleSummaryDeposition
+    handleSummaryDeposition,
+    promoCode,
+    handlePromodeCodeChange,
+    handleCurrencyChange
 }) => {
 
 
@@ -20,7 +24,10 @@ const PaymentBox = ({
 
     return (
         <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 py-3">
-            <div className="bg-bg-navy-blue h-[500px] w-[500px] p-5 rounded-lg overflow-y-auto overflow-x-hidden">
+            <div className="bg-bg-navy-blue min-h-[600px] w-[500px] p-5 rounded-lg overflow-y-auto overflow-x-hidden">
+                <div>
+
+                </div>
 
                 <div className='w-full  flex flex-row items-center justify-end  gap-10 px-5 py-5'>
 
@@ -38,7 +45,7 @@ const PaymentBox = ({
 
 
                 {/* Direct Payment Method */}
-                <div className='flex flex-col my-2 gap-2 p-2  border-b'>
+                <div className='flex flex-col my-2 gap-2 p-2  border-b '>
 
 
 
@@ -53,6 +60,11 @@ const PaymentBox = ({
                         <p className=' text-center font-medium  font-poppins'> Total</p>
                         <p className=' text-center font-medium  font-poppins'>10$ </p>
                     </span>
+                    <PaymentAdditionalInfo
+                        promoCode={promoCode}
+                        handlePromodeCodeChange={handlePromodeCodeChange}
+                        onCurrencyChange={handleCurrencyChange}
+                    />
 
 
                     <button onClick={handleSummaryDeposition} className='text-center px-5 py-3 w-full h-14

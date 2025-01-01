@@ -1,20 +1,25 @@
 
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useUserAuth } from '../../context/UserAuthContext'
 
 import { CiCalendarDate } from "react-icons/ci";
 import { MdPayment } from "react-icons/md";
 import { MdOutlineCreditScore } from "react-icons/md";
 import { CiTimer } from "react-icons/ci";
-
+import { useAuthHook } from '@/GlobalState/customHooks/useAuthHook';
 
 import axios from "axios"
+import PaymentAdditionalInfo from './PaymentAdditionalInfo';
 const CreditInfo = () => {
+
+
 
 
     const [minutes, setMinutes] = useState('');
     const [total, setTotal] = useState(0);
+
+
 
     const handleMinutesChange = (e) => {
         const value = e.target.value;
@@ -22,18 +27,42 @@ const CreditInfo = () => {
         setTotal(value * 0.5);
     };
 
+    // >>>>>>>>> Additional Info code >>>>>>>>>>>>>>>>>>
+
+
+    const [promoCode, setPromoCode] = useState("");
+
+    const [currency, setCurrency] = useState('USD'); // Default to USD
+
+
+    const handlePromodeCodeChange = (e) => {
+        const value = e.target.value;
+        setPromoCode(value)
+    };
+
+
+    const handleCurrencyChange = (newCurrency) => {
+
+        setCurrency(newCurrency); // Update the selected currency
+    };
+    console.log("selected currency:", currency)
+
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
     const { userBalance, user } = useUserAuth();
 
-
+    const userId = user.uid
+    const userEmail = user.email
     // Function to create Stripe session
     const createStripeSession = async (total, method) => {
-        const userId = user.uid
+
+
         try {
 
             if (total && method && method === "credit-method") {
-                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/buy-credit`, { total, method, userBalance, userId });
+                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/buy-credit`, { total, method, userBalance, userId, promoCode, userEmail, currency });
 
 
                 return response.data;
@@ -70,6 +99,7 @@ const CreditInfo = () => {
         }
     }
 
+
     return (
         <div className='flex w-full'>
 
@@ -87,7 +117,7 @@ const CreditInfo = () => {
                     <span className='flex  items-center gap-3 py-1'> <CiTimer size={30} /> <p className='font-medium text-lg'>Total Minutes </p><p className='text-lg'> {userBalance.toFixed(2) * 2} min </p></span>
 
                     {/* Buy Credit Inputs  */}
-                    <span className='flex md:flex-row gap-2 my-1 flex-col'>
+                    <span className=' flex md:flex-row gap-2 my-1 flex-col'>
 
                         <span className='flex flex-col justify-between items-start gap-1'>
                             <label className=' text-center font-medium  font-poppins'>Amount of Minutes* </label>
@@ -104,6 +134,13 @@ const CreditInfo = () => {
                         </span>
 
                     </span>
+
+
+                    <PaymentAdditionalInfo
+                        promoCode={promoCode}
+                        handlePromodeCodeChange={handlePromodeCodeChange}
+                        onCurrencyChange={handleCurrencyChange}
+                    />
 
 
                 </div>

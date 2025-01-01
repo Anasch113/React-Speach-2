@@ -126,7 +126,7 @@ const SyncAiPage = () => {
 
             setFileDuration(paidFileDuration)
 
- 
+
 
             setIsCreditMethodDone(true)
 
@@ -159,7 +159,28 @@ const SyncAiPage = () => {
 
     }, [isCreditMethodDone])
 
+    // >>>>>>>>> Additional Info code >>>>>>>>>>>>>>>>>>
 
+
+    const [promoCode, setPromoCode] = useState("");
+
+    const [currency, setCurrency] = useState('USD'); // Default to USD
+
+
+    const handlePromodeCodeChange = (e) => {
+        const value = e.target.value;
+        setPromoCode(value)
+    };
+
+
+    const handleCurrencyChange = (newCurrency) => {
+
+        setCurrency(newCurrency); // Update the selected currency
+    };
+    console.log("selected currency:", currency)
+
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
     // Function to create Stripe session
     const createStripeSession = async (total, method) => {
@@ -179,7 +200,9 @@ const SyncAiPage = () => {
                 filename: fileName,
                 fileDuration: fileDuration,
                 transcriptUrl: transcriptUrl,
-                transcriptFileName: transcriptFileName
+                transcriptFileName: transcriptFileName,
+                promoCode: promoCode,
+                currency: currency
             }
 
             const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/create-stripe-session`, body);
@@ -299,7 +322,7 @@ const SyncAiPage = () => {
                 // Use regular upload for smaller files
                 const formData = new FormData();
                 formData.append("file", selectedFile);
-                formData.append("upload_preset", UPLOAD_PRESET );
+                formData.append("upload_preset", UPLOAD_PRESET);
                 formData.append("cloud_name", CLOUD_NAME);
                 formData.append("folder", "Audio");
                 formData.append("quality", "auto:good");
@@ -787,7 +810,7 @@ const SyncAiPage = () => {
 
                     <div className='flex flex-col w-full py-5 md:px-10 px-2 bg-bg-color min-h-screen overflow-x-hidden '>
                         <div className=' flex items-center justify-center'>
-                           <p className='text-red-500 text-lg'>{error}</p> 
+                            <p className='text-red-500 text-lg'>{error}</p>
                         </div>
 
                         {
@@ -1003,6 +1026,11 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                     handlePaymentOptions={handlePaymentOptions}
                     currentBalance={userBalance}
                     handleTranscriptions={hanldeSync}
+                    promoCode={promoCode}
+                    handlePromodeCodeChange={handlePromodeCodeChange}
+                    onCurrencyChange={handleCurrencyChange}
+
+
 
 
 

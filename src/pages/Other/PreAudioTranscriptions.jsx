@@ -99,7 +99,28 @@ const PreAudioTranscriptions = () => {
     }, [paidCloudUrl])
 
 
+    // >>>>>>>>> Additional Info code >>>>>>>>>>>>>>>>>>
 
+
+    const [promoCode, setPromoCode] = useState("");
+
+    const [currency, setCurrency] = useState('USD'); // Default to USD
+
+
+    const handlePromodeCodeChange = (e) => {
+        const value = e.target.value;
+        setPromoCode(value)
+    };
+
+
+    const handleCurrencyChange = (newCurrency) => {
+
+        setCurrency(newCurrency); // Update the selected currency
+    };
+    console.log("selected currency:", currency)
+
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
     // Function to create Stripe session
     const createStripeSession = async (total, method) => {
@@ -111,7 +132,9 @@ const PreAudioTranscriptions = () => {
                 cloudUrls,   // Array of Cloudinary URLs
                 userId,
                 fileNames,   // Array of file names
-                fileDurations // Array of file durations
+                fileDurations,
+                promoCode,
+                currency // Array of file durations
             });
 
 
@@ -503,8 +526,8 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                                 <option disabled>Select Language</option>
                                 <option value="en_us">American English</option>
                                 <option value="en_au">Australian English</option>
-                               
-                               
+
+
                             </select>
 
                         </span>
@@ -528,6 +551,9 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                     currentBalance={userBalance}
                     handleTranscriptions={handleTranscriptions}
                     setIsPaymentDone={setIsPaymentDone}
+                    promoCode = {promoCode}
+                    handlePromodeCodeChange = {handlePromodeCodeChange}
+                    onCurrencyChange = {handleCurrencyChange}
 
 
                 />

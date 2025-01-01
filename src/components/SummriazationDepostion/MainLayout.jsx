@@ -95,10 +95,35 @@ const MainLayout = ({
     }, [paidFileContent])
 
 
+     // >>>>>>>>> Additional Info code >>>>>>>>>>>>>>>>>>
+    
+    
+        const [promoCode, setPromoCode] = useState("");
+    
+        const [currency, setCurrency] = useState('USD'); // Default to USD
+    
+    
+        const handlePromodeCodeChange = (e) => {
+            const value = e.target.value;
+            setPromoCode(value)
+        };
+    
+    
+        const handleCurrencyChange = (newCurrency) => {
+    
+            setCurrency(newCurrency); // Update the selected currency
+        };
+        console.log("selected currency:", currency)
+    
+    
+        // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
 
     // Function to create Stripe session
     const createStripeSession = async () => {
         const userId = user.uid
+        const userEmail = user.email
         
         try {
 
@@ -109,7 +134,10 @@ const MainLayout = ({
                 fileContent,
                 depositionType,
                 selectedValue,
-                fileNames
+                fileNames,
+                promoCode,
+                currency,
+                userEmail
             });
 
 
@@ -417,7 +445,9 @@ const MainLayout = ({
                         hanldeStepOne={hanldeStepOne}
                         isStepOneDone={isStepOneDone}
                         setIsStepOneDone={setIsStepOneDone}
-
+                        promoCode={promoCode}
+                        handlePromodeCodeChange={handlePromodeCodeChange}
+                        handleCurrencyChange={handleCurrencyChange}
 
 
 

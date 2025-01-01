@@ -27,6 +27,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import PaymentAdditionalInfo from '@/components/SideComponents/PaymentAdditionalInfo';
 
 
 
@@ -55,14 +56,43 @@ const PaymentModal = ({
 
 
 
+    // >>>>>>>>> Additional Info code >>>>>>>>>>>>>>>>>>
+
+
+    const [promoCode, setPromoCode] = useState("");
+
+    const [currency, setCurrency] = useState('USD'); // Default to USD
+
+
+    const handlePromodeCodeChange = (e) => {
+        const value = e.target.value;
+        setPromoCode(value)
+    };
+
+
+    const handleCurrencyChange = (newCurrency) => {
+
+        setCurrency(newCurrency); // Update the selected currency
+    };
+    console.log("selected currency:", currency)
+
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
     // Function to create Stripe session
     const createStripeSession = async () => {
-        const userId = user.uid
+        const userId = user.uid;
+        const userEmail = user.email;
         const body = {
             total: total,
             userId: userId,
             minutes: initialMinutes,
-            language: language
+            language: language,
+            promoCode,
+            currency,
+            userEmail
         }
         try {
 
@@ -113,7 +143,7 @@ const PaymentModal = ({
                     <Button className="mx-2" variant={"purpleMeetingBtn"}>In-Person Meeting <FaPlay className='mx-2' /></Button>
 
                 </DialogTrigger>
-                <DialogContent className="md:max-w-[600px]  md:min-h-[400px] max-w-[300px]  overflow-y-auto  rounded-xl ">
+                <DialogContent className="md:max-w-[600px]  md:min-h-[400px] md:max-h-[580px] max-w-[300px]  overflow-y-auto  rounded-xl ">
                     <DialogHeader >
                         <DialogTitle className="mb-8">Billing</DialogTitle>
                         <DialogDescription>
@@ -166,7 +196,7 @@ const PaymentModal = ({
                                     </span>
 
                                 </span>
-                                <Select  value={language} onValueChange={handleValueChange}>
+                                <Select value={language} onValueChange={handleValueChange}>
                                     <SelectTrigger className="w-[180px]">
                                         <SelectValue className="text-white" placeholder="Select Language" />
                                     </SelectTrigger>
@@ -177,6 +207,13 @@ const PaymentModal = ({
                                 </Select>
 
                             </div>
+
+                            <PaymentAdditionalInfo
+                                promoCode={promoCode}
+                                handlePromodeCodeChange={handlePromodeCodeChange}
+                                onCurrencyChange={handleCurrencyChange}
+                            />
+
 
                         </DialogDescription>
                     </DialogHeader>

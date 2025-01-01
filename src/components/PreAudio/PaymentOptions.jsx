@@ -3,6 +3,7 @@ import { MdOutlinePaid } from "react-icons/md";
 import { MdClose } from "react-icons/md";
 import { MdPayment } from "react-icons/md";
 import { useState } from 'react';
+import PaymentAdditionalInfo from '../SideComponents/PaymentAdditionalInfo';
 const PaymentOptions = ({
     fileNames,
     fileDurations,
@@ -15,27 +16,16 @@ const PaymentOptions = ({
     handleTranscriptions,
     setIsPaymentDone,
     fileName,
-    duration
+    duration,
+    promoCode,
+    handlePromodeCodeChange,
+    onCurrencyChange
 }) => {
 
 
-    const [minutes, setMinutes] = useState('');
-    const [total, setTotal] = useState(0);
-
-    const handleMinutesChange = (e) => {
-        const value = e.target.value;
-        setMinutes(value);
-        setTotal(value * 0.5);
-    };
 
 
-    const startTranscriptions = () => {
-        setIsPaymentDone(true)
 
-        setTimeout(() => {
-            handleTranscriptions()
-        }, 2000);
-    }
 
 
 
@@ -94,7 +84,7 @@ const PaymentOptions = ({
                         <p className='text-center font-medium  font-poppins'>Transcript Duration:</p>
 
                         {
-                         fileDurations &&   fileDurations.length > 0 ?
+                            fileDurations && fileDurations.length > 0 ?
 
                                 <p className=' text-center font-medium  font-poppins'>
                                     {fileDurations.map((file, i) => (
@@ -119,6 +109,14 @@ const PaymentOptions = ({
                         <p className=' text-center font-medium  font-poppins'> Total</p>
                         <p className=' text-center font-medium  font-poppins'>{cost} $ </p>
                     </span>
+
+                    <PaymentAdditionalInfo
+                        promoCode={promoCode}
+                        handlePromodeCodeChange={handlePromodeCodeChange}
+                        onCurrencyChange={onCurrencyChange}
+                    />
+
+
                     <button onClick={handleTranscriptions} className='text-center px-5 py-3 w-full h-14
 rounded-md bg-purple-500 text-white text-xl font-medium font-roboto hover:bg-purple-400 mb-2 '><span className='flex items-center text-center justify-center gap-2 '>
                             <MdPayment size={25} /> <p>Pay with Credit </p>

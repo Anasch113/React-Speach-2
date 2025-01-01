@@ -31,7 +31,10 @@ const UploadSection = ({
   summaryName,
   hanldeStepOne,
   isStepOneDone,
-  setIsStepOneDone 
+  setIsStepOneDone ,
+  promoCode,
+  handlePromodeCodeChange,
+  handleCurrencyChange
 
 
 }) => {
@@ -189,6 +192,9 @@ const UploadSection = ({
           summaryName={summaryName}
           setShowPaymentModal={setShowPaymentModal}
           handleSummaryDeposition = {handleSummaryDeposition}
+          promoCode={promoCode}
+          handlePromodeCodeChange={handlePromodeCodeChange}
+          handleCurrencyChange={handleCurrencyChange}
         />
       }
 

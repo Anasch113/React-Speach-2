@@ -46,7 +46,7 @@ export const useAuthHook = () => {
                 const dataBaseRef = ref(database, `users/${user?.uid}/mfa`);
 
                 onValue(
-                    
+
                     dataBaseRef,
                     (snapshot) => {
                         const mfaData = snapshot.val();
@@ -70,9 +70,31 @@ export const useAuthHook = () => {
         });
     };
 
+    const fetchUserPromoCodes = async () => {
+        try {
+            const userId = user.uid
+            const promoCodesRef = ref(database, `users/${userId}/promoCodes`);
+            const snapshot = await get(promoCodesRef);
+
+            if (snapshot.exists()) {
+                const promoCodes = snapshot.val();
+                // Ensure promo codes are returned as an array
+                return Array.isArray(promoCodes) ? promoCodes : Object.values(promoCodes);
+            } else {
+                console.log("No promo codes available for this user.");
+                return [];
+            }
+        } catch (error) {
+            console.error("Error fetching promo codes:", error);
+            throw new Error("Failed to fetch promo codes. Please try again.");
+        }
+    };
+
+
 
     return {
 
-        checkMfaActive
+        checkMfaActive,
+        fetchUserPromoCodes
     };
 };

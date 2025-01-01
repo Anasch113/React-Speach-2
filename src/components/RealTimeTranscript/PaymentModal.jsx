@@ -6,6 +6,7 @@ import { useState } from 'react';
 import axios from 'axios'
 import { useUserAuth } from '../../context/UserAuthContext';
 import { useAsyncValue } from 'react-router-dom';
+import PaymentAdditionalInfo from '../SideComponents/PaymentAdditionalInfo';
 const PaymentModal = ({
     fileName,
     duration,
@@ -30,12 +31,38 @@ const PaymentModal = ({
 
 
 
+    // >>>>>>>>> Additional Info code >>>>>>>>>>>>>>>>>>
+
+
+    const [promoCode, setPromoCode] = useState("");
+
+    const [currency, setCurrency] = useState('USD'); // Default to USD
+
+
+    const handlePromodeCodeChange = (e) => {
+        const value = e.target.value;
+        setPromoCode(value)
+    };
+
+
+    const handleCurrencyChange = (newCurrency) => {
+
+        setCurrency(newCurrency); // Update the selected currency
+    };
+    console.log("selected currency:", currency)
+
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
     // Function to create Stripe session
     const createStripeSession = async () => {
         const userId = user.uid
+        const userEmail = user.email
         try {
 
-            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/live-transcript-payment`, { total, userId, minutes });
+            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/live-transcript-payment`, { total, userId, minutes, promoCode, currency, userEmail });
 
 
             return response.data;
@@ -72,7 +99,7 @@ const PaymentModal = ({
 
     return (
         <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 py-3">
-            <div className="bg-bg-navy-blue h-[500px] w-[500px] p-5 rounded-xl overflow-y-auto  overflow-x-hidden">
+            <div className="bg-bg-navy-blue md:min-h-[500px] md:max-h-[700px] w-[500px] p-5 rounded-xl overflow-y-auto  overflow-x-hidden z-50">
 
                 <div className='w-full  flex flex-row items-center justify-end  gap-10 px-5 py-5'>
 
@@ -122,6 +149,14 @@ const PaymentModal = ({
                         </span>
 
                     </span>
+
+                    <PaymentAdditionalInfo
+                        promoCode={promoCode}
+                        handlePromodeCodeChange={handlePromodeCodeChange}
+                        onCurrencyChange={handleCurrencyChange}
+                    />
+
+                
 
                     <button onClick={handlePaymentOptions} className='text-center px-5 py-3 w-full h-14
 rounded-md bg-bg-purple-2 text-white text-xl font-medium font-roboto hover:bg-bg-purple mb-2 '><span className='flex items-center text-center justify-center gap-2'>
