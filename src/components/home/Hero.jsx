@@ -17,16 +17,16 @@ const Hero = () => {
             <div className="mt-[-15rem] md:mt-[-20rem] top-1/4 md:px-4 w-full flex flex-col lg:flex-row">
               <div className="w-full lg:w-2/3">
                 <h1 className="text-xl fade-in-image lg:text-3xl font-bold text-center lg:text-left">
-                  Victorious warriors win first and then go to war, while defeated warriors go to war first and then seek to win.
+                Partner with us for secure speech-to-text services tailored to law firms—real-time transcription and live captioning delivering clarity and accessibility 24-7.
                 </h1>
-                <h1 className="text-xl fade-in-image lg:text-3xl font-bold text-center lg:text-right md:pr-8 mt-3 md:mt-10">
+                {/* <h1 className="text-xl fade-in-image lg:text-3xl font-bold text-center lg:text-right md:pr-8 mt-3 md:mt-10">
                   Sun Tzu – The Art of War
-                </h1>
+                </h1> */}
               </div>
               <div className="w-full lg:w-1/3 lg:pl-8">
                 <div className="w-[60px] h-[5px] bg-[#a100ff] mb-5 mx-auto mt-5 md:mt-0 lg:mx-0"></div>
                 <p className="text-left mx-5 fade-in-image">
-                  Captify.live provides your law firm with a decisive strategic edge in litigation, allowing you to plan and act with precision before the case unfolds. Powered by advanced AI, our platform enhances your ability to identify critical insights, streamline processes, and make informed decisions faster than ever before. Embrace the future of litigation support and position your firm to win—before the battle even begins—with Captify.live.
+                Delivering trusted speech-to-text and litigation support services across the Asia Pacific and the USA since 2004, we specialise in human-delivered solutions, including legal videography, onsite and remote court reporting, legal transcript summarization, client interview notes, audio transcription, and live stenocaptioning (CART) for any field. Our offerings are complemented by secure cutting-edge AI based voice capture options, offering flexible and cost-effective 24-7 secure online services tailored to your needs.
                 </p>
                 <button className=" fade-in-image mt-10 text-xl font-semibold flex items-center mx-auto lg:mx-0">
                   See what we do{" "}

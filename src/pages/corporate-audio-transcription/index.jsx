@@ -68,7 +68,7 @@ const CorporateAudioTranscription = () => {
                                 <h3 className="text-xl font-semibold">Multiple Output Formats</h3>
                             </div>
                             <p className="text-sm md:text-base">
-                                Download your transcripts in Word, text, PDF, or SRT formats, offering flexibility for your reporting, analysis, or documentation needs.
+                            Once your transcript is ready for delivery, it’s available for download in various formats including Word (.docx), Plain Text (.txt), and PDF.
                             </p>
                         </div>
 

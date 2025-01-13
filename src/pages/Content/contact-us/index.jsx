@@ -77,8 +77,8 @@ const ContactForm = () => {
           <h3 className="text-3xl font-bold mb-4">Contact Information</h3>
           <span className="flex flex-col gap-2">
             <p className="text-lg font-semibold">Email Support:</p>
-            <a href="mailto:Odulanahammed@captify.live" target="_main" className="mb-4 text-gray-300">
-               Odulanahammed@captify.live
+            <a href="mailto:scheduling@captify.live" target="_main" className="mb-4 text-gray-300">
+            scheduling@captify.live
             </a>
           </span>
         

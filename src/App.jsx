@@ -96,6 +96,8 @@ import Documentation from "./pages/Content/documentation/Documentation";
 import Blog from "./pages/Content/Blog/Blog";
 import Singleblog from "./pages/Content/Blog/Singleblog";
 import MFA from "./pages/login/MFA";
+import OCR from "./pages/ImageToText/OCR";
+import ViewOcrFiles from "./components/SmallFeatures/ViewOcrFiles";
 
 
 function App() {
@@ -411,6 +413,21 @@ function App() {
 
               <ProtectedRoute>
                 <ZoomAuthorization />
+              </ProtectedRoute>}
+
+            />
+
+            <Route exact path="/ocr" element={
+
+              <ProtectedRoute>
+                <OCR />
+              </ProtectedRoute>}
+
+            />
+            <Route exact path="/ocr-view/:id" element={
+
+              <ProtectedRoute>
+                <ViewOcrFiles />
               </ProtectedRoute>}
 
             />

@@ -2,26 +2,27 @@ import legalvideo from "../../assets/legal-video.jpeg"
 import legalvideointro from "../../assets/legal-video-expertise.jpeg"
 import { FaGavel, FaCamera, FaTruck } from 'react-icons/fa'; // Import icons from FontAwesome (as an example)
 import Footer from "@/components/layout/footer/Footer";
-
+import { useNavigate } from "react-router-dom";
 const LegalVideography = () => {
+    const navigate = useNavigate()
     const whyChooseUs = [
         {
             id: 1,
             icon: <FaGavel />,
             title: 'Expert Legal Knowledge',
-            paragraph: 'Our understanding of both U.S. and Australian legal standards ensures that all video recordings are tailored to meet the specific requirements of your jurisdiction.',
+            paragraph: 'Our understanding of Australian and U.S. legal standards (and ongoing NCRA training and high data security standards), ensures that all video recordings are tailored to meet the specific requirements of your jurisdiction.',
         },
         {
             id: 2,
             icon: <FaCamera />,
             title: 'Professional Quality',
-            paragraph: 'We use the latest videography equipment to capture clear, high-definition video and audio that accurately reflects your legal proceedings.',
+            paragraph: 'We use the latest videography and audio mixing equipment to capture clear, high-definition video and audio that accurately reflects your legal proceedings.',
         },
         {
             id: 3,
             icon: <FaTruck />,
             title: 'Flexible and Mobile',
-            paragraph: 'Whether you’re in a remote part of Australia or anywhere in the Asia Pacific, we are ready to provide the services you need without compromising on quality.',
+            paragraph: 'Whether you’re in a remote or metropolitan part of Australia or anywhere in the Asia Pacific, we are ready to provide the services you need without compromising on quality or data security.',
         }
     ];
     return (
@@ -34,9 +35,11 @@ const LegalVideography = () => {
                             Professional Legal Videography Services for Lawyers Worldwide
                         </div>
                         <p className="lg:text-lg   font-normal my-8 text-center md:text-left">
-                            We specialise in delivering high-quality legal videography services across Australia and the Asia Pacific. Whether you&apos;re a U.S. lawyer conducting depositions or an Australian lawyer involved in hearings outside of traditional courtrooms, our experienced team ensures precise, reliable recordings that meet all legal standards.
+                            We specialise in delivering high-quality, secure legal videography services across Australia and the Asia Pacific. Whether you're a U.S. lawyer conducting depositions or an Australian lawyer involved in hearings outside of traditional courtrooms, our experienced team ensures secure recordings that meet the standards of evidence for your jurisdiction.
                         </p>
-                        <button className="mt-6 px-6 mx-auto md:mx-0 w-full md:w-auto py-3 bg-[#A100FF] text-white ">Learn More</button>
+                        <button onClick={()=>{
+                            navigate("/contact-us")
+                        }} className="mt-6 px-6 mx-auto md:mx-0 w-full md:w-auto py-3 bg-[#A100FF] text-white ">Contact</button>
                     </div>
                     <img src={legalvideo} alt="" className="mx-auto md:w-1/2 rounded-2xl max-h-[470px] object-top object-cover" />
 
@@ -44,7 +47,8 @@ const LegalVideography = () => {
 
                 <section className="md:px-4 mt-20 py-12 text-white flex justify-center items-center flex-col text-center">
                     <h2 className="text-2xl md:text-3xl font-bold">Expertise You Can Trust</h2>
-                    <p className="mt-4 text-sm md:text-base max-w-[800px]">With years of experience in the legal videography field, we understand the critical role video evidence plays in legal proceedings. Our team adheres to strict technical standards to provide seamless, accurate, and clear video recordings, helping you present compelling evidence in court or depositions.</p>
+                    <p className="mt-4 text-sm md:text-base max-w-[800px]">With years of experience in the legal videography field, we understand the critical role video evidence plays in legal proceedings. Our team adheres to strict evidence standards to provide secure, accurate and reliable video recordings, helping you present compelling evidence in court from your deposition or bedside hearing.
+                    </p>
                     <img src={legalvideointro} alt="" className="mt-6 rounded-2xl md:w-1/2 max-h-[480px] object-cover" />
                 </section>
 

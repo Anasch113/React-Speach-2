@@ -45,12 +45,15 @@ const LegalVoiceRecording = () => {
                 <section className="flex items-center justify-between w-full md:flex-row flex-col">
                     <div className="my-5 md:my-24 md:pr-20 text-white md:w-1/2">
                         <div className="text-2xl md:text-3xl font-bold text-center md:text-left">
-                            Legal Voice Recording and Live Transcription
+                        Client Interview Recording and Live Transcription
+
                         </div>
                         <p className="lg:text-lg font-normal my-8 text-center md:text-left">
-                            Our File Note function makes client meetings more productive by recording your discussions in mp3 format while generating live transcripts in real-time. With speaker diarization, it’s easy to identify who said what during the conversation, making follow-up a breeze.
+                        Our File Note function makes client meetings more productive by recording your discussions in mp3 format while generating live transcripts in real-time. With speaker diarisation, it’s easy to identify who said what during the conversation, streamlining your workflow and record keeping.
+
+
                         </p>
-                        <button className="mt-6 px-6 mx-auto md:mx-0 w-full md:w-auto py-3 bg-[#A100FF] text-white ">Learn More</button>
+                        <a href="/contact-us" className="mt-6 px-6 mx-auto md:mx-0 w-full md:w-auto py-3 bg-[#A100FF] text-white">Contact</a>
                     </div>
                     <img src={legalvideo} alt="" className="mx-auto md:w-1/2 rounded-2xl max-h-[470px] object-bottom object-cover" />
                 </section>
@@ -67,7 +70,8 @@ const LegalVoiceRecording = () => {
                     <h2 className="text-2xl md:text-3xl font-bold">Flexible for In-Person and Virtual Meetings
                     </h2>
                     <p className="mt-4 text-sm md:text-base max-w-[800px]">
-                        Whether you’re meeting with clients face-to-face or through Zoom, our legal voice recording and transcription service is designed to work smoothly in both environments. You get the same accurate, real-time transcription and insightful AI summaries, no matter how your meeting is conducted.
+                    Whether you’re meeting with clients face-to-face or through Zoom, our legal voice recording and transcription service is designed to work smoothly in both environments. You get the same accurate, real-time transcription and insightful AI summaries, no matter how your meeting is conducted. (virtual meeting bot is currently available via Zoom platform only)
+
                     </p>
                     <img src={flexvir} alt="" className="mt-6 rounded-2xl md:w-1/2 max-h-[480px] object-cover" />
                 </section>
