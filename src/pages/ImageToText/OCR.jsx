@@ -36,49 +36,7 @@ const OCR = () => {
   const CLOUD_NAME = 'db9lgwk1d';
   const UPLOAD_PRESET = 'iy2lwq5b';
 
- 
-const hfVisionModelTesting = async () => {
-  if (!selectedFile) {
-    alert("Please select an image.");
-    return;
-  }
 
-  // Convert file to base64 without metadata prefix
-  const base64Image = await convertToBase64(selectedFile);
-
-  try {
-    // Connect to the model
-    const client = await Client.connect("huggingface-projects/llama-3.2-vision-11B");
-
-    // Send request with proper parameter structure
-    const result = await client.predict("/chat", {
-      message: {
-        text: "Describe the image content",
-        files: [
-        "https://res.cloudinary.com/db9lgwk1d/image/upload/v1736790447/Audio/gsmwun3blga92peej1ky.jpg"
-        ],
-      },
-      max_new_tokens: 50, // Customize token count as needed
-    });
-
-    console.log("Model Response:", result.data);
-
-  } catch (error) {
-    console.error("Error fetching from Hugging Face API:", error);
-  }
-};
-
-// Helper to convert file to base64 without metadata prefix
-const convertToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result.split(",")[1]);
-    reader.onerror = (error) => reject(error);
-  });
-};
- 
-  
 
 
   const handleFormClick = () => {
@@ -125,7 +83,7 @@ const convertToBase64 = (file) => {
       return;
     }
 
-setIsUploading(true)
+    setIsUploading(true)
 
     try {
 
@@ -136,6 +94,7 @@ setIsUploading(true)
       );
 
       const textData = backendResponse.data.extractedText
+
 
       // Send URL to backend for text extraction
       const textStoring = await axios.post(
@@ -213,106 +172,105 @@ setIsUploading(true)
 
 
   return (
-    <div className='w-full min-h-screen'>
+    <div className='w-full flex min-h-screen '>
 
-      <div className='flex w-full'>
+      
 
+
+      <div className='flex flex-row w-full py-3 px-1 md:py-0 md:px-0 bg-bg-color min-h-screen overflow-x-hidden   '>
+
+      <span className=' md:flex hidden '>
         <Sidebar />
+      </span>
 
-        <div className='flex flex-col w-full py-3 px-1 md:py-5 md:px-10 bg-bg-color min-h-screen overflow-x-hidden '>
+        <div className='rounded-md flex md:items-center flex-col  min-h-screen py-5 gap-5 w-full '>
 
+          {
+            dbData.length === 0 ? <div className='rounded-sm min-h-80 w-full shadow-md p-5 flex flex-col  gap-8 h-[300px] bg-blackGray '>
+              <span className='flex flex-row items-center gap-2 py-5'>
+                <RxDashboard className='text-3xl' />
+                <h1 className='text-3xl font-bold font-poppins '> Recent Files</h1>
+              </span>
 
+              <h1 className='text-2xl text-center font-roboto text-white'>Welcome to Captify!</h1>
 
+              <div className='flex items-center justify-center'>
 
-
-          <div className='   rounded-md flex items-center flex-col  min-h-screen py-5 gap-5'>
-
-            {
-              dbData.length === 0 ? <div className='rounded-sm min-h-80 md:w-full shadow-md p-5 flex flex-col  gap-8 h-[300px] bg-blackGray'>
-                <span className='flex flex-row items-center gap-2 py-5'>
-                  <RxDashboard className='text-3xl' />
-                  <h1 className='text-3xl font-bold font-poppins '> Recent Files</h1>
-                </span>
-
-                <h1 className='text-2xl text-center font-roboto text-white'>Welcome to Captify!</h1>
-
-                <div className='flex items-center justify-center'>
-
-                  <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 md:w-2/5 h-20
+                <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 md:w-2/5 h-20
 rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
+                    <FaCloudUploadAlt size={25} /> <p>Upload Image</p>
+                  </span></button>
+
+
+              </div>
+            </div>
+
+              :
+              <div className='flex flex-col p-2 w-full '>
+                <span className='flex flex-row justify-between items-center gap-2 py-5'>
+
+                  <span className='flex flex-row items-center gap-2'>
+                    <RxDashboard className='md:text-3xl text-lg' />
+                    <h1 className='md:text-3xl font-bold font-poppins text-white lack'> Recent Files</h1>
+                  </span>
+
+
+                  <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 md:w-60  
+rounded-lg bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
                       <FaCloudUploadAlt size={25} /> <p>Upload Image</p>
                     </span></button>
 
+                </span>
 
-                </div>
+                <table className="  flex flex-col  ">
+
+                  <thead className='my-2'>
+                    <tr className="font-poppins text-sm flex md:gap-10 sm:items-center md:justify-between  md:px-5">
+
+                      <th className=" text-text-brown-new md:px-10 md:py-2">Name</th>
+
+                      <span>
+                        <th className=" text-text-brown-new md:px-10 md:py-2  w-72">Uploaded</th>
+
+
+                      </span>
+
+                    </tr>
+
+                  </thead>
+                  <div className=' my-5  border '></div>
+                  <tbody className='flex flex-col-reverse max-h-[400px] overflow-y-scroll  py-4'>
+                    {
+                      dbData && dbData.map((data, index) => (
+
+                        <tr onClick={() => handleNavigate(data._id)} key={index} className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] flex justify-between items-center md:gap-10 md:px-5 border-b hover:text-text-black px-1">
+
+                          <td className="max-[500px]:w-32 font-medium md:text-lg md:px-5 md:py-5 hover:text-text-black">{data.fileName}</td>
+                          <span>
+                            <td className="  md:w-72  font-medium md:text-lg  md:py-5">{new Date(data.createdAt).toLocaleString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: 'numeric',
+                              minute: 'numeric',
+                              hour12: true
+                            })}</td>
+                          </span>
+                        </tr>
+                      ))
+                    }
+                  </tbody>
+                </table>
               </div>
 
-                :
-                <div className='flex flex-col p-2 w-full '>
-                  <span className='flex flex-row justify-between items-center gap-2 py-5'>
 
-                    <span className='flex flex-row items-center gap-2'>
-                      <RxDashboard className='md:text-3xl text-lg' />
-                      <h1 className='md:text-3xl font-bold font-poppins text-white lack'> Recent Files</h1>
-                    </span>
-
-
-                    <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 md:w-60  
-rounded-lg bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
-                        <FaCloudUploadAlt size={25} /> <p>Upload Image</p>
-                      </span></button>
-
-                  </span>
-
-                  <table className="  flex flex-col  ">
-
-                    <thead className='my-2'>
-                      <tr className="font-poppins text-sm flex md:gap-10 sm:items-center md:justify-between  md:px-5">
-
-                        <th className=" text-text-brown-new md:px-10 md:py-2">Name</th>
-
-                        <span>
-                          <th className=" text-text-brown-new md:px-10 md:py-2  w-72">Uploaded</th>
-
-
-                        </span>
-
-                      </tr>
-
-                    </thead>
-                    <div className=' my-5  border '></div>
-                    <tbody className='flex flex-col-reverse max-h-[400px] overflow-y-scroll  py-4'>
-                      {
-                        dbData && dbData.map((data, index) => (
-
-                          <tr onClick={() => handleNavigate(data._id)} key={index} className="font-poppins text-sm  cursor-pointer hover:bg-[#EDEDED] flex justify-between items-center md:gap-10 md:px-5 border-b hover:text-text-black px-1">
-
-                            <td className="max-[500px]:w-32 font-medium md:text-lg md:px-5 md:py-5 hover:text-text-black">{data.fileName}</td>
-                            <span>
-                              <td className="  md:w-72  font-medium md:text-lg  md:py-5">{new Date(data.createdAt).toLocaleString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                                hour: 'numeric',
-                                minute: 'numeric',
-                                hour12: true
-                              })}</td>
-                            </span>
-                          </tr>
-                        ))
-                      }
-                    </tbody>
-                  </table>
-                </div>
-
-
-            }
-          </div>
-
-
+          }
         </div>
 
+
       </div>
+
+
       {showFormModal && (
         <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-30">
 
@@ -366,20 +324,20 @@ rounded-lg bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                     onChange={handleFileChange}
                     hidden
                   />
-<span className='flex items-center flex-col gap-2'>
+                  <span className='flex items-center flex-col gap-2'>
 
-{selectedFile && (
-                    <p className="text-white text-center">{selectedFile.name}</p>
-                  )}
-                  {
-                    selectedFile && <MdDelete className='z-50 ' cursor="pointer"
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        resetUploadStates()
-                      }}
-                    />
-                  }
-</span>
+                    {selectedFile && (
+                      <p className="text-white text-center">{selectedFile.name}</p>
+                    )}
+                    {
+                      selectedFile && <MdDelete className='z-50 ' cursor="pointer"
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          resetUploadStates()
+                        }}
+                      />
+                    }
+                  </span>
 
                 </div>
               )}
@@ -394,7 +352,7 @@ rounded-lg bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
             </form>
 
             <button
-            disabled = {!imageCloudUrl}
+              disabled={!imageCloudUrl}
               onClick={uploadAndExtractText}
               className="text-center p-4 w-full h-16  bg-bg-purple text-white text-xl font-medium font-poppins hover:bg-purple-500 my-5 rounded-lg"
 
@@ -404,7 +362,7 @@ rounded-lg bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
               </span>
             </button>
 
-           
+
           </div>
         </div>
       )}

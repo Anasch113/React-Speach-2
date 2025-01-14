@@ -6,6 +6,10 @@ import DeleteModal from '../PreAudio/DeleteModal';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import Sidebar from '@/layout/Sidebar';
+import jsPDF from 'jspdf';
+
+
+
 const ViewOcrFiles = () => {
 
 
@@ -56,6 +60,31 @@ const ViewOcrFiles = () => {
 
   }
 
+
+
+  const downloadPdf = () => {
+    const doc = new jsPDF();
+
+    // Set font size
+    const fontSize = 12;
+    doc.setFontSize(fontSize);
+
+    // Define the maximum width for the text
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const maxWidth = pageWidth - 20; // 10 units padding on each side
+
+    // Split text into lines that fit within the page width
+    const textLines = doc.splitTextToSize(dbData.extractedText, maxWidth);
+
+    // Add the text to the PDF
+    doc.text(textLines, 10, 10);
+
+    // Save the PDF with a custom filename
+    doc.save(`${dbData.fileName}extracted_text.pdf`);
+  };
+
+
+
   return (
     <div className='w-full min-h-screen flex items-center justify-center p-5 '>
       {/* <Sidebar /> */}
@@ -64,7 +93,7 @@ const ViewOcrFiles = () => {
           <h1 className='text-2xl font-bold font-poppins my-5'>{dbData.fileName}</h1>
           <span className='space-x-5'>
 
-            <Button className=" rounded-lg font-poppins" variant={"customPurple"}>Download</Button>
+            <Button onClick={downloadPdf} className=" rounded-lg font-poppins" variant={"customPurple"}>Download</Button>
 
             <Button onClick={() => {
               setShowDeleteModel(true)
