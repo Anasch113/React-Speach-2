@@ -145,7 +145,7 @@ const Header = () => {
             <div className="w-full flex justify-between items-center relative">
                 {/* logo  */}
                 <a href="/" className="custom__logo md:block hidden group mx-auto md:mx-20 z-20 md:z-50">
-                    <img src='/1.png' alt="logo" className="md:group-hover:scale-[.3]  md:group-hover:-translate-x-6 md:group-hover:-translate-y-2" />
+                    <img src='/Captify.png' alt="logo" className="md:group-hover:scale-[.3]  md:group-hover:-translate-x-6 md:group-hover:-translate-y-2" />
                     <h1 className="custom__logo__text md:block hidden group-hover:-translate-y-8 md:group-hover:-translate-y-12">Bradley Reporting</h1>
                 </a>
 
