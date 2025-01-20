@@ -36,6 +36,7 @@
     "html2pdf.js": "^0.10.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.3",
+    "llamaai": "^1.0.4",
     "lucide-react": "^0.414.0",
     "mongodb": "^6.5.0",
     "mongoose": "^8.3.2",

@@ -15,7 +15,7 @@ import toast from 'react-hot-toast'
 import OcrFiles from '@/components/SmallFeatures/OcrFiles'
 import { useNavigate } from 'react-router-dom'
 import { Client } from "@gradio/client";
-
+import LlamaAI from "llamaai";
 
 
 const OCR = () => {
@@ -38,7 +38,6 @@ const OCR = () => {
 
 
 
-
   const handleFormClick = () => {
     document.querySelector(".input-field").click();
   };
@@ -49,37 +48,37 @@ const OCR = () => {
     if (file) {
       setSelectedFile(file);
       setProgress(0); // Reset progress
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", UPLOAD_PRESET);
-      formData.append("cloud_name", CLOUD_NAME);
-      formData.append("folder", "Audio");
+      // const formData = new FormData();
+      // formData.append("file", file);
+      // formData.append("upload_preset", UPLOAD_PRESET);
+      // formData.append("cloud_name", CLOUD_NAME);
+      // formData.append("folder", "Audio");
 
-      const cloudinaryResponse = await axios.post(
-        `${cloudinaryBaseUrl}/upload`,
-        formData,
-        {
-          onUploadProgress: (event) => {
-            const percentage = Math.round((event.loaded * 100) / event.total);
-            setProgress(percentage);
-          },
-        }
-      );
+      // const cloudinaryResponse = await axios.post(
+      //   `${cloudinaryBaseUrl}/upload`,
+      //   formData,
+      //   {
+      //     onUploadProgress: (event) => {
+      //       const percentage = Math.round((event.loaded * 100) / event.total);
+      //       setProgress(percentage);
+      //     },
+      //   }
+      // );
 
-      const imageUrl = cloudinaryResponse.data.secure_url;
-      console.log("Image URL inside:", imageUrl);
-      setImageCloudUrl(imageUrl)
+      // const imageUrl = cloudinaryResponse.data.secure_url;
+      // console.log("Image URL inside:", imageUrl);
+      // setImageCloudUrl(imageUrl)
       setIsUploading(false)
     }
   };
 
-  console.log("Image URL:", imageCloudUrl);
 
 
 
-  const uploadAndExtractText = async () => {
-    if (!imageCloudUrl) {
-      alert("image cloud url not present.");
+
+  const handleExtractText = async () => {
+    if (!selectedFile) {
+      toast("Please upload your image first!");
       return;
     }
 
@@ -87,20 +86,16 @@ const OCR = () => {
 
     try {
 
-      // Send URL to backend for text extraction
-      const backendResponse = await axios.post(
-        `${import.meta.env.VITE_HOST_URL}/small-features/ocr/extract-text`,
-        { imageUrl: imageCloudUrl }
-      );
 
-      const textData = backendResponse.data.extractedText
 
+      const text = await handleGradioModel()
+      console.log("text", text);
 
       // Send URL to backend for text extraction
       const textStoring = await axios.post(
         `${import.meta.env.VITE_HOST_URL}/small-features/ocr/store-text`,
         {
-          extractedText: textData,
+          extractedText: text,
           fileName: selectedFile.name,
           userId: user.uid
 
@@ -171,17 +166,32 @@ const OCR = () => {
   console.log("dbdata:", dbData)
 
 
+  const handleGradioModel = async () => {
+
+    const client = await Client.connect("Hammedalmodel/handwritten_to_text");
+    const result = await client.predict("/predict", {
+      image: selectedFile,
+    });
+    const textData = result.data;
+    const text = textData[0]
+
+    return text
+
+  }
+
+
+
   return (
     <div className='w-full flex min-h-screen '>
 
-      
+
 
 
       <div className='flex flex-row w-full py-3 px-1 md:py-0 md:px-0 bg-bg-color min-h-screen overflow-x-hidden   '>
 
-      <span className=' md:flex hidden '>
-        <Sidebar />
-      </span>
+        <span className=' md:flex hidden '>
+          <Sidebar />
+        </span>
 
         <div className='rounded-md flex md:items-center flex-col  min-h-screen py-5 gap-5 w-full '>
 
@@ -294,26 +304,12 @@ rounded-lg bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
               className="flex flex-col items-center justify-center border-2 border-blue-500 h-64 overflow-y-auto cursor-pointer rounded-md md:w-[400px] w-72"
             >
               {isUploading && selectedFile ? (
-                <div className="flex items-center flex-col">
-                  <p className="py-1">{`Uploading: ${progress}%`}</p>
-                  <div
-                    className="progress-bar"
-                    style={{
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
-                      overflow: "hidden",
-                      width: "100%",
-                    }}
-                  >
-                    <div
-                      className="progress-fill"
-                      style={{
-                        width: `${progress}%`,
-                        backgroundColor: "#4caf50",
-                        height: "15px",
-                      }}
-                    ></div>
-                  </div>
+                <div className="flex items-center flex-col gap-2">
+                  
+                    <span className='spinner'></span>
+                    <p>Extracting Text...</p>
+                 
+
                 </div>
               ) : (
                 <div className="py-2">
@@ -352,8 +348,8 @@ rounded-lg bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
             </form>
 
             <button
-              disabled={!imageCloudUrl}
-              onClick={uploadAndExtractText}
+              disabled={isUploading && !selectedFile}
+              onClick={handleExtractText}
               className="text-center p-4 w-full h-16  bg-bg-purple text-white text-xl font-medium font-poppins hover:bg-purple-500 my-5 rounded-lg"
 
             >
