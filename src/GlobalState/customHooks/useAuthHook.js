@@ -91,10 +91,36 @@ export const useAuthHook = () => {
     };
 
 
-
+    const fetchTemplateStatus = async (userUid) => {
+        try {
+          // Check if userUid is provided
+          if (!userUid) throw new Error("User not authenticated");
+      
+          // Get Firebase Realtime Database reference
+         
+          const userRef = ref(database, `users/${userUid}/ocrTemplate`);
+      
+          // Fetch data from the database
+          const snapshot = await get(userRef);
+      
+          // Check if data exists
+          if (snapshot.exists()) {
+            const status = snapshot.val();
+            console.log("Template Status:", status);
+            return status; // Return the fetched status
+          } else {
+            console.log("No template status found");
+            return null; // Return null if no status is found
+          }
+        } catch (error) {
+          console.error("Error fetching template status:", error);
+          return null; // Return null in case of an error
+        }
+      };
     return {
 
         checkMfaActive,
-        fetchUserPromoCodes
+        fetchUserPromoCodes,
+        fetchTemplateStatus
     };
 };

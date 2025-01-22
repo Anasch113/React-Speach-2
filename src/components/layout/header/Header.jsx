@@ -161,7 +161,7 @@ const Header = () => {
 
                 <div >
                     <a href="/">
-                        <img src={logo} alt="logo" className='w-[35px] rounded-md' />
+                        <img src="/Captify.png" alt="logo" className='w-36 rounded-md' />
                     </a>
 
 

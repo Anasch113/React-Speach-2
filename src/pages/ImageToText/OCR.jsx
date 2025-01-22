@@ -16,7 +16,10 @@ import OcrFiles from '@/components/SmallFeatures/OcrFiles'
 import { useNavigate } from 'react-router-dom'
 import { Client } from "@gradio/client";
 import LlamaAI from "llamaai";
-
+import { Button } from '@/components/ui/button'
+import { database } from "../../firebase"
+import { ref, set } from "firebase/database";
+import { useAuthHook } from "../../GlobalState/customHooks/useAuthHook"
 
 const OCR = () => {
   const [showFormModal, setShowFormModal] = useState(false)
@@ -27,15 +30,16 @@ const OCR = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [reloadLoading, setReloadLoading] = useState(false);
   const [runUseEffect, setRunUseEffect] = useState(false);
+  const [isNext, setIsNext] = useState(false);
+  const [isTemplateDownloaded, setIsTemplateDownloaded] = useState(false);
   const [dbData, setDbData] = useState("")
+  const [successText, setSuccessText] = useState("")
   const { user } = useUserAuth();
   const navigate = useNavigate()
 
-  const cloudinaryBaseUrl = "https://api.cloudinary.com/v1_1/db9lgwk1d";
 
-  const CLOUD_NAME = 'db9lgwk1d';
-  const UPLOAD_PRESET = 'iy2lwq5b';
 
+  const { fetchTemplateStatus } = useAuthHook()
 
 
   const handleFormClick = () => {
@@ -179,7 +183,77 @@ const OCR = () => {
 
   }
 
+  const downloadPdf = async () => {
+    const userUid = user?.uid;
+    if (!userUid) throw new Error("User not authenticated");
+  
+    // Reference to the user's data in the database
+    const userRef = ref(database, `users/${userUid}/ocrTemplate`);
+  
+    // Update the templateStatus field in the database
+    await set(userRef, { templateStatus: "downloaded" });
+  
+    // Trigger download of the PDF from assets
+    const link = document.createElement("a");
+    link.href = "/template.pdf"; // Path to your PDF file in the assets folder
+    link.download = "template.pdf"; // Suggested filename for the downloaded file
+    link.click();
+  
+    setIsTemplateDownloaded(true);
+    setTemplateStatus("downloaded");
+  };
 
+
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      console.log("Selected file:", file);
+
+      // Display a success toast notification
+      toast.success("Template Uploaded");
+
+      // Update success text
+      setSuccessText(
+        "AI has checked your handwriting and your handwriting images were extracted with 100% accuracy. You can now upload your images"
+      );
+
+
+      try {
+
+
+        const userUid = user?.uid;
+        if (!userUid) throw new Error("User not authenticated");
+
+        // Reference to the user's data in the database
+        const userRef = ref(database, `users/${userUid}/ocrTemplate`);
+
+        // Update the templateStatus field
+        await set(userRef, { templateStatus: "Uploaded" });
+        setTemplateStatus("Uploaded")
+
+        console.log("Template status updated in Firebase");
+      } catch (error) {
+        console.error("Error updating Firebase:", error);
+        toast.error("Failed to update template status");
+      }
+    }
+  };
+
+
+  const [templateStatus, setTemplateStatus] = useState("default");
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      if (user) {
+        const status = await fetchTemplateStatus(user.uid);
+        setTemplateStatus(status.templateStatus || "default"); // Update state with fetched status
+      }
+    };
+
+    fetchStatus();
+  }, [user]);
+  console.log("template status", templateStatus)
 
   return (
     <div className='w-full flex min-h-screen '>
@@ -196,26 +270,90 @@ const OCR = () => {
         <div className='rounded-md flex md:items-center flex-col  min-h-screen py-5 gap-5 w-full '>
 
           {
-            dbData.length === 0 ? <div className='rounded-sm min-h-80 w-full shadow-md p-5 flex flex-col  gap-8 h-[300px] bg-blackGray '>
+            dbData.length === 0 ? <div className='rounded-sm  w-full shadow-md p-5 flex flex-col  gap-8 min-h-[350px] bg-blackGray items-center '>
               <span className='flex flex-row items-center gap-2 py-5'>
                 <RxDashboard className='text-3xl' />
                 <h1 className='text-3xl font-bold font-poppins '> Recent Files</h1>
               </span>
 
-              <h1 className='text-2xl text-center font-roboto text-white'>Welcome to Captify!</h1>
 
-              <div className='flex items-center justify-center'>
+              <div className='flex items-center justify-center flex-col gap-2'>
 
-                <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 md:w-2/5 h-20
-rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
-                    <FaCloudUploadAlt size={25} /> <p>Upload Image</p>
-                  </span></button>
+
+                {
+                  !isNext && templateStatus === "default" ?
+                    <span className='flex flex-col items-center gap-4 '>
+                      <h1 className='text-2xl text-center font-roboto text-white w-2/3'>Using our image to text let you get your documents extracted easier. So kindly take a few step by showing your writing skills</h1>
+
+                      <button onClick={() => setIsNext(true)} className='text-center px-5 py-2  
+        rounded-xl bg-bg-purple-2 text-white text-xl font-medium font-roboto hover:bg-purple-500 '>Next</button>
+                    </span>
+
+
+                    :
+
+                    <div>
+                      {
+                        templateStatus === "default" && <span className='flex flex-col items-center gap-4 '>
+                          <h1 className='text-2xl text-center font-roboto text-white w-2/3'> Please download the Template and fill the space for every single letter </h1>
+                          <button onClick={downloadPdf} className='text-center px-5 py-4
+        rounded-xl bg-bg-purple-2 text-white text-xl font-medium font-roboto hover:bg-purple-500 '>Download</button>
+                        </span>
+
+                      }
+
+
+                    </div>
+
+
+
+                }
+
+
+                {
+                  templateStatus === "downloaded" && (
+                    <div className='flex flex-col gap-5 items-center'>
+                      <p className='text-xl font-poppins'>Upload your template after filling the spaces for all single letters in your handwriting</p>
+                      <Button
+                        className="p-4 rounded-xl"
+                        variant={"customBlue"}
+                        onClick={() => document.getElementById('pdf-upload').click()}
+                      >
+                        Upload Template
+                      </Button>
+                      <input
+                        id="pdf-upload"
+                        accept=".pdf"
+                        className="input-field"
+                        type="file"
+                        style={{ display: 'none' }}
+                        onChange={(event) => handleFileUpload(event)}
+                      />
+                    </div>
+                  )
+                }
+
+
+
+                {
+                  <p className='w-2/3 text-center'>{successText}</p>
+                }
+
+                {
+                  templateStatus === "Uploaded" && <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4  h-16
+  rounded-xl mt-4 bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
+                      <FaCloudUploadAlt size={25} /> <p>Upload Image</p>
+                    </span></button>
+                }
+
+
 
 
               </div>
             </div>
 
               :
+
               <div className='flex flex-col p-2 w-full '>
                 <span className='flex flex-row justify-between items-center gap-2 py-5'>
 
@@ -226,7 +364,7 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
 
 
                   <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 md:w-60  
-rounded-lg bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
+rounded-xl bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2 '>
                       <FaCloudUploadAlt size={25} /> <p>Upload Image</p>
                     </span></button>
 
@@ -305,10 +443,10 @@ rounded-lg bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
             >
               {isUploading && selectedFile ? (
                 <div className="flex items-center flex-col gap-2">
-                  
-                    <span className='spinner'></span>
-                    <p>Extracting Text...</p>
-                 
+
+                  <span className='spinner'></span>
+                  <p>Extracting Text...</p>
+
 
                 </div>
               ) : (
