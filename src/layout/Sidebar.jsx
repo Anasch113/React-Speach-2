@@ -360,6 +360,11 @@ function Sidebar({ isPurchase, minutes }) {
                   <span>Audio Transcription</span>
                 </div>
               </Link>
+              <Link to={"/ocr"}>
+                <div className={`p-2 flex rounded-md ${isActive("/pre-audio-transcriptions") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
+                  <span>Handwriting Converter</span>
+                </div>
+              </Link>
             </div>
           )}
 

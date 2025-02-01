@@ -195,8 +195,8 @@ const OCR = () => {
   
     // Trigger download of the PDF from assets
     const link = document.createElement("a");
-    link.href = "/template.pdf"; // Path to your PDF file in the assets folder
-    link.download = "template.pdf"; // Suggested filename for the downloaded file
+    link.href = "/Update your Handwriting With AI For Accurate Output.docx"; // Path to your PDF file in the assets folder
+    link.download = "Update your Handwriting With AI For Accurate Output.docx"; // Suggested filename for the downloaded file
     link.click();
   
     setIsTemplateDownloaded(true);
@@ -323,7 +323,7 @@ const OCR = () => {
                       </Button>
                       <input
                         id="pdf-upload"
-                        accept=".pdf"
+                        accept=".docx"
                         className="input-field"
                         type="file"
                         style={{ display: 'none' }}
