@@ -32,9 +32,11 @@ const OCR = () => {
   const [runUseEffect, setRunUseEffect] = useState(false);
   const [isNext, setIsNext] = useState(false);
   const [isTemplateDownloaded, setIsTemplateDownloaded] = useState(false);
+  const [isPaymentDone, setIsPaymentDone] = useState(false);
+  const [isPaymentInProgress, setIsPaymentInProgress] = useState(false);
   const [dbData, setDbData] = useState("")
   const [successText, setSuccessText] = useState("")
-  const { user } = useUserAuth();
+  const { user, userBalance } = useUserAuth();
   const navigate = useNavigate()
 
 
@@ -186,19 +188,19 @@ const OCR = () => {
   const downloadPdf = async () => {
     const userUid = user?.uid;
     if (!userUid) throw new Error("User not authenticated");
-  
+
     // Reference to the user's data in the database
     const userRef = ref(database, `users/${userUid}/ocrTemplate`);
-  
+
     // Update the templateStatus field in the database
     await set(userRef, { templateStatus: "downloaded" });
-  
+
     // Trigger download of the PDF from assets
     const link = document.createElement("a");
     link.href = "/Update your Handwriting With AI For Accurate Output.docx"; // Path to your PDF file in the assets folder
     link.download = "Update your Handwriting With AI For Accurate Output.docx"; // Suggested filename for the downloaded file
     link.click();
-  
+
     setIsTemplateDownloaded(true);
     setTemplateStatus("downloaded");
   };
@@ -254,6 +256,121 @@ const OCR = () => {
     fetchStatus();
   }, [user]);
   console.log("template status", templateStatus)
+
+
+
+
+  // >>>>>>>>>> Payment Intgeration start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+
+
+  console.log("users balance in pre audio", userBalance)
+  const status = location.state?.status;
+
+
+  useEffect(() => {
+
+    const fileInCookies = 'we have to fetch the file from cookies'
+
+    if (fileInCookies && status === 'paid') {
+
+
+      toast.success("Continue your work")
+
+      setIsPaymentInProgress(false)
+
+      setIsPaymentDone(true)
+
+    }
+    // Clear the state from the URL
+    navigate(location.pathname, { replace: true });
+  }, [user, status])
+
+
+
+
+  // Function to create Stripe session
+  const createStripeSession = async () => {
+    const userId = user.uid
+    const userEmail = user.email
+    const cost = 10
+
+    try {
+
+      const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/create-stripe-session-new`, {
+        userId: userId,
+        cost: cost,
+        promoCode: promoCode,
+        currency: currency,
+        userEmail: userEmail,
+        feature: 'ocr'
+      });
+
+
+      return response.data;
+    }
+
+    catch (error) {
+      console.error("Error creating Stripe session", error);
+      return null;
+    }
+  };
+
+  const handleCardPayment = async () => {
+
+    try {
+
+      // For direct method
+      const stripeSession = await createStripeSession();
+
+      if (stripeSession && stripeSession.url) {
+        // Redirect the user to Stripe Checkout
+        window.location.href = stripeSession.url;
+      } else {
+        alert("Failed to create Stripe session. Please try again.");
+      }
+
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
+
+
+
+
+  // >>>>>>>>> Additional payment Info code >>>>>>>>>>>>>>>>>>
+
+
+  const [promoCode, setPromoCode] = useState("");
+
+  const [currency, setCurrency] = useState('USD'); // Default to USD
+
+
+  const handlePromodeCodeChange = (e) => {
+    const value = e.target.value;
+    setPromoCode(value)
+  };
+
+
+  const handleCurrencyChange = (newCurrency) => {
+
+    setCurrency(newCurrency); // Update the selected currency
+  };
+  console.log("selected currency:", currency)
+
+
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+  // >>>>>>>>>> Payment Intgeration End >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+
+
+
 
   return (
     <div className='w-full flex min-h-screen '>
@@ -340,10 +457,20 @@ const OCR = () => {
                 }
 
                 {
-                  templateStatus === "Uploaded" && <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4  h-16
-  rounded-xl mt-4 bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
-                      <FaCloudUploadAlt size={25} /> <p>Upload Image</p>
-                    </span></button>
+                  templateStatus === "Uploaded" && <span className='flex flex-col gap-4'>
+
+                    <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4  h-16
+                  rounded-xl mt-4 bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
+                        <FaCloudUploadAlt size={25} /> <p>Upload Image</p>
+                      </span></button>
+                    <span>
+                      <a onClick={() => {
+                        setTemplateStatus('default')
+                      }} className='text-gray-400 text-sm hover:underline hover:cursor-pointer'>Want to redownload the template ?</a>
+
+                    </span>
+
+                  </span>
                 }
 
 
@@ -367,6 +494,8 @@ const OCR = () => {
 rounded-xl bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2 '>
                       <FaCloudUploadAlt size={25} /> <p>Upload Image</p>
                     </span></button>
+
+
 
                 </span>
 
