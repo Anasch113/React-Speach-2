@@ -55,7 +55,7 @@ const UploadSection = ({
   console.log("filenames", fileNames)
   console.log("upladingfile names", uploadingfileNames)
   console.log("progress", progress)
- 
+ let price = 10
 
   const resetUploadStates = () => {
     setCloudUrls([]);     // Reset cloudUrls array
@@ -189,12 +189,14 @@ const UploadSection = ({
       {
         showPaymentModal && <PaymentBox
           handleCardPayment={handleCardPayment}
-          summaryName={summaryName}
+          fileName={summaryName}
           setShowPaymentModal={setShowPaymentModal}
-          handleSummaryDeposition = {handleSummaryDeposition}
+          handleFunctionRun = {handleSummaryDeposition}
           promoCode={promoCode}
           handlePromodeCodeChange={handlePromodeCodeChange}
           handleCurrencyChange={handleCurrencyChange}
+          featureName = 'Summary Name'
+          price = {price}
         />
       }
 

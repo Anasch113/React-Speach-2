@@ -13,13 +13,15 @@ import { useUserAuth } from '@/context/UserAuthContext'
 import axios from "axios";
 import toast from 'react-hot-toast'
 import OcrFiles from '@/components/SmallFeatures/OcrFiles'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Client } from "@gradio/client";
 import LlamaAI from "llamaai";
 import { Button } from '@/components/ui/button'
 import { database } from "../../firebase"
-import { ref, set } from "firebase/database";
+import { ref, set, update } from "firebase/database";
 import { useAuthHook } from "../../GlobalState/customHooks/useAuthHook"
+import PaymentBox from '@/components/SummriazationDepostion/PaymentBox'
+import { useCookies } from "react-cookie";
 
 const OCR = () => {
   const [showFormModal, setShowFormModal] = useState(false)
@@ -34,16 +36,19 @@ const OCR = () => {
   const [isTemplateDownloaded, setIsTemplateDownloaded] = useState(false);
   const [isPaymentDone, setIsPaymentDone] = useState(false);
   const [isPaymentInProgress, setIsPaymentInProgress] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [dbData, setDbData] = useState("")
   const [successText, setSuccessText] = useState("")
   const { user, userBalance } = useUserAuth();
   const navigate = useNavigate()
-
+  const location = useLocation();
 
 
   const { fetchTemplateStatus } = useAuthHook()
+  const [cookies, setCookie, removeCookie] = useCookies(["selectedFile"]);
 
-
+  let price = 1
+  const cost = 1
   const handleFormClick = () => {
     document.querySelector(".input-field").click();
   };
@@ -51,30 +56,20 @@ const OCR = () => {
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     setIsUploading(true);
+
     if (file) {
       setSelectedFile(file);
+
+      // Convert file to Base64 before storing
+      const base64File = await fileToBase64(file);
+      console.log("Base64 File:", base64File);
+
+      // Store Base64 in localStorage (larger capacity than cookies)
+      localStorage.setItem("selectedFile", base64File);
+
       setProgress(0); // Reset progress
-      // const formData = new FormData();
-      // formData.append("file", file);
-      // formData.append("upload_preset", UPLOAD_PRESET);
-      // formData.append("cloud_name", CLOUD_NAME);
-      // formData.append("folder", "Audio");
-
-      // const cloudinaryResponse = await axios.post(
-      //   `${cloudinaryBaseUrl}/upload`,
-      //   formData,
-      //   {
-      //     onUploadProgress: (event) => {
-      //       const percentage = Math.round((event.loaded * 100) / event.total);
-      //       setProgress(percentage);
-      //     },
-      //   }
-      // );
-
-      // const imageUrl = cloudinaryResponse.data.secure_url;
-      // console.log("Image URL inside:", imageUrl);
-      // setImageCloudUrl(imageUrl)
-      setIsUploading(false)
+      setIsPaymentInProgress(true);
+      setIsUploading(false);
     }
   };
 
@@ -86,6 +81,14 @@ const OCR = () => {
     if (!selectedFile) {
       toast("Please upload your image first!");
       return;
+    }
+
+
+    if (cost > userBalance) {
+      toast.error("Insufficient credit, Please buy more credit ")
+
+
+      return
     }
 
     setIsUploading(true)
@@ -107,6 +110,10 @@ const OCR = () => {
 
         }
       );
+      const newBalance = userBalance - cost; // Assuming `cost` is the transcription cost in state
+      await update(ref(database, `users/${user.uid}/credit-payment`), {
+        balance: newBalance
+      });
 
       console.log("data stored", textStoring.data.message)
       toast.success("Processing completed")
@@ -173,6 +180,8 @@ const OCR = () => {
 
 
   const handleGradioModel = async () => {
+
+
 
     const client = await Client.connect("Hammedalmodel/handwritten_to_text");
     const result = await client.predict("/predict", {
@@ -245,6 +254,8 @@ const OCR = () => {
 
   const [templateStatus, setTemplateStatus] = useState("default");
 
+
+
   useEffect(() => {
     const fetchStatus = async () => {
       if (user) {
@@ -255,6 +266,8 @@ const OCR = () => {
 
     fetchStatus();
   }, [user]);
+
+
   console.log("template status", templateStatus)
 
 
@@ -264,29 +277,54 @@ const OCR = () => {
 
 
 
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
 
 
-  console.log("users balance in pre audio", userBalance)
-  const status = location.state?.status;
-
-
+  // Handle returning users after Stripe payment
   useEffect(() => {
+    const status = location.state?.status;
 
-    const fileInCookies = 'we have to fetch the file from cookies'
+    if (status === "paid") {
+      const fileFromStorage = localStorage.getItem("selectedFile");
+      console.log("file from storage", fileFromStorage)
 
-    if (fileInCookies && status === 'paid') {
+      if (fileFromStorage) {
+        // Extract MIME type
+        const mimeType = fileFromStorage.match(/data:(.*?);base64,/)[1];
 
+        // Convert Base64 to byte array
+        const byteCharacters = atob(fileFromStorage.split(",")[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
 
-      toast.success("Continue your work")
+        // Create File object
+        const file = new File([byteArray], "uploadedImage", { type: mimeType });
+        console.log("converted file", file)
+        setSelectedFile(file);
+        toast.success("Continue your work");
+      } else {
+        alert("Session expired. Please re-upload the file.");
+      }
 
-      setIsPaymentInProgress(false)
+      // Clear stored file after retrieval
+      localStorage.removeItem("selectedFile");
 
-      setIsPaymentDone(true)
+      setIsPaymentInProgress(false);
+      setIsPaymentDone(true);
 
+      navigate(location.pathname, { replace: true });
     }
-    // Clear the state from the URL
-    navigate(location.pathname, { replace: true });
-  }, [user, status])
+  }, [location.state?.status]);
 
 
 
@@ -295,7 +333,10 @@ const OCR = () => {
   const createStripeSession = async () => {
     const userId = user.uid
     const userEmail = user.email
-    const cost = 10
+
+
+
+
 
     try {
 
@@ -322,8 +363,15 @@ const OCR = () => {
 
     try {
 
+      if (!selectedFile) {
+        toast("Please select a file before proceeding.");
+        return;
+      }
+
       // For direct method
       const stripeSession = await createStripeSession();
+
+
 
       if (stripeSession && stripeSession.url) {
         // Redirect the user to Stripe Checkout
@@ -631,7 +679,19 @@ rounded-xl bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
       )}
 
 
-
+      {
+        isPaymentInProgress && <PaymentBox
+          handleCardPayment={handleCardPayment}
+          fileName={selectedFile.name}
+          setShowPaymentModal={setShowPaymentModal}
+          handleFunctionRun={handleExtractText}
+          promoCode={promoCode}
+          handlePromodeCodeChange={handlePromodeCodeChange}
+          handleCurrencyChange={handleCurrencyChange}
+          featureName='Ocr Filename'
+          price={price}
+        />
+      }
 
     </div>
   )

@@ -32,7 +32,7 @@ import CreditSuccess from "./SmallComponents/PaymentSuccess/CreditSuccess";
 import LiveTranscriptSuccess from "./SmallComponents/PaymentSuccess/LiveTranscriptSuccess";
 import SdSucess from "./SmallComponents/PaymentSuccess/SdSucess"
 import CaseNoteSuccess from "./SmallComponents/PaymentSuccess//CaseNoteSuccess"
-
+import NewSuccess from './SmallComponents/PaymentSuccess/NewSuccess'
 
 
 // New Frontend Changes Imports
@@ -455,6 +455,7 @@ function App() {
             <Route exact path="/live-transcript-payment-success" element={<LiveTranscriptSuccess />} />
             <Route exact path="/transcript-payment-success-preaudio" element={<PreAudioSuccess />} />
             <Route exact path="/transcript-payment-success-sd" element={<SdSucess />} />
+            <Route exact path="/transcript-payment-success-new" element={<NewSuccess />} />
             <Route exact path="/live-transcript-payment-success-casenote" element={<CaseNoteSuccess />} />
             <Route exact path="/cancel" element={<Cancel />} />
             <Route exact path="/user-guide-to-add/remove-app-from-zoom-account" element={<ZoomDocumentation />} />

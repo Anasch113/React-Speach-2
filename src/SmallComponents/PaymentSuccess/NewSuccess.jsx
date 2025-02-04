@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 
 import axios from "axios"
 
-const SdSucess = () => {
+const NewSuccess = () => {
     const [userId, setUserId] = useState("");
     const [sessionId, setSessionId] = useState("");
     const [feature, setFeature] = useState("");
@@ -135,4 +135,4 @@ const SdSucess = () => {
     )
 }
 
-export default SdSucess
+export default NewSuccess

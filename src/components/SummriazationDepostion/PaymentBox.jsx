@@ -9,12 +9,14 @@ import { useAsyncValue } from 'react-router-dom';
 import PaymentAdditionalInfo from '../SideComponents/PaymentAdditionalInfo';
 const PaymentBox = ({
     handleCardPayment,
-    summaryName,
+    fileName,
     setShowPaymentModal,
-    handleSummaryDeposition,
+    handleFunctionRun,
     promoCode,
     handlePromodeCodeChange,
-    handleCurrencyChange
+    handleCurrencyChange,
+    featureName,
+    price
 }) => {
 
 
@@ -52,14 +54,15 @@ const PaymentBox = ({
 
                     <span className='flex justify-between '>
 
-                        <p className=' text-center font-medium  font-poppins'> Summarn Name</p>
-                        <p className=' text-center font-medium  font-poppins'>{summaryName}</p>
+                        <p className=' text-center font-medium  font-poppins'> {featureName}</p>
+                        <p className=' text-center font-medium  font-poppins'>{fileName}</p>
                     </span>
                     <span className='flex justify-between '>
 
                         <p className=' text-center font-medium  font-poppins'> Total</p>
-                        <p className=' text-center font-medium  font-poppins'>10$ </p>
+                        <p className=' text-center font-medium  font-poppins'>{price}$ </p>
                     </span>
+                    
                     <PaymentAdditionalInfo
                         promoCode={promoCode}
                         handlePromodeCodeChange={handlePromodeCodeChange}
@@ -67,7 +70,7 @@ const PaymentBox = ({
                     />
 
 
-                    <button onClick={handleSummaryDeposition} className='text-center px-5 py-3 w-full h-14
+                    <button onClick={handleFunctionRun} className='text-center px-5 py-3 w-full h-14
 rounded-md bg-bg-purple-2 text-white text-xl font-medium font-roboto hover:bg-bg-purple mb-2 '><span className='flex items-center text-center justify-center gap-2'>
                             <MdPayment size={25} /> <p>Pay with Credit </p>
                         </span></button>
