@@ -25,9 +25,13 @@ import { useCookies } from "react-cookie";
 
 const OCR = () => {
   const [showFormModal, setShowFormModal] = useState(false)
-  const [selectedFile, setSelectedFile] = useState("");
+  // State variables
+  const [selectedFiles, setSelectedFiles] = useState([]); // Store multiple files
+  const [selectedFile, setSelectedFile] = useState(''); // Store multiple files
   const [progress, setProgress] = useState([]);
-  const [extractedText, setExtractedText] = useState("");
+  const [extractedTexts, setExtractedTexts] = useState([]); // Store extracted texts
+
+
   const [imageCloudUrl, setImageCloudUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [reloadLoading, setReloadLoading] = useState(false);
@@ -53,85 +57,90 @@ const OCR = () => {
     document.querySelector(".input-field").click();
   };
 
+
+
+
+  // Handle multiple file selection
   const handleFileChange = async (event) => {
-    const file = event.target.files[0];
-    setIsUploading(true);
-
-    if (file) {
-      setSelectedFile(file);
-
-      // Convert file to Base64 before storing
-      const base64File = await fileToBase64(file);
-      console.log("Base64 File:", base64File);
-
-      // Store Base64 in localStorage (larger capacity than cookies)
-      localStorage.setItem("selectedFile", base64File);
-
-      setProgress(0); // Reset progress
-      setIsPaymentInProgress(true);
-      setIsUploading(false);
+    const files = Array.from(event.target.files); // Convert FileList to Array
+    if (files.length > 0) {
+      setSelectedFiles(files); // Store multiple files
+      setProgress(new Array(files.length).fill(0)); // Initialize progress for each file
     }
   };
 
 
 
 
-
+  // Function to extract text from multiple images
   const handleExtractText = async () => {
-    if (!selectedFile) {
-      toast("Please upload your image first!");
+    if (selectedFiles.length === 0) {
+      toast("Please upload your images first!");
       return;
     }
 
+    // if (cost * selectedFiles.length > userBalance) {
+    //   toast.error("Insufficient credit, Please buy more credit");
+    //   return;
+    // }
 
-    if (cost > userBalance) {
-      toast.error("Insufficient credit, Please buy more credit ")
-
-
-      return
-    }
-
-    setIsUploading(true)
+    setIsUploading(true);
+    let newExtractedTexts = [];
 
     try {
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        setSelectedFile(file)
 
+        const text = await handleGradioModel(file);
+        console.log(`Extracted text for ${file.name}:`, text);
 
+        // Store text in database
+        await axios.post(
+          `${import.meta.env.VITE_HOST_URL}/small-features/ocr/store-text`,
+          {
+            extractedText: text,
+            fileName: file.name,
+            userId: user.uid,
+          }
+        );
 
-      const text = await handleGradioModel()
-      console.log("text", text);
+        newExtractedTexts.push({ fileName: file.name, text });
 
-      // Send URL to backend for text extraction
-      const textStoring = await axios.post(
-        `${import.meta.env.VITE_HOST_URL}/small-features/ocr/store-text`,
-        {
-          extractedText: text,
-          fileName: selectedFile.name,
-          userId: user.uid
+        // Update progress (optional)
+        setProgress((prev) => {
+          const newProgress = [...prev];
+          newProgress[i] = 100;
+          return newProgress;
+        });
+      }
 
-        }
-      );
-      const newBalance = userBalance - cost; // Assuming `cost` is the transcription cost in state
+      setExtractedTexts(newExtractedTexts);
+
+      // Deduct cost from user balance
+      const newBalance = userBalance - cost * selectedFiles.length;
       await update(ref(database, `users/${user.uid}/credit-payment`), {
-        balance: newBalance
+        balance: newBalance,
       });
 
-      console.log("data stored", textStoring.data.message)
-      toast.success("Processing completed")
+      toast.success("Processing completed for all files");
     } catch (error) {
-      console.error("Error during upload or text extraction:", error.response?.data || error);
-      toast.error("Error while extracting the text from image");
+      console.error("Error during upload or text extraction:", error);
+      toast.error("Error while extracting text from images");
     } finally {
       setIsUploading(false);
-      setShowFormModal(false)
+      setShowFormModal(false);
       setRunUseEffect(true);
     }
   };
-  console.log("extracted text", extractedText)
+
+
+  console.log("extracted text", extractedTexts)
 
 
   const resetUploadStates = () => {
-    setSelectedFile(false)
-    setExtractedText("")
+    setSelectedFiles(false)
+    setExtractedTexts("")
 
   };
 
@@ -179,20 +188,17 @@ const OCR = () => {
   console.log("dbdata:", dbData)
 
 
-  const handleGradioModel = async () => {
-
-
-
+  // Function to send images to Gradio model
+  const handleGradioModel = async (file) => {
     const client = await Client.connect("Hammedalmodel/handwritten_to_text");
     const result = await client.predict("/predict", {
-      image: selectedFile,
+      image: file, // Send each file one by one
     });
+
     const textData = result.data;
-    const text = textData[0]
+    return textData[0];
+  };
 
-    return text
-
-  }
 
   const downloadPdf = async () => {
     const userUid = user?.uid;
@@ -310,7 +316,7 @@ const OCR = () => {
         // Create File object
         const file = new File([byteArray], "uploadedImage", { type: mimeType });
         console.log("converted file", file)
-        setSelectedFile(file);
+        setSelectedFiles(file);
         toast.success("Continue your work");
       } else {
         alert("Session expired. Please re-upload the file.");
@@ -334,10 +340,12 @@ const OCR = () => {
     const userId = user.uid
     const userEmail = user.email
 
+    // Convert file to Base64 before storing
+    const base64File = await fileToBase64(selectedFile);
+    console.log("Base64 File:", base64File);
 
-
-
-
+    // Store Base64 in localStorage (larger capacity than cookies)
+    localStorage.setItem("selectedFile", base64File);
     try {
 
       const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/create-stripe-session-new`, {
@@ -487,12 +495,12 @@ const OCR = () => {
                         Upload Template
                       </Button>
                       <input
-                        id="pdf-upload"
-                        accept=".docx"
+                        accept=".png, .jpg"
                         className="input-field"
                         type="file"
-                        style={{ display: 'none' }}
-                        onChange={(event) => handleFileUpload(event)}
+                        multiple // Allows selecting multiple files
+                        onChange={handleFileChange}
+                        hidden
                       />
                     </div>
                   )
@@ -632,33 +640,37 @@ rounded-xl bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                     accept=".png, .jpg"
                     className="input-field"
                     type="file"
+                    multiple
                     onChange={handleFileChange}
                     hidden
                   />
                   <span className='flex items-center flex-col gap-2'>
-
-                    {selectedFile && (
-                      <p className="text-white text-center">{selectedFile.name}</p>
+                    {selectedFiles.length > 0 ? (
+                      selectedFiles.map((file, index) => (
+                        <div key={index} className="flex flex-col overflow-y-auto items-center gap-2">
+                          <p className="text-white text-center">{file.name}</p>
+                          <MdDelete
+                            className="cursor-pointer"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setSelectedFiles((prevFiles) =>
+                                prevFiles.filter((f) => f !== file)
+                              );
+                            }}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <span>
+                        <MdCloudUpload color="#1475cf" size={70} />
+                        <p>.png, .jpg</p>
+                      </span>
                     )}
-                    {
-                      selectedFile && <MdDelete className='z-50 ' cursor="pointer"
-                        onClick={(event) => {
-                          event.stopPropagation()
-                          resetUploadStates()
-                        }}
-                      />
-                    }
                   </span>
 
                 </div>
               )}
-              {
-                !selectedFile &&
-                <span>
-                  <MdCloudUpload color="#1475cf" size={70} />
-                  <p>.png, .jpg</p>
-                </span>
-              }
+
 
             </form>
 
