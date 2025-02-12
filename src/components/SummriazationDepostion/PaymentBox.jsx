@@ -16,7 +16,8 @@ const PaymentBox = ({
     handlePromodeCodeChange,
     handleCurrencyChange,
     featureName,
-    price
+    price,
+    filesCount
 }) => {
 
 
@@ -26,7 +27,7 @@ const PaymentBox = ({
 
     return (
         <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 py-3">
-            <div className="bg-bg-navy-blue min-h-[600px] w-[500px] p-5 rounded-lg overflow-y-auto overflow-x-hidden">
+            <div className="bg-bg-navy-blue min-h-[600px] w-[500px] p-5 rounded-xl overflow-y-auto overflow-x-hidden">
                 <div>
 
                 </div>
@@ -55,12 +56,19 @@ const PaymentBox = ({
                     <span className='flex justify-between '>
 
                         <p className=' text-center font-medium  font-poppins'> {featureName}</p>
-                        <p className=' text-center font-medium  font-poppins'>{fileName}</p>
+                        <p className=' text-center font-medium  font-poppins my-1'>{fileName}</p>
                     </span>
                     <span className='flex justify-between '>
 
                         <p className=' text-center font-medium  font-poppins'> Total</p>
-                        <p className=' text-center font-medium  font-poppins'>{price}$ </p>
+                        {
+                            featureName === 'Ocr Filename' ? 
+                            
+                            <p className=' text-center font-medium  font-poppins'>{price * filesCount}$ </p> :
+                            
+                            <p className=' text-center font-medium  font-poppins'>{price}$ </p>
+                        }
+                       
                     </span>
                     
                     <PaymentAdditionalInfo

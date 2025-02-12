@@ -62,15 +62,21 @@ const OCR = () => {
 
   // Handle multiple file selection
   const handleFileChange = async (event) => {
+    console.log("event.target.files", event.target.files)
     const files = Array.from(event.target.files); // Convert FileList to Array
+    const file = event.target.files[0]
+    setSelectedFile(file)
     if (files.length > 0) {
       setSelectedFiles(files); // Store multiple files
       setProgress(new Array(files.length).fill(0)); // Initialize progress for each file
     }
+    setShowPaymentModal(true)
+    setIsPaymentInProgress(true)
+    localStorage.removeItem("selectedFile");
   };
 
 
-
+  console.log("selected single file", selectedFile)
 
   // Function to extract text from multiple images
   const handleExtractText = async () => {
@@ -79,10 +85,10 @@ const OCR = () => {
       return;
     }
 
-    // if (cost * selectedFiles.length > userBalance) {
-    //   toast.error("Insufficient credit, Please buy more credit");
-    //   return;
-    // }
+    if (cost * selectedFiles.length > userBalance) {
+      toast.error("Insufficient credit, Please buy more credit");
+      return;
+    }
 
     setIsUploading(true);
     let newExtractedTexts = [];
@@ -90,7 +96,7 @@ const OCR = () => {
     try {
       for (let i = 0; i < selectedFiles.length; i++) {
         const file = selectedFiles[i];
-        setSelectedFile(file)
+
 
         const text = await handleGradioModel(file);
         console.log(`Extracted text for ${file.name}:`, text);
@@ -124,6 +130,7 @@ const OCR = () => {
       });
 
       toast.success("Processing completed for all files");
+      
     } catch (error) {
       console.error("Error during upload or text extraction:", error);
       toast.error("Error while extracting text from images");
@@ -317,6 +324,7 @@ const OCR = () => {
         const file = new File([byteArray], "uploadedImage", { type: mimeType });
         console.log("converted file", file)
         setSelectedFiles(file);
+        setShowFormModal(true)
         toast.success("Continue your work");
       } else {
         alert("Session expired. Please re-upload the file.");
@@ -373,6 +381,10 @@ const OCR = () => {
 
       if (!selectedFile) {
         toast("Please select a file before proceeding.");
+        return;
+      }
+      if (selectedFiles.length > 1) {
+        toast("Card method not available for multiple uploads");
         return;
       }
 
@@ -495,11 +507,12 @@ const OCR = () => {
                         Upload Template
                       </Button>
                       <input
-                        accept=".png, .jpg"
-                        className="input-field"
+                        accept=".docx"
+                        id="pdf-upload"
+                        onChange={handleFileUpload}
                         type="file"
-                        multiple // Allows selecting multiple files
-                        onChange={handleFileChange}
+                        // Allows selecting multiple files
+
                         hidden
                       />
                     </div>
@@ -675,7 +688,7 @@ rounded-xl bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
             </form>
 
             <button
-              disabled={isUploading && !selectedFile}
+              disabled={isUploading || !selectedFile || isPaymentInProgress}
               onClick={handleExtractText}
               className="text-center p-4 w-full h-16  bg-bg-purple text-white text-xl font-medium font-poppins hover:bg-purple-500 my-5 rounded-lg"
 
@@ -692,9 +705,10 @@ rounded-xl bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
 
 
       {
-        isPaymentInProgress && <PaymentBox
+        showPaymentModal && <PaymentBox
           handleCardPayment={handleCardPayment}
-          fileName={selectedFile.name}
+
+          fileName={selectedFiles.map((file) => file.name)}
           setShowPaymentModal={setShowPaymentModal}
           handleFunctionRun={handleExtractText}
           promoCode={promoCode}
@@ -702,6 +716,7 @@ rounded-xl bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
           handleCurrencyChange={handleCurrencyChange}
           featureName='Ocr Filename'
           price={price}
+          filesCount={selectedFiles.length}
         />
       }
 
