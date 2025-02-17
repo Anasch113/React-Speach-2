@@ -18,7 +18,8 @@ import { Client } from "@gradio/client";
 import LlamaAI from "llamaai";
 import { Button } from '@/components/ui/button'
 import { database } from "../../firebase"
-import { ref, set, update } from "firebase/database";
+import { ref, set, update, get, remove } from "firebase/database";
+
 import { useAuthHook } from "../../GlobalState/customHooks/useAuthHook"
 import PaymentBox from '@/components/SummriazationDepostion/PaymentBox'
 import { useCookies } from "react-cookie";
@@ -60,6 +61,7 @@ const OCR = () => {
 
 
 
+
   // Handle multiple file selection
   const handleFileChange = async (event) => {
     console.log("event.target.files", event.target.files)
@@ -78,6 +80,7 @@ const OCR = () => {
 
   console.log("selected single file", selectedFile)
 
+  console.log("selectedFiles", selectedFiles)
   // Function to extract text from multiple images
   const handleExtractText = async () => {
     if (selectedFiles.length === 0) {
@@ -85,10 +88,12 @@ const OCR = () => {
       return;
     }
 
+
     if (cost * selectedFiles.length > userBalance) {
       toast.error("Insufficient credit, Please buy more credit");
       return;
     }
+    setShowPaymentModal(false)
 
     setIsUploading(true);
     let newExtractedTexts = [];
@@ -130,7 +135,7 @@ const OCR = () => {
       });
 
       toast.success("Processing completed for all files");
-      
+
     } catch (error) {
       console.error("Error during upload or text extraction:", error);
       toast.error("Error while extracting text from images");
@@ -138,11 +143,10 @@ const OCR = () => {
       setIsUploading(false);
       setShowFormModal(false);
       setRunUseEffect(true);
+
     }
   };
 
-
-  console.log("extracted text", extractedTexts)
 
 
   const resetUploadStates = () => {
@@ -195,6 +199,7 @@ const OCR = () => {
   console.log("dbdata:", dbData)
 
 
+
   // Function to send images to Gradio model
   const handleGradioModel = async (file) => {
     const client = await Client.connect("Hammedalmodel/handwritten_to_text");
@@ -203,6 +208,7 @@ const OCR = () => {
     });
 
     const textData = result.data;
+    console.log("textdataaa")
     return textData[0];
   };
 
@@ -289,49 +295,49 @@ const OCR = () => {
   // >>>>>>>>>> Payment Intgeration start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-
-  const fileToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-  };
-
-
+ 
   // Handle returning users after Stripe payment
   useEffect(() => {
     const status = location.state?.status;
 
     if (status === "paid") {
-      const fileFromStorage = localStorage.getItem("selectedFile");
-      console.log("file from storage", fileFromStorage)
+      const userId = user.uid;
 
-      if (fileFromStorage) {
-        // Extract MIME type
-        const mimeType = fileFromStorage.match(/data:(.*?);base64,/)[1];
+      // Retrieve Base64 files from Firebase Realtime Database
+      
+      const filesRef = ref(database, `users/${userId}/payment-files-data`);
 
-        // Convert Base64 to byte array
-        const byteCharacters = atob(fileFromStorage.split(",")[1]);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
+      get(filesRef)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const filesBase64 = snapshot.val();
+            const restoredFiles = filesBase64.map((fileData) => {
+              const mimeType = fileData.base64.match(/data:(.*?);base64,/)[1];
+              const byteCharacters = atob(fileData.base64.split(",")[1]);
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
 
-        // Create File object
-        const file = new File([byteArray], "uploadedImage", { type: mimeType });
-        console.log("converted file", file)
-        setSelectedFiles(file);
-        setShowFormModal(true)
-        toast.success("Continue your work");
-      } else {
-        alert("Session expired. Please re-upload the file.");
-      }
+              // Create File object with the original filename
+              return new File([byteArray], fileData.name, { type: mimeType });
+            });
 
-      // Clear stored file after retrieval
-      localStorage.removeItem("selectedFile");
+            console.log("Restored files:", restoredFiles);
+            setSelectedFiles(restoredFiles);
+            setShowFormModal(true);
+            toast.success("Continue your work");
+          } else {
+            alert("Session expired. Please re-upload the files.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error retrieving files from Firebase:", error);
+        });
+
+      // Clear stored files in Firebase Realtime Database
+      set(ref(database, `users/${userId}/payment-files-data`), null);
 
       setIsPaymentInProgress(false);
       setIsPaymentDone(true);
@@ -343,37 +349,62 @@ const OCR = () => {
 
 
 
+
+
+
+
+  const filesToBase64 = (files) => {
+    console.log("files ins base64 function", files)
+    return Promise.all(
+      files.map((file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () =>
+            resolve({ base64: reader.result, name: file.name });
+          reader.onerror = (error) => reject(error);
+        });
+      })
+    );
+  };
+
+
+
+
+
   // Function to create Stripe session
   const createStripeSession = async () => {
-    const userId = user.uid
-    const userEmail = user.email
+    const userId = user.uid;
+    const userEmail = user.email;
+const price = cost * selectedFiles.length
+    // Convert files to Base64
+    const filesBase64 = await filesToBase64(selectedFiles);
 
-    // Convert file to Base64 before storing
-    const base64File = await fileToBase64(selectedFile);
-    console.log("Base64 File:", base64File);
+    // Store Base64 in Firebase Realtime Database
 
-    // Store Base64 in localStorage (larger capacity than cookies)
-    localStorage.setItem("selectedFile", base64File);
+    const filesRef = ref(database, `users/${userId}/payment-files-data`);
+    await set(filesRef, filesBase64);
+
     try {
-
-      const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/create-stripe-session-new`, {
-        userId: userId,
-        cost: cost,
-        promoCode: promoCode,
-        currency: currency,
-        userEmail: userEmail,
-        feature: 'ocr'
-      });
-
+      const response = await axios.post(
+        `${import.meta.env.VITE_HOST_URL}/payment-system/create-stripe-session-new`,
+        {
+          userId: userId,
+          cost: price,
+          promoCode: promoCode,
+          currency: currency,
+          userEmail: userEmail,
+          feature: "ocr",
+        }
+      );
 
       return response.data;
-    }
-
-    catch (error) {
+    } catch (error) {
       console.error("Error creating Stripe session", error);
       return null;
     }
   };
+
 
   const handleCardPayment = async () => {
 
@@ -383,10 +414,7 @@ const OCR = () => {
         toast("Please select a file before proceeding.");
         return;
       }
-      if (selectedFiles.length > 1) {
-        toast("Card method not available for multiple uploads");
-        return;
-      }
+      toast.success("In progress, please wait...")
 
       // For direct method
       const stripeSession = await createStripeSession();
@@ -531,7 +559,9 @@ const OCR = () => {
                     <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4  h-16
                   rounded-xl mt-4 bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2'>
                         <FaCloudUploadAlt size={25} /> <p>Upload Image</p>
+
                       </span></button>
+
                     <span>
                       <a onClick={() => {
                         setTemplateStatus('default')
@@ -639,7 +669,7 @@ rounded-xl bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
               onClick={handleFormClick}
               className="flex flex-col items-center justify-center border-2 border-blue-500 h-64 overflow-y-auto cursor-pointer rounded-md md:w-[400px] w-72"
             >
-              {isUploading && selectedFile ? (
+              {isUploading ? (
                 <div className="flex items-center flex-col gap-2">
 
                   <span className='spinner'></span>
@@ -688,7 +718,7 @@ rounded-xl bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
             </form>
 
             <button
-              disabled={isUploading || !selectedFile || isPaymentInProgress}
+              disabled={isUploading || !selectedFiles.length > 0 || isPaymentInProgress}
               onClick={handleExtractText}
               className="text-center p-4 w-full h-16  bg-bg-purple text-white text-xl font-medium font-poppins hover:bg-purple-500 my-5 rounded-lg"
 

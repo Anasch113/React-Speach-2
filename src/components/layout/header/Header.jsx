@@ -58,6 +58,7 @@ const Header = () => {
         { label: 'Transcript Summarization', link: '/transcript-summarization' },
         { label: 'File Note', link: '/file-note' },
         { label: 'Audio Transcription', link: '/audio-transcription' },
+        { label: 'Handwriting Converter ', link: '/ocr' },
 
     ];
 
@@ -66,8 +67,8 @@ const Header = () => {
         { label: 'AI Live Captioning', link: '/ai-live-captioning' },
         { label: 'Audio Transcription', link: '/corporate-audio-transcription' },
         { label: 'Resync AI', link: '/resync-ai' },
-        { label: 'Meeting Note', link: '/meeting-note' },
-        { label: 'Transcript Summarization', link: '/corporate-transcript-summarization' },
+        // { label: 'Meeting Note', link: '/meeting-note' },
+        // { label: 'Transcript Summarization', link: '/corporate-transcript-summarization' },
         // Add more corporate & government services here...
     ];
 

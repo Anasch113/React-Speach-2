@@ -1,8 +1,16 @@
 import video from "../../assets/hero-video.mp4";
 
 import Wrapper from "../layout/wrapper/Wrapper"
-
+import { useState } from "react";
 const Hero = () => {
+   const [isWhatWeDoOpen, setIsWhatWeDoOpen] = useState(false);
+
+ const toggleWhatWeDoDropdown = () => {
+        setIsWhatWeDoOpen(prevState => !prevState);
+       
+    };
+
+
   return (
     <div className="mt-28 md:mt-10">
       <div className="">
@@ -28,7 +36,7 @@ const Hero = () => {
                 <p className="text-left mx-5 fade-in-image">
                 Delivering trusted speech-to-text and litigation support services across the Asia Pacific and the USA since 2004, we specialise in human-delivered solutions, including legal videography, onsite and remote court reporting, legal transcript summarization, client interview notes, audio transcription, and live stenocaptioning (CART) for any field. Our offerings are complemented by secure cutting-edge AI based voice capture options, offering flexible and cost-effective 24-7 secure online services tailored to your needs.
                 </p>
-                <button className=" fade-in-image mt-10 text-xl font-semibold flex items-center mx-auto lg:mx-0">
+                <button onClick={{toggleWhatWeDoDropdown}} className=" fade-in-image mt-10 text-xl font-semibold flex items-center mx-auto lg:mx-0">
                   See what we do{" "}
 
                   <svg
@@ -48,6 +56,55 @@ const Hero = () => {
             </div>
           </div>
         </Wrapper>
+        
+                            {isWhatWeDoOpen && (
+                                <ul ref={whatWeDoRef} className="absolute z-[999] w-full ease-in duration-200 transition-all  bg-[#202020] text-white   translate-y-[16.8rem] space-y-2 shadow-lg">
+                                    <div className='max-w-screen-2xl px-20 py-10'>
+                                        <div>
+        
+                                            <h1 className='flex items-center gap-5 cursor-pointer    '>
+        
+                                                <span className='hover-underline-animation'>
+                                                    What we do
+                                                </span>
+                                                <IoIosArrowForward size={20} className='bg-purple-600 w-8 h-5 p-[2px]' /></h1>
+        
+        
+                                            <p className='mb-7 text-[#777]'>Services</p>
+                                            <div className="grid grid-cols-2 gap-10">
+                                                {/* Legal Column */}
+                                                <div>
+                                                    <h2 className="text-2xl font-bold mb-4">Legal</h2>
+                                                    <div className='grid grid-cols-1'>
+                                                        {legalServices.map((service) => (
+                                                            <div key={service.label} className='p-2'>
+                                                                <a href={service.link} className='hover-underline-animation font-normal'>
+                                                                    {service.label}
+                                                                </a>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+        
+                                                {/* Corporate & Government Column */}
+                                                <div>
+                                                    <h2 className="text-2xl font-bold mb-4">Corporate & Government</h2>
+                                                    <div className='grid grid-cols-1'>
+                                                        {corporateGovernmentServices.map((service) => (
+                                                            <div key={service.label} className='p-2'>
+                                                                <a href={service.link} className='hover-underline-animation font-normal'>
+                                                                    {service.label}
+                                                                </a>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+        
+                                    </div>
+                                </ul>
+                            )}
       </div>
     </div>
   );
