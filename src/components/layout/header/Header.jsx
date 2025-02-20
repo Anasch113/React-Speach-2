@@ -15,7 +15,7 @@ const Header = () => {
     const whatWeAreRef = useRef(null);
 
     const navigate = useNavigate();
-    const { user, logOut } = useUserAuth();
+    const { user, logOut, userBalance } = useUserAuth();
 
 
     const handleLogout = async () => {
@@ -265,7 +265,7 @@ const Header = () => {
                     {
                         !user && <li className="relative cursor-pointer flex items-center gap-x-2 hover:text-[#777]" onClick={toggleWhatWeAreDropdown}>
                             <span className=''>
-                            Who we are
+                                Who we are
                             </span>
                             <span className=''>
                                 <IoIosArrowDown />
@@ -288,7 +288,7 @@ const Header = () => {
                                 <div>
                                     <h1 className='flex items-center gap-5 cursor-pointer    '>
                                         <span className='hover-underline-animation cursor-pointer'>
-                                        About Captify.live
+                                            About Captify.live
                                         </span>
                                         <IoIosArrowForward size={20} className='bg-purple-600 w-8 h-5 p-[2px]' /></h1>
                                     {/* <p className='mb-7 text-[#777]'>Under Leaders</p> */}
@@ -315,14 +315,16 @@ const Header = () => {
                     user ? (
                         <div className=" md:flex justify-end items-center -mt-6 gap-x-6 mr-20 ">
 
+
+                            <span className='border p-3 rounded-lg]'>
+                                <p className=''>Credit Balance : {userBalance}$ </p>
+                            </span>
+
                             <a onClick={handleLogout} className='cursor-pointer z-[999]'>
 
                                 <button className='hover:text-[#777] text-white '>Logout</button>
 
                             </a>
-
-
-
                         </div>
 
 

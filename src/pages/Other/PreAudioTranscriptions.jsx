@@ -52,7 +52,7 @@ const PreAudioTranscriptions = () => {
 
     const [isPaymentDone, setIsPaymentDone] = useState(false)
 
-    const { user, userBalance, file, setFile, filename, setFileName, cloudUrl, setCloudUrl, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, fileDurations, setFileDurations, cost, setCost, showFormModal, setShowFormModal, showPaymentModal, setShowPaymentModal, uploadingfileNames, setUploadingFileNames, fileNames, setFileNames, chunksLoading, setChunksLOading, handleFileChange, fileDuration, isPaymentInProgress, setIsPaymentInProgress } = useUserAuth();
+    const { user, userBalance, file, setFile, filename, setFileName, cloudUrl, setCloudUrl, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, fileDurations, setFileDurations, cost, setCost, showFormModal, setShowFormModal, showPaymentModal, setShowPaymentModal, uploadingfileNames, setUploadingFileNames, fileNames, setFileNames, chunksLoading, setChunksLOading, handleFileChange, fileDuration, isPaymentInProgress, setIsPaymentInProgress, largeFileProgress } = useUserAuth();
 
 
 
@@ -473,6 +473,7 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                                     <img className='w-6 h-6 my-3' src="/checked.png" alt="img" />
                                 </section>
                             }
+
                             {
                                 isUpload && <div className='flex  items-center flex-col'>
 
@@ -495,7 +496,14 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
 
                                     {
                                         uploadingfileNames.map((file, i) => (
-                                            <p key={i}>Uploading... {file}</p>
+                                            <div key={i}>
+                                                <p className='py-1 text-center'>{`${largeFileProgress}%`}</p>
+                                                <div className="progress-bar" style={{ border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden', width: '100%' }}>
+                                                    <div className="progress-fill" style={{ width: `${largeFileProgress}%`, backgroundColor: '#4caf50', height: '15px' }}></div>
+                                                </div>
+                                                <p key={i}>Uploading... {file}</p>
+                                            </div>
+
                                         ))
                                     }
 
@@ -551,9 +559,9 @@ rounded-md bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purp
                     currentBalance={userBalance}
                     handleTranscriptions={handleTranscriptions}
                     setIsPaymentDone={setIsPaymentDone}
-                    promoCode = {promoCode}
-                    handlePromodeCodeChange = {handlePromodeCodeChange}
-                    onCurrencyChange = {handleCurrencyChange}
+                    promoCode={promoCode}
+                    handlePromodeCodeChange={handlePromodeCodeChange}
+                    onCurrencyChange={handleCurrencyChange}
 
 
                 />

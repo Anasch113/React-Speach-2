@@ -11,6 +11,7 @@ export function uploadingFunctions() {
     const [cloudUrl, setCloudUrl] = useState("")
     const [fileContent, setFileContent] = useState("")
     const [progress, setProgress] = useState(0)
+    const [largeFileProgress, setLargeFileProgress] = useState(0)
     const [isUpload, setIsUpload] = useState(false)
     const [cloudUrls, setCloudUrls] = useState([]);
     const [fileDurations, setFileDurations] = useState([]);
@@ -197,7 +198,8 @@ export function uploadingFunctions() {
                         // Update the progress percentage
                         const progress = Math.round((currentChunk / totalChunks) * 100);
                         console.log("Progress during chunk file upload:", progress);
-                        toast(`In progress, ${file.name && file.name} ${progress}% uploaded `, { icon: '👏' });
+                        setLargeFileProgress(progress)
+                        // toast(`In progress, ${file.name && file.name} ${progress}% uploaded `, { icon: '👏' });
 
                         await uploadChunk(nextStart, nextEnd); // Ensure the next chunk is awaited
                     } else {
@@ -364,7 +366,7 @@ export function uploadingFunctions() {
     };
 
     return {
-        file, setFile, filename, setFileName, cloudUrl, setCloudUrl, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, fileDurations, setFileDurations, cost, setCost, showFormModal, setShowFormModal, showPaymentModal, setShowPaymentModal, uploadingfileNames, setUploadingFileNames, fileNames, setFileNames, chunksLoading, setChunksLOading, handleFileChange, fileDuration, isPaymentInProgress, setIsPaymentInProgress, handleTextFileChange, fileContent, setFileContent
+        file, setFile, filename, setFileName, cloudUrl, setCloudUrl, progress, setProgress, isUpload, setIsUpload, cloudUrls, setCloudUrls, fileDurations, setFileDurations, cost, setCost, showFormModal, setShowFormModal, showPaymentModal, setShowPaymentModal, uploadingfileNames, setUploadingFileNames, fileNames, setFileNames, chunksLoading, setChunksLOading, handleFileChange, fileDuration, isPaymentInProgress, setIsPaymentInProgress, handleTextFileChange, fileContent, setFileContent, largeFileProgress
     }
 }
 

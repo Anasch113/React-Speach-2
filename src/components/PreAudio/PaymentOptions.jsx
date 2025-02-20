@@ -30,8 +30,10 @@ const PaymentOptions = ({
 
 
     return (
-        <div className="fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 py-3">
-            <div className="bg-bg-navy-blue h-[550px] md:w-[500px] w-[330px] p-5 rounded-lg overflow-y-auto overflow-x-hidden">
+        <div className="absolute top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 py-3">
+
+
+            <div className="bg-bg-navy-blue min-h-[550px] md:w-[500px] w-[330px] p-5 rounded-xl overflow-y-auto overflow-x-hidden">
 
                 <div className='w-full  flex flex-row items-center justify-end  gap-10 px-5 py-5'>
 
@@ -43,11 +45,6 @@ const PaymentOptions = ({
                     <MdClose onClick={() => setShowPaymentModal(false)} className='text-end w-10 h-10 cursor-pointer hover:bg-gray-800 p-2 rounded-full ' size={25} />
 
                 </div>
-
-
-
-
-
 
 
 
