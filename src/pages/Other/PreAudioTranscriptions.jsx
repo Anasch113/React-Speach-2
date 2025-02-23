@@ -84,8 +84,8 @@ const PreAudioTranscriptions = () => {
     useEffect(() => {
 
         if (paidCloudUrl) {
-            setShowFormModal(true)
-            toast.success("Continue your transcriptions")
+
+
             setCloudUrls(paidCloudUrl)
             setFileNames(paidFilename)
             setFileDurations(paidFileDuration)
@@ -93,11 +93,17 @@ const PreAudioTranscriptions = () => {
             setFile("full")
             setIsPaymentDone(true)
 
+
         }
         // Clear the state from the URL
         navigate(location.pathname, { replace: true });
     }, [paidCloudUrl])
 
+    useEffect(() => {
+        if (isPaymentDone) {
+            handleTranscriptions();
+        }
+    }, [isPaymentDone]);  // Run when `isPaymentDone` updates
 
     // >>>>>>>>> Additional Info code >>>>>>>>>>>>>>>>>>
 
@@ -207,10 +213,10 @@ const PreAudioTranscriptions = () => {
     };
 
 
-    const handleTranscriptions = async (event) => {
+    const handleTranscriptions = async () => {
 
 
-        event.preventDefault();
+
         toast.success("Transcriptions started")
 
         setShowPaymentModal(false)

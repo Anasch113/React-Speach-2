@@ -3,7 +3,7 @@ import { RxDashboard } from "react-icons/rx";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdPayment } from "react-icons/md";
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import { useUserAuth } from '../../context/UserAuthContext';
 
@@ -39,6 +39,17 @@ const Transcripted = ({
 
 
     }
+
+    const tableBodyRef = useRef(null);
+
+
+
+    useEffect(() => {
+        if (tableBodyRef.current) {
+            tableBodyRef.current.scrollTop = -10000; // Force scroll to top
+        }
+    }, [dbData]); // Runs when new files are added
+    
 
 
     return (
@@ -93,7 +104,7 @@ rounded-md bg-bg-purple text-white md:text-xl font-medium font-roboto hover:bg-p
 
                         </thead>
                         <div className=' my-5  border '></div>
-                        <tbody className='flex flex-col-reverse max-h-[400px] overflow-y-scroll  py-4'>
+                        <tbody ref={tableBodyRef} className='flex flex-col-reverse max-h-[400px] overflow-y-auto  py-4'>
 
 
 

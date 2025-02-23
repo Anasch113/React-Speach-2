@@ -220,13 +220,12 @@ export function UserAuthContextProvider({ children }) {
 
           console.log(userData)
 
-
           if (userData) {
-            const balance = userData.balance;
-
-            setUserBalance(balance)
-            console.log("balance of user", userData.balance)
-          }
+            let balance = parseFloat(userData.balance).toFixed(1); // Ensure 1 decimal place
+            setUserBalance(balance);
+            console.log("Balance of user:", balance + "$");
+        }
+        
           return
         });
       } catch (error) {
