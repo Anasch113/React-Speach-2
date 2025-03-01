@@ -9,11 +9,10 @@ import Spinner from '../PreAudio/Spinner'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { ref, update } from "firebase/database"
 import { database } from '../../firebase'
-
-
+import { useSelector, useDispatch } from 'react-redux'
+import { setActiveSection } from '../../GlobalState/features/UXSlice'
 const MainLayout = ({
-    activeSection,
-    setActiveSection,
+
     checkSection
 }) => {
 
@@ -33,8 +32,12 @@ const MainLayout = ({
     const [selectedValue, setSelectedValue] = useState('');
     const [isStepOneDone, setIsStepOneDone] = useState(false)
 
+    const dispatch = useDispatch();
+    const { activeSection } = useSelector((state) => state.ux.summaryDeposition)
 
-    const { user, cloudUrls, fileContent, setFileContent, userBalance, setIsPaymentInProgress, fileNames, setFileNames , cost} = useUserAuth()
+    const { user, cloudUrls, fileContent, setFileContent, userBalance, setIsPaymentInProgress, fileNames, setFileNames, cost } = useUserAuth()
+
+    console.log("active section:", activeSection)
 
     // uploading section code 
     console.log("cost of deposition :", cost)
@@ -68,7 +71,7 @@ const MainLayout = ({
     const paidDeponant = location.state?.paidDeponant;
     const paidFileNames = location.state?.paidFileNames;
 
-  
+
     console.log("users balance in pre audio", userBalance)
 
 
@@ -81,7 +84,8 @@ const MainLayout = ({
             setSelectedValue(paidDeponant)
             setSummaryName(paidSummaryName)
             setFileNames(paidFileNames)
-            setActiveSection("upload")
+            dispatch(setActiveSection("upload"))
+
             setIsStepOneDone(true)
             toast.success("Continue your Depsotion")
 
@@ -95,28 +99,28 @@ const MainLayout = ({
     }, [paidFileContent])
 
 
-     // >>>>>>>>> Additional Info code >>>>>>>>>>>>>>>>>>
-    
-    
-        const [promoCode, setPromoCode] = useState("");
-    
-        const [currency, setCurrency] = useState('USD'); // Default to USD
-    
-    
-        const handlePromodeCodeChange = (e) => {
-            const value = e.target.value;
-            setPromoCode(value)
-        };
-    
-    
-        const handleCurrencyChange = (newCurrency) => {
-    
-            setCurrency(newCurrency); // Update the selected currency
-        };
-        console.log("selected currency:", currency)
-    
-    
-        // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // >>>>>>>>> Additional Info code >>>>>>>>>>>>>>>>>>
+
+
+    const [promoCode, setPromoCode] = useState("");
+
+    const [currency, setCurrency] = useState('USD'); // Default to USD
+
+
+    const handlePromodeCodeChange = (e) => {
+        const value = e.target.value;
+        setPromoCode(value)
+    };
+
+
+    const handleCurrencyChange = (newCurrency) => {
+
+        setCurrency(newCurrency); // Update the selected currency
+    };
+    console.log("selected currency:", currency)
+
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 
@@ -124,7 +128,7 @@ const MainLayout = ({
     const createStripeSession = async () => {
         const userId = user.uid
         const userEmail = user.email
-        
+
         try {
 
             const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/create-stripe-session-sd`, {
@@ -194,7 +198,7 @@ const MainLayout = ({
 
         toast.success("Deposition started")
         setProcessing(true)
-        setActiveSection("transcriptions")
+        dispatch(setActiveSection("transcriptions"))
 
 
         try {
@@ -260,7 +264,7 @@ const MainLayout = ({
                 }
             });
             const data = response.data
-          
+
 
 
 
@@ -300,7 +304,7 @@ const MainLayout = ({
             const message = saveResponse.data.message;
             toast.success(message)
 
-           
+
             // Update user balance in Firebase
             const newBalance = userBalance - cost; // Assuming `cost` is the transcription cost in state
             await update(ref(database, `users/${user.uid}/credit-payment`), {
@@ -381,7 +385,7 @@ const MainLayout = ({
                     setDbData(res.data)
 
                     if (res.data.length > 0 && !paidFileContent) {
-                        setActiveSection("transcriptions")
+                        dispatch(setActiveSection("transcriptions"))
                     }
 
                 }).catch((error) => {
@@ -415,14 +419,14 @@ const MainLayout = ({
                     <li
                         className={`cursor-pointer hover:text-text-gray-light pb-2 ${activeSection === 'upload' ? 'border-b-2 border-purple-500' : ''
                             }`}
-                        onClick={() => setActiveSection('upload')}
+                        onClick={() => dispatch(setActiveSection('upload'))}
                     >
                         Upload Files
                     </li>
                     <li
                         className={`cursor-pointer hover:text-text-gray-light pb-2 ${activeSection === 'transcriptions' ? 'border-b-2 border-purple-500' : ''
                             }`}
-                        onClick={() => setActiveSection('transcriptions')}
+                        onClick={() => dispatch(setActiveSection('transcriptions'))}
                     >
                         Your Transcriptions
                     </li>

@@ -71,7 +71,7 @@ function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
     const newIndex = calculateHighlightedIndex(currentTime);
 
   };
- 
+
 
   return (
     <div>
@@ -102,14 +102,17 @@ function CustomAudioPlayer({ audioUrl, calculateHighlightedIndex }) {
           /> */}
         </div>
 
-        <p className='text-center'>{currentTime && `${Math.floor(currentTime)}s`}</p>
+        <p className='text-center'>
+          {currentTime && `${Math.floor(currentTime / 60)}:${String(Math.floor(currentTime % 60)).padStart(2, '0')}`}
+        </p>
+
         <div className='flex items-center gap-1 mx-4'>
 
 
           {
             volume === "0" ? (<FaVolumeMute size={22} />) : (<FaVolumeUp size={22} />)
           }
-          
+
           <input
             type="range"
             min="0"
