@@ -9,6 +9,7 @@ import jsPDF from 'jspdf';
 import "jspdf-autotable";
 import { useSelector, useDispatch } from 'react-redux'
 import { setActiveSection } from '../../GlobalState/features/UXSlice'
+import Sidebar from '@/layout/Sidebar';
 
 
 
@@ -157,109 +158,116 @@ const ViewSummaryDeposition = () => {
     dispatch(setActiveSection('transcriptions'))
     navigate("/summarization-deposition")
   }
+
+
+  console.log("transcriptions:", transcriptions)
   return (
-    <div className='w-full min-h-screen flex flex-col items-center justify-center p-5'>
-
-      <div className=' w-full flex'>
-        <span className='w-32'></span>
-        <span className=' flex list-none gap-10 '>
-          <Button
-            className={`cursor-pointer hover:text-text-gray-light pb-2 
-              }`}
-            variant={"outline"}
-            onClick={handleUploadSection}
-
-
-
-          >
-            Upload Files
-          </Button>
-          <Button
-            variant={"outline"}
-            className={`cursor-pointer hover:text-text-gray-light pb-2 
-              }`}
-            onClick={handleTranscriptionsSection}
-
-
-
-          >
-            Your Transcriptions
-          </Button>
-        </span>
-
+    <div className='w-full min-h-screen flex p-5'>
+      <div>
+        <Sidebar/>
       </div>
+      <div className='w-full min-h-screen flex flex-col items-center justify-center p-5'>
 
-      <div className='w-full'>
+        <div className=' w-full flex'>
+          <span className='w-32'></span>
+          <span className=' flex list-none gap-10 '>
+            <Button
+              className={`cursor-pointer hover:text-text-gray-light pb-2 
+              }`}
+              variant={"outline"}
+              onClick={handleUploadSection}
 
 
-        {
+
+            >
+              Upload Files
+            </Button>
+            <Button
+              variant={"outline"}
+              className={`cursor-pointer hover:text-text-gray-light pb-2 
+              }`}
+              onClick={handleTranscriptionsSection}
 
 
-          transcriptions.depositionType === "pageLine" ? (
-            <div className='flex flex-col items-center  w-full'>
 
-              <span className='flex w-full justify-between p-5 items-center md:flex-row flex-col'>
-                <h1 className='text-2xl font-bold font-poppins my-5'>Page Line Summary</h1>
-                <span className=''>
-                  <Button onClick={downloadPdf} className="mx-5 rounded-lg font-poppins" variant={"customPurple"}>Download PDF</Button>
-                  <Button onClick={downloadTxt} className="mx-5 rounded-lg font-poppins" variant={"customPurple"}>Download Text File</Button>
-                  <Button onClick={() => {
-                    setShowDeleteModel(true)
-                  }} className=" rounded-lg font-poppins" variant={"destructive"}>Delete</Button>
+            >
+              Your Transcriptions
+            </Button>
+          </span>
+
+        </div>
+
+        <div className='w-full'>
+
+
+          {
+
+
+            transcriptions.depositionType === "pageLine" ? (
+              <div className='flex flex-col items-center  w-full'>
+
+                <span className='flex w-full justify-between p-5 items-center md:flex-row flex-col'>
+                  <h1 className='text-2xl font-bold font-poppins my-5'>Page Line Summary</h1>
+                  <span className=''>
+                    <Button onClick={downloadPdf} className="mx-5 rounded-lg font-poppins" variant={"customPurple"}>Download PDF</Button>
+                    <Button onClick={downloadTxt} className="mx-5 rounded-lg font-poppins" variant={"customPurple"}>Download Text File</Button>
+                    <Button onClick={() => {
+                      setShowDeleteModel(true)
+                    }} className=" rounded-lg font-poppins" variant={"destructive"}>Delete</Button>
+                  </span>
                 </span>
-              </span>
 
-              <table className='w-2/3  p-10 min-h-screen border'>
-                <thead>
-                  <tr className='flex w-full border items-center justify-between p-5'>
-                    <th className='w-1/3 text-left text-lg'>Timestamp</th>
-                    <th className='w-1/3 text-left text-lg'>Title</th>
-                    <th className='w-1/3 text-left text-lg'>Summary</th>
-                  </tr>
-                </thead>
-                <tbody>
-
-                  {transcriptions.segments && transcriptions.segments.map((segment, index) => (
-                    <tr ref={contentRef} key={index} className='flex w-full items-center justify-between gap-10 border p-5'>
-
-                      <td className='w-1/3 my-5'>{transcriptions.timestamps[index]}</td>
-                      <td className='w-1/3 my-5 '>{segment}</td>
-                      <td className='w-1/3 my-5'>{transcriptions.summaries[index]}</td>
+                <table className='w-2/3  p-10 min-h-screen border'>
+                  <thead>
+                    <tr className='flex w-full border items-center justify-between p-5'>
+                      <th className='w-1/3 text-left text-lg'>Timestamp</th>
+                      <th className='w-1/3 text-left text-lg'>Title</th>
+                      <th className='w-1/3 text-left text-lg'>Summary</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className=' md:p-5  p-2 '>
-              <span className='flex    justify-between p-5 items-center md:flex-row flex-col'>
-                <h1 className='text-2xl font-bold font-poppins my-5'>Narrative Summary</h1>
-                <span className=''>
-                  <Button onClick={narrativeDownloadPdf} className="mx-5 rounded-lg font-poppins" variant={"customPurple"}>Download PDF</Button>
-                  <Button onClick={narrativeDownloadTxt} className="mx-5 rounded-lg font-poppins" variant={"customPurple"}>Download Text File</Button>
-                  <Button onClick={() => {
-                    setShowDeleteModel(true)
-                  }} className=" rounded-lg font-poppins" variant={"destructive"}>Delete</Button>
-                </span>
-              </span>
-              <div >
-                {transcriptions.narrativeSummary}
+                  </thead>
+                  <tbody>
+
+                    {transcriptions.segments && transcriptions.segments.map((segment, index) => (
+                      <tr ref={contentRef} key={index} className='flex w-full items-center justify-between gap-10 border p-5'>
+
+                        <td className='w-1/3 my-5'>{transcriptions.timestamps[index]}</td>
+                        <td className='w-1/3 my-5 '>{segment}</td>
+                        <td className='w-1/3 my-5'>{transcriptions.summaries[index]}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            </div>
-          )
+            ) : (
+              <div className=' md:p-5  p-2 '>
+                <span className='flex    justify-between p-5 items-center md:flex-row flex-col'>
+                  <h1 className='text-2xl font-bold font-poppins my-5'>Narrative Summary</h1>
+                  <span className=''>
+                    <Button onClick={narrativeDownloadPdf} className="mx-5 rounded-lg font-poppins" variant={"customPurple"}>Download PDF</Button>
+                    <Button onClick={narrativeDownloadTxt} className="mx-5 rounded-lg font-poppins" variant={"customPurple"}>Download Text File</Button>
+                    <Button onClick={() => {
+                      setShowDeleteModel(true)
+                    }} className=" rounded-lg font-poppins" variant={"destructive"}>Delete</Button>
+                  </span>
+                </span>
+                <div >
+                  {transcriptions.narrativeSummary}
+                </div>
+              </div>
+            )
+          }
+        </div>
+        {
+          showDeleteModel && <DeleteModal
+            deleteTranscript={deleteTranscription}
+            setShowDeleteModal={setShowDeleteModel}
+            filename={transcriptions.summaryName}
+          />
         }
+
       </div>
-      {
-        showDeleteModel && <DeleteModal
-          deleteTranscript={deleteTranscription}
-          setShowDeleteModal={setShowDeleteModel}
-          filename={transcriptions.summaryName}
-        />
-      }
 
     </div>
-
-
 
 
   )

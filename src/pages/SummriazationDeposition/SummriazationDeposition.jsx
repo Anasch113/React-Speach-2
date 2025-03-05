@@ -1,4 +1,5 @@
 import MainLayout from '@/components/SummriazationDepostion/MainLayout'
+import Sidebar from '@/layout/Sidebar';
 import React, { useEffect, useState } from 'react'
 
 const SummriazationDeposition = () => {
@@ -9,7 +10,11 @@ const SummriazationDeposition = () => {
         setCheckSection(true)
     }, [])
     return (
-        <div className='min-h-screen w-full'>
+        <div className='min-h-screen flex w-full p-4'>
+            <div className=''>
+                <Sidebar />
+            </div>
+
             <MainLayout
                 activeSection={activeSection}
                 setActiveSection={setActiveSection}

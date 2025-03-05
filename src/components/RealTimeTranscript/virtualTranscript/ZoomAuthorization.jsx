@@ -145,7 +145,7 @@ const ZoomAuthorization = ({
 
                                 <button onClick={() => {
                                     navigate("/user-guide-to-add/remove-app-from-zoom-account")
-                                }} className='underline text-gray-300 hover:text-gray-300/50'> You can also visit our documentation here</button>
+                                }} className='underline text-gray-300 hover:text-gray-300/50'> Visit our user guide here</button>
                             </div>
 
                         </DialogDescription>
