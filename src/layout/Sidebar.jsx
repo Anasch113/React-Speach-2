@@ -378,11 +378,11 @@ function Sidebar({ isPurchase, minutes }) {
           </button>
           {openCorporate && (
             <div className="ml-6">
-              <Link to={"/human-live-stenocaptioning"}>
+              {/* <Link to={"/human-live-stenocaptioning"}>
                 <div className={`p-2 flex rounded-md ${isActive("/human-live-stenocaptioning") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
                   <span>Human Live Stenocaptioning</span>
                 </div>
-              </Link>
+              </Link> */}
 
               {!isLiveTranscript ? (
                 <Link onClick={startLiveTranscript}>
@@ -390,7 +390,7 @@ function Sidebar({ isPurchase, minutes }) {
                     {/* <div className="mr-2 mt-1">
                       <AiOutlineAudio />
                     </div> */}
-                    <button>AI Live Captioning</button>
+                    <button>Realtime Transcriptions</button>
                   </div>
                 </Link>
               ) : (

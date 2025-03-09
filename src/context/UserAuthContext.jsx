@@ -221,11 +221,12 @@ export function UserAuthContextProvider({ children }) {
           console.log(userData)
 
           if (userData) {
-            let balance = parseFloat(userData.balance).toFixed(1); // Ensure 1 decimal place
+            let balance = parseFloat(userData.balance).toFixed(2); // Ensure 1 decimal place
             setUserBalance(balance);
             console.log("Balance of user:", balance + "$");
-        }
-        
+          }
+
+
           return
         });
       } catch (error) {
@@ -247,7 +248,7 @@ export function UserAuthContextProvider({ children }) {
   //       const dataBaseRef = ref(database, `users/${user.uid}/mfa`);
   //       const snapshot = await get(dataBaseRef);
   //       const mfaData = snapshot.val()
-       
+
   //       setMfaData(snapshot.val());
 
   //     }

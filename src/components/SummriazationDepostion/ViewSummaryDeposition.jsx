@@ -220,7 +220,7 @@ const ViewSummaryDeposition = () => {
                 <table className='w-2/3  p-10 min-h-screen border'>
                   <thead>
                     <tr className='flex w-full border items-center justify-between p-5'>
-                      <th className='w-1/3 text-left text-lg'>Timestamp</th>
+                      <th className='w-1/3 text-left text-lg'>Page References</th>
                       <th className='w-1/3 text-left text-lg'>Title</th>
                       <th className='w-1/3 text-left text-lg'>Summary</th>
                     </tr>

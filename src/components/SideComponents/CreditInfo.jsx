@@ -113,8 +113,8 @@ const CreditInfo = () => {
 
 
                     {/* Showing current Credit  */}
-                    <span className='flex  items-center gap-3 py-1'> <MdOutlineCreditScore size={30} /> <p className='font-medium text-lg'>Current Balance </p><p className='text-lg'> {userBalance.toFixed(2)} $ </p></span>
-                    <span className='flex  items-center gap-3 py-1'> <CiTimer size={30} /> <p className='font-medium text-lg'>Total Minutes </p><p className='text-lg'> {userBalance.toFixed(2) * 2} min </p></span>
+                    <span className='flex  items-center gap-3 py-1'> <MdOutlineCreditScore size={30} /> <p className='font-medium text-lg'>Current Balance </p><p className='text-lg'> {userBalance} $ </p></span>
+                    <span className='flex  items-center gap-3 py-1'> <CiTimer size={30} /> <p className='font-medium text-lg'>Total Minutes </p><p className='text-lg'> {userBalance * 2} min </p></span>
 
                     {/* Buy Credit Inputs  */}
                     <span className=' flex md:flex-row gap-2 my-1 flex-col'>

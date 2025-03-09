@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useUserAuth } from '../../context/UserAuthContext'
 import { database } from "../../firebase"
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ref, onValue, update } from "firebase/database"
+import { ref, onValue, update, set } from "firebase/database"
 import toast from "react-hot-toast"
 import { useDispatch } from "react-redux";
 
@@ -88,14 +88,17 @@ const CreditSuccess = () => {
 
                 if (data.message === "Payment successful") {
                     const userRef = ref(database, `users/${user.uid}/credit-payment`);
-                    update(userRef, {
-
+                    console.log("dataDetails.userBalance + dataDetails.total", dataDetails.userBalance, '+', dataDetails.total)
+                    const balance = Number(dataDetails.userBalance) + Number(dataDetails.total);
+                    set(userRef, {
                         transcriptionsSessionId: '',
-                        balance: dataDetails.userBalance + dataDetails.total,
+                        total: dataDetails.total,
+                        balance: balance, // Ensures numeric addition
                         method: dataDetails.method,
-                        status: "paid"
-
+                        status: "paid",
+                        date: Date.now()
                     });
+
 
                     toast.success("Purchase Completed")
                     setIsOk(true)
