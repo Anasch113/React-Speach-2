@@ -15,7 +15,8 @@ const LiveTranscriptSuccess = () => {
     const [dataDetails, setDataDetails] = useState(({
         minutes: 0,
         price: 0,
-        method: ""
+        method: "",
+        xeroInvoiceID: ''
     }));
     const [trigger, setTrigger] = useState(false);
 
@@ -46,6 +47,8 @@ const LiveTranscriptSuccess = () => {
                             price: userData.price,
                             minutes: userData.minutes,
                             method: userData.method,
+                            xeroInvoiceID: userData.xeroInvoiceID
+
 
 
                         })
@@ -80,7 +83,10 @@ const LiveTranscriptSuccess = () => {
 
                 console.log("sessionId that will go to the server to vaerify the payment completion", sessionId)
 
-                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/retrieve`, { sessionId: sessionId });
+                const xeroInvoiceID = dataDetails.xeroInvoiceID
+                const total = dataDetails.price
+
+                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/retrieve`, { sessionId: sessionId, xeroInvoiceID: xeroInvoiceID, total: total });
                 console.log("response from the payment recheck endpoint", response.data)
                 const data = response.data
 
@@ -93,6 +99,7 @@ const LiveTranscriptSuccess = () => {
                         price: dataDetails.price,
                         minutes: dataDetails.minutes,
                         method: dataDetails.method,
+                        xeroInvoiceID: dataDetails.xeroInvoiceID,
                         status: "paid"
 
                     });

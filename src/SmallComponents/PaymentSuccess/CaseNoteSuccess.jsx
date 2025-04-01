@@ -16,7 +16,8 @@ const CaseNoteSuccess = () => {
         minutes: 0,
         price: 0,
         method: "",
-        language: ""
+        language: "",
+        xeroInvoiceID: ""
 
     }));
     const [trigger, setTrigger] = useState(false);
@@ -48,7 +49,8 @@ const CaseNoteSuccess = () => {
                             price: userData.price,
                             minutes: userData.minutes,
                             method: userData.method,
-                            language: userData.language
+                            language: userData.language,
+                            xeroInvoiceID: userData.xeroInvoiceID
 
 
                         })
@@ -83,7 +85,7 @@ const CaseNoteSuccess = () => {
 
                 console.log("sessionId that will go to the server to vaerify the payment completion", sessionId)
 
-                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/retrieve`, { sessionId: sessionId });
+                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/retrieve`, { sessionId: sessionId , xeroInvoiceID: dataDetails.xeroInvoiceID, total: dataDetails.price});
                 console.log("response from the payment recheck endpoint", response.data)
                 const data = response.data
 
@@ -97,14 +99,17 @@ const CaseNoteSuccess = () => {
                         minutes: dataDetails.minutes,
                         method: dataDetails.method,
                         language: dataDetails.language,
-                        status: "paid"
+                        status: "paid",
+                        xeroInvoiceID: dataDetails.xeroInvoiceID
 
                     });
                     setDataDetails({
                         price: dataDetails.price,
                         minutes: dataDetails.minutes,
                         method: dataDetails.method,
-                        language: dataDetails.language
+                        language: dataDetails.language,
+                        xeroInvoiceID: dataDetails.xeroInvoiceID
+
 
 
                     })

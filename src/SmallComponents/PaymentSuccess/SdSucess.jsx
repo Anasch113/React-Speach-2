@@ -17,7 +17,8 @@ const SdSucess = () => {
         summaryName: "",
         selectedValue: "",
         amount: 0,
-        fileNames : []
+        fileNames: [],
+        xeroInvoiceID: ''
 
     }));
     const [trigger, setTrigger] = useState(false);
@@ -51,7 +52,8 @@ const SdSucess = () => {
                             selectedValue: userData.dataDetails.selectedValue,
                             fileContent: userData.dataDetails.fileContent,
                             fileNames: userData.dataDetails.fileNames,
-                            
+                            xeroInvoiceID: userData.dataDetails.xeroInvoiceID,
+
 
 
                         })
@@ -86,7 +88,7 @@ const SdSucess = () => {
 
                 console.log("sessionId that will go to the server to verify the payment completion", sessionId)
 
-                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/retrieve`, { sessionId: sessionId });
+                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/retrieve`, { sessionId: sessionId, xeroInvoiceID: dataDetails.xeroInvoiceID, total: dataDetails.amount });
                 console.log("response from the payment recheck endpoint", response.data)
                 const data = response.data
 
@@ -103,10 +105,12 @@ const SdSucess = () => {
                             selectedValue: dataDetails.selectedValue,
                             fileContent: dataDetails.fileContent,
                             fileNames: dataDetails.fileNames,
-                            status: "paid"
+                            status: "paid",
+                            xeroInvoiceID: dataDetails.xeroInvoiceID
+                        
                         }
                     });
-                    
+
                     setDataDetails({
 
                         summaryName: dataDetails.summaryName,
@@ -114,6 +118,7 @@ const SdSucess = () => {
                         selectedValue: dataDetails.selectedValue,
                         fileContent: dataDetails.fileContent,
                         fileNames: dataDetails.fileNames,
+                        xeroInvoiceID: dataDetails.xeroInvoiceID
 
 
                     })

@@ -295,7 +295,7 @@ const OCR = () => {
   // >>>>>>>>>> Payment Intgeration start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
- 
+
   // Handle returning users after Stripe payment
   useEffect(() => {
     const status = location.state?.status;
@@ -304,7 +304,7 @@ const OCR = () => {
       const userId = user.uid;
 
       // Retrieve Base64 files from Firebase Realtime Database
-      
+
       const filesRef = ref(database, `users/${userId}/payment-files-data`);
 
       get(filesRef)
@@ -376,7 +376,7 @@ const OCR = () => {
   const createStripeSession = async () => {
     const userId = user.uid;
     const userEmail = user.email;
-const price = cost * selectedFiles.length
+    const price = cost * selectedFiles.length
     // Convert files to Base64
     const filesBase64 = await filesToBase64(selectedFiles);
 
@@ -562,6 +562,13 @@ const price = cost * selectedFiles.length
 
                       </span></button>
 
+                    <span className=''>
+                      <a onClick={() => {
+                        setTemplateStatus("downloaded")
+                      }} className='text-gray-400 text-sm hover:underline hover:cursor-pointer'>Want to upload the template ?</a>
+
+                    </span>
+                    <p className='text-gray-400 text-center'>or</p>
                     <span>
                       <a onClick={() => {
                         setTemplateStatus('default')
@@ -581,22 +588,52 @@ const price = cost * selectedFiles.length
               :
 
               <div className='flex flex-col p-2 w-full '>
-                <span className='flex flex-row justify-between items-center gap-2 py-5'>
+                <div className='flex flex-row justify-between items-center gap-2 py-5'>
 
                   <span className='flex flex-row items-center gap-2'>
                     <RxDashboard className='md:text-3xl text-lg' />
                     <h1 className='md:text-3xl font-bold font-poppins text-white lack'> Recent Files</h1>
                   </span>
+                  {
+                    templateStatus === "downloaded" && (
+                      <div className='flex flex-col gap-5 items-center'>
+                        {/* <p className='text-xl font-poppins'>Upload your template after filling the spaces for all single letters in your handwriting</p> */}
+                        <Button
+                          className="p-4 rounded-xl"
+                          variant={"customBlue"}
+                          onClick={() => document.getElementById('pdf-upload').click()}
+                        >
+                          Upload Template
+                        </Button>
+                        <input
+                          accept=".docx"
+                          id="pdf-upload"
+                          onChange={handleFileUpload}
+                          type="file"
+                          // Allows selecting multiple files
+
+                          hidden
+                        />
+                      </div>
+                    )
+                  }
+                  <div className='flex flex-col gap-2 items-center '>
+
+                    <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5  py-4 md:w-60  
+                       rounded-xl bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2 '>
+                        <FaCloudUploadAlt size={25} /> <p>Upload Image</p>
+                      </span></button>
 
 
-                  <button onClick={() => setShowFormModal(!showFormModal)} className='text-center px-5 py-4 md:w-60  
-rounded-xl bg-bg-purple text-white text-xl font-medium font-roboto hover:bg-purple-500 '><span className='flex items-center text-center justify-center gap-2 '>
-                      <FaCloudUploadAlt size={25} /> <p>Upload Image</p>
-                    </span></button>
+                    <span className=''>
+                      <a onClick={() => {
+                        setTemplateStatus("downloaded")
+                      }} className='text-gray-400 text-sm hover:underline hover:cursor-pointer'>Want to upload the template ?</a>
 
+                    </span>
+                  </div>
 
-
-                </span>
+                </div>
 
                 <table className="  flex flex-col  ">
 

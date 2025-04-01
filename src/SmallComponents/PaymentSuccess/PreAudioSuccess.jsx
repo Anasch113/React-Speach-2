@@ -17,6 +17,7 @@ const PreAudioSuccess = () => {
         fileNames: [],
         fileDurations: [],
         amount: 0,
+        xeroInvoiceID: ''
 
     }));
     const [trigger, setTrigger] = useState(false);
@@ -49,6 +50,7 @@ const PreAudioSuccess = () => {
                             amount: userData.dataDetails.amount,
                             fileNames: userData.dataDetails.fileNames,
                             fileDurations: userData.dataDetails.fileDurations,
+                            xeroInvoiceID: userData.dataDetails.xeroInvoiceID,
 
 
                         })
@@ -82,8 +84,8 @@ const PreAudioSuccess = () => {
             const handlePaymentSuccess = async () => {
 
                 console.log("sessionId that will go to the server to vaerify the payment completion", sessionId)
-
-                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/retrieve`, { sessionId: sessionId });
+                const xeroInvoiceID = dataDetails.xeroInvoiceID
+                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/retrieve`, { sessionId: sessionId, xeroInvoiceID, total: dataDetails.amount });
                 console.log("response from the payment recheck endpoint", response.data)
                 const data = response.data
 
@@ -99,6 +101,7 @@ const PreAudioSuccess = () => {
                             amount: dataDetails.amount,
                             fileNames: dataDetails.fileNames,
                             fileDurations: dataDetails.fileDurations,
+                            xeroInvoiceID: dataDetails.xeroInvoiceID,
                             status: "paid"
                         }
                     });
