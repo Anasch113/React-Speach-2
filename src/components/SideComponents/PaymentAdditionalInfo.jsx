@@ -58,7 +58,7 @@ const PaymentAdditionalInfo = ({
             <span className='my-4 p-2 space-x-2'>
                 <label htmlFor="currencySelector">Choose Currency: </label>
                 <select className='bg-bg-navy-blue outline-none p-2 rounded-md' id="currencySelector" value={currency} onChange={handleCurrencyChange}>
-                    <option value="USD">USD</option>
+                    {/* <option value="USD">USD</option> */}
                     <option value="AUD">AUD</option>
                 </select>
             </span>

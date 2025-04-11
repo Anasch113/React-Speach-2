@@ -32,7 +32,7 @@ const CreditInfo = () => {
 
     const [promoCode, setPromoCode] = useState("");
 
-    const [currency, setCurrency] = useState('USD'); // Default to USD
+    const [currency, setCurrency] = useState('AUD'); // Default to USD
 
 
     const handlePromodeCodeChange = (e) => {

@@ -17,7 +17,8 @@ const CreditSuccess = () => {
         userBalance: 0,
         balance: 0,
         xeroInvoiceID: '',
-        method: ""
+        method: "",
+        userEmail: ''
     }));
     const [trigger, setTrigger] = useState(false);
 
@@ -49,7 +50,8 @@ const CreditSuccess = () => {
                             total: userData.total,
                             userBalance: userData.userBalance,
                             xeroInvoiceID: userData.xeroInvoiceID,
-                            method: userData.method
+                            method: userData.method,
+                            userEmail: userData.userEmail
                         })
                         setTrigger(true)
                         console.log("sessionId in success", userData.transcriptionsSessionId)
@@ -83,7 +85,7 @@ const CreditSuccess = () => {
                 console.log("sessionId that will go to the server to vaerify the payment completion", sessionId)
                 const xeroInvoiceID = dataDetails.xeroInvoiceID
 
-                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/retrieve`, { sessionId: sessionId, xeroInvoiceID: xeroInvoiceID, total: dataDetails.total });
+                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/retrieve`, { sessionId: sessionId, xeroInvoiceID: xeroInvoiceID, total: dataDetails.total, userEmail: dataDetails.userEmail });
                 console.log("response from the payment recheck endpoint", response.data)
                 const data = response.data
 
@@ -99,6 +101,7 @@ const CreditSuccess = () => {
                         method: dataDetails.method,
                         status: "paid",
                         xeroInvoiceID: dataDetails.xeroInvoiceID,
+                        userEmail: dataDetails.userEmail,
                         date: Date.now()
                     });
 
