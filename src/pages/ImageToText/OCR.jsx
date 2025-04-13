@@ -376,6 +376,8 @@ const OCR = () => {
   const createStripeSession = async () => {
     const userId = user.uid;
     const userEmail = user.email;
+    const userName = user.displayName
+
     const price = cost * selectedFiles.length
     // Convert files to Base64
     const filesBase64 = await filesToBase64(selectedFiles);
@@ -395,6 +397,7 @@ const OCR = () => {
           currency: currency,
           userEmail: userEmail,
           feature: "ocr",
+          userName
         }
       );
 

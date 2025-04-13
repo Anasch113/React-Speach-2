@@ -85,6 +85,7 @@ const PaymentModal = ({
     const createStripeSession = async () => {
         const userId = user.uid;
         const userEmail = user.email;
+        const userName = user.displayName;
         const body = {
             total: total,
             userId: userId,
@@ -92,7 +93,8 @@ const PaymentModal = ({
             language: language,
             promoCode,
             currency,
-            userEmail
+            userEmail,
+            userName
         }
         try {
 

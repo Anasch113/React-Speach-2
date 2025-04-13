@@ -128,9 +128,15 @@ const PreAudioTranscriptions = () => {
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+
     // Function to create Stripe session
     const createStripeSession = async (total, method) => {
-        const userId = user.uid
+
+        const userId = user.uid;
+        const userEmail = user.email;
+        const userName = user.displayName;
+
+
         try {
 
             const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/create-stripe-session-preAudio`, {
@@ -140,7 +146,10 @@ const PreAudioTranscriptions = () => {
                 fileNames,   // Array of file names
                 fileDurations,
                 promoCode,
-                currency // Array of file durations
+                currency, // Array of file durations,
+                userEmail,
+                userName
+
             });
 
 

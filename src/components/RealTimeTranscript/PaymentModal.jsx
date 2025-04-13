@@ -60,9 +60,11 @@ const PaymentModal = ({
     const createStripeSession = async () => {
         const userId = user.uid
         const userEmail = user.email
+        const userName = user.displayName
         try {
 
-            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/live-transcript-payment`, { total, userId, minutes, promoCode, currency, userEmail });
+
+            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/live-transcript-payment`, { total, userId, minutes, promoCode, currency, userEmail, userName });
 
 
             return response.data;
@@ -156,7 +158,7 @@ const PaymentModal = ({
                         onCurrencyChange={handleCurrencyChange}
                     />
 
-                
+
 
                     <button onClick={handlePaymentOptions} className='text-center px-5 py-3 w-full h-14
 rounded-md bg-bg-purple-2 text-white text-xl font-medium font-roboto hover:bg-bg-purple mb-2 '><span className='flex items-center text-center justify-center gap-2'>

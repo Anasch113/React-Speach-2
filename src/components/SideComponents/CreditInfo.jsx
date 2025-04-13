@@ -55,6 +55,7 @@ const CreditInfo = () => {
 
     const userId = user.uid
     const userEmail = user.email
+    const userName = user.displayName
     // Function to create Stripe session
     const createStripeSession = async (total, method) => {
 
@@ -62,7 +63,7 @@ const CreditInfo = () => {
         try {
 
             if (total && method && method === "credit-method") {
-                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/buy-credit`, { total, method, userBalance, userId, promoCode, userEmail, currency });
+                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/buy-credit`, { total, method, userBalance, userId, promoCode, userEmail, currency , userName});
 
 
                 return response.data;

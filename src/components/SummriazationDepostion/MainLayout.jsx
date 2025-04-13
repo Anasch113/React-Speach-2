@@ -128,6 +128,7 @@ const MainLayout = ({
     const createStripeSession = async () => {
         const userId = user.uid
         const userEmail = user.email
+        const userName = user.displayName
 
         try {
 
@@ -141,7 +142,8 @@ const MainLayout = ({
                 fileNames,
                 promoCode,
                 currency,
-                userEmail
+                userEmail,
+                userName
             });
 
 
