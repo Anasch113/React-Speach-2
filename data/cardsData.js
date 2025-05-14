@@ -9,17 +9,10 @@ import img8 from "../src/assets/card8.jpeg";
 export const cardsData = [
   {
     id: 1,
-<<<<<<< HEAD
-    heading: "",
-    subHeading: "Real-Time Transcription Services for Legal Professionals",
-    para: "Accurate and Instantaneous Transcriptions for Courtrooms and Legal Proceedings",
-    link: "/",
-=======
     heading: "Realtime Court/Deposition Reporting",
     subHeading: "Live Stenographic Court Reporting, anywhere in the world",
     para: "Certified court reporters deliver instant, accurate transcripts for depositions and legal hearings. Access real-time text onsite or remotely—secure, accurate and reliable stenographic court reporting.",
     link: "/login",
->>>>>>> 16bb209a8a7ab631fd5d1cae49cbaacf303e1043
     img: img1,
   },
   {
