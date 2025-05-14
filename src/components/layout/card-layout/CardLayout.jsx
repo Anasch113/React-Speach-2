@@ -28,7 +28,7 @@ const CardLayout = ({cardsData}) => {
               <div className="bg-black w-full absolute bottom-0 h-[15%] flex items-center justify-end p-3 z-30 transform ease-linear transition-transform duration-500 translate-y-full group-hover:translate-y-0">
                 <div className="hover-underline-animation font-normal flex items-center space-x-2">
                   <a href={card.link} className="cursor-pointer text-white">
-                    Expand
+                  Sign-In
                   </a>
                   <span>
                     <IoIosArrowForward
