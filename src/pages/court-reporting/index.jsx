@@ -26,8 +26,8 @@ const StenographicCourtReporting = () => {
         {
             id: 3,
             icon: <FaLaptop />,
-            title: 'Tech-Savvy Reporting',
-            paragraph: 'We combine stenographic real-time technology with AI transcript summarization and AI prompts. Our secure live AI transcript review tool generates real-time legal insights for your team as the evidence is captured.',
+            title: 'Accessible Evidence',
+            paragraph: 'We offer stenographic real-time court reporting technology and AI transcript summarisation. Our secure live transcription also assists foreign language interpreters with the task of interpreting evidence for non-English speaking witnesses. Our court CART, Computer Assisted Real-Time,  is also used widely in courts taking evidence from hard-of-hearing or Deaf witnesses.',
         },
         {
             id: 4,

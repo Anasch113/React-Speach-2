@@ -98,7 +98,7 @@ import Singleblog from "./pages/Content/Blog/Singleblog";
 import MFA from "./pages/login/MFA";
 import OCR from "./pages/ImageToText/OCR";
 import ViewOcrFiles from "./components/SmallFeatures/ViewOcrFiles";
-
+import OcrInfo from "./pages/ImageToText/OcrInfo";
 
 function App() {
 
@@ -429,6 +429,14 @@ function App() {
               <ProtectedRoute>
                 <ViewOcrFiles />
               </ProtectedRoute>}
+
+            />
+            <Route exact path="/ocr-info" element={
+
+
+              <OcrInfo />
+
+            }
 
             />
 

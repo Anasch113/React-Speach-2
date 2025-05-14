@@ -9,7 +9,7 @@ import img8 from "../src/assets/card8.jpeg";
 export const cardsData = [
   {
     id: 1,
-    heading: "Our Key Features",
+    heading: "",
     subHeading: "Real-Time Transcription Services for Legal Professionals",
     para: "Accurate and Instantaneous Transcriptions for Courtrooms and Legal Proceedings",
     link: "/",

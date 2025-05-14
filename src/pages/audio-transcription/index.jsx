@@ -35,8 +35,8 @@ const AudioTranscription = () => {
         {
             id: 5,
             icon: <FaCloudDownloadAlt />,
-            title: 'User-Friendly Interface',
-            paragraph: 'Upload, review, and download transcripts all from one simple platform, making it easy to manage your audio files and transcript needs.',
+            title: 'Secure Data Handling Protocols',
+            paragraph: 'Clients have the option, once their project is delivered, to delete all audio files and transcripts, at the click of a button – ensuring ultimate peace of mind that important data is kept secure and not accessible to third parties.'
         },
     ];
 
