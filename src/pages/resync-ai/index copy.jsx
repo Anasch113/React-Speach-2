@@ -11,12 +11,10 @@ const ResyncAI = () => {
                         <div className='flex gap-10 w-full justify-between items-center md:flex-row flex-col  md:text-left'>
                             <div className=' md:w-1/2'>
                                 <p className="text-xl  mt-6 max-w-4xl md:text-3xl font-bold">
-                                    Captioned Video for Government Compliance and Student Access and Inclusion
-
+                                    Transcript-to-Video Syncing with One-Line SRT Output
                                 </p>
                                 <p className="text-base md:text-lg mt-4 max-w-4xl">
-                                    Complementing our high-quality real-time human stenocaptioning and transcription services, our captioned video service ensures that communication remains accessible to all. Our comprehensive suite of accessibility services significantly improves the lives of not only Deaf and hard of hearing individuals but other individuals who benefit from text and captions, such as those with English as a second language and/or those with hidden disabilities such as auditory processing disorders.
-
+                                    Our syncing service enables you to align completed or edited transcripts with mp4 recordings, producing a one-line SRT output. This feature is currently in beta and available at a 50% discounted rate, providing a low-cost solution to integrate text and video seamlessly.
                                 </p>
 
                             </div>
@@ -40,8 +38,7 @@ const ResyncAI = () => {
                                     <h3 className="text-xl font-semibold">Easy-to-Use Platform</h3>
                                 </div>
                                 <p className="text-sm md:text-base">
-                                    Users can upload files, select their desired services and receive high-quality results in just a few clicks. Pay only for what you need.
-
+                                    Clients can simply upload their mp4 recordings and finalized transcripts to our platform, and we handle the rest. Once syncing is complete, the SRT file is ready for download.
                                 </p>
                             </div>
 
@@ -54,8 +51,7 @@ const ResyncAI = () => {
                                     <h3 className="text-xl font-semibold">Ideal for Legal, Corporate, and Media Use</h3>
                                 </div>
                                 <p className="text-sm md:text-base">
-                                    Ideal for students, legal and corporate. Captify.live’s state-of-the-art AI tools enhance accessibility, streamline workflows and reduce manual effort.
-
+                                    This service is especially beneficial for legal teams, corporate meetings, or media professionals needing synced video and captions for accurate playback.
                                 </p>
                             </div>
                         </div>
@@ -72,11 +68,10 @@ const ResyncAI = () => {
                                     <span className="bg-[#A100FF] rounded-full w-10 h-10 flex justify-center items-center">
                                         <FaTag className="text-white" />
                                     </span>
-                                    <h3 className="text-xl font-semibold">Cost Effective
-                                    </h3>
+                                    <h3 className="text-xl font-semibold">Cost-Effective Beta Offering</h3>
                                 </div>
                                 <p className="text-sm md:text-base">
-                                    We offer low-cost solutions, instant pay per use and no subscription fees. Our services are all about reducing manual effort and costs.
+                                    Our one-line SRT syncing service is currently in beta and available at a 50% discount, making it an affordable option for early adopters.
                                 </p>
                             </div>
 
@@ -86,11 +81,10 @@ const ResyncAI = () => {
                                     <span className="bg-[#A100FF] rounded-full w-10 h-10 flex justify-center items-center">
                                         <FaSyncAlt className="text-white" />
                                     </span>
-                                    <h3 className="text-xl font-semibold">Accurate Captions
-</h3>
+                                    <h3 className="text-xl font-semibold">Accurate Syncing</h3>
                                 </div>
                                 <p className="text-sm md:text-base">
-                                    Our services are designed for speed, accuracy and efficiency.
+                                    Ensure your mp4 recordings are synced with finalized transcripts for clear, accurate playback.
                                 </p>
                             </div>
 
@@ -100,16 +94,25 @@ const ResyncAI = () => {
                                     <span className="bg-[#A100FF] rounded-full w-10 h-10 flex justify-center items-center">
                                         <FaBriefcase className="text-white" />
                                     </span>
-                                    <h3 className="text-xl font-semibold">Simple Upload and Download Process
-</h3>
+                                    <h3 className="text-xl font-semibold">Multiple Use Cases</h3>
                                 </div>
                                 <p className="text-sm md:text-base">
-                                   Upload your audio/video files and receive an instant and accurate transcript.
+                                    Ideal for legal teams, content creators, corporate meetings, and media producers needing synchronized captions and video.
                                 </p>
                             </div>
 
                             {/* Simple Upload and Download Process */}
-                         
+                            <div className="space-y-1 hover:translate-y-4 cursor-pointer duration-300 max-w-[450px] md:max-h-[240px] bg-slate-900 px-4 md:px-10 py-6 rounded-3xl">
+                                <div className="flex flex-col items-center gap-4">
+                                    <span className="bg-[#A100FF] rounded-full w-10 h-10 flex justify-center items-center">
+                                        <FaUpload className="text-white" />
+                                    </span>
+                                    <h3 className="text-xl font-semibold">Simple Upload and Download Process</h3>
+                                </div>
+                                <p className="text-sm md:text-base">
+                                    Upload your transcript and video, and receive a synchronized SRT file ready for use.
+                                </p>
+                            </div>
                         </div>
                     </section>
                 </div>

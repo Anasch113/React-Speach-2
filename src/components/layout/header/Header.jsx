@@ -66,7 +66,7 @@ const Header = () => {
         { label: 'Human Live Stenocaptioning (CART)', link: '/human-live-stenocaptioning' },
         { label: 'AI Live Captioning', link: '/ai-live-captioning' },
         { label: 'Audio Transcription', link: '/corporate-audio-transcription' },
-        { label: 'Resync AI', link: '/resync-ai' },
+        { label: 'CAPTIONED VIDEO', link: '/resync-ai' },
         // { label: 'Meeting Note', link: '/meeting-note' },
         // { label: 'Transcript Summarization', link: '/corporate-transcript-summarization' },
         // Add more corporate & government services here...
@@ -123,19 +123,19 @@ const Header = () => {
     const whatWeAre = [
         {
             label: 'Jason Bradley',
-            link: '/',
+            link: 'https://www.linkedin.com/in/jason-bradley-b12044232/',
         },
         {
             label: 'Helen Lubke',
-            link: '/',
+            link: 'https://www.linkedin.com/in/helen-lubke-2b361218/',
         },
         {
             label: 'Samuel Bradley',
-            link: '/',
+            link: 'https://www.linkedin.com/in/sam-bradley-captifylive/',
         },
         {
             label: 'Sharny Leung',
-            link: '/',
+            link: 'https://www.linkedin.com/in/sharny-leung-7b8b52319/',
         },
     ];
 
