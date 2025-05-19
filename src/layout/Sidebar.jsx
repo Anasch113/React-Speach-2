@@ -223,7 +223,8 @@ function Sidebar({ isPurchase, minutes }) {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
 
-        navigate("/virtual-transcript")
+        // navigate("/virtual-transcript")
+        toast("Virtual Transcripts are currently unavailable!")
 
       } else if (result.isDenied) {
 
