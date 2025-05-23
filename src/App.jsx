@@ -99,6 +99,7 @@ import MFA from "./pages/login/MFA";
 import OCR from "./pages/ImageToText/OCR";
 import ViewOcrFiles from "./components/SmallFeatures/ViewOcrFiles";
 import OcrInfo from "./pages/ImageToText/OcrInfo";
+import VirtualTranscriptSuccess from "./SmallComponents/PaymentSuccess/VirtualTranscriptSuccess";
 
 function App() {
 
@@ -473,8 +474,9 @@ function App() {
               <Singleblog />
 
             }
-
             />
+
+            <Route exact path="/virtual-transcript-payment-success" element={<VirtualTranscriptSuccess />} />
 
           </Routes>
         </BrowserRouter>

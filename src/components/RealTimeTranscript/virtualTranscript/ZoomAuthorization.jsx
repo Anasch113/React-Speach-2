@@ -29,7 +29,8 @@ import { useUserAuth } from '@/context/UserAuthContext';
 const ZoomAuthorization = ({
     buttonName,
     handleZoomAuthorization,
-    navigateUrl
+    navigateUrl,
+    setIsShowPaymentModel
 
 
 }) => {

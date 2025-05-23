@@ -36,6 +36,7 @@ import {
 } from "../../../GlobalState/features/liveTranscriptUISlice";
 import ZoomAuthorization from './ZoomAuthorization';
 import { Button } from '@/components/ui/button';
+import PaymentModal from '../PaymentModal';
 const VirtualTranscript = () => {
 
   const [headerVanish, setHeaderVanish] = useState(false);
@@ -43,11 +44,12 @@ const VirtualTranscript = () => {
   const [meetingUrl, setMeetingUrl] = useState("")
   const [isMeetingStart, setIsMeetingStart] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [lineSpacing, setLineSpacing] = useState('normal');
+
 
   const [showLineNumbers, setShowLineNumbers] = useState(false);
 
   const [dynamicHeight, setDynamicHeight] = useState(80)
+  const [isShowPaymentModel, setIsShowPaymentModel] = useState(false)
   const colorPickerRef = useRef(null);
   const bgColorPicker = useRef(null);
   const settingsRef = useRef(null);
@@ -169,16 +171,17 @@ const VirtualTranscript = () => {
     window.location.href = `${import.meta.env.VITE_HOST_URL}/virtual-transcript/zoom-login`;
   }
 
-// here payment integration logic will be implemented
+  // here payment integration logic will be implemented
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const status = searchParams.get('status');
 
     if (status === "zoom-connected") {
       dispatch(setZoomAccessToken(status))
-      dispatch(setIsToken(true))
+      // dispatch(setIsToken(true))
+      setIsShowPaymentModel(true)
       localStorage.removeItem('navigateUrl');
-      
+
     }
 
 
@@ -309,6 +312,7 @@ const VirtualTranscript = () => {
                 handleZoomAuthorization={handleZoomAuthorization}
 
                 navigateUrl="virtual-transcript"
+                setIsShowPaymentModel = {setIsShowPaymentModel}
 
 
 
@@ -567,7 +571,9 @@ const VirtualTranscript = () => {
 
       }
 
-
+      {
+        isShowPaymentModel && <PaymentModal />
+      }
 
     </div>
   )
