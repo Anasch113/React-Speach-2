@@ -55,50 +55,51 @@ const Carousel = () => {
     const data = [
         {
             img: img1,
-            heading: "Unlock the Power of Legal Process Automation",
-            para: "Legal work is often complex and time-consuming, but it doesn't have to be. Our Legal Process Automation Solutions leverage cutting-edge technology to automate repetitive tasks, streamline workflows, and optimize efficiency, allowing you to focus on delivering exceptional legal services to your clients.",
+            heading: "Encryption Standards ",
+            para: "We are committed to protecting client privacy and complies with the Australian Privacy Principles (APPs) under the Privacy Act 1988. A dedicated Customer Data & Privacy Officer oversees our compliance and ensures responsible management of personal information. ",
             link: "/"
         },
         {
             img: img2,
-            heading: "Unlock the Power of Sentiment Analysis for Jury Selection",
-            para: "Jury selection is a critical aspect of trial strategy, and understanding the sentiments and biases of potential jurors can significantly impact case outcomes. Our Sentiment Analysis for Jury Selection tool utilizes advanced AI algorithms to analyze juror responses, social media activity, and public data, providing invaluable insights to help you build a persuasive case.",
+            heading: "Secure Authentication",
+            para: "Our system supports multi-factor authentication (MFA) to verify user identities securely. This adds an extra layer of protection, significantly reducing the risk of unauthorized access to accounts and sensitive information. ",
+
             link: "/"
         },
         {
             img: img3,
-            heading: "Empower Your Business with Proactive Intellectual Property Monitoring",
-            para: "Intellectual property (IP) assets are valuable assets that require vigilant protection against infringement, piracy, and unauthorized use. Our Intellectual Property Monitoring solutions offer comprehensive monitoring and enforcement capabilities to safeguard your IP rights, mitigate risks, and preserve the integrity of your brand and innovations.",
+            heading: " Regular Security Audits ",
+            para: "We conduct regular internal and third-party security audits to identify vulnerabilities. These assessments help us proactively address potential issues before they become threats, ensuring a robust and up-to-date security posture. ",
             link: "/"
         },
         {
             img: img4,
-            heading: "Simplify Compliance with Automation",
-            para: "Staying compliant with regulations is vital for your business, but it doesn't have to be overwhelming. Our Compliance Automation Solutions empower you to automate complex regulatory processes, ensuring accuracy, efficiency, and peace of mind.",
+            heading: "Data Access Control",
+            para: "Only authorised personnel have access to sensitive data. Access rights are managed with strict role-based permissions, ensuring users only see and interact with data necessary for their responsibilities. ",
             link: "/"
         },
         {
             img: img5,
-            heading: "Unlock the Power of Legal Process Automation",
-            para: "Legal work is often complex and time-consuming, but it doesn't have to be. Our Legal Process Automation Solutions leverage cutting-edge technology to automate repetitive tasks, streamline workflows, and optimize efficiency, allowing you to focus on delivering exceptional legal services to your clients.",
+            heading: "Firewall and Intrusion Detection ",
+            para: "Our infrastructure includes advanced firewalls and intrusion detection systems (IDS) to monitor and block suspicious activity. These tools help us detect and mitigate threats in real-time, safeguarding our network environment. ",
             link: "/"
         },
         {
             img: img6,
-            heading: "Transform E-Discovery with Cutting-Edge Solutions",
-            para: "In today’s digital age, managing vast amounts of electronic data for legal cases can be daunting. Our e-discovery solutions leverage AI technology to streamline the discovery process, ensuring efficiency, accuracy, and compliance. Discover how our advanced tools can enhance your e-discovery workflow.",
+            heading: "Compliance with Regulations ",
+            para: "We adhere to Australian data protection laws, including the Privacy Act 1988 and the Australian Privacy Principles (APPs). This ensures responsible handling of personal information and transparency in how user data is collected, used, and stored. ",
             link: "/"
         },
         {
             img: img7,
-            heading: "Gain Insight, Minimize Exposure: Legal Risk and Assessment",
-            para: "In today's dynamic legal landscape, proactively managing and assessing legal risks is essential for ensuring compliance and protecting your organization's interests. Our Legal Risk and Assessment solutions provide comprehensive tools and insights to help you navigate regulatory complexities and mitigate potential liabilities.",
+            heading: "Data Backup and Recovery  ",
+            para: "IWe perform regular encrypted backups and maintain a disaster recovery plan. This ensures that in the event of a system failure or breach, your data can be quickly restored with minimal disruption. Clients also have full control over data/file deletion. ",
             link: "/"
         },
         {
             img: img8,
-            heading: "Unlock the Power of Virtual Legal Assistance",
-            para: "Our Virtual Legal Assistance services offer convenient and efficient support to legal professionals, enabling them to streamline their workflows, enhance productivity, and deliver better client service. Experience the benefits of having a dedicated virtual assistant at your fingertips, ready to assist with research, document preparation, scheduling, and more.",
+            heading: "User Education and Awareness ",
+            para: "We provide users with best practices and updates on cybersecurity to foster informed usage. Educating our users about phishing, password safety, and secure browsing habits is a key component of our strategy.",
             link: "/"
         },
         {
@@ -171,7 +172,7 @@ const Carousel = () => {
                 </Slider>
                 <div className="absolute mt-[1.4rem] md:block hidden">
                     <button onClick={handlePlayPause}>
-                        {isPaused ? <FaPlay size={35} className="text-white"/> : <FaPause size={35} className="text-white" />}
+                        {isPaused ? <FaPlay size={35} className="text-white" /> : <FaPause size={35} className="text-white" />}
                     </button>
                 </div>
             </div>

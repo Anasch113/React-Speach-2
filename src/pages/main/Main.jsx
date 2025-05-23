@@ -13,7 +13,7 @@ export default function Main() {
             <Cards />
             <Value />
             <Parallex />
-            <Reporting />
+            {/* <Reporting /> */}
             <Footer/>
         </div>
     )

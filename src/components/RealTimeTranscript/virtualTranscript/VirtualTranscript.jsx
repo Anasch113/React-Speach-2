@@ -169,7 +169,7 @@ const VirtualTranscript = () => {
     window.location.href = `${import.meta.env.VITE_HOST_URL}/virtual-transcript/zoom-login`;
   }
 
-
+// here payment integration logic will be implemented
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const status = searchParams.get('status');
