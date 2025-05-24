@@ -32,7 +32,7 @@ const VirtualTranscriptSuccess = () => {
 
             try {
                 setUserId(user.uid);
-                const userRef = ref(database, `users/${user.uid}/live-transcript-payment`);
+                const userRef = ref(database, `users/${user.uid}/virtual-transcript-payment`);
                 onValue(userRef, (snapshot) => {
                     const userData = snapshot.val();
 
@@ -92,7 +92,7 @@ const VirtualTranscriptSuccess = () => {
 
 
                 if (data.message === "Payment successful") {
-                    const userRef = ref(database, `users/${user.uid}/live-transcript-payment`);
+                    const userRef = ref(database, `users/${user.uid}/virtual-transcript-payment`);
                     update(userRef, {
                         transcriptionsSessionId: '',
 

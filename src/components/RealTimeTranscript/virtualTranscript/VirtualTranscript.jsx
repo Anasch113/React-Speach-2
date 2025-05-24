@@ -50,6 +50,10 @@ const VirtualTranscript = () => {
 
   const [dynamicHeight, setDynamicHeight] = useState(80)
   const [isShowPaymentModel, setIsShowPaymentModel] = useState(false)
+  const [minutes, setMinutes] = useState(0)
+  const [isPurchase, setIsPurchase] = useState("")
+
+
   const colorPickerRef = useRef(null);
   const bgColorPicker = useRef(null);
   const settingsRef = useRef(null);
@@ -172,13 +176,34 @@ const VirtualTranscript = () => {
   }
 
   // here payment integration logic will be implemented
+
+
+
+  const isPurchaseFromLocation = location.state?.isPurchase;
+  const minutesFromLocation = location.state?.minutes;
+
+
+  useEffect(() => {
+    if (isPurchaseFromLocation === "completed" && minutesFromLocation) {
+      setIsPurchase(isPurchaseFromLocation)
+      setMinutes(minutesFromLocation)
+      dispatch(setZoomAccessToken("zoom-connected"))
+      dispatch(setIsToken(true))
+      toast.success("Paste the meeting link to add bot in meeting")
+    }
+    // Clear the state from the URL
+    navigate(location.pathname, { replace: true });
+  }, [isPurchaseFromLocation, minutesFromLocation])
+
+
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const status = searchParams.get('status');
 
     if (status === "zoom-connected") {
       dispatch(setZoomAccessToken(status))
-      // dispatch(setIsToken(true))
+
       setIsShowPaymentModel(true)
       localStorage.removeItem('navigateUrl');
 
@@ -312,7 +337,7 @@ const VirtualTranscript = () => {
                 handleZoomAuthorization={handleZoomAuthorization}
 
                 navigateUrl="virtual-transcript"
-                setIsShowPaymentModel = {setIsShowPaymentModel}
+                setIsShowPaymentModel={setIsShowPaymentModel}
 
 
 
