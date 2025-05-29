@@ -4,10 +4,10 @@ import { MdClose } from "react-icons/md";
 import { MdPayment } from "react-icons/md";
 import { useState } from 'react';
 import axios from 'axios'
-import { useUserAuth } from '../../context/UserAuthContext';
+import { useUserAuth } from '../../../context/UserAuthContext';
 import { useAsyncValue } from 'react-router-dom';
-import PaymentAdditionalInfo from '../SideComponents/PaymentAdditionalInfo';
-const PaymentModal = ({
+import PaymentAdditionalInfo from '../../SideComponents/PaymentAdditionalInfo';
+const VtPaymentModal = ({
     fileName,
     duration,
     cost,
@@ -64,7 +64,7 @@ const PaymentModal = ({
         try {
 
 
-            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/live-transcript-payment`, { total, userId, minutes, promoCode, currency, userEmail, userName });
+            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/virtual-transcript-payment`, { total, userId, minutes, promoCode, currency, userEmail, userName });
 
 
             return response.data;
@@ -171,4 +171,4 @@ rounded-md bg-bg-purple-2 text-white text-xl font-medium font-roboto hover:bg-bg
     )
 }
 
-export default PaymentModal; 
+export default VtPaymentModal; 

@@ -27,7 +27,8 @@ const initialState = {
         isVtRecording: false,
         vtRemainingTime: 0,
         botId: "",
-        isProcessing: false
+        isProcessing: false,
+        
     },
     inPersonMeeting: {
         inPersonTranscript: '',
@@ -113,7 +114,8 @@ const liveTranscriptUISlice = createSlice({
         },
         setIsMeetingEnd: (state, action) => {
             state.inPersonMeeting.isMeetingEnd = action.payload
-        }
+        },
+       
 
 
     },
@@ -144,7 +146,8 @@ export const {
     setBotId,
     setIsProcessing,
     setInPersonMeetingTranscript,
-    setIsMeetingEnd
+    setIsMeetingEnd,
+    
 } = liveTranscriptUISlice.actions;
 
 // Exporting the reducer

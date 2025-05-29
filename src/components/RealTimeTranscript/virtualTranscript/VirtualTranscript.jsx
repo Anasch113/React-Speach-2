@@ -19,7 +19,7 @@ import { MdOutlineRestartAlt } from "react-icons/md";
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { Client } from "@gradio/client";
-
+import { MdOutlineTimer } from "react-icons/md";
 import { useNavigate, useLocation } from 'react-router-dom';
 
 
@@ -31,12 +31,14 @@ import {
 
   setIsToken,
   setTranscriptType,
+  setVtRemainingTime,
   setZoomAccessToken,
 
 } from "../../../GlobalState/features/liveTranscriptUISlice";
 import ZoomAuthorization from './ZoomAuthorization';
 import { Button } from '@/components/ui/button';
-import PaymentModal from '../PaymentModal';
+
+import VtPaymentModal from './VtPaymentModel';
 const VirtualTranscript = () => {
 
   const [headerVanish, setHeaderVanish] = useState(false);
@@ -52,12 +54,14 @@ const VirtualTranscript = () => {
   const [isShowPaymentModel, setIsShowPaymentModel] = useState(false)
   const [minutes, setMinutes] = useState(0)
   const [isPurchase, setIsPurchase] = useState("")
+  const [localRemainingTime, setLocalRemainingTime] = useState(0);
 
 
   const colorPickerRef = useRef(null);
   const bgColorPicker = useRef(null);
   const settingsRef = useRef(null);
   const texts = useRef({});
+  const timerRef = useRef(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -175,26 +179,6 @@ const VirtualTranscript = () => {
     window.location.href = `${import.meta.env.VITE_HOST_URL}/virtual-transcript/zoom-login`;
   }
 
-  // here payment integration logic will be implemented
-
-
-
-  const isPurchaseFromLocation = location.state?.isPurchase;
-  const minutesFromLocation = location.state?.minutes;
-
-
-  useEffect(() => {
-    if (isPurchaseFromLocation === "completed" && minutesFromLocation) {
-      setIsPurchase(isPurchaseFromLocation)
-      setMinutes(minutesFromLocation)
-      dispatch(setZoomAccessToken("zoom-connected"))
-      dispatch(setIsToken(true))
-      toast.success("Paste the meeting link to add bot in meeting")
-    }
-    // Clear the state from the URL
-    navigate(location.pathname, { replace: true });
-  }, [isPurchaseFromLocation, minutesFromLocation])
-
 
 
   useEffect(() => {
@@ -245,16 +229,90 @@ const VirtualTranscript = () => {
   console.log("live virtual transcripttt:", liveTranscript)
 
 
+  // here payment integration logic will be implemented
+
+
+
+  const isPurchaseFromLocation = location.state?.isPurchase;
+  const minutesFromLocation = location.state?.minutes;
+
+  // Trigger initial countdown from minutes
+  useEffect(() => {
+    if (isPurchaseFromLocation === "completed" && minutesFromLocation) {
+      const initialSeconds = minutesFromLocation * 60;
+      setIsPurchase(isPurchaseFromLocation);
+      setMinutes(minutesFromLocation);
+      dispatch(setZoomAccessToken("zoom-connected"));
+      dispatch(setIsToken(true));
+      toast.success("Paste the meeting link to add bot in meeting");
+
+      // Set both Redux and local state
+      dispatch(setVtRemainingTime(initialSeconds));
+      setLocalRemainingTime(initialSeconds);
+    }
+    navigate(location.pathname, { replace: true });
+  }, [isPurchaseFromLocation, minutesFromLocation]);
+
+  // Timer countdown effect
+  useEffect(() => {
+    if (!isVtPaused && isVtRecording && localRemainingTime > 0) {
+      timerRef.current = setInterval(() => {
+        setLocalRemainingTime(prev => {
+          const updated = prev - 1;
+          dispatch(setVtRemainingTime(updated)); // update Redux with number only
+          return updated;
+        });
+      }, 1000);
+      return () => clearInterval(timerRef.current);
+    }
+
+    // Stop transcription when time runs out
+    if (localRemainingTime === 0 && isVtRecording) {
+      stopVirtualTranscriptions();
+      toast.success("Virtual Transcriptions End");
+    }
+
+    return () => clearInterval(timerRef.current); // clean up
+  }, [isVtPaused, isVtRecording, localRemainingTime]);
+
+  // Pause timer
+  useEffect(() => {
+    if (isVtPaused) {
+      clearInterval(timerRef.current);
+    }
+  }, [isVtPaused]);
+
+  console.log("vt remaining time", vtRemainingTime)
+
+
+
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
 
   return (
     <div className="w-full flex flex-col items-center gap-3 justify-center  min-h-screen ">
-      {/* <span className='flex items-center my-10 gap-1'>
 
-        <p className='text-2xl'>Disclaimer: This feature is not currently available publicly. </p>
-        <button onClick={() => {
-          navigate("/user-guide-to-add/remove-app-from-zoom-account")
-        }} className='underline text-gray-300 text-2xl hover:text-gray-300/50'> Read more</button>
-      </span> */}
+      {
+        vtRemainingTime > 0 && isVtRecording && 
+         <div>
+          <div className={`  border flex  py-3 px-10 text-white justify-between items-center ${isVtPaused ? 'bg-green-500' : 'bg-red-500'} rounded-md`}>
+            {/* <div className="mr-2 mt-1">
+                      {isPaused ? (<FaPause size={18} />) : (<AiOutlineAudio size={18} />)}
+                    </div> */}
+            <div className="flex ">
+              {vtRemainingTime > 0 && (
+                <div className="font-semibold gap-2 font-poppins text-white-500 flex items-center">
+                  <MdOutlineTimer size={20} /> <p>{formatTime(vtRemainingTime)}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      }
 
 
 
@@ -597,7 +655,7 @@ const VirtualTranscript = () => {
       }
 
       {
-        isShowPaymentModel && <PaymentModal />
+        isShowPaymentModel && <VtPaymentModal />
       }
 
     </div>
