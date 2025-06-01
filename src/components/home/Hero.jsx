@@ -62,17 +62,25 @@ const Hero = () => {
             <div className="mt-[-15rem] md:mt-[-20rem] top-1/4 md:px-4 w-full flex flex-col lg:flex-row">
               <div className="w-full lg:w-2/3">
                 <h1 className="text-xl fade-in-image lg:text-3xl font-bold text-center lg:text-left">
-                  Partner with us for secure speech-to-text services tailored to law firms—real-time transcription and live captioning delivering clarity and accessibility 24-7.
+                  Clarity You Can Trust. Support You Can Count On.≈
                 </h1>
-                {/* <h1 className="text-xl fade-in-image lg:text-3xl font-bold text-center lg:text-right md:pr-8 mt-3 md:mt-10">
-                  Sun Tzu – The Art of War
-                </h1> */}
+                <p className="">
+                  Real-time transcription, live captioning, and expert legal support services—trusted by law firms, corporations, and government agencies across Australia, the Asia-Pacific and USA.
+
+                </p>
               </div>
               <div className="w-full lg:w-1/3 lg:pl-8">
                 <div className="w-[60px] h-[5px] bg-[#a100ff] mb-5 mx-auto mt-5 md:mt-0 lg:mx-0"></div>
-                <p className="text-left mx-5 fade-in-image">
-                  Delivering trusted speech-to-text and litigation support services across the Asia Pacific and the USA since 2004, we specialise in human-delivered solutions, including legal videography, onsite and remote court reporting, legal transcript summarisation, client interview notes, audio transcription, and live stenocaptioning (CART) for any field. Our offerings are complemented by secure cutting-edge AI based voice capture options, offering flexible and cost-effective 24-7 secure online services tailored to your needs.
-                </p>
+                <span className="text-left mx-5 fade-in-image space-y-2">
+                  <p className="space-y-2"> Since 2004, we’ve partnered with litigation teams, public institutions and corporate clients to deliver precise, secure and professional speech-to-text services—wherever and whenever they’re needed.</p>
+
+                  <p className="space-y-2">Our human-delivered services include legal videography, onsite and remote court reporting, deposition and hearing transcript summarisation, live stenocaptioning (CART), AI generated live captions, interview and meeting notes and audio transcription.</p>
+
+                  <p className="space-y-2">Whether you need support in court, in meetings or even in remote locations, we ensure that every word is captured with clarity and confidence.
+                    Our human delivered solutions are complemented by cutting-edge, secure AI voice capture tools—tailored to your timeline, your team and your confidentiality needs.</p>
+
+
+                </span>
                 <button onClick={() => {
                   setIsWhatWeDoOpen(!isWhatWeDoOpen)
                 }} className=" fade-in-image mt-10 text-xl font-semibold flex items-center mx-auto lg:mx-0">

@@ -17,9 +17,9 @@ const Navbar = ({ isPurchase, minutes }) => {
     <nav className="bg-bg-color  p-4 ">
       <div className="container mx-auto flex justify-between items-center">
         {/* Brand/Logo */}
-        <div className="md:text-xl text-sm md:block hidden lg:text-xl xl:text-xl 2xl:text-xl font-semibold ">
+        {/* <div className="md:text-xl text-sm md:block hidden lg:text-xl xl:text-xl 2xl:text-xl font-semibold ">
           Getting Started
-        </div>
+        </div> */}
 
         {/* Search Input */}
         <div className="flex items-center space-x-4">

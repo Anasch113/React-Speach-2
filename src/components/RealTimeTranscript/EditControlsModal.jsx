@@ -42,18 +42,7 @@ const EditControlsModal = ({
 
         <div className='flex  justify-between w-full  p-5 max-[800px]:flex-wrap max-[500px]:flex-col max-[500px]:flex-nowrap'>
           {/* 1st div */}
-          <div className='flex  flex-col gap-3 w-2/5 max-[500px]:w-full'>
-
-            <h1 className='text-xl font-medium font-sans'>StreamBox Settings</h1>
-
-            <span className='  w-full'>
-              <span className='flex justify-between w-2/3'>
-                <p className='text-sm font-sans'>Show Time</p>
-                <input type="checkbox" />
-              </span>
-
-            </span>
-
+          <div className='flex  flex-col gap-3 w-2/5 max-[500px]:w-full md:mt-10'>
 
 
             <span className='flex justify-between w-2/3'>
@@ -219,7 +208,7 @@ const EditControlsModal = ({
               <p className='text-sm font-sans'>Hide Header</p>
               <input onChange={handleCheckboxChange} type="checkbox" />
             </span>
-            <h1 className='font-medium text-xl font-sans '>Haptic Settings</h1>
+            {/* <h1 className='font-medium text-xl font-sans '>Haptic Settings</h1>
 
 
             <span className='flex  justify-between w-full'>
@@ -235,7 +224,7 @@ const EditControlsModal = ({
             <span className='flex justify-between w-2/3'>
               <p className='text-sm font-sans'>Case Sensitive</p>
               <input type="checkbox" />
-            </span>
+            </span> */}
 
           </div>
 

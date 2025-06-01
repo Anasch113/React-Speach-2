@@ -155,7 +155,7 @@ const CaseNoteSuccess = () => {
                 className={`min-w[556px] text-center  hover:bg-purple-400 uppercase cursor-pointer bg-bg-purple-2  text-white text-xl my-16 px-3 py-3 rounded ${!isOk ? 'pointer-events-none cursor-not-allowed bg-gray-400' : ''
                     }`}
             >
-                Continue Transcriptions
+                CLICK TO CONTINUE
             </button>
         </div>
     )

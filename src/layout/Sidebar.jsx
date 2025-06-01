@@ -347,7 +347,7 @@ function Sidebar({ isPurchase, minutes }) {
 
               <Link to={"/summarization-deposition"}>
                 <div className={`p-2 flex rounded-md ${isActive("/summarization-deposition") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
-                  <span>Transcript Summarization</span>
+                  <span>Deposition Summary</span>
                 </div>
               </Link>
 
@@ -362,7 +362,7 @@ function Sidebar({ isPurchase, minutes }) {
                 </div>
               </Link>
               <Link to={"/ocr"}>
-                <div className={`p-2 flex rounded-md ${isActive("/pre-audio-transcriptions") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
+                <div className={`p-2 flex rounded-md ${isActive("/ocr") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
                   <span>Handwriting Converter</span>
                 </div>
               </Link>
@@ -391,7 +391,7 @@ function Sidebar({ isPurchase, minutes }) {
                     {/* <div className="mr-2 mt-1">
                       <AiOutlineAudio />
                     </div> */}
-                    <button>Realtime Transcriptions</button>
+                    <button>Live Captioning (AI)</button>
                   </div>
                 </Link>
               ) : (
@@ -426,11 +426,7 @@ function Sidebar({ isPurchase, minutes }) {
                   <span>Resync AI</span>
                 </div>
               </Link>
-              <Link to={"/meeting-note"}>
-                <div className={`p-2 flex rounded-md ${isActive("/meeting-note") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
-                  <span>Meeting Note</span>
-                </div>
-              </Link>
+            
               <Link to={"/corporate-transcript-summarization"}>
                 <div className={`p-2 flex rounded-md ${isActive("/corporate-transcript-summarization") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
                   <span>Transcript Summary</span>
@@ -521,7 +517,7 @@ function Sidebar({ isPurchase, minutes }) {
 
           <Link to={"/blogs"}>
             <div className={`ml-5 p-2 flex rounded-md ${isActive("/corporate-transcript-summarization") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
-              <span>Blogs</span>
+              <span>Articles</span>
             </div>
           </Link>
 

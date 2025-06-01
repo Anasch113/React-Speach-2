@@ -78,20 +78,20 @@ const ContactForm = () => {
           <span className="flex flex-col gap-2">
             <p className="text-lg font-semibold">Email Support:</p>
             <a href="mailto:scheduling@captify.live" target="_main" className="mb-4 text-gray-300">
-            scheduling@captify.live
+              scheduling@captify.live
             </a>
           </span>
-        
+
 
           <span className="flex flex-col gap-2">
             <p className="text-lg font-semibold">Address:</p>
             <p>
-            Suite 21, 120 Bloomfield Street, Brisbane, Queensland, Australia 4163
-          </p>
+              Suite 21, 120 Bloomfield Street, Brisbane, Queensland, Australia 4163
+            </p>
           </span>
 
-          
-         
+
+
 
         </div>
 
@@ -162,47 +162,47 @@ const ContactForm = () => {
 
       </div>
       <div className="mb-10 max-w-screen-xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6 text-center">Meet Our Team</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            <div>
-              <h3 className="text-2xl font-bold mb-2">Jason Bradley – Founding Director</h3>
-              <p>
-                Since its founding in 2004, Captify.live – by Bradley Reporting has brought 
-                high-quality speech-to-text, human live captioning, and text capture services 
-                to Australian and U.S. clients in the legal, corporate, and government sectors. 
-                Jason Bradley is also responsible for positioning Captify.live as a leading 
-                global provider of AI-based products and services.
-              </p>
-            </div>
+        <h2 className="text-3xl font-bold mb-6 text-center">Meet Our Team</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div>
+            <a target="_main" href="https://www.linkedin.com/in/jason-bradley-b12044232/" className="text-2xl font-bold mb-2">Jason Bradley – Founding Director</a>
+            <p>
+              Since its founding in 2004, Captify.live – by Bradley Reporting has brought
+              high-quality speech-to-text, human live captioning, and text capture services
+              to Australian and U.S. clients in the legal, corporate, and government sectors.
+              Jason Bradley is also responsible for positioning Captify.live as a leading
+              global provider of AI-based products and services.
+            </p>
+          </div>
 
-            <div>
-              <h3 className="text-2xl font-bold mb-2">Helen Lubke – Team Leader, Human Speech to Text Services</h3>
-              <p>
-                With an extensive background in the provision of human stenocaptioning and 
-                court reporting services, Helen manages a team of professionals across the 
-                U.S. and Australia, delivering thousands of hours annually for government, 
-                private sector, and legal clientele.
-              </p>
-            </div>
+          <div>
+            <a target="_main" href="https://www.linkedin.com/in/helen-lubke-2b361218/" className="text-2xl font-bold mb-2">Helen Lubke – Team Leader, Human Speech to Text Services</a>
+            <p>
+              With an extensive background in the provision of human stenocaptioning and
+              court reporting services, Helen manages a team of professionals across the
+              U.S. and Australia, delivering thousands of hours annually for government,
+              private sector, and legal clientele.
+            </p>
+          </div>
 
-            <div>
-              <h3 className="text-2xl font-bold mb-2">Samuel Bradley – Team Leader, Legal Videography Services Manager</h3>
-              <p>
-                Since 2017, Samuel Bradley has led our team of highly mobile legal video specialists, 
-                delivering assignments across the Asia Pacific for legal clients in the U.S. and Australia.
-              </p>
-            </div>
+          <div>
+            <a target="_main" href="https://www.linkedin.com/in/sam-bradley-captifylive/" className="text-2xl font-bold mb-2">Samuel Bradley – Team Leader, Legal Videography Services Manager</a>
+            <p>
+              Since 2017, Samuel Bradley has led our team of highly mobile legal video specialists,
+              delivering assignments across the Asia Pacific for legal clients in the U.S. and Australia.
+            </p>
+          </div>
 
-            <div>
-              <h3 className="text-2xl font-bold mb-2">Sharny Leung – Team Leader, Captioned Video Services</h3>
-              <p>
-                Sharny Leung oversees our captioned video team, responsible for producing thousands 
-                of hours of captioned video for corporate and government clients annually. 
-                She ensures timely and accurate delivery of caption files and transcripts.
-              </p>
-            </div>
+          <div>
+            <a target="_main" href="https://www.linkedin.com/in/sharny-leung-7b8b52319/" className="text-2xl font-bold mb-2">Sharny Leung – Team Leader, Captioned Video Services</a>
+            <p>
+              Sharny Leung oversees our captioned video team, responsible for producing thousands
+              of hours of captioned video for corporate and government clients annually.
+              She ensures timely and accurate delivery of caption files and transcripts.
+            </p>
           </div>
         </div>
+      </div>
       <Footer />
 
     </>

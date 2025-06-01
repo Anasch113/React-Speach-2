@@ -1,4 +1,5 @@
-import { cardsData } from "../../../data/cardsData";
+import CardLayoutClients from "@/components/layout/card-layout/CardLayoutClients";
+import { clientsSayCardData } from "../../../data/cardsData";
 import CardLayout from "../../components/layout/card-layout/CardLayout";
 import Footer from "../../components/layout/footer/Footer";
 import FilterButtons from "./components/FilterButtons";
@@ -8,34 +9,30 @@ const Think = () => {
     <div>
       <div className="my-24 px-4 md:px-8 text-white">
         <div className= "text-3xl md:text-7xl font-bold text-center md:text-left">
-          Leverage AI insights
+          What Clients Say
         </div>
         <p className="text-base md:text-2xl md:font-semibold my-8 text-center md:text-left">
-          Discover our insights and real client success stories showcasing how
-          our AI-driven legal technology
-          <br className="hidden md:block" />
-          helps you navigate key changes in litigation and achieve faster, more
-          efficient results.
+          Over the years, we've had the privilege of supporting hundreds of legal professionals, corporate teams and government agencies. Here's what some of them have to say about our services:
         </p>
       </div>
       <FilterButtons />
       <div className="mt-20 px-4">
-        <CardLayout cardsData={cardsData} />
+        <CardLayoutClients cardsData={clientsSayCardData} />
       </div>
       <div className="flex justify-center items-center mt-10">
-        <button className="border border-white px-6 py-4 text-white">
+        {/* <button className="border border-white px-6 py-4 text-white">
           Load More
 
-        </button>
+        </button> */}
 
       </div>
       <div className="my-24 px-4 md:px-8 text-white">
-        <div className="h1 text-5xl font-bold text-center md:text-left">Get Foresight on the go</div>
-        <p className="text-lg md:text-xl font-semibold my-8 text-center md:text-left">Download the Bradley Reporting Foresight app to read, watch, or listen to our best thinking—and join
-          <br className="hidden md:block" />our exclusive “Foresight in 15” live digital events for quick takes on big ideas.
+        <div className="h1 text-5xl font-bold text-center md:text-left">💬 Partner with Us
+</div>
+        <p className="text-lg md:text-xl font-semibold my-8 text-center md:text-left">Experience the difference that professional, accurate, and timely speech-to-text services can make for your organisation.
         </p>
         <div className="flex justify-center md:justify-start">
-          <button className="bttnn z-10">Get Foresight</button>
+          <a href="/contact-us" className="bttnn z-10">Contact Us</a>
         </div>
       </div>
       <Footer/>

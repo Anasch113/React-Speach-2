@@ -100,6 +100,7 @@ import OCR from "./pages/ImageToText/OCR";
 import ViewOcrFiles from "./components/SmallFeatures/ViewOcrFiles";
 import OcrInfo from "./pages/ImageToText/OcrInfo";
 import VirtualTranscriptSuccess from "./SmallComponents/PaymentSuccess/VirtualTranscriptSuccess";
+import FeatureGuide from "./pages/Content/documentation/FeatureGuide";
 
 function App() {
 
@@ -114,7 +115,7 @@ function App() {
             {/* New Frontend pages >>>>>>>>>>>>>>>>>>>>>>>>>> */}
             <Route path="/" element={<Main />} />
             <Route
-              path="/what-we-think"
+              path="/what-clients-say"
               element={<Think />}
             />
             <Route path='/legal-videography' element={<LegalVideography />} />
@@ -477,6 +478,7 @@ function App() {
             />
 
             <Route exact path="/virtual-transcript-payment-success" element={<VirtualTranscriptSuccess />} />
+            <Route exact path="/support/Resource/questions" element={<FeatureGuide />} />
 
           </Routes>
         </BrowserRouter>

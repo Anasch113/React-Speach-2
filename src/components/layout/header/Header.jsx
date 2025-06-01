@@ -66,7 +66,7 @@ const Header = () => {
         { label: 'Human Live Stenocaptioning (CART)', link: '/human-live-stenocaptioning' },
         { label: 'AI Live Captioning', link: '/ai-live-captioning' },
         { label: 'Audio Transcription', link: '/corporate-audio-transcription' },
-        { label: 'CAPTIONED VIDEO', link: '/resync-ai' },
+        { label: 'Captioned Video', link: '/resync-ai' },
         // { label: 'Meeting Note', link: '/meeting-note' },
         // { label: 'Transcript Summarization', link: '/corporate-transcript-summarization' },
         // Add more corporate & government services here...
@@ -120,22 +120,23 @@ const Header = () => {
 
 
     ];
+    
     const whatWeAre = [
         {
             label: 'Jason Bradley',
-            link: 'https://www.linkedin.com/in/jason-bradley-b12044232/',
+            link: '/contact-us',
         },
         {
             label: 'Helen Lubke',
-            link: 'https://www.linkedin.com/in/helen-lubke-2b361218/',
+            link: '/contact-us',
         },
         {
             label: 'Samuel Bradley',
-            link: 'https://www.linkedin.com/in/sam-bradley-captifylive/',
+            link: '/contact-us',
         },
         {
             label: 'Sharny Leung',
-            link: 'https://www.linkedin.com/in/sharny-leung-7b8b52319/',
+            link: '/contact-us',
         },
     ];
 
@@ -256,8 +257,8 @@ const Header = () => {
                         </ul>
                     )}
                     {
-                        !user && <a href={'/what-we-think'} className='hover:text-[#777] cursor-pointer'>
-                            What we think
+                        !user && <a href={'/what-clients-say'} className='hover:text-[#777] cursor-pointer'>
+                            What Clients Say
                         </a>
                     }
 

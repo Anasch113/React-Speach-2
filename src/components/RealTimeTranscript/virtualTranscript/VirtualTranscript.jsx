@@ -447,7 +447,7 @@ const VirtualTranscript = () => {
 
                   <button className='cursor-pointer hover:text-white' title='settings' onClick={handleSettingsClick}><IoIosSettings /></button>
 
-                  <button className='cursor-pointer hover:text-white' title='widgets'><BiSolidWidget /></button>
+                  {/* <button className='cursor-pointer hover:text-white' title='widgets'><BiSolidWidget /></button> */}
                 </div>
 
 

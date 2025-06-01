@@ -198,7 +198,7 @@ function MainContent() {
     }}>
       <div className="flex flex-col gap-3 mx-4 my-6 p-10 text-white bg-blackGray   rounded-md">
         <p className="text-2xl pb-1 text-white font-semibold">Welcome back!</p>
-        <p>Captify is readying for take-off! </p>
+        {/* <p>Captify is readying for take-off! </p> */}
         <div className="my-4">
           <ProgressBar />
         </div>
