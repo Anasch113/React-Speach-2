@@ -32,7 +32,7 @@ const ContactForm = () => {
         from_name: formData.name,
         to_name: "Captify",
         from_email: formData.email,
-        to_email: "anaschaudry2002@gmail.com",
+        to_email: "Odulanahammed@captifylive.online",
 
         message: `
         name: ${formData.name}

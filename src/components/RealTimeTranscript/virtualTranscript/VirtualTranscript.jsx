@@ -39,6 +39,7 @@ import ZoomAuthorization from './ZoomAuthorization';
 import { Button } from '@/components/ui/button';
 
 import VtPaymentModal from './VtPaymentModel';
+import { jsPDF } from "jspdf";
 const VirtualTranscript = () => {
 
   const [headerVanish, setHeaderVanish] = useState(false);
@@ -211,7 +212,7 @@ const VirtualTranscript = () => {
 
     finalTranscript.forEach((data, i) => {
 
-      doc.text(`Speaker ${i + 1}: ${data.speaker}`, 10, yPosition)
+      doc.text(`Speaker : ${data.speaker}`, 10, yPosition)
       yPosition += 8
 
       const wordText = data.words.map(word => word.text).join(' ')
@@ -252,6 +253,9 @@ const VirtualTranscript = () => {
     }
     navigate(location.pathname, { replace: true });
   }, [isPurchaseFromLocation, minutesFromLocation]);
+
+
+
 
   // Timer countdown effect
   useEffect(() => {
@@ -642,7 +646,7 @@ const VirtualTranscript = () => {
                   </div>
 
                   {
-                    transcriptType === "final-transcript" && <Button className="w-52" onClick={downloadVirtualTranscript} variant={"customPurple"}>Download Transcript</Button>
+                    transcriptType === "final-transcript" && <Button className="w-52 ml-5" onClick={downloadVirtualTranscript} variant={"customPurple"}>Download Transcript</Button>
                   }
 
                 </div>

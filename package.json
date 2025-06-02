@@ -34,7 +34,7 @@
     "filesaver.js": "^1.3.4",
     "firebase": "^10.8.0",
     "html2pdf.js": "^0.10.1",
-    "jspdf": "^2.5.1",
+    "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.3",
     "llamaai": "^1.0.4",
     "lucide-react": "^0.414.0",
