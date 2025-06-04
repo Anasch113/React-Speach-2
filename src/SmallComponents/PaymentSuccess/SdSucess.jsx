@@ -53,6 +53,7 @@ const SdSucess = () => {
                             fileContent: userData.dataDetails.fileContent,
                             fileNames: userData.dataDetails.fileNames,
                             xeroInvoiceID: userData.dataDetails.xeroInvoiceID,
+                            amount: userData.dataDetails.amount
 
 
 

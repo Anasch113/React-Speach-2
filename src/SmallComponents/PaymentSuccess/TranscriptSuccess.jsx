@@ -17,7 +17,8 @@ const TranscriptSuccess = () => {
         filename: "",
         fileDuration: 0,
         amount: 0,
-        transcriptFileName: ""
+        transcriptFileName: "",
+        xeroInvoiceID: ''
     }));
     const [trigger, setTrigger] = useState(false);
 
@@ -46,19 +47,19 @@ const TranscriptSuccess = () => {
                         setDataDetails({
 
                             cloudUrl: userData.dataDetails.cloudUrl,
-                            transcriptUrl:  userData.dataDetails.transcriptUrl ? userData.dataDetails.transcriptUrl : "",
+                            transcriptUrl: userData.dataDetails.transcriptUrl ? userData.dataDetails.transcriptUrl : "",
                             amount: userData.dataDetails.amount,
                             filename: userData.dataDetails.filename,
-                            fileDuration: userData.dataDetails.fileDuration, 
-                            transcriptFileName : userData.dataDetails.transcriptFileName ? userData.dataDetails.transcriptFileName : "",
-
+                            fileDuration: userData.dataDetails.fileDuration,
+                            transcriptFileName: userData.dataDetails.transcriptFileName ? userData.dataDetails.transcriptFileName : "",
+                            xeroInvoiceID: userData.dataDetails.xeroInvoiceID,
                         })
                         setTrigger(true)
                         console.log("sessionId in success", userData.transcriptionsSessionId)
 
 
                     }
-                    return 
+                    return
                 });
             } catch (error) {
                 console.log("Error while fething details in transcription payment success page", error)
@@ -83,8 +84,8 @@ const TranscriptSuccess = () => {
             const handlePaymentSuccess = async () => {
 
                 console.log("sessionId that will go to the server to vaerify the payment completion", sessionId)
-
-                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/retrieve`, { sessionId: sessionId });
+                const xeroInvoiceID = dataDetails.xeroInvoiceID
+                const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/retrieve`, { sessionId: sessionId, xeroInvoiceID, total: dataDetails.amount });
                 console.log("response from the payment recheck endpoint", response.data)
                 const data = response.data
 
@@ -100,7 +101,7 @@ const TranscriptSuccess = () => {
                             amount: dataDetails.amount,
                             filename: dataDetails.filename,
                             fileDuration: dataDetails.fileDuration,
-                        
+                            xeroInvoiceID: dataDetails.xeroInvoiceID,
                             status: "paid"
                         }
                     });
@@ -138,15 +139,15 @@ const TranscriptSuccess = () => {
 
         if (isOk) {
 
-           if(dataDetails.transcriptUrl === "noUrl"){
+            if (dataDetails.transcriptUrl === "noUrl") {
 
-            navigate("/pre-audio-transcriptions", { state: { paidCloudUrl: dataDetails.cloudUrl, paidFilename: dataDetails.filename, paidFileDuration: dataDetails.fileDuration} });
+                navigate("/pre-audio-transcriptions", { state: { paidCloudUrl: dataDetails.cloudUrl, paidFilename: dataDetails.filename, paidFileDuration: dataDetails.fileDuration } });
 
-           } 
-           else{
-            navigate("/resyncingAi", { state: { paidCloudUrl: dataDetails.cloudUrl, paidFilename: dataDetails.filename, paidFileDuration: dataDetails.fileDuration, transcriptUrl: dataDetails.transcriptUrl && dataDetails.transcriptUrl, transcriptFileName: dataDetails.transcriptFileName && dataDetails.transcriptFileName } });
-           }
-           
+            }
+            else {
+                navigate("/resyncingAi", { state: { paidCloudUrl: dataDetails.cloudUrl, paidFilename: dataDetails.filename, paidFileDuration: dataDetails.fileDuration, transcriptUrl: dataDetails.transcriptUrl && dataDetails.transcriptUrl, transcriptFileName: dataDetails.transcriptFileName && dataDetails.transcriptFileName } });
+            }
+
 
         }
     };

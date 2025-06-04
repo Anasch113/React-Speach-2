@@ -202,7 +202,9 @@ const SyncAiPage = () => {
                 transcriptUrl: transcriptUrl,
                 transcriptFileName: transcriptFileName,
                 promoCode: promoCode,
-                currency: currency
+                currency: currency,
+                userName: user.displayName
+
             }
 
             const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/create-stripe-session`, body);
