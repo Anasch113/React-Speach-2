@@ -62,7 +62,7 @@ const Hero = () => {
             <div className="mt-[-15rem] md:mt-[-20rem] top-1/4 md:px-4 w-full flex flex-col lg:flex-row">
               <div className="w-full lg:w-2/3">
                 <h1 className="text-xl fade-in-image lg:text-3xl font-bold text-center lg:text-left">
-                  Clarity You Can Trust. Support You Can Count On.≈
+                  Clarity You Can Trust. Support You Can Count On.
                 </h1>
                 <p className="">
                   Real-time transcription, live captioning, and expert legal support services—trusted by law firms, corporations, and government agencies across Australia, the Asia-Pacific and USA.
