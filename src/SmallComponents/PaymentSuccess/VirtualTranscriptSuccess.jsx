@@ -16,7 +16,8 @@ const VirtualTranscriptSuccess = () => {
         minutes: 0,
         price: 0,
         method: "",
-        xeroInvoiceID: ''
+        xeroInvoiceID: '',
+        mode: ""
     }));
     const [trigger, setTrigger] = useState(false);
 
@@ -47,7 +48,8 @@ const VirtualTranscriptSuccess = () => {
                             price: userData.price,
                             minutes: userData.minutes,
                             method: userData.method,
-                            xeroInvoiceID: userData.xeroInvoiceID
+                            xeroInvoiceID: userData.xeroInvoiceID,
+                            mode: userData.mode
 
 
 
@@ -100,13 +102,16 @@ const VirtualTranscriptSuccess = () => {
                         minutes: dataDetails.minutes,
                         method: dataDetails.method,
                         xeroInvoiceID: dataDetails.xeroInvoiceID,
-                        status: "paid"
+                        status: "paid",
+                        mode: dataDetails.mode
+
 
                     });
                     setDataDetails({
                         price: dataDetails.price,
                         minutes: dataDetails.minutes,
                         method: dataDetails.method,
+                        mode: dataDetails.mode
 
 
                     })
@@ -124,7 +129,7 @@ const VirtualTranscriptSuccess = () => {
 
     }, [trigger, sessionId])
 
-
+    console.log("mode", dataDetails.mode)
 
 
 
@@ -134,8 +139,12 @@ const VirtualTranscriptSuccess = () => {
 
         if (isOk) {
 
-            navigate("/virtual-transcript", { state: { isPurchase: "completed", minutes: dataDetails.minutes } });
-
+            if (dataDetails.mode === "note-case") {
+                navigate("/note-case", { state: { isPurchaseVt: "completed", minutesVt: dataDetails.minutes } });
+            }
+            else {
+                navigate("/virtual-transcript", { state: { isPurchase: "completed", minutes: dataDetails.minutes } });
+            }
 
 
 

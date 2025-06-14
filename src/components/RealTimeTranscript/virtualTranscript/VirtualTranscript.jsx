@@ -230,7 +230,7 @@ const VirtualTranscript = () => {
   console.log("live virtual transcripttt:", liveTranscript)
 
 
-  // here payment integration logic will be implemented
+  // >>>>>>>>>>>>>> payment integration logic for the virtual transcript >>>>>>>>>>>>
 
 
 

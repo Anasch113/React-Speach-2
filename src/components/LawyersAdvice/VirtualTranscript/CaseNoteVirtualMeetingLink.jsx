@@ -90,7 +90,7 @@ const CaseNoteVirtualMeetingLink = ({
                             <div className='flex flex-col gap-5 w-full  h-full p-2'>
 
                                 {
-                                    isToken === true &&
+                                    zoomAccessToken === "zoom-connected" &&
 
                                     <div className='flex gap-5 w-full '>
                                         <input

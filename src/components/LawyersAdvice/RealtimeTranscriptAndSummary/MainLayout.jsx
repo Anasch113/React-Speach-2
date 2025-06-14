@@ -29,7 +29,7 @@ import CaseNoteVirtualMeetingLink from '../VirtualTranscript/CaseNoteVirtualMeet
 import ProcessIndication from '../Enhance Usability/ProcessIndication'
 import InPersonStreamControl from '../Enhance Usability/InPersonStreamControl'
 import VirtualStreamControl from '../Enhance Usability/VirtualStreamControl'
-import { setIsVtRecording, setIsProcessing } from "../../../GlobalState/features/liveTranscriptUISlice"
+import { setIsVtRecording, setIsProcessing, setZoomAccessToken, setVtRemainingTime, setIsToken, } from "../../../GlobalState/features/liveTranscriptUISlice"
 import DownloadCaseNote from '../Enhance Usability/DownloadCaseNote'
 
 import {
@@ -43,6 +43,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import VtPaymentModal from '@/components/RealTimeTranscript/virtualTranscript/VtPaymentModel'
 
 
 const MainLayout = () => {
@@ -72,7 +73,10 @@ const MainLayout = () => {
     const [isMeetingStart, setIsMeetingStart] = useState(false)
     const [language, setLanguage] = useState("en_us")
     const [wholeProcessing, setIsWholeProcessing] = useState(false)
+    const [minutesVt, setMinutesVt] = useState(0)
+    const [localRemainingTime, setLocalRemainingTime] = useState(0);
 
+    const [isShowPaymentModel, setIsShowPaymentModel] = useState(false)
 
     // Refs
     const socket = useRef(null)
@@ -95,7 +99,7 @@ const MainLayout = () => {
     const { user, userBalance } = useUserAuth();
 
     const dispatch = useDispatch();
-    const { zoomAccessToken, liveTranscript, finalTranscript, transcriptType, meetingStatus, meetingError, url, botId, isVtRecording, isProcessing } = useSelector((state) => state.liveTranscript.virtualTranscript)
+    const { zoomAccessToken, liveTranscript, finalTranscript, transcriptType, meetingStatus, meetingError, url, botId, isVtRecording, isProcessing, vtRemainingTime, isVtPaused } = useSelector((state) => state.liveTranscript.virtualTranscript)
 
     const { stopVirtualTranscriptions } = useLiveTranscript();
 
@@ -560,7 +564,7 @@ const MainLayout = () => {
     }
 
 
-    // Notes Generation Code >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // Notes Generation Code >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
 
     const handleGenerateNotes = async (formattedText) => {
         toast.success("In progress, please wait for shortly");
@@ -593,11 +597,11 @@ const MainLayout = () => {
             throw error;
         }
     };
-    console.log("formatted transcript", formattedTranscript)
 
 
 
-    // Payment Integration for notecase >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    // Payment Integration for notecase in-person meeting >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     const [minutes, setMinutes] = useState(0)
     const [isPurchase, setIsPurchase] = useState("")
     const [remainingTime, setRemainingTime] = useState()
@@ -612,7 +616,6 @@ const MainLayout = () => {
     const minutesFromLocation = location.state?.minutes;
     const languageFromLocation = location.state?.language;
 
-    console.log("language from locationnnnn", languageFromLocation)
 
 
     useEffect(() => {
@@ -678,30 +681,23 @@ const MainLayout = () => {
 
 
 
-    const handleZoomAuthorization = () => {
-        window.location.href = `${import.meta.env.VITE_HOST_URL}/virtual-transcript/zoom-login`;
-    }
+
+    // >>>>>>>>>>>>>>> Note Case Virtual Transcriptions Logics >>>>>>>>>>>>>>>>>>>>
+
 
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
-        const token = searchParams.get('token');
+        const status = searchParams.get('status');
 
-        // Set isOpen to true if token is present
-        if (token) {
-            setIsOpen(true); // Open the modal if token is present
+        if (status === "zoom-connected") {
+            console.log("status in the note case use effect", status)
+            dispatch(setZoomAccessToken(status))
+            dispatch(setIsToken(true))
+            setIsShowPaymentModel(true)
         }
 
-        console.log("token", token);
-
     }, [location]);
-
-
-
-
-
-
-
 
     useEffect(() => {
 
@@ -718,7 +714,86 @@ const MainLayout = () => {
         }
     }, [url, finalTranscript])
 
-    console.log("selected language of case note:", language)
+    const handleZoomAuthorization = () => {
+        window.location.href = `${import.meta.env.VITE_HOST_URL}/virtual-transcript/zoom-login`;
+    }
+
+
+
+
+    console.log("transcript type and zoomAccessToken", transcriptType, zoomAccessToken)
+
+
+    // >>>>>>>>>>>>>> payment integration logic for the virtual transcript >>>>>>>>>>>>
+
+    const isPurchaseFromLocationVt = location.state?.isPurchaseVt;
+    const minutesFromLocationVt = location.state?.minutesVt;
+
+
+    console.log("isPurchaseFromLocationVt, minutesFromLocationVt in file note virtual transcript", isPurchaseFromLocationVt, minutesFromLocationVt)
+
+
+    // Trigger initial countdown from minutes
+    useEffect(() => {
+        if (isPurchaseFromLocationVt === "completed" && minutesFromLocationVt) {
+            const initialSeconds = minutesFromLocationVt * 60;
+
+            setMinutesVt(minutesFromLocationVt);
+            dispatch(setZoomAccessToken("zoom-connected"));
+            dispatch(setIsToken(true));
+            toast.success("Paste the meeting link to add bot in meeting");
+
+            // Set both Redux and local state
+            dispatch(setVtRemainingTime(initialSeconds));
+            setLocalRemainingTime(initialSeconds);
+            setIsOpen(true)
+        }
+        navigate(location.pathname, { replace: true });
+    }, [isPurchaseFromLocationVt, minutesFromLocationVt]);
+
+
+
+    // Timer countdown effect
+    useEffect(() => {
+        if (!isVtPaused && isVtRecording && localRemainingTime > 0) {
+            timerRef.current = setInterval(() => {
+                setLocalRemainingTime(prev => {
+                    const updated = prev - 1;
+                    dispatch(setVtRemainingTime(updated)); // update Redux with number only
+                    return updated;
+                });
+            }, 1000);
+            return () => clearInterval(timerRef.current);
+        }
+
+        // Stop transcription when time runs out
+        if (localRemainingTime === 0 && isVtRecording) {
+            stopVirtualTranscriptions();
+            toast.success("Virtual Transcriptions End");
+        }
+
+        return () => clearInterval(timerRef.current); // clean up
+    }, [isVtPaused, isVtRecording, localRemainingTime]);
+
+    // Pause timer
+    useEffect(() => {
+        if (isVtPaused) {
+            clearInterval(timerRef.current);
+        }
+    }, [isVtPaused]);
+
+    console.log("vt remaining time", vtRemainingTime)
+
+
+
+    const formatTimeVt = (timeInSeconds) => {
+        const minutes = Math.floor(timeInSeconds / 60);
+        const seconds = timeInSeconds % 60;
+        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    };
+
+
+
 
 
     const exitCaseNote = () => {
@@ -811,6 +886,25 @@ const MainLayout = () => {
                             <VirtualStreamControl
 
                             />
+
+                            {
+                                vtRemainingTime > 0 && isVtRecording &&
+                                <div>
+                                    <div className={`  border flex  py-3 px-10 text-white justify-between items-center ${isVtPaused ? 'bg-green-500' : 'bg-red-500'} rounded-md`}>
+                                        {/* <div className="mr-2 mt-1">
+                                                  {isPaused ? (<FaPause size={18} />) : (<AiOutlineAudio size={18} />)}
+                                                </div> */}
+                                        <div className="flex ">
+                                            {vtRemainingTime > 0 && (
+                                                <div className="font-semibold gap-2 font-poppins text-white-500 flex items-center">
+                                                    <MdOutlineTimer size={20} /> <p>{formatTimeVt(vtRemainingTime)}</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
 
                             {/* 
                         <Button className="mx-2" variant={"customPurple"}>Generate Notes</Button> */}
@@ -984,6 +1078,10 @@ const MainLayout = () => {
 
 
             </div>
+
+            {
+                isShowPaymentModel && <VtPaymentModal mode="note-case" />
+            }
         </div>
     )
 }

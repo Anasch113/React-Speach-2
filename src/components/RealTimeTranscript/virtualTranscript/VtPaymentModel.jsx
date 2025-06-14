@@ -15,7 +15,8 @@ const VtPaymentModal = ({
     setShowPaymentModal,
     setCost,
     currentBalance,
-    handleTranscriptions
+    handleTranscriptions,
+    mode
 }) => {
 
 
@@ -64,7 +65,7 @@ const VtPaymentModal = ({
         try {
 
 
-            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/virtual-transcript-payment`, { total, userId, minutes, promoCode, currency, userEmail, userName });
+            const response = await axios.post(`${import.meta.env.VITE_HOST_URL}/payment-system/virtual-transcript-payment`, { total, userId, minutes, promoCode, currency, userEmail, userName, mode });
 
 
             return response.data;
