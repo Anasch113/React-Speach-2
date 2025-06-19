@@ -113,7 +113,7 @@ const ZoomAuthorization = ({
             <Dialog>
                 <DialogTrigger asChild>
 
-                    <Button className="mx-2 w-52" variant={"lightPurpleMeetingBtn"}>{buttonName} </Button>
+                    <Button className="mx-2 p-4 py-6 " variant={"noteCasebtn"}>{buttonName} </Button>
 
                 </DialogTrigger>
                 <DialogContent className="md:max-w-[600px]  md:min-h-[400px] max-w-[300px] max-h-[500px] overflow-y-auto">

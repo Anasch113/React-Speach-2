@@ -381,16 +381,16 @@ const MainLayout = () => {
                 const formatText = extractFormatTranscriptionText(transcript);
                 setFormattedTranscript(formatText);
 
-                await hanldeTasks(transcript)
+                // await hanldeTasks(transcript)
 
-                const notesArray = await handleGenerateNotes(formatText);
+                // const notesArray = await handleGenerateNotes(formatText);
 
                 // Make sure notesArray is generated and call sendSummaryAndNotesToEmail
-                if (notesArray) {
-                    await sendSummaryAndNotesToEmail(transcript.summary, notesArray);
+                // if (notesArray) {
+                //     await sendSummaryAndNotesToEmail(transcript.summary, notesArray);
 
-                    toast.success("Note case Transcriptions ready!");
-                }
+                //     toast.success("Note case Transcriptions ready!");
+                // }
                 setIsTranscriptionsReady(true)
                 dispatch(setIsProcessing(false))
             }
@@ -806,111 +806,129 @@ const MainLayout = () => {
 
             <div className='min-h-screen w-full flex items-center flex-col'>
 
-                <div className='w-full h-full flex md:flex-row flex-col'>
+                <div className='w-full h-full flex  flex-col'>
                     {/* 50% width recording and transcript parts */}
 
 
 
-                    <div className='md:w-2/4 w-full h-full  flex flex-col items-center p-5 gap-5 '>
+                    <div className='md:w-full w-full h-full  flex flex-col items-center p-5 gap-5 '>
 
-                        <span className='flex-row flex'>
-                            {
-                                isRecording ? <Button onClick={endTranscription} className="mx-2" variant={"destructive"}><FaStop className='mx-2' /> In-person Meeting</Button>
+                        <div className='flex flex-col items-center justify-center border w-2/3 min-h-[450px]  rounded-md py-4 '>
 
-                                    :
+                            <span className='flex-row flex border-b p-4 w-full space-x-2 '>
+                                {
+                                    isRecording ? <Button onClick={endTranscription} className="mx-2 p-4 py-6 rounded-xl" variant={"destructive"}><FaStop className='mx-2' /> Stop</Button>
 
-                                    <PaymentModal
-                                        total={total}
-                                        setTotal={setTotal}
-                                        generateTranscript={generateTranscript}
-                                        initialMinutes={minutes}
-                                        setInitialMinutes={setMinutes}
-                                        setLanguage={setLanguage}
-                                        language={language}
-                                    />
-
-
-                            }
-
-                            {
-                                zoomAccessToken === "" ? <ZoomAuthorization
-                                    buttonName={zoomAccessToken === "" ? "Virtual Meeting" : ""}
-                                    handleZoomAuthorization={handleZoomAuthorization}
-                                    navigateUrl="case-note"
-                                />
-                                    :
-
-                                    transcriptType === "" ?
-
-                                        <Button onClick={() => {
-                                            setIsOpen(true);
-                                        }} className="mx-2" variant={"lightPurpleMeetingBtn"}>Paste Meeting Link </Button>
                                         :
-                                        transcriptType === "final-transcript" ?
 
-                                            isTranscriptionsReady === false ?
-
-                                                <Button className="mx-2" variant={"customBlue"}> Meeting Finished, Case Note in progress </Button> :
-
-                                                <Button className="mx-2" variant={"customGreen"}
-                                                > Case Note Transcriptions are Ready </Button>
-
-
-
-                                            : transcriptType === "realtime" && <Button className="mx-2" variant={"lightPurpleMeetingBtn"}>Meeting In Progress </Button>
+                                        <PaymentModal
+                                            total={total}
+                                            setTotal={setTotal}
+                                            generateTranscript={generateTranscript}
+                                            initialMinutes={minutes}
+                                            setInitialMinutes={setMinutes}
+                                            setLanguage={setLanguage}
+                                            language={language}
+                                        />
 
 
+                                }
+
+                                {
+                                    zoomAccessToken === "" ? !isRecording && <ZoomAuthorization
+                                        buttonName={zoomAccessToken === "" ? "Virtual Meeting" : ""}
+                                        handleZoomAuthorization={handleZoomAuthorization}
+                                        navigateUrl="case-note"
+                                    />
+                                        :
+
+                                        transcriptType === "" ?
+
+                                            <Button onClick={() => {
+                                                setIsOpen(true);
+                                            }} className="mx-2" variant={"lightPurpleMeetingBtn"}>Paste Meeting Link </Button>
+                                            :
+                                            transcriptType === "final-transcript" ?
+
+                                                isTranscriptionsReady === false ?
+
+                                                    <Button className="mx-2" variant={"customBlue"}> Meeting Finished, Case Note in progress </Button> :
+
+                                                    <Button className="mx-2" variant={"customGreen"}
+                                                    > Case Note Transcriptions are Ready </Button>
 
 
-                            }
-                            {
-                                isVtRecording && <Button onClick={stopVirtualTranscriptions} className="mx-2" variant={"destructive"}><FaStop className='mx-2' /> Virtual Transcript</Button>
-                            }
 
-                            <CaseNoteVirtualMeetingLink
-                                isOpen={isOpen}
-                                setIsOpen={setIsOpen}
-                                setIsMeetingStart={setIsMeetingStart}
-
-                            />
+                                                : transcriptType === "realtime" && <Button className="mx-2" variant={"lightPurpleMeetingBtn"}>Meeting In Progress </Button>
 
 
-                            <InPersonStreamControl
-                                isPaused={isPaused}
-                                resumeTranscriptions={resumeTranscriptions}
-                                isRecording={isRecording}
-                                pauseTranscriptions={pauseTranscriptions}
-                                remainingTime={remainingTime}
-                                formatTime={formatTime}
-                            />
-                            <VirtualStreamControl
 
-                            />
 
-                            {
-                                vtRemainingTime > 0 && isVtRecording &&
-                                <div>
-                                    <div className={`  border flex  py-3 px-10 text-white justify-between items-center ${isVtPaused ? 'bg-green-500' : 'bg-red-500'} rounded-md`}>
-                                        {/* <div className="mr-2 mt-1">
+                                }
+                                {
+                                    isVtRecording && <Button onClick={stopVirtualTranscriptions} className="mx-2" variant={"destructive"}><FaStop className='mx-2' /> Virtual Transcript</Button>
+                                }
+
+                                <CaseNoteVirtualMeetingLink
+                                    isOpen={isOpen}
+                                    setIsOpen={setIsOpen}
+                                    setIsMeetingStart={setIsMeetingStart}
+
+                                />
+
+
+                                <InPersonStreamControl
+                                    isPaused={isPaused}
+                                    resumeTranscriptions={resumeTranscriptions}
+                                    isRecording={isRecording}
+                                    pauseTranscriptions={pauseTranscriptions}
+                                    remainingTime={remainingTime}
+                                    formatTime={formatTime}
+                                />
+                                <VirtualStreamControl
+
+                                />
+
+                                {
+                                    vtRemainingTime > 0 && isVtRecording &&
+                                    <div>
+                                        <div className={`  border flex  py-3 px-10 text-white justify-between items-center ${isVtPaused ? 'bg-green-500' : 'bg-red-500'} rounded-md`}>
+                                            {/* <div className="mr-2 mt-1">
                                                   {isPaused ? (<FaPause size={18} />) : (<AiOutlineAudio size={18} />)}
                                                 </div> */}
-                                        <div className="flex ">
-                                            {vtRemainingTime > 0 && (
-                                                <div className="font-semibold gap-2 font-poppins text-white-500 flex items-center">
-                                                    <MdOutlineTimer size={20} /> <p>{formatTimeVt(vtRemainingTime)}</p>
-                                                </div>
-                                            )}
+                                            <div className="flex ">
+                                                {vtRemainingTime > 0 && (
+                                                    <div className="font-semibold gap-2 font-poppins text-white-500 flex items-center">
+                                                        <MdOutlineTimer size={20} /> <p>{formatTimeVt(vtRemainingTime)}</p>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            }
+                                }
 
-
-                            {/* 
+                                {
+                                    isRecording && <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button className="mx-2 p-4 py-6 rounded-xl" variant="destructive">Exit Case Note</Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    Your meeting and Case Note further processing will be stopped after exit!
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction onClick={exitCaseNote}>Continue</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                }
+                                {/* 
                         <Button className="mx-2" variant={"customPurple"}>Generate Notes</Button> */}
-                        </span>
-
-                        <div className='w-full'>
+                            </span>
                             {
                                 isMeetingStart === false && transcriptType === null ?
 
@@ -926,6 +944,10 @@ const MainLayout = () => {
                                         isEdit={isEdit}
                                         sentimentAnalysis={sentimentAnalysis}
                                         isTranscriptionsReady={isTranscriptionsReady}
+                                        handleSwitchChange={handleSwitchChange}
+
+                                        audioUrl={transcriptions.audio_url}
+
 
                                     /> :
 
@@ -939,11 +961,21 @@ const MainLayout = () => {
                                         isEdit={isEdit}
                                         sentimentAnalysis={sentimentAnalysis}
                                         isTranscriptionsReady={isTranscriptionsReady}
+                                        handleSwitchChange={handleSwitchChange}
+                                        audioUrl={transcriptions.audio_url}
                                     />
                             }
+                            <div className='w-full flex items-center justify-center p-4'>
+                                <CustomAudioPlayer
+                                    calculateHighlightedIndex={calculateHighlightedIndex}
+                                    audioUrl={transcriptions.audio_url}
+                                    transcriptions={transcriptions}
+                                />
+                            </div>
+
                         </div>
 
-                        <div className='w-full'>
+                        {/* <div className='w-full'>
 
                             <ParametersBox
 
@@ -955,7 +987,7 @@ const MainLayout = () => {
                                 showSummary={showSummary}
 
                             />
-                        </div>
+                        </div> */}
 
 
                     </div>
@@ -965,9 +997,8 @@ const MainLayout = () => {
                     {/* 50% width notes parts */}
                     <div className='md:w-2/4 w-full h-full  flex flex-col items-center p-5 gap-5 '>
 
-                        <span className='flex-row flex my-5 md:my-0'>
-                            {/* <Button className="mx-2" variant={"customPurple"}>Copy All Text</Button>
-                            <Button className="mx-2" variant={"customPurple"}>New Client</Button> */}
+                        {/* <span className='flex-row flex my-5 md:my-0'>
+                          
 
                             {
                                 isRecording && <AlertDialog>
@@ -989,7 +1020,7 @@ const MainLayout = () => {
                                 </AlertDialog>
                             }
 
-                        </span>
+                        </span> */}
 
 
                         {/* Section for updating user about process proress */}
@@ -1003,7 +1034,7 @@ const MainLayout = () => {
 
                         </div>
 
-                        <div>
+                        {/* <div>
                             {
                                 isTranscriptionsReady && <DownloadCaseNote
                                     transcriptions={transcriptions}
@@ -1015,10 +1046,10 @@ const MainLayout = () => {
 
                                 />
                             }
-                        </div>
+                        </div> */}
 
                         {/* Section for showing the general summary */}
-                        <div className='w-full'>
+                        {/* <div className='w-full'>
 
                             {
                                 showSummary ? <GeneralSummary
@@ -1029,10 +1060,10 @@ const MainLayout = () => {
                                 /> : <div></div>
                             }
 
-                        </div>
+                        </div> */}
 
                         {/* Section for displaying the general notes */}
-                        <div className='w-full'>
+                        {/* <div className='w-full'>
                             {
                                 showNotes ? <GeneralNotes
 
@@ -1046,11 +1077,11 @@ const MainLayout = () => {
 
                                 /> : <div></div>
                             }
-                        </div>
+                        </div> */}
 
                         {/* Section for displaying the tasks */}
 
-                        <div className='w-full'>
+                        {/* <div className='w-full'>
 
                             {
                                 showTasks ? <Tasks
@@ -1062,18 +1093,18 @@ const MainLayout = () => {
                                 /> : <div></div>
                             }
 
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
                 {/* Section for audio playback */}
-                <div className={`fixed-bottom ${!isVisible ? 'hidden-audio-box' : 'px-5 py-5 border flex items-center justify-center bg-bg-navy-blue'}`}>
+                {/* <div className={` ${!isVisible ? 'hidden-audio-box' : 'px-5 py-5 border flex items-center justify-center bg-bg-navy-blue'}`}>
                     <CustomAudioPlayer
                         calculateHighlightedIndex={calculateHighlightedIndex}
                         audioUrl={transcriptions.audio_url}
                         transcriptions={transcriptions}
                     />
-                </div>
+                </div> */}
 
 
 

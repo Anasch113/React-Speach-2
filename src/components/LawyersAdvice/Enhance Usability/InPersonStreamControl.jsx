@@ -13,11 +13,11 @@ const InPersonStreamControl = ({
     return (
         <div className='w-full flex gap-2'>
             {
-                isPaused && isRecording && <Button onClick={resumeTranscriptions} className="mx-2" variant={"customGreen"}>Resume Recording <FaPlay className='mx-2' /></Button>
+                isPaused && isRecording && <Button onClick={resumeTranscriptions} className="mx-2 rounded-xl p-4 py-6" variant={"customGreen"}>Resume Recording <FaPlay className='mx-2' /></Button>
             }
 
             {
-                !isPaused && isRecording && <Button onClick={pauseTranscriptions} className="mx-2" variant={"customBlue"}>Pause Recording  <FaPause className='mx-2' /></Button>
+                !isPaused && isRecording && <Button onClick={pauseTranscriptions} className="mx-2 rounded-xl p-4 py-6" variant={"customBlue"}>Pause Recording  <FaPause className='mx-2' /></Button>
             }
 
             {remainingTime > 0 && (

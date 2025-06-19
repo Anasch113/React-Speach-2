@@ -26,6 +26,8 @@ const buttonVariants = cva(
           "bg-blue-600 text-destructive-foreground hover:bg-blue-500/90 rounded-md",
         purpleMeetingBtn:
           "bg-[#a100ff] text-destructive-foreground hover:bg-[#a100ff]/90 rounded-md",
+        noteCasebtn:
+          "bg-bg-navy-blue text-destructive-foreground hover:bg-bg-navy-blue/90 rounded-xl",
         lightPurpleMeetingBtn:
           "bg-[#655CC9] text-destructive-foreground hover:bg-[#655CC9]/90 rounded-md",
       },

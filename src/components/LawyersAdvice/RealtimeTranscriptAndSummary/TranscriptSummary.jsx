@@ -3,6 +3,8 @@ import React from 'react'
 import { MdContentCopy } from "react-icons/md";
 import { useState, useEffect, useRef } from 'react';
 import EditModal from '@/components/PreAudio/EditModal';
+import { jsPDF } from "jspdf";
+
 
 const TranscriptSummary = ({
     transcript,
@@ -13,7 +15,9 @@ const TranscriptSummary = ({
     setTranscriptions,
     isEdit,
     sentimentAnalysis,
-    isTranscriptionsReady
+    isTranscriptionsReady,
+    handleSwitchChange,
+    audioUrl,
 
 
 
@@ -78,15 +82,31 @@ const TranscriptSummary = ({
 
 
 
-console.log("sentimentAnalysis", sentimentAnalysis)
+    console.log("sentimentAnalysis", sentimentAnalysis)
+
+
+
+
+    const downloadNoteCase = () => {
+        const doc = new jsPDF();
+        const fontSize = 12;
+        doc.setFontSize(fontSize);
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const maxWidth = pageWidth - 20;
+        const textLines = doc.splitTextToSize(transcriptions.text, maxWidth);
+        doc.text(textLines, 10, 10);
+        doc.save(`note_case.pdf`);
+    };
 
     return (
 
 
-        <div className='border w-full min-h-[300px] bg-bg-navy-blue rounded-md flex flex-col items-center p-5 gap-5'>
+        <div className='w-full flex flex-col items-center py-5 gap-5'>
+
             <h1 className='md:text-3xl text-xl font-semibold'>Transcript</h1>
 
-            <div className={`border rounded-md w-full max-[768px]:text-sm p-2 min-h-[250px] max-h-[250px] ${showSpeakerLabels ? 'overflow-y-auto' : 'overflow-y-auto'} `}>
+
+            <div className={` rounded-md w-full max-[768px]:text-sm p-2 min-h-[250px] max-h-[250px] ${showSpeakerLabels ? 'overflow-y-auto' : 'overflow-y-auto'} `}>
 
                 <div ref={pRefLarge}
                     style={{
@@ -143,8 +163,21 @@ console.log("sentimentAnalysis", sentimentAnalysis)
 
 
             </div>
+            
+            <div className='border w-full p-4 space-x-2'>
 
-            <Button onClick={copyText} variant={"outline"}> {!showCopied ? "Copy Text  " : "Copied"} <MdContentCopy className='mx-2' /> </Button>
+                <Button onClick={copyText} className=" rounded-xl p-6" variant={"outline"}> {!showCopied ? "Copy Text  " : "Copied"} <MdContentCopy className='mx-2' /> </Button>
+                <Button onClick={() => {
+                    handleSwitchChange("edit")
+                }} className=" rounded-xl p-6" variant={"outline"}>
+                    Edit Transcript </Button>
+                <Button onClick={() => {
+                    handleSwitchChange("speakerLabels")
+                }} className=" rounded-xl p-6" variant={"outline"}>Speaker Lables </Button>
+                {
+                    isTranscriptionsReady && <Button onClick={downloadNoteCase} className=" rounded-xl p-6" variant={"outline"}>Download </Button>
+                }
+            </div>
 
 
             {showModal && (

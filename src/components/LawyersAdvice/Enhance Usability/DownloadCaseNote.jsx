@@ -35,7 +35,7 @@ const DownloadCaseNote = ({
             link.click()
 
             document.body.removeChild(link);
-            setIsAudioDownloading(false)
+           
 
 
 

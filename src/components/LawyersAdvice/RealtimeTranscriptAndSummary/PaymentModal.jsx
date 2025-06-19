@@ -142,7 +142,7 @@ const PaymentModal = ({
             <Dialog>
                 <DialogTrigger asChild>
 
-                    <Button className="mx-2" variant={"purpleMeetingBtn"}>In-Person Meeting <FaPlay className='mx-2' /></Button>
+                    <Button className="mx-2 p-4 py-6" variant={"noteCasebtn"}>In-Person Meeting </Button>
 
                 </DialogTrigger>
                 <DialogContent className="md:max-w-[600px]  md:min-h-[400px] md:max-h-[580px] max-w-[300px]  overflow-y-auto  rounded-xl my-5  ">
