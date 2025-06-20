@@ -834,7 +834,7 @@ const MainLayout = () => {
 
                                 }
 
-                                {
+                                {/* {
                                     zoomAccessToken === "" ? !isRecording && <ZoomAuthorization
                                         buttonName={zoomAccessToken === "" ? "Virtual Meeting" : ""}
                                         handleZoomAuthorization={handleZoomAuthorization}
@@ -874,7 +874,7 @@ const MainLayout = () => {
                                     setIsOpen={setIsOpen}
                                     setIsMeetingStart={setIsMeetingStart}
 
-                                />
+                                /> */}
 
 
                                 <InPersonStreamControl

@@ -24,10 +24,12 @@ const TranscriptSummary = ({
 }) => {
     const [showCopied, setShowCopied] = useState(false);
     const pRefLarge = useRef(null);
+    const contentRef = useRef(null);
 
     const [selectedText, setSelectedText] = useState("");
     const [updatedText, setUpdatedText] = useState("");
     const [showModal, setShowModal] = useState(false);
+
 
 
 
@@ -86,17 +88,35 @@ const TranscriptSummary = ({
 
 
 
-
     const downloadNoteCase = () => {
         const doc = new jsPDF();
         const fontSize = 12;
         doc.setFontSize(fontSize);
         const pageWidth = doc.internal.pageSize.getWidth();
         const maxWidth = pageWidth - 20;
-        const textLines = doc.splitTextToSize(transcriptions.text, maxWidth);
+
+        // ✅ Build a plain text string from the sentiments
+        const textContent = transcriptions.sentiment_analysis_results.map((sentiment) => {
+            const utterance = transcriptions.utterances.find(u =>
+                u.start <= sentiment.start && u.end >= sentiment.end
+            );
+
+            const speakerLabel = utterance ? `Speaker ${utterance.speaker}: ` : "";
+            return `${speakerLabel}${sentiment.text}`;
+        }).join("\n\n"); // Use new lines to separate entries
+
+        // ✅ Split text into lines for fitting the page
+        const textLines = doc.splitTextToSize(textContent, maxWidth);
+
+        // ✅ Add the text to the PDF
         doc.text(textLines, 10, 10);
+
+        // ✅ Save the PDF
         doc.save(`note_case.pdf`);
     };
+
+
+
 
     return (
 
@@ -163,7 +183,7 @@ const TranscriptSummary = ({
 
 
             </div>
-            
+
             <div className='border w-full p-4 space-x-2'>
 
                 <Button onClick={copyText} className=" rounded-xl p-6" variant={"outline"}> {!showCopied ? "Copy Text  " : "Copied"} <MdContentCopy className='mx-2' /> </Button>

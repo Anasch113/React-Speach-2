@@ -207,11 +207,9 @@ function Sidebar({ isPurchase, minutes }) {
   const startLiveTranscript = () => {
     Swal.fire({
       title: "Transcribe my",
-
-      showCancelButton: true,
-      showConfirmButton: true,
       showDenyButton: true,
-      confirmButtonText: "Virtual Meeting",
+      showCancelButton: true,
+      showConfirmButton: false, // Hide confirm button
       denyButtonText: "In-person Meeting",
       customClass: {
         popup: 'custom-swal-popup',
@@ -220,21 +218,15 @@ function Sidebar({ isPurchase, minutes }) {
         cancelButton: 'custom-cancel'
       }
     }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
-
-        navigate("/virtual-transcript")
-        // toast("Virtual Transcripts are currently unavailable!")
-
-      } else if (result.isDenied) {
-
-        setShowPaymentModal(true)
-
-
+      if (result.isDenied) {
+        setShowPaymentModal(true);
       }
+      // Optionally handle cancel
+      // else if (result.isDismissed) {
+      //   console.log("Cancelled");
+      // }
     });
   };
-
 
 
 
@@ -426,7 +418,7 @@ function Sidebar({ isPurchase, minutes }) {
                   <span>Resync AI</span>
                 </div>
               </Link>
-            
+
               <Link to={"/corporate-transcript-summarization"}>
                 <div className={`p-2 flex rounded-md ${isActive("/corporate-transcript-summarization") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
                   <span>Transcript Summary</span>
