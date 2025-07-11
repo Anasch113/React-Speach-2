@@ -907,16 +907,27 @@ const MainLayout = () => {
                                     </div>
                                 }
 
+                                <div className='md:w-[1200px] w-full'>
+
+                                    {
+                                        isProcessing && <ProcessIndication
+
+                                        />
+                                    }
+
+                                </div>
+
                                 {
-                                    isRecording && <AlertDialog>
+                                    isRecording || isTranscriptionsReady && <AlertDialog>
                                         <AlertDialogTrigger asChild>
-                                            <Button className="mx-2 p-4 py-6 rounded-xl" variant="destructive">Exit Case Note</Button>
+                                            <Button className="mx-2 p-4 py-6 rounded-xl" variant="destructive">{isRecording ? "Exit Case Note" : isTranscriptionsReady ? "Delete Case Note" : ""} </Button>
                                         </AlertDialogTrigger>
                                         <AlertDialogContent>
                                             <AlertDialogHeader>
                                                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                                 <AlertDialogDescription>
-                                                    Your meeting and Case Note further processing will be stopped after exit!
+
+                                                    {isRecording ? "Your meeting and Case Note further processing will be stopped after exit!" : isTranscriptionsReady ? "Case note will be deleted!" : ""}
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>
@@ -1024,7 +1035,7 @@ const MainLayout = () => {
 
 
                         {/* Section for updating user about process proress */}
-                        <div className='w-full'>
+                        {/* <div className='w-full'>
 
                             {
                                 isProcessing && <ProcessIndication
@@ -1032,7 +1043,7 @@ const MainLayout = () => {
                                 />
                             }
 
-                        </div>
+                        </div> */}
 
                         {/* <div>
                             {

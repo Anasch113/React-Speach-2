@@ -326,16 +326,16 @@ function Sidebar({ isPurchase, minutes }) {
           </button>
           {openLegal && (
             <div className="ml-6">
-              <Link to={"/legal-videography"}>
+              {/* <Link to={"/legal-videography"}>
                 <div className={`p-2 flex rounded-md ${isActive("/legal-videography") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
                   <span>Legal Videography</span>
                 </div>
-              </Link>
-              <Link to={"/court-reporting"}>
+              </Link> */}
+              {/* <Link to={"/court-reporting"}>
                 <div className={`p-2 flex rounded-md ${isActive("/court-reporting") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
                   <span>Court Reporting</span>
                 </div>
-              </Link>
+              </Link> */}
 
               <Link to={"/summarization-deposition"}>
                 <div className={`p-2 flex rounded-md ${isActive("/summarization-deposition") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
@@ -345,7 +345,7 @@ function Sidebar({ isPurchase, minutes }) {
 
               <Link to={"/note-case"}>
                 <div className={`p-2 flex rounded-md ${isActive("/note-case") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
-                  <span>File Note</span>
+                  <span>Meeting Recording</span>
                 </div>
               </Link>
               <Link to={"/pre-audio-transcriptions"}>
@@ -405,6 +405,12 @@ function Sidebar({ isPurchase, minutes }) {
                   </div>
                 </div>
               )}
+
+                <Link to={"/note-case"}>
+                <div className={`p-2 flex rounded-md ${isActive("/note-case") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
+                  <span>Meeting Recording</span>
+                </div>
+              </Link>
 
               <Link to={"/pre-audio-transcriptions"}>
                 <div className={`p-2 flex rounded-md ${isActive("/pre-audio-transcriptions") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>

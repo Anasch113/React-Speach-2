@@ -116,6 +116,36 @@ const TranscriptSummary = ({
     };
 
 
+    // Downloading of audio url 
+
+
+    const downloadAudio = async () => {
+
+
+        try {
+
+            const response = await fetch(audioUrl)
+            const blob = await response.blob();
+            const link = document.createElement('a');
+
+            link.href = window.URL.createObjectURL(blob)
+            link.download = "caseNote_audio"
+            link.target = ("_blank")
+
+            document.body.appendChild(link)
+            link.click()
+
+            document.body.removeChild(link);
+
+
+
+
+        } catch (error) {
+            console.log("Erro while downloading the audio", error)
+        }
+    }
+
+
 
 
     return (
@@ -195,7 +225,10 @@ const TranscriptSummary = ({
                     handleSwitchChange("speakerLabels")
                 }} className=" rounded-xl p-6" variant={"outline"}>Speaker Lables </Button>
                 {
-                    isTranscriptionsReady && <Button onClick={downloadNoteCase} className=" rounded-xl p-6" variant={"outline"}>Download </Button>
+                    isTranscriptionsReady && <Button onClick={downloadNoteCase} className=" rounded-xl p-6" variant={"outline"}>Download Transcript </Button>
+                }
+                {
+                    isTranscriptionsReady && <Button onClick={downloadAudio} className=" rounded-xl p-6" variant={"outline"}>Download Audio </Button>
                 }
             </div>
 

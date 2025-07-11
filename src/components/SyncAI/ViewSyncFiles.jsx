@@ -92,93 +92,98 @@ const ViewSyncFiles = () => {
     return `${pad(hours, 2)}:${pad(minutes, 2)}:${pad(secs, 2)},${pad(milliseconds, 3)}`;
   };
 
+
+
+
   const generateSrtContent = () => {
-  let srtContent = '';
-  let segmentIndex = 1;
-  let wordCount = 0;
-  let paragraphContent = '';
-  let startTs = null;
-  let endTs = null;
-  let lastValidEndTs = null;
+    let srtContent = '';
+    let segmentIndex = 1;
+    let wordCount = 0;
+    let paragraphContent = '';
+    let startTs = null;
+    let endTs = null;
+    let lastValidEndTs = null;
 
-  let pendingWords = ''; // buffer for words without timestamps
-  let pending = false;   // flag to know if we're holding untimed content
+    let pendingWords = ''; // buffer for words without timestamps
+    let pending = false;   // flag to know if we're holding untimed content
 
-  dbTranscript.syncData.forEach((data) => {
-    data.elements.forEach((word, index) => {
-      if (word.value === ' ' && word.type === 'punct') return;
+    dbTranscript.syncData.forEach((data) => {
+      data.elements.forEach((word, index) => {
+        if (word.value === ' ' && word.type === 'punct') return;
 
-      // Build content string (including pending)
-      if (word.type === 'punct') {
-        if (paragraphContent.length > 0) {
-          paragraphContent = paragraphContent.trimEnd();
+        // Build content string (including pending)
+        if (word.type === 'punct') {
+          if (paragraphContent.length > 0) {
+            paragraphContent = paragraphContent.trimEnd();
+          }
+          paragraphContent += word.value;
+        } else {
+          if (paragraphContent.length > 0 && !paragraphContent.endsWith(' ')) {
+            paragraphContent += ' ';
+          }
+          paragraphContent += word.value;
+          wordCount++;
         }
-        paragraphContent += word.value;
-      } else {
-        if (paragraphContent.length > 0 && !paragraphContent.endsWith(' ')) {
-          paragraphContent += ' ';
+
+        // Track missing-timestamp words
+        const hasTs = word.ts !== undefined && word.end_ts !== undefined;
+
+        if (!hasTs) {
+          pendingWords = paragraphContent;
+          pending = true;
+          return; // skip segment creation
         }
-        paragraphContent += word.value;
-        wordCount++;
-      }
 
-      // Track missing-timestamp words
-      const hasTs = word.ts !== undefined && word.end_ts !== undefined;
+        // If we had pending words, flush them now with a safe timestamp window
+        if (pending && lastValidEndTs !== null) {
+          const startTime = convertToSrtTime(lastValidEndTs);
+          const endTime = convertToSrtTime(word.ts);
 
-      if (!hasTs) {
-        pendingWords = paragraphContent;
-        pending = true;
-        return; // skip segment creation
-      }
-
-      // If we had pending words, flush them now with a safe timestamp window
-      if (pending && lastValidEndTs !== null) {
-        const startTime = convertToSrtTime(lastValidEndTs);
-        const endTime = convertToSrtTime(word.ts);
-
-        srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${pendingWords.trim()}\n\n`;
-        segmentIndex++;
-        pendingWords = '';
-        pending = false;
-        wordCount = 0;
-        paragraphContent = '';
-        startTs = null;
-        return; // skip current word from creating another block
-      }
-
-      // Set timestamps for this segment
-      if (startTs === null) startTs = word.ts;
-      endTs = word.end_ts;
-      lastValidEndTs = endTs;
-
-      const isLast = index === data.elements.length - 1;
-
-      // Flush normal segment every 6 words or if last word
-      if (wordCount === 6 || isLast) {
-        if (startTs !== null && endTs !== null) {
-          const startTime = convertToSrtTime(startTs);
-          const endTime = convertToSrtTime(endTs);
-
-          srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
-
-          // Reset
-          paragraphContent = '';
-          wordCount = 0;
-          startTs = null;
-          endTs = null;
+          srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${pendingWords.trim()}\n\n`;
           segmentIndex++;
+          pendingWords = '';
+          pending = false;
+          wordCount = 0;
+          paragraphContent = '';
+          startTs = null;
+          return; // skip current word from creating another block
         }
-      }
+
+        // Set timestamps for this segment
+        if (startTs === null) startTs = word.ts;
+        endTs = word.end_ts;
+        lastValidEndTs = endTs;
+
+        const isLast = index === data.elements.length - 1;
+
+        // Flush normal segment every 6 words or if last word
+        if (wordCount === 6 || isLast) {
+          if (startTs !== null && endTs !== null) {
+            const startTime = convertToSrtTime(startTs);
+            const endTime = convertToSrtTime(endTs);
+
+            srtContent += `${segmentIndex}\n${startTime} --> ${endTime}\n${paragraphContent.trim()}\n\n`;
+
+            // Reset
+            paragraphContent = '';
+            wordCount = 0;
+            startTs = null;
+            endTs = null;
+            segmentIndex++;
+          }
+        }
+      });
+
+      srtContent = srtContent.trimEnd() + '\n\n';
     });
 
-    srtContent = srtContent.trimEnd() + '\n\n';
-  });
+    return srtContent;
+  };
 
-  return srtContent;
-};
 
-  
-  
+
+
+
 
 
   // const handleToggleSRT = () => {
@@ -277,7 +282,7 @@ const ViewSyncFiles = () => {
                           <div className="flex flex-wrap gap-1">
                             {data.elements.map((word, j, wordsArray) => {
 
-                              
+
                               const isTimestamped = word.ts !== undefined && word.end_ts !== undefined;
 
                               // Only count words with valid timestamps for grouping

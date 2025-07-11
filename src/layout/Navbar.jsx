@@ -26,14 +26,14 @@ const Navbar = ({ isPurchase, minutes }) => {
 
 
 
-          <div className="relative hidden md:block lg:block xl:block 2xl:block">
+          {/* <div className="relative hidden md:block lg:block xl:block 2xl:block">
             <input
               type="text"
               placeholder="Search"
               className=" bg-blackGray px-3 py-2   rounded-md focus:outline-none "
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-              {/* Search icon (you can use an SVG or an icon library here) */}
+            
               <svg
                 className="h-5 w-5 text-white color: white;"
                 fill="none"
@@ -47,15 +47,15 @@ const Navbar = ({ isPurchase, minutes }) => {
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
             </div>
-          </div>
+          </div> */}
 
           {/* Meeting URL Input */}
-          <MeetingRecord />
+          {/* <MeetingRecord /> */}
 
           {/* Import Button */}
-          <button className="   bg-bg-purple px-4 py-2 rounded-md focus:outline-none hover:bg-purple-500 hidden md:block lg:block xl:block 2xl:block">
+          {/* <button className="   bg-bg-purple px-4 py-2 rounded-md focus:outline-none hover:bg-purple-500 hidden md:block lg:block xl:block 2xl:block">
             Import
-          </button>
+          </button> */}
         </div>
       </div>
     </nav>
