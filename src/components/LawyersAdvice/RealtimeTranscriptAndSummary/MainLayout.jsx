@@ -918,7 +918,27 @@ const MainLayout = () => {
                                 </div>
 
                                 {
-                                    isRecording || isTranscriptionsReady && <AlertDialog>
+                                    isTranscriptionsReady && <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button className="mx-2 p-4 py-6 rounded-xl" variant="destructive">{isRecording ? "Exit Case Note" : isTranscriptionsReady ? "Delete Case Note" : ""} </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+
+                                                    {isRecording ? "Your meeting and Case Note further processing will be stopped after exit!" : isTranscriptionsReady ? "Case note will be deleted!" : ""}
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction onClick={exitCaseNote}>Continue</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                }
+                                {
+                                    isRecording && <AlertDialog>
                                         <AlertDialogTrigger asChild>
                                             <Button className="mx-2 p-4 py-6 rounded-xl" variant="destructive">{isRecording ? "Exit Case Note" : isTranscriptionsReady ? "Delete Case Note" : ""} </Button>
                                         </AlertDialogTrigger>

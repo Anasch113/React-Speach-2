@@ -408,7 +408,7 @@ function Sidebar({ isPurchase, minutes }) {
 
                 <Link to={"/note-case"}>
                 <div className={`p-2 flex rounded-md ${isActive("/note-case") ? "bg-white text-black" : "hover:bg-white hover:text-black"}`}>
-                  <span>Meeting Recording</span>
+                  <span>Meeting Recorder</span>
                 </div>
               </Link>
 

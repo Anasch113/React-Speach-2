@@ -54,9 +54,9 @@ function RootLayout() {
 
           <Navbar isPurchase={isPurchase} minutes={minutes} />
 
-          <div className="flex w-full md:flex-row flex-col">
+          <div className="flex w-full md:flex-row flex-col px-4 md:pr-40">
             <MainContent  />
-            <RightSidebar />
+            {/* <RightSidebar /> */}
           </div>
         </div>
       </div>
