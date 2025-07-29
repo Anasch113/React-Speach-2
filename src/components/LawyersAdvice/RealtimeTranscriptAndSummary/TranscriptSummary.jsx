@@ -221,9 +221,7 @@ const TranscriptSummary = ({
                     handleSwitchChange("edit")
                 }} className=" rounded-xl p-6" variant={"outline"}>
                     Edit Transcript </Button>
-                <Button onClick={() => {
-                    handleSwitchChange("speakerLabels")
-                }} className=" rounded-xl p-6" variant={"outline"}>Speaker Lables </Button>
+               
                 {
                     isTranscriptionsReady && <Button onClick={downloadNoteCase} className=" rounded-xl p-6" variant={"outline"}>Download Transcript </Button>
                 }

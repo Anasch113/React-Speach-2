@@ -9,12 +9,8 @@ const Aboutus = () => {
                     <div className="bg-black text-white bg-opacity-90 md:p-8 rounded-lg shadow-lg w-full">
                         <h2 className="text-3xl md:text-6xl font-bold mb-8 text-center text-purple-800">About Captify</h2>
 
-                        <p className="md:text-xl font-light text-white mb-6">
-                            With Captify, captivate your audience, deliver dynamic presentations, meetings, and events with confidence and clarity.
-                        </p>
-                        <p className="md:text-xl font-light text-white mb-8">
-                            With Captify, captivate your audience, deliver dynamic presentations, meetings, and events with confidence and clarity.
-                        </p>
+                        
+                       
 
                         {/* New Content */}
                         <div className="space-y-6 md:text-lg text-white">
