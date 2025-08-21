@@ -10,7 +10,7 @@ import html2pdf from "html2pdf.js";
 import { CiCalendar } from "react-icons/ci";
 import { CiTimer } from "react-icons/ci";
 import { PiNewspaperClippingBold } from "react-icons/pi";
-import { FaRegFilePdf } from "react-icons/fa6";
+import { FaDownload, FaRegFilePdf, FaTrash } from "react-icons/fa6";
 import { MdOndemandVideo } from "react-icons/md";
 import { IoVideocamOffSharp } from "react-icons/io5";
 import { useLiveTranscript } from "../GlobalState/customHooks/useLiveTranscript"
@@ -21,6 +21,8 @@ import {
 import jsPDF from 'jspdf';
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
+import { useUserAuth } from "@/context/UserAuthContext";
+import axios from "axios";
 
 function MainContent() {
 
@@ -30,6 +32,10 @@ function MainContent() {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [transcript, setTranscript] = useState("")
   const [isInPersonMeetingStop, setIsInPersonMeetingStop] = useState(false)
+  const [transcription,setTranscription] = useState(""); // state for storing the fetched transcription
+  const [open, setOpen] = useState(false);
+  const [id,setId]=useState("");
+  const {user} = useUserAuth();
 
 
 
@@ -54,42 +60,61 @@ function MainContent() {
   const pdfContainer = useRef(null);
 
 
-  const downloadPdf = async () => {
-    setIsDownloadingtr(true);
-
-    const pdfOptions = {
-      margin: 10,
-
-      filename: "combined_transcription.pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-
-    };
-
-    try {
-      const pdfContent = generatePdfContent(); // Call a function to generate the PDF content
-      await html2pdf(pdfContent, pdfOptions);
-    } catch (error) {
-      console.error("Error downloading PDF:", error);
-    } finally {
-      setIsDownloadingtr(false);
-    }
+// Fetching transcription data from the server
+  useEffect(() => {
+  const fetchTranscriptions = async () => {
+    await axios.get(`${import.meta.env.VITE_HOST_URL}/transcription/all/${user.uid}`)
+    .then((res)=>{
+      const data = res.data;
+      setTranscription(data);
+    }).catch((err)=>{
+      toast.error(err?.response?.data?.message);
+    })
+    
   };
-  const generatePdfContent = () => {
-    return `
-      <div class="py-20">
-        ${transcriptionFiles.map((files, i) => `
-          <div class="py-10" key=${i}>
-            <div class="py-2">
-              <p>Speaker A: ${files.speakerAUtterances.map((utterance) => utterance.text).join(" ")}</p>
-              <p>Speaker B: ${files.speakerBUtterances.map((utterance) => utterance.text).join(" ")}</p>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  };
+  if (user?.uid) fetchTranscriptions();
+}, [user]);
+
+ 
+
+
+
+  // const downloadPdf = async () => {
+  //   setIsDownloadingtr(true);
+
+  //   const pdfOptions = {
+  //     margin: 10,
+
+  //     filename: "combined_transcription.pdf",
+  //     image: { type: "jpeg", quality: 0.98 },
+  //     html2canvas: { scale: 2 },
+  //     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+
+  //   };
+
+  //   try {
+  //     const pdfContent = generatePdfContent(); // Call a function to generate the PDF content
+  //     await html2pdf(pdfContent, pdfOptions);
+  //   } catch (error) {
+  //     console.error("Error downloading PDF:", error);
+  //   } finally {
+  //     setIsDownloadingtr(false);
+  //   }
+  // };
+  // const generatePdfContent = () => {
+  //   return `
+  //     <div class="py-20">
+  //       ${transcriptionFiles.map((files, i) => `
+  //         <div class="py-10" key=${i}>
+  //           <div class="py-2">
+  //             <p>Speaker A: ${files.speakerAUtterances.map((utterance) => utterance.text).join(" ")}</p>
+  //             <p>Speaker B: ${files.speakerBUtterances.map((utterance) => utterance.text).join(" ")}</p>
+  //           </div>
+  //         </div>
+  //       `).join('')}
+  //     </div>
+  //   `;
+  // };
 
 
 
@@ -154,43 +179,70 @@ function MainContent() {
 
 
 
+ // 📄 Download transcription as PDF
+  const handleDownloadPDF = (text, title) => {
+    const doc = new jsPDF();
+    doc.setFontSize(14);
+    doc.text(`Title: ${title}`, 10, 10);
+    doc.setFontSize(12);
+    doc.text("Transcription:", 10, 20);
 
+    // Wrap text properly
+    const splitText = doc.splitTextToSize(text, 180);
+    doc.text(splitText, 10, 30);
 
-  useEffect(() => {
+    doc.save(`${title}.pdf`);
+  };
 
+// delete transcription 
+const handleDeleteTranscription = async (id) => {
+  try {
+    await axios.delete(`${import.meta.env.VITE_HOST_URL}/transcription/delete/${id}`);
+    toast.success("Transcription deleted successfully");
+    window.location.reload(true);
+  } catch (error) {
+    toast.error(error?.response?.data?.message || "Failed to delete transcription");
+  }
+}
 
+// save transcript to the  db store
 
+useEffect(() => {
+  const handleMessage = async (event) => {
+    if (event.origin !== window.location.origin) return;
 
-    const handleMessage = (event) => {
-      if (event.origin !== window.location.origin) {
-        // Ignore messages from unknown origins for security
-        return;
+    if (event.data.type === "STOP") {
+      const finalTranscript = event.data.transcript || "[No speech captured]";
+      console.log("Final transcript received:", finalTranscript);
+
+      // Update UI
+      setTranscript(finalTranscript);
+      setIsInPersonMeetingStop(true);
+
+      const userId = user?.uid;
+      if (!userId) return console.error("No user ID found");
+
+      try {
+        const res = await axios.post(`${import.meta.env.VITE_HOST_URL}/transcription/save`, {
+          userId,
+          text: finalTranscript,
+         
+        });
+        toast.success(res.data.message);
+        window.location.reload(true);
+      } catch (err) {
+        toast.error(err?.response?.data?.message || "Failed to save transcript");
       }
+    }
+  };
+  window.addEventListener("message", handleMessage);
+  return () => window.removeEventListener("message", handleMessage);
+}, [user]); // Dependency on user
 
-      console.log("event data", event.data);
 
 
 
-      if (event.data.type === 'STOP') {
 
-        toast.success("Live Transcriptions End");
-        setIsInPersonMeetingStop(true)
-        const transcript = event.data.transcript
-        console.log("transcript in postMessage:", transcript)
-        setTranscript(transcript)
-      }
-
-    };
-
-    window.addEventListener('message', handleMessage);
-
-    // Cleanup function to clear the timer if the component unmounts or the effect runs again
-    return () => {
-
-      window.removeEventListener('message', handleMessage);
-    };
-
-  }, []);
   return (
     <main className="flex-1 overflow-x-hidden overflow-y-scroll bg-bg-color-light min-h-screen " style={{
       scrollbarWidth: "thin",
@@ -206,7 +258,7 @@ function MainContent() {
 
 
 
-      <div className="flex px-7 py-4  gap-4 t   max-[500px]:gap-1 max-[500px]:flex-col max-[500px]:items-start">
+      <div className="flex px-7 py-4  gap-4 t bg-blackGray  max-[500px]:gap-1 max-[500px]:flex-col max-[500px]:items-start">
         <span className="flex gap-2 items-center text-2xl font-semibold ">
 
           <p>{formatDate(currentDateTime)}</p>
@@ -246,9 +298,52 @@ function MainContent() {
         <p></p>
       )}
 
+      <table className="min-w-full border border-gray-300 rounded-md">
+      <thead className="bg-purple-700">
+        <tr>
+          <th className="p-2 border">Sr. No</th>
+          <th className="p-2 border">Title</th>
+          <th className="p-2 border">Created At</th>
+          <th className="p-2 border">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {transcription.length > 0 ? (
+          transcription.map((t, i) => (
+            <tr key={t._id} >
+              <td className="p-2 border text-center">{i + 1}</td>
+              <td className="p-2 border">{t.title}</td>
+              <td className="p-2 border">{new Date(t.createdAt).toLocaleString()}</td>
+              <td className="p-2 border flex justify-center gap-4">
+                <button onClick={()=> handleDownloadPDF(t.text,t.title)}  className="text-green-500 hover:text-green-700">
+                  <FaDownload />
+                </button>
+                <button onClick={()=> {setOpen(true); setId(t._id)}}  className="text-red-500 hover:text-red-700">
+                  <FaTrash />
+                </button>
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={4} className="p-2 text-center">
+              No transcriptions yet
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  
+
+
+
+
+
+
+
 
       {/* live transcription */}
-      {
+      {/* {
         !transcriptType === null &&
 
         <div className="p-5">
@@ -287,8 +382,10 @@ function MainContent() {
           </div>
         </div>
 
-      }
-      <div className="  flex   flex-col gap-7 mx-4 my-4 p-5 px-7   bg-bg-navy-blue  rounded-md">
+      } */}
+
+      
+      {/* <div className="  flex   flex-col gap-7 mx-4 my-4 p-5 px-7   bg-bg-navy-blue  rounded-md">
         <div className="flex flex-col gap-2">
           {myAudioFiles.length > 0 ? (
             myAudioFiles.map((audio, i) => (
@@ -310,7 +407,7 @@ function MainContent() {
           )}
         </div>
 
-        {/* list of audio files */}
+        list of audio files
         {
           isInPersonMeetingStop &&    <Button className="w-52"  onClick={downloadLiveTranscript} variant = {"customPurple"}>Download Transcript</Button>
         }
@@ -318,10 +415,37 @@ function MainContent() {
      
 
 
-        {/* <RecordingAudio /> */}
-        {/* <LiveTranscription /> */}
+        <RecordingAudio />
+        <LiveTranscription />
 
-      </div>
+      </div> */}
+
+         {open && (
+        <div className="fixed inset-0 z-[999] bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg shadow-xl w-[90%] md:w-[40%] p-5 relative">
+            
+            <h3 className="text-center text-[22px] font-semibold text-gray-800 py-4">
+            Are you sure you want to delete this transcription?
+            </h3>
+            <div className="flex items-center justify-center gap-4">
+              <button
+                className="  bg-purple-700 text-white px-6 py-2 rounded-lg"
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-red-600 text-white px-6 py-2 rounded-lg"
+                onClick={() => setOpen(false) ||  handleDeleteTranscription(id)}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
     </main>
   );
 }
