@@ -81,12 +81,19 @@ function MainContent() {
 
   //   const pdfOptions = {
   //     margin: 10,
+  //   const pdfOptions = {
+  //     margin: 10,
 
   //     filename: "combined_transcription.pdf",
   //     image: { type: "jpeg", quality: 0.98 },
   //     html2canvas: { scale: 2 },
   //     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+  //     filename: "combined_transcription.pdf",
+  //     image: { type: "jpeg", quality: 0.98 },
+  //     html2canvas: { scale: 2 },
+  //     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
 
+  //   };
   //   };
 
   //   try {
@@ -293,6 +300,7 @@ function MainContent() {
 
       {/* live transcription */}
       {/* {
+      {/* {
         !transcriptType === null &&
 
         <div className="p-5">
@@ -355,6 +363,7 @@ function MainContent() {
           )}
         </div>
 
+        list of audio files
         list of audio files
         {
           isInPersonMeetingStop &&    <Button className="w-52"  onClick={downloadLiveTranscript} variant = {"customPurple"}>Download Transcript</Button>
