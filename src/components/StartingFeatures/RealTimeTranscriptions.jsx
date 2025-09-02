@@ -24,8 +24,10 @@ import {
   setIsMeetingEnd
 } from "../../GlobalState/features/liveTranscriptUISlice"
 import { useLiveTranscript } from '@/GlobalState/customHooks/useLiveTranscript';
+import { useUserAuth } from '@/context/UserAuthContext';
 
 function RealTimeTranscriptions() {
+  const {user} = useUserAuth();
   const socket = useRef(null)
   const recorder = useRef(null)
   const [cleared, setCleared] = useState(false);
@@ -301,9 +303,6 @@ function RealTimeTranscriptions() {
     recorder.current.pauseRecording();
     recorder.current = null;
     handlePersonMeetingSetup(transcript)
-
-
-
   }
 
 

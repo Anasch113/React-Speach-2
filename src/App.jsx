@@ -101,6 +101,7 @@ import ViewOcrFiles from "./components/SmallFeatures/ViewOcrFiles";
 import OcrInfo from "./pages/ImageToText/OcrInfo";
 import VirtualTranscriptSuccess from "./SmallComponents/PaymentSuccess/VirtualTranscriptSuccess";
 import FeatureGuide from "./pages/Content/documentation/FeatureGuide";
+import ViewTranscription from "./pages/view-ai-live/ViewTranscription";
 
 function App() {
 
@@ -479,7 +480,8 @@ function App() {
 
             <Route exact path="/virtual-transcript-payment-success" element={<VirtualTranscriptSuccess />} />
             <Route exact path="/support/Resource/questions" element={<FeatureGuide />} />
-
+            {/* view transcription page */}
+            <Route exact path="/view/:id" element={<ViewTranscription/>} />
           </Routes>
         </BrowserRouter>
         <div> <Toaster /></div>
